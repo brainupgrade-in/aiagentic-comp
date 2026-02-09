@@ -1,0 +1,37 @@
+# Environment
+.env
+.env.*
+!.env.template
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Workspace (participant-generated content)
+workspace/
+
+# Ollama models
+.ollama/
+
+# MicroK8s
+.kube/
+
+# Logs
+*.log

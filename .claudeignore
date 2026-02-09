@@ -1,0 +1,11 @@
+# Large binary files
+*.pdf
+
+# Python artifacts
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Participant workspace
+workspace/

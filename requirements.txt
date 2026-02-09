@@ -1,0 +1,38 @@
+# LangChain ecosystem
+langchain>=0.3
+langchain-community>=0.3
+langchain-groq>=0.2
+langchain-ollama>=0.2
+langchain-chroma>=0.2
+langgraph>=0.2
+
+# Vector database
+chromadb>=0.5
+
+# API framework
+fastapi>=0.115
+uvicorn[standard]>=0.32
+
+# Observability - OpenTelemetry
+opentelemetry-api>=1.27
+opentelemetry-sdk>=1.27
+opentelemetry-instrumentation-fastapi>=0.48b
+opentelemetry-exporter-otlp>=1.27
+opentelemetry-exporter-prometheus>=0.48b
+
+# Observability - LangFuse
+langfuse>=2.50
+
+# Data handling
+pydantic>=2.9
+python-dotenv>=1.0
+
+# Document loaders
+pypdf>=5.0
+beautifulsoup4>=4.12
+
+# HTTP client
+httpx>=0.27
+
+# Utilities
+requests>=2.32
