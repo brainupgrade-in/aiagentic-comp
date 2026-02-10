@@ -1,6 +1,6 @@
 {
   "name": "Agentic AI Course",
-  "image": "mcr.microsoft.com/devcontainers/python:3.11-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
 
   "hostRequirements": {
     "cpus": 2,

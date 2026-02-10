@@ -30,7 +30,7 @@
 | Observability | Docker Compose (not K8s) | Lower overhead on 2-core. Prometheus, Grafana, LangFuse run as containers on Day 5 |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
-| Base image | python:3.11-bookworm devcontainer | Pre-built, includes common dev tools |
+| Base image | python:3.13-bookworm devcontainer | Pre-built, includes common dev tools |
 
 ## Resource Management Strategy
 
