@@ -27,6 +27,10 @@
         "ms-azuretools.vscode-docker",
         "redhat.vscode-yaml"
       ],
+      "unwantedRecommendations": [
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.intellicode-api-usage-examples"
+      ],
       "settings": {
         "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
         "terminal.integrated.defaultProfile.linux": "bash"
