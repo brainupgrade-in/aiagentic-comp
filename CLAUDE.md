@@ -131,6 +131,16 @@ All containers are memory-capped to prevent OOM on 8 GB:
 - PostgreSQL (alpine): 256 MB
 - LangFuse: 512 MB
 
+## OpenCode — AI Coding Assistant
+
+[OpenCode](https://opencode.ai/) is pre-installed in the devcontainer so participants can use AI-assisted coding directly in the terminal during labs and assignments.
+
+- **Install:** `curl -fsSL https://opencode.ai/install | bash` (done automatically in post-create.sh)
+- **Launch:** `opencode` (TUI mode) or `opencode 'your prompt'` (non-interactive)
+- **Auth:** Run `/connect` inside OpenCode and select GitHub Copilot (works with Copilot Pro/Business/Enterprise subscriptions), or set `GROQ_API_KEY` in environment for Groq models
+- **Agents:** `build` (default, full access) and `plan` (read-only analysis) — switch with Tab
+- **Use cases:** Fix TODO sections in labs, debug failing code, generate YAML configs, explain concepts
+
 ## Groq API Notes
 
 - Free tier: 30 requests/minute, 14,400 requests/day per API key
