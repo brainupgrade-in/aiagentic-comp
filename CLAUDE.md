@@ -5,8 +5,10 @@
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
 **Client:** Oracle
-**Duration:** 5 days (4 sessions/day + hands-on labs)
+**Duration:** 5 days (17 sessions, ~4 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
+**Slides:** 17 HTML presentations in `presentation/`
+**Hands-on:** 131 labs + 131 solutions in `hands-on/session-1/` through `session-17/`
 
 ## Lab Environment
 
@@ -59,6 +61,15 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
+├── presentation/                        17 HTML slide decks (one per session)
+│   ├── session1-introduction-to-agentic-ai.html
+│   ├── ...
+│   └── session17-capstone-production-readiness.html
+├── hands-on/                            17 session directories with labs + solutions
+│   ├── session-1/                       6 labs + 6 solutions + README
+│   ├── session-2/                       7 labs + 7 solutions + README
+│   ├── session-3/ through session-17/   8 labs + 8 solutions + README each
+│   └── (each session has lab01-lab08 .py files + solutions/ directory)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
     ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
@@ -73,13 +84,35 @@ Oracle/
 
 ## Course Day Breakdown
 
-| Day | Theme | Key Technologies |
-|-----|-------|-----------------|
-| 1 | Agentic AI Foundations & LangChain | Ollama, LangChain, LCEL, ChromaDB |
-| 2 | RAG Applications & LangChain Ecosystem | RAG pipelines, LangGraph, Groq API |
-| 3 | Advanced Agents & Production Development | Multi-agent systems, FastAPI, LangGraph workflows |
-| 4 | Docker & Kubernetes Deployment | Dockerfiles, MicroK8s demo, K8s manifests |
-| 5 | Observability & Production Operations | OpenTelemetry, Prometheus, Grafana, LangFuse, Capstone |
+| Day | Theme | Sessions | Key Technologies |
+|-----|-------|----------|-----------------|
+| 1 | Agentic AI Foundations | 1-4 | Ollama, LangChain, LCEL, RAG, ChromaDB |
+| 2 | Advanced Patterns | 5-7 | Agents, Memory, LangGraph, Stateful Workflows |
+| 3 | Production Development | 8-9 | Multi-agent systems, FastAPI, Production patterns |
+| 4 | Containerization & K8s | 10-13 | Docker, Kubernetes, Deployments, Operations |
+| 5 | Observability & Capstone | 14-17 | OpenTelemetry, Prometheus, Grafana, LangFuse, Production Readiness |
+
+## Session-by-Session Details
+
+| Session | Title | Labs | Topics |
+|---------|-------|------|--------|
+| 1 | Introduction to Agentic AI | 6 | AI agents, reasoning, tool use, architectures |
+| 2 | Reasoning, Planning & Tool Use | 7 | ReAct, chain-of-thought, tool calling |
+| 3 | LangChain Fundamentals | 8 | LCEL, chains, prompts, output parsers |
+| 4 | Building RAG Applications | 8 | Document loaders, embeddings, vector stores, retrieval |
+| 5 | LangChain Agents & Memory | 8 | Agent types, memory patterns, conversation management |
+| 6 | LangGraph Stateful Workflows | 8 | StateGraph, nodes, edges, conditional routing |
+| 7 | Advanced LangGraph Workflows | 8 | Human-in-the-loop, subgraphs, parallel execution |
+| 8 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
+| 9 | Production Application Development | 8 | FastAPI, error handling, testing, deployment patterns |
+| 10 | Docker for AI Applications | 8 | Dockerfiles, multi-stage builds, compose, optimization |
+| 11 | Kubernetes Fundamentals | 8 | Pods, Deployments, Services, ConfigMaps, Secrets |
+| 12 | Deploying AI Stack on K8s | 8 | StatefulSets, PVCs, Ingress, Helm, production manifests |
+| 13 | Kubernetes Operations | 8 | Debugging, resource management, scaling, troubleshooting |
+| 14 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
+| 15 | Prometheus & Grafana | 8 | PromQL, alerting, dashboard design (RED/USE), kube-prometheus |
+| 16 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
+| 17 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
 
 ## Key Ports
 
@@ -120,6 +153,27 @@ Gaps to consider addressing:
 - **Cost management** — token budgeting, model selection trade-offs
 - **CI/CD for AI apps** — relevant for the DevOps audience segment
 
+## Hands-on Lab Pattern
+
+All labs follow a consistent Python-based pattern (no K8s cluster required):
+
+```bash
+# Run a student lab (has TODO markers to fill in)
+python hands-on/session-NN/labXX_topic.py
+
+# Run the completed solution (all checks pass)
+python hands-on/session-NN/solutions/labXX_topic.py
+```
+
+**Lab structure:**
+- Educational Steps (tables, code examples, architecture diagrams)
+- TODO sections with `"___"` placeholders for answers
+- Validation with `[PASS]/[FAIL]` string matching and scoring
+- Generated YAML/config files saved to `/tmp/k8s-lab-NN-XX/`
+- Labs 01-07 build progressively; Lab 08 is always a comprehensive challenge
+
+**Totals:** 131 labs + 131 solutions across 17 sessions (~60-75 min per session)
+
 ## Commands
 
 ```bash
@@ -136,3 +190,9 @@ bash scripts/day1-cleanup.sh    # Remove Ollama
 bash scripts/day4-cleanup.sh    # Remove MicroK8s
 bash scripts/day5-cleanup.sh    # Tear down Docker Compose
 ```
+
+## Git Remote
+
+- **Repository:** https://github.com/brainupgrade-in/aiagentic-comp.git
+- **Branch:** main
+- **Auth:** `gh auth login -h github.com` (token may need refresh)
