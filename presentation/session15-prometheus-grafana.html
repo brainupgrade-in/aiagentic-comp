@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 15: Metrics with Prometheus &amp; Grafana</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+
+    /* Quiz styles */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 14px 0 20px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 0.68em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.65em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
+    /* Code block */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.58em;
+      text-align: left;
+      color: #e0e0e0;
+      margin: 14px 0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .code-block .comment { color: #888; }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--accent2); }
+    .code-block .func { color: var(--accent3); }
+
+    /* Prevent content overflow */
+    .reveal .slides section { overflow: hidden; }
+
+    /* Pattern label */
+    .pattern-label {
+      display: inline-block;
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.55em;
+      margin-bottom: 8px;
+    }
+
+    /* Warning callout */
+    .warning {
+      background: rgba(229,115,115,0.1);
+      border: 1px solid var(--accent4);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.65em;
+      text-align: left;
+    }
+    .warning::before {
+      content: "Important";
+      display: block;
+      font-weight: bold;
+      color: var(--accent4);
+      margin-bottom: 4px;
+    }
+
+    /* PromQL badge */
+    .promql {
+      display: inline-block;
+      background: rgba(255,183,77,0.15);
+      color: var(--accent3);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      font-weight: bold;
+    }
+
+    /* Metric badge */
+    .metric-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.55em;
+      font-weight: bold;
+    }
+    .badge-counter { background: rgba(79,195,247,0.2); color: var(--accent); }
+    .badge-gauge { background: rgba(129,199,132,0.2); color: var(--accent2); }
+    .badge-histogram { background: rgba(255,183,77,0.2); color: var(--accent3); }
+
+    /* Dashboard panel */
+    .dash-panel {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+    .dash-panel h5 {
+      margin: 0 0 6px 0;
+      font-size: 0.6em;
+      color: #aaa;
+    }
+    .dash-value {
+      font-size: 1.8em;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+    .dash-unit {
+      font-size: 0.5em;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>Metrics with<br>Prometheus &amp; Grafana</h1>
+        <p style="font-size:0.9em; color:#ccc;">Collection &middot; PromQL &middot; Dashboards &middot; Alerts</p>
+        <p class="subtitle">Session 15 &middot; Day 5, Session 2</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== DAY 5 CONTEXT ==================== -->
+      <section>
+        <h2>Day 5: Observability &amp; Production Operations</h2>
+        <div class="card-grid">
+          <div class="card card-accent" style="opacity:0.5;">
+            <h4>Session 1 (Done)</h4>
+            <p>Observability Fundamentals &mdash; three pillars, OpenTelemetry, Python instrumentation</p>
+          </div>
+          <div class="card card-green">
+            <h4>Session 2 (Now)</h4>
+            <p>Metrics with Prometheus &amp; Grafana &mdash; pull-based collection, PromQL, dashboards</p>
+          </div>
+          <div class="card card-orange" style="opacity:0.5;">
+            <h4>Session 3</h4>
+            <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
+          </div>
+          <div class="card card-red" style="opacity:0.5;">
+            <h4>Session 4</h4>
+            <p>Capstone &amp; Production Readiness &mdash; complete deployment, production checklist</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== RECAP ==================== -->
+      <section>
+        <h2>Session 14 Recap</h2>
+        <p class="subtitle">Observability Fundamentals</p>
+        <div class="card-grid-3" style="margin-top:20px;">
+          <div class="card card-accent">
+            <h4>Metrics</h4>
+            <p>Numeric time-series: counters, gauges, histograms. &ldquo;Is anything unusual?&rdquo;</p>
+          </div>
+          <div class="card card-green">
+            <h4>Logs</h4>
+            <p>Discrete events. Structured JSON with trace_id. &ldquo;What happened?&rdquo;</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Traces</h4>
+            <p>Request flow via spans. &ldquo;Where did time go?&rdquo;</p>
+          </div>
+        </div>
+        <div class="takeaway" style="margin-top:16px;">
+          We learned the <span class="highlight">three pillars</span> and <span class="highlight-green">OpenTelemetry</span> as the universal framework. Now let&rsquo;s dive deep into the <span class="highlight-orange">metrics</span> pillar with Prometheus &amp; Grafana.
+        </div>
+      </section>
+
+      <!-- ==================== WHAT WE'LL COVER ==================== -->
+      <section>
+        <h2>What We&rsquo;ll Cover</h2>
+        <div class="card-grid-3" style="margin-top:24px;">
+          <div class="card card-accent">
+            <h4>01 &mdash; Prometheus</h4>
+            <p>Pull-based architecture, scrape targets, metrics format, PromQL queries</p>
+          </div>
+          <div class="card card-green">
+            <h4>02 &mdash; AI Metrics</h4>
+            <p>Key metrics for AI applications: latency, tokens, cost, queue depth</p>
+          </div>
+          <div class="card card-orange">
+            <h4>03 &mdash; Grafana Dashboards</h4>
+            <p>Data sources, panels, dashboard design, alerts and notifications</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--              SECTION 01: PROMETHEUS                     -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">01</div>
+        <h2>Prometheus Architecture</h2>
+        <p class="subtitle">Pull-Based Metrics Collection</p>
+      </section>
+
+      <!-- PULL VS PUSH -->
+      <section>
+        <h2>Pull vs Push Metrics</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Pull-Based (Prometheus)</h4>
+            <ul>
+              <li>Prometheus <strong>scrapes</strong> targets on a schedule</li>
+              <li>Targets expose metrics at <code>/metrics</code> endpoint</li>
+              <li>If a target goes down, Prometheus detects it (no data = problem)</li>
+              <li>Simpler for apps &mdash; just expose an HTTP endpoint</li>
+            </ul>
+            <div class="code-block" style="margin-top:8px;">
+<span class="comment"># Prometheus pulls every 15s</span>
+Prometheus &rarr; GET /metrics &rarr; agent-api
+Prometheus &rarr; GET /metrics &rarr; redis
+Prometheus &rarr; GET /metrics &rarr; chromadb
+            </div>
+          </div>
+          <div class="card card-green">
+            <h4>Push-Based (e.g., StatsD)</h4>
+            <ul>
+              <li>Apps <strong>push</strong> metrics to a collector</li>
+              <li>Requires apps to know the collector address</li>
+              <li>If app crashes mid-push, data may be lost</li>
+              <li>Useful for short-lived jobs (batch, cron)</li>
+            </ul>
+            <div class="code-block" style="margin-top:8px;">
+<span class="comment"># Apps push metrics</span>
+agent-api &rarr; PUSH metrics &rarr; Collector
+redis &rarr; PUSH metrics &rarr; Collector
+chromadb &rarr; PUSH metrics &rarr; Collector
+            </div>
+          </div>
+        </div>
+        <div class="analogy">
+          Pull = a doctor checking your vitals on scheduled visits. Push = you calling the doctor every time your heart beats. Pull is more practical for monitoring many patients.
+        </div>
+      </section>
+
+      <!-- PROMETHEUS ARCHITECTURE -->
+      <section>
+        <h2>Prometheus Components</h2>
+        <div style="margin:16px 0;">
+          <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+              <div class="box" style="min-width:110px;">agent-api<br><span style="font-size:0.8em; color:#aaa;">/metrics</span></div>
+              <div class="box" style="min-width:110px;">redis<br><span style="font-size:0.8em; color:#aaa;">exporter</span></div>
+              <div class="box" style="min-width:110px;">chromadb<br><span style="font-size:0.8em; color:#aaa;">/metrics</span></div>
+              <div style="font-size:0.5em; color:#aaa;">Scrape Targets</div>
+            </div>
+            <div class="arrow">&larr;</div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+              <div class="box box-orange box-large" style="min-width:160px;">
+                <strong>Prometheus Server</strong><br>
+                <span style="font-size:0.7em;">Scraper + TSDB + Rules</span>
+              </div>
+              <div style="font-size:0.5em; color:#aaa;">Port 9090</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
+              <div class="box box-green" style="min-width:110px;">Grafana<br><span style="font-size:0.8em; color:#aaa;">Dashboards</span></div>
+              <div class="box box-red" style="min-width:110px;">Alertmanager<br><span style="font-size:0.8em; color:#aaa;">Notifications</span></div>
+              <div style="font-size:0.5em; color:#aaa;">Consumers</div>
+            </div>
+          </div>
+        </div>
+        <table class="compare-table" style="margin-top:10px;">
+          <tr>
+            <th>Component</th>
+            <th>Role</th>
+          </tr>
+          <tr>
+            <td><span class="highlight-orange">Prometheus Server</span></td>
+            <td>Scrapes targets, stores time-series data (TSDB), evaluates rules, serves PromQL queries</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Scrape Targets</span></td>
+            <td>Services exposing <code>/metrics</code> endpoint in Prometheus text format</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-green">Grafana</span></td>
+            <td>Visualization layer &mdash; queries Prometheus via PromQL, renders dashboards</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-red">Alertmanager</span></td>
+            <td>Receives alerts from Prometheus, deduplicates, routes to Slack/email/PagerDuty</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- METRICS FORMAT -->
+      <section>
+        <h2>Prometheus Metrics Format</h2>
+        <p style="font-size:0.75em; color:#ccc;">Every target exposes plain text at <code>/metrics</code></p>
+        <div class="code-block">
+<span class="comment"># HELP agent_requests_total Total number of agent requests</span>
+<span class="comment"># TYPE agent_requests_total counter</span>
+<span class="keyword">agent_requests_total</span>{endpoint=<span class="string">"/chat"</span>,model=<span class="string">"llama3"</span>} <span class="func">1247</span>
+<span class="keyword">agent_requests_total</span>{endpoint=<span class="string">"/health"</span>} <span class="func">85432</span>
+
+<span class="comment"># HELP agent_request_duration_seconds Request duration histogram</span>
+<span class="comment"># TYPE agent_request_duration_seconds histogram</span>
+<span class="keyword">agent_request_duration_seconds_bucket</span>{le=<span class="string">"0.1"</span>} <span class="func">210</span>
+<span class="keyword">agent_request_duration_seconds_bucket</span>{le=<span class="string">"0.5"</span>} <span class="func">890</span>
+<span class="keyword">agent_request_duration_seconds_bucket</span>{le=<span class="string">"1.0"</span>} <span class="func">1150</span>
+<span class="keyword">agent_request_duration_seconds_bucket</span>{le=<span class="string">"+Inf"</span>} <span class="func">1247</span>
+<span class="keyword">agent_request_duration_seconds_sum</span> <span class="func">523.47</span>
+<span class="keyword">agent_request_duration_seconds_count</span> <span class="func">1247</span>
+
+<span class="comment"># HELP agent_active_connections Current active connections</span>
+<span class="comment"># TYPE agent_active_connections gauge</span>
+<span class="keyword">agent_active_connections</span> <span class="func">42</span>
+        </div>
+        <div style="font-size:0.6em; color:#aaa; margin-top:8px;">
+          Format: <code>metric_name{label1="value1", label2="value2"} numeric_value</code>
+        </div>
+      </section>
+
+      <!-- SCRAPE CONFIG -->
+      <section>
+        <h2>Prometheus Configuration</h2>
+        <div class="code-block">
+<span class="comment"># prometheus.yml</span>
+<span class="keyword">global</span>:
+  scrape_interval: <span class="string">15s</span>           <span class="comment"># How often to scrape targets</span>
+  evaluation_interval: <span class="string">15s</span>      <span class="comment"># How often to evaluate alert rules</span>
+
+<span class="keyword">scrape_configs</span>:
+  <span class="comment"># Our AI agent API</span>
+  - job_name: <span class="string">"agent-api"</span>
+    metrics_path: <span class="string">/metrics</span>
+    static_configs:
+      - targets: [<span class="string">"agent-api:8000"</span>]
+        labels:
+          environment: <span class="string">"production"</span>
+
+  <span class="comment"># Redis (via redis-exporter sidecar)</span>
+  - job_name: <span class="string">"redis"</span>
+    static_configs:
+      - targets: [<span class="string">"redis-exporter:9121"</span>]
+
+  <span class="comment"># Kubernetes service discovery (auto-find pods)</span>
+  - job_name: <span class="string">"kubernetes-pods"</span>
+    kubernetes_sd_configs:
+      - role: <span class="string">pod</span>
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: <span class="string">keep</span>
+        regex: <span class="string">"true"</span>
+        </div>
+      </section>
+
+      <!-- K8S SERVICE DISCOVERY -->
+      <section>
+        <h2>K8s Service Discovery</h2>
+        <p style="font-size:0.75em; color:#ccc;">Prometheus auto-discovers pods with the right annotations</p>
+        <div class="code-block">
+<span class="comment"># Add these annotations to your Pod template</span>
+<span class="keyword">apiVersion</span>: apps/v1
+<span class="keyword">kind</span>: Deployment
+<span class="keyword">metadata</span>:
+  name: agent-api
+<span class="keyword">spec</span>:
+  template:
+    <span class="keyword">metadata</span>:
+      <span class="func">annotations</span>:
+        prometheus.io/scrape: <span class="string">"true"</span>      <span class="comment"># Tell Prometheus to scrape this pod</span>
+        prometheus.io/port: <span class="string">"8000"</span>        <span class="comment"># Which port to scrape</span>
+        prometheus.io/path: <span class="string">"/metrics"</span>    <span class="comment"># Which path (default: /metrics)</span>
+    <span class="keyword">spec</span>:
+      containers:
+      - name: agent
+        image: agent-api:2.0
+        ports:
+        - containerPort: <span class="string">8000</span>
+        </div>
+        <div class="takeaway">
+          With K8s service discovery, Prometheus <span class="highlight-green">automatically finds new pods</span> as they scale up. No manual config changes needed when you add replicas.
+        </div>
+      </section>
+
+      <!-- PROMQL BASICS -->
+      <section>
+        <h2>PromQL &mdash; Query Language</h2>
+        <p style="font-size:0.75em; color:#ccc;">Prometheus Query Language for querying time-series data</p>
+        <table class="compare-table">
+          <tr>
+            <th>Query</th>
+            <th>What It Returns</th>
+          </tr>
+          <tr>
+            <td><span class="promql">agent_requests_total</span></td>
+            <td>Current counter value for all label combinations</td>
+          </tr>
+          <tr>
+            <td><span class="promql">agent_requests_total{endpoint="/chat"}</span></td>
+            <td>Filtered by endpoint label</td>
+          </tr>
+          <tr>
+            <td><span class="promql">rate(agent_requests_total[5m])</span></td>
+            <td>Requests per second (averaged over 5 minutes)</td>
+          </tr>
+          <tr>
+            <td><span class="promql">sum(rate(agent_requests_total[5m]))</span></td>
+            <td>Total RPS across all endpoints and instances</td>
+          </tr>
+          <tr>
+            <td><span class="promql">histogram_quantile(0.99, rate(agent_request_duration_seconds_bucket[5m]))</span></td>
+            <td>p99 latency in seconds</td>
+          </tr>
+        </table>
+        <div class="warning">
+          Never use a raw counter value directly (e.g., <code>agent_requests_total</code>) in dashboards. Counters only go up. Use <code>rate()</code> or <code>increase()</code> to get meaningful per-second or per-interval values.
+        </div>
+      </section>
+
+      <!-- PROMQL KEY FUNCTIONS -->
+      <section>
+        <h2>Essential PromQL Functions</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Function</th>
+            <th>Use Case</th>
+            <th>Example</th>
+          </tr>
+          <tr>
+            <td><span class="promql">rate()</span></td>
+            <td>Per-second rate of a counter</td>
+            <td><code>rate(http_requests_total[5m])</code></td>
+          </tr>
+          <tr>
+            <td><span class="promql">increase()</span></td>
+            <td>Total increase in time window</td>
+            <td><code>increase(tokens_total[1h])</code></td>
+          </tr>
+          <tr>
+            <td><span class="promql">sum()</span></td>
+            <td>Aggregate across labels</td>
+            <td><code>sum by (model)(rate(...))</code></td>
+          </tr>
+          <tr>
+            <td><span class="promql">avg()</span></td>
+            <td>Average across instances</td>
+            <td><code>avg(agent_active_connections)</code></td>
+          </tr>
+          <tr>
+            <td><span class="promql">histogram_quantile()</span></td>
+            <td>Percentile from histogram</td>
+            <td><code>histogram_quantile(0.95, ...)</code></td>
+          </tr>
+          <tr>
+            <td><span class="promql">absent()</span></td>
+            <td>Detect missing metric (target down)</td>
+            <td><code>absent(up{job="agent-api"})</code></td>
+          </tr>
+        </table>
+        <div class="code-block" style="margin-top:12px;">
+<span class="comment"># Real-world PromQL: Error rate as percentage</span>
+<span class="func">sum</span>(<span class="keyword">rate</span>(agent_requests_total{status=~<span class="string">"5.."</span>}[5m]))
+/
+<span class="func">sum</span>(<span class="keyword">rate</span>(agent_requests_total[5m]))
+* <span class="string">100</span>
+        </div>
+      </section>
+
+      <!-- ALERT RULES -->
+      <section>
+        <h2>Alert Rules</h2>
+        <div class="code-block">
+<span class="comment"># alerting-rules.yml</span>
+<span class="keyword">groups</span>:
+- name: <span class="string">agent-alerts</span>
+  rules:
+  <span class="comment"># High error rate</span>
+  - alert: <span class="func">HighErrorRate</span>
+    expr: |
+      sum(rate(agent_requests_total{status=~"5.."}[5m]))
+      / sum(rate(agent_requests_total[5m])) > 0.05
+    for: <span class="string">5m</span>
+    labels:
+      severity: <span class="string">critical</span>
+    annotations:
+      summary: <span class="string">"Error rate above 5% for 5 minutes"</span>
+
+  <span class="comment"># High latency</span>
+  - alert: <span class="func">HighLatency</span>
+    expr: |
+      histogram_quantile(0.99,
+        rate(agent_request_duration_seconds_bucket[5m])) > 5
+    for: <span class="string">10m</span>
+    labels:
+      severity: <span class="string">warning</span>
+    annotations:
+      summary: <span class="string">"p99 latency above 5 seconds"</span>
+
+  <span class="comment"># Target down</span>
+  - alert: <span class="func">AgentDown</span>
+    expr: <span class="keyword">up</span>{job=<span class="string">"agent-api"</span>} == 0
+    for: <span class="string">1m</span>
+    labels:
+      severity: <span class="string">critical</span>
+        </div>
+      </section>
+
+      <!-- ALERTMANAGER -->
+      <section>
+        <h2>Alertmanager &mdash; Notification Routing</h2>
+        <div class="diagram">
+          <div class="box box-orange">Prometheus<br><span style="font-size:0.8em;">evaluates rules</span></div>
+          <div class="arrow">&rarr;</div>
+          <div class="box box-red">Alertmanager<br><span style="font-size:0.8em;">dedup + route</span></div>
+          <div class="arrow">&rarr;</div>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <div class="box box-green" style="padding:8px 16px; font-size:0.6em;">Slack #alerts</div>
+            <div class="box box-green" style="padding:8px 16px; font-size:0.6em;">PagerDuty</div>
+            <div class="box box-green" style="padding:8px 16px; font-size:0.6em;">Email</div>
+          </div>
+        </div>
+        <div class="code-block">
+<span class="comment"># alertmanager.yml</span>
+<span class="keyword">route</span>:
+  receiver: <span class="string">slack-default</span>
+  routes:
+  - match:
+      severity: <span class="string">critical</span>
+    receiver: <span class="string">pagerduty-oncall</span>
+  - match:
+      severity: <span class="string">warning</span>
+    receiver: <span class="string">slack-warnings</span>
+
+<span class="keyword">receivers</span>:
+- name: <span class="string">slack-default</span>
+  slack_configs:
+  - channel: <span class="string">"#monitoring"</span>
+    api_url: <span class="string">"https://hooks.slack.com/services/..."</span>
+- name: <span class="string">pagerduty-oncall</span>
+  pagerduty_configs:
+  - service_key: <span class="string">"&lt;key&gt;"</span>
+        </div>
+      </section>
+
+      <!-- SECTION 01 SUMMARY -->
+      <section>
+        <h2>Section 01 Summary</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Prometheus</h4>
+            <ul>
+              <li>Pull-based: scrapes <code>/metrics</code> endpoints</li>
+              <li>Time-series DB (TSDB) for storage</li>
+              <li>K8s service discovery via pod annotations</li>
+              <li>PromQL for querying: rate(), sum(), histogram_quantile()</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Alerting</h4>
+            <ul>
+              <li>Alert rules: PromQL expression + <code>for</code> duration</li>
+              <li>Alertmanager: dedup, route, notify</li>
+              <li>Route by severity to Slack, PagerDuty, email</li>
+              <li>Use <code>absent()</code> to detect down targets</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--              SECTION 02: AI METRICS                     -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">02</div>
+        <h2>Key Metrics for AI Applications</h2>
+        <p class="subtitle">What to Measure &middot; How to Expose</p>
+      </section>
+
+      <!-- AI METRICS CATEGORIES -->
+      <section>
+        <h2>AI Metrics Categories</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Request Metrics</h4>
+            <ul>
+              <li><span class="badge-counter">COUNTER</span> Total requests by endpoint</li>
+              <li><span class="badge-histogram">HISTOGRAM</span> Request latency (p50, p90, p99)</li>
+              <li><span class="badge-counter">COUNTER</span> Errors by type (4xx, 5xx)</li>
+              <li><span class="badge-gauge">GAUGE</span> Active concurrent requests</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>LLM Metrics</h4>
+            <ul>
+              <li><span class="badge-counter">COUNTER</span> Tokens consumed (in/out)</li>
+              <li><span class="badge-histogram">HISTOGRAM</span> LLM call duration</li>
+              <li><span class="badge-counter">COUNTER</span> LLM calls by model</li>
+              <li><span class="badge-counter">COUNTER</span> Estimated cost (USD)</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>RAG Metrics</h4>
+            <ul>
+              <li><span class="badge-histogram">HISTOGRAM</span> Retrieval latency</li>
+              <li><span class="badge-histogram">HISTOGRAM</span> Documents retrieved per query</li>
+              <li><span class="badge-counter">COUNTER</span> Cache hits vs misses</li>
+              <li><span class="badge-gauge">GAUGE</span> Collection size (vectors)</li>
+            </ul>
+          </div>
+          <div class="card card-red">
+            <h4>Infrastructure Metrics</h4>
+            <ul>
+              <li><span class="badge-gauge">GAUGE</span> CPU/memory utilization</li>
+              <li><span class="badge-gauge">GAUGE</span> GPU utilization (if applicable)</li>
+              <li><span class="badge-gauge">GAUGE</span> Queue depth</li>
+              <li><span class="badge-histogram">HISTOGRAM</span> Processing time per task</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPOSING METRICS IN FASTAPI -->
+      <section>
+        <h2>Exposing Metrics in FastAPI</h2>
+        <div class="code-block">
+<span class="keyword">from</span> prometheus_client <span class="keyword">import</span> (
+    Counter, Histogram, Gauge, generate_latest, CONTENT_TYPE_LATEST
+)
+<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, Response
+<span class="keyword">import</span> time
+
+app = FastAPI()
+
+<span class="comment"># Define metrics</span>
+REQUEST_COUNT = Counter(
+    <span class="string">"agent_requests_total"</span>,
+    <span class="string">"Total agent requests"</span>,
+    [<span class="string">"endpoint"</span>, <span class="string">"status"</span>]
+)
+REQUEST_LATENCY = Histogram(
+    <span class="string">"agent_request_duration_seconds"</span>,
+    <span class="string">"Request duration in seconds"</span>,
+    [<span class="string">"endpoint"</span>],
+    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0]
+)
+TOKENS_TOTAL = Counter(
+    <span class="string">"agent_tokens_total"</span>,
+    <span class="string">"Total tokens consumed"</span>,
+    [<span class="string">"model"</span>, <span class="string">"direction"</span>]   <span class="comment"># direction: input/output</span>
+)
+ACTIVE_REQUESTS = Gauge(
+    <span class="string">"agent_active_requests"</span>,
+    <span class="string">"Currently processing requests"</span>
+)
+
+<span class="comment"># Expose /metrics endpoint for Prometheus</span>
+<span class="keyword">@app.get</span>(<span class="string">"/metrics"</span>)
+<span class="keyword">def</span> <span class="func">metrics</span>():
+    <span class="keyword">return</span> Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+        </div>
+      </section>
+
+      <!-- RECORDING METRICS -->
+      <section>
+        <h2>Recording Metrics in Handlers</h2>
+        <div class="code-block">
+<span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
+<span class="keyword">async def</span> <span class="func">chat</span>(query: str):
+    ACTIVE_REQUESTS.inc()                       <span class="comment"># Gauge up</span>
+    start = time.time()
+
+    <span class="keyword">try</span>:
+        <span class="comment"># Call the AI agent</span>
+        result = <span class="keyword">await</span> agent.process(query)
+
+        <span class="comment"># Record LLM token usage</span>
+        TOKENS_TOTAL.labels(
+            model=<span class="string">"llama3-70b"</span>, direction=<span class="string">"input"</span>
+        ).inc(result.prompt_tokens)
+        TOKENS_TOTAL.labels(
+            model=<span class="string">"llama3-70b"</span>, direction=<span class="string">"output"</span>
+        ).inc(result.completion_tokens)
+
+        REQUEST_COUNT.labels(
+            endpoint=<span class="string">"/chat"</span>, status=<span class="string">"200"</span>
+        ).inc()
+
+        <span class="keyword">return</span> {<span class="string">"response"</span>: result.content}
+
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        REQUEST_COUNT.labels(
+            endpoint=<span class="string">"/chat"</span>, status=<span class="string">"500"</span>
+        ).inc()
+        <span class="keyword">raise</span>
+
+    <span class="keyword">finally</span>:
+        duration = time.time() - start
+        REQUEST_LATENCY.labels(endpoint=<span class="string">"/chat"</span>).observe(duration)
+        ACTIVE_REQUESTS.dec()                   <span class="comment"># Gauge down</span>
+        </div>
+      </section>
+
+      <!-- AI COST TRACKING -->
+      <section>
+        <h2>Token &amp; Cost Tracking</h2>
+        <p style="font-size:0.75em; color:#ccc;">Track spending per model, endpoint, and time period</p>
+        <div class="code-block">
+<span class="comment"># Cost estimation metric</span>
+ESTIMATED_COST = Counter(
+    <span class="string">"agent_estimated_cost_usd"</span>,
+    <span class="string">"Estimated cost in USD"</span>,
+    [<span class="string">"model"</span>]
+)
+
+<span class="comment"># Pricing table (per 1M tokens)</span>
+PRICING = {
+    <span class="string">"llama3-70b"</span>:  {<span class="string">"input"</span>: 0.59, <span class="string">"output"</span>: 0.79},
+    <span class="string">"llama3-8b"</span>:   {<span class="string">"input"</span>: 0.05, <span class="string">"output"</span>: 0.08},
+    <span class="string">"mixtral-8x7b"</span>: {<span class="string">"input"</span>: 0.24, <span class="string">"output"</span>: 0.24},
+}
+
+<span class="keyword">def</span> <span class="func">record_cost</span>(model, prompt_tokens, completion_tokens):
+    prices = PRICING.get(model, {<span class="string">"input"</span>: 0, <span class="string">"output"</span>: 0})
+    cost = (prompt_tokens * prices[<span class="string">"input"</span>]
+          + completion_tokens * prices[<span class="string">"output"</span>]) / 1_000_000
+    ESTIMATED_COST.labels(model=model).inc(cost)
+        </div>
+        <div class="code-block">
+<span class="comment"># PromQL: Daily cost by model</span>
+<span class="func">sum by</span> (model) (<span class="keyword">increase</span>(agent_estimated_cost_usd[24h]))
+
+<span class="comment"># PromQL: Cost per request (average over 1 hour)</span>
+<span class="func">sum</span>(<span class="keyword">rate</span>(agent_estimated_cost_usd[1h]))
+/
+<span class="func">sum</span>(<span class="keyword">rate</span>(agent_requests_total{endpoint=<span class="string">"/chat"</span>}[1h]))
+        </div>
+      </section>
+
+      <!-- SECTION 02 SUMMARY -->
+      <section>
+        <h2>Section 02 Summary</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Metric</th>
+            <th>Type</th>
+            <th>PromQL</th>
+          </tr>
+          <tr>
+            <td>Request rate</td>
+            <td><span class="badge-counter">COUNTER</span></td>
+            <td><code>rate(agent_requests_total[5m])</code></td>
+          </tr>
+          <tr>
+            <td>Latency p99</td>
+            <td><span class="badge-histogram">HISTOGRAM</span></td>
+            <td><code>histogram_quantile(0.99, rate(..._bucket[5m]))</code></td>
+          </tr>
+          <tr>
+            <td>Error rate %</td>
+            <td><span class="badge-counter">COUNTER</span></td>
+            <td><code>rate(errors[5m]) / rate(total[5m]) * 100</code></td>
+          </tr>
+          <tr>
+            <td>Token usage/hour</td>
+            <td><span class="badge-counter">COUNTER</span></td>
+            <td><code>increase(agent_tokens_total[1h])</code></td>
+          </tr>
+          <tr>
+            <td>Estimated daily cost</td>
+            <td><span class="badge-counter">COUNTER</span></td>
+            <td><code>increase(agent_estimated_cost_usd[24h])</code></td>
+          </tr>
+          <tr>
+            <td>Active requests</td>
+            <td><span class="badge-gauge">GAUGE</span></td>
+            <td><code>agent_active_requests</code></td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--            SECTION 03: GRAFANA DASHBOARDS              -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">03</div>
+        <h2>Grafana Dashboards</h2>
+        <p class="subtitle">Visualization &middot; Design &middot; Alerts</p>
+      </section>
+
+      <!-- GRAFANA OVERVIEW -->
+      <section>
+        <h2>What is Grafana?</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Grafana</h4>
+            <ul>
+              <li>Open-source <strong>visualization</strong> platform</li>
+              <li>Connects to 50+ data sources</li>
+              <li>Create dashboards, panels, alerts</li>
+              <li>Default port: <strong>3000</strong></li>
+              <li>Grafana <em>does not store data</em> &mdash; it queries backends</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Data Sources for Our Stack</h4>
+            <ul>
+              <li><strong>Prometheus</strong> &mdash; metrics (PromQL)</li>
+              <li><strong>Loki</strong> &mdash; logs (LogQL)</li>
+              <li><strong>Jaeger/Tempo</strong> &mdash; traces</li>
+              <li>All queryable from a single dashboard</li>
+            </ul>
+          </div>
+        </div>
+        <div class="diagram" style="margin-top:16px;">
+          <div class="box box-orange" style="font-size:0.6em;">Prometheus<br>Metrics</div>
+          <div class="box box-green" style="font-size:0.6em;">Loki<br>Logs</div>
+          <div class="box" style="font-size:0.6em;">Jaeger<br>Traces</div>
+          <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+            <span class="arrow">&searr;</span>
+            <span class="arrow" style="margin-top:-20px;">&rarr;</span>
+            <span class="arrow" style="margin-top:-20px;">&nearr;</span>
+          </div>
+          <div class="box box-large" style="border-color:var(--accent2); min-width:120px;">
+            <strong style="color:var(--accent2);">Grafana</strong><br>
+            <span style="font-size:0.7em;">Unified UI</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI AGENT DASHBOARD -->
+      <section>
+        <h2>AI Agent Dashboard Design</h2>
+        <p style="font-size:0.7em; color:#aaa; margin-bottom:12px;">Example: What an AI agent monitoring dashboard should include</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px;">
+          <div class="dash-panel">
+            <h5>Request Rate</h5>
+            <div class="dash-value" style="color:var(--accent);">127<span class="dash-unit"> req/s</span></div>
+          </div>
+          <div class="dash-panel">
+            <h5>p99 Latency</h5>
+            <div class="dash-value" style="color:var(--accent2);">340<span class="dash-unit"> ms</span></div>
+          </div>
+          <div class="dash-panel">
+            <h5>Error Rate</h5>
+            <div class="dash-value" style="color:var(--accent2);">0.3<span class="dash-unit"> %</span></div>
+          </div>
+          <div class="dash-panel">
+            <h5>Active Requests</h5>
+            <div class="dash-value" style="color:var(--accent3);">42</div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; margin-top:10px;">
+          <div class="dash-panel">
+            <h5>Tokens/Hour</h5>
+            <div class="dash-value" style="color:var(--accent);">45K</div>
+          </div>
+          <div class="dash-panel">
+            <h5>Cost Today</h5>
+            <div class="dash-value" style="color:var(--accent3);">$2.47</div>
+          </div>
+          <div class="dash-panel">
+            <h5>Cache Hit Rate</h5>
+            <div class="dash-value" style="color:var(--accent2);">78<span class="dash-unit"> %</span></div>
+          </div>
+          <div class="dash-panel">
+            <h5>Pods Ready</h5>
+            <div class="dash-value" style="color:var(--accent2);">3/3</div>
+          </div>
+        </div>
+        <div style="font-size:0.55em; color:#888; margin-top:14px; text-align:center;">
+          Row 1: Service Health (RED method) &nbsp;|&nbsp; Row 2: AI-Specific Metrics
+        </div>
+      </section>
+
+      <!-- DASHBOARD DESIGN PRINCIPLES -->
+      <section>
+        <h2>Dashboard Design Principles</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>The RED Method</h4>
+            <p>For request-driven services:</p>
+            <ul>
+              <li><strong>R</strong>ate &mdash; requests per second</li>
+              <li><strong>E</strong>rrors &mdash; error rate (%)</li>
+              <li><strong>D</strong>uration &mdash; latency distribution (p50, p90, p99)</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>The USE Method</h4>
+            <p>For infrastructure resources:</p>
+            <ul>
+              <li><strong>U</strong>tilization &mdash; % of resource used</li>
+              <li><strong>S</strong>aturation &mdash; queue length, waiting work</li>
+              <li><strong>E</strong>rrors &mdash; resource error counts</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-grid" style="margin-top:12px;">
+          <div class="card card-orange">
+            <h4>Layout Best Practices</h4>
+            <ul>
+              <li>Top row: <strong>stat panels</strong> (single big numbers)</li>
+              <li>Middle: <strong>time-series graphs</strong> (trends)</li>
+              <li>Bottom: <strong>tables</strong> (detailed breakdown)</li>
+              <li>Left to right: <strong>overview &rarr; detail</strong></li>
+            </ul>
+          </div>
+          <div class="card card-red">
+            <h4>Common Mistakes</h4>
+            <ul>
+              <li>Too many panels &mdash; focus on 8&ndash;12 per dashboard</li>
+              <li>Using raw counter values (always use <code>rate()</code>)</li>
+              <li>No alert thresholds visible on graphs</li>
+              <li>Missing time range controls</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL TYPES -->
+      <section>
+        <h2>Grafana Panel Types</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Panel Type</th>
+            <th>Best For</th>
+            <th>AI Dashboard Example</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">Stat</span></td>
+            <td>Single current value with thresholds</td>
+            <td>Current request rate, error %, active connections</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Time Series</span></td>
+            <td>Values over time (line/area chart)</td>
+            <td>Latency p50/p90/p99 over last 6 hours</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Gauge</span></td>
+            <td>Value against min/max range</td>
+            <td>CPU utilization %, memory usage vs limit</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Bar Chart</span></td>
+            <td>Comparing categories</td>
+            <td>Token usage by model, requests by endpoint</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Heatmap</span></td>
+            <td>Distribution over time</td>
+            <td>Request latency distribution (histogram buckets)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Table</span></td>
+            <td>Detailed multi-column data</td>
+            <td>Top 10 slowest endpoints, per-model cost breakdown</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- GRAFANA ALERTS -->
+      <section>
+        <h2>Grafana Alerts</h2>
+        <p style="font-size:0.75em; color:#ccc;">Grafana can also evaluate alert rules (in addition to Prometheus Alertmanager)</p>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Grafana Alert Rules</h4>
+            <ul>
+              <li>Defined visually in the dashboard UI</li>
+              <li>Multi-step conditions (AND/OR)</li>
+              <li>Supports any data source (not just Prometheus)</li>
+              <li>Contact points: Slack, email, PagerDuty, webhooks</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>AI-Specific Alert Examples</h4>
+            <ul>
+              <li>Token burn rate &gt; 2x normal for 10 min</li>
+              <li>LLM latency p99 &gt; 10s for 5 min</li>
+              <li>Cost rate &gt; $5/hour for 30 min</li>
+              <li>ChromaDB retrieval returning 0 docs</li>
+              <li>Agent error rate &gt; 5% for 5 min</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway">
+          Combine <span class="highlight-orange">Prometheus Alertmanager</span> for infrastructure alerts with <span class="highlight-green">Grafana Alerts</span> for complex multi-source conditions (e.g., high cost AND high error rate).
+        </div>
+      </section>
+
+      <!-- DEPLOYING ON K8S -->
+      <section>
+        <h2>Deploying Prometheus + Grafana on K8s</h2>
+        <div class="code-block">
+<span class="comment"># Using Helm (recommended for production)</span>
+helm repo add prometheus-community \
+  https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+
+<span class="comment"># Install kube-prometheus-stack (Prometheus + Grafana + exporters + rules)</span>
+helm install monitoring prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace \
+  --set grafana.adminPassword=<span class="string">"your-password"</span>
+
+<span class="comment"># Access Grafana</span>
+kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
+
+<span class="comment"># Access Prometheus</span>
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+        </div>
+        <div class="takeaway">
+          <code>kube-prometheus-stack</code> is the most popular way to deploy the full monitoring stack. It includes Prometheus, Grafana, node-exporter, kube-state-metrics, and pre-built dashboards.
+        </div>
+      </section>
+
+      <!-- K8S MONITORING ARCHITECTURE -->
+      <section>
+        <h2>Complete K8s Monitoring Architecture</h2>
+        <div style="font-size:0.6em; text-align:left; max-width:900px; margin:0 auto;">
+          <div style="border:2px solid var(--accent); border-radius:10px; padding:14px; margin:8px 0;">
+            <strong style="color:var(--accent);">monitoring namespace</strong>
+            <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+              <div style="border:1px solid var(--accent3); border-radius:6px; padding:8px 12px;">Prometheus Server</div>
+              <div style="border:1px solid var(--accent2); border-radius:6px; padding:8px 12px;">Grafana</div>
+              <div style="border:1px solid var(--accent4); border-radius:6px; padding:8px 12px;">Alertmanager</div>
+              <div style="border:1px solid #888; border-radius:6px; padding:8px 12px;">OTel Collector</div>
+            </div>
+          </div>
+          <div style="text-align:center; color:#888;">&uarr; scrape &amp; receive &uarr;</div>
+          <div style="border:2px solid var(--accent2); border-radius:10px; padding:14px; margin:8px 0;">
+            <strong style="color:var(--accent2);">default namespace (AI stack)</strong>
+            <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+              <div style="border:1px solid var(--accent); border-radius:6px; padding:8px 12px;">agent-api (x3)<br><span style="color:#aaa; font-size:0.85em;">/metrics</span></div>
+              <div style="border:1px solid var(--accent2); border-radius:6px; padding:8px 12px;">chromadb<br><span style="color:#aaa; font-size:0.85em;">/metrics</span></div>
+              <div style="border:1px solid var(--accent3); border-radius:6px; padding:8px 12px;">redis<br><span style="color:#aaa; font-size:0.85em;">exporter</span></div>
+            </div>
+          </div>
+          <div style="text-align:center; color:#888;">&uarr; node metrics &uarr;</div>
+          <div style="border:2px solid #888; border-radius:10px; padding:14px; margin:8px 0;">
+            <strong style="color:#aaa;">kube-system namespace</strong>
+            <div style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;">
+              <div style="border:1px solid #888; border-radius:6px; padding:8px 12px;">node-exporter (DaemonSet)</div>
+              <div style="border:1px solid #888; border-radius:6px; padding:8px 12px;">kube-state-metrics</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 03 SUMMARY -->
+      <section>
+        <h2>Section 03 Summary</h2>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>Grafana Basics</h4>
+            <ul>
+              <li>Visualization layer (port 3000)</li>
+              <li>Connects to any data source</li>
+              <li>Stat, time-series, gauge, heatmap panels</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Dashboard Design</h4>
+            <ul>
+              <li>RED method for services</li>
+              <li>USE method for infrastructure</li>
+              <li>8&ndash;12 panels, overview &rarr; detail</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>K8s Deployment</h4>
+            <ul>
+              <li>Helm: kube-prometheus-stack</li>
+              <li>monitoring namespace</li>
+              <li>Pod annotations for auto-discovery</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== WHAT'S NEXT ==================== -->
+      <section>
+        <h2>What&rsquo;s Next</h2>
+        <h3>Session 16: AI-Specific Observability with LangFuse</h3>
+        <div class="card-grid-3" style="margin-top:20px;">
+          <div class="card card-accent">
+            <h4>LangFuse Overview</h4>
+            <ul>
+              <li>Open-source LLM observability</li>
+              <li>Traces for LLM calls</li>
+              <li>Prompt management</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>LangChain Integration</h4>
+            <ul>
+              <li>Callback handler setup</li>
+              <li>Trace hierarchy (traces, spans)</li>
+              <li>User feedback collection</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Debugging Agents</h4>
+            <ul>
+              <li>Trace reasoning steps</li>
+              <li>Tool call visibility</li>
+              <li>Token &amp; latency breakdown</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== QUESTIONS ==================== -->
+      <section>
+        <h1>Questions?</h1>
+        <br>
+        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss Prometheus, PromQL, and Grafana<br>before moving to LangFuse</p>
+        <br>
+        <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
+          <h4>Session 15 Complete</h4>
+          <p>Prometheus &middot; PromQL &middot; AI Metrics &middot; Grafana Dashboards</p>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--                      Q&A SLIDES                        -->
+      <!-- ====================================================== -->
+
+      <!-- Q1 -->
+      <section>
+        <div class="quiz-badge">Question 1 of 5</div>
+        <p class="quiz-question">How does Prometheus collect metrics from your application?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Your app pushes metrics to Prometheus every second</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>Prometheus pulls (scrapes) your app&rsquo;s /metrics endpoint on a schedule</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>Prometheus reads metrics from log files on disk</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Metrics are collected via the Kubernetes API server</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; Pull-based scraping.</strong> Prometheus actively scrapes each target&rsquo;s <code>/metrics</code> endpoint at the configured <code>scrape_interval</code> (default 15s). This is a core architectural choice that makes target health detection automatic.
+        </div>
+      </section>
+
+      <!-- Q2 -->
+      <section>
+        <div class="quiz-badge">Question 2 of 5</div>
+        <p class="quiz-question">What PromQL function should you use to get &ldquo;requests per second&rdquo; from a counter?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span><code>sum(agent_requests_total)</code></span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span><code>rate(agent_requests_total[5m])</code></span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span><code>avg(agent_requests_total)</code></span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span><code>histogram_quantile(0.99, agent_requests_total)</code></span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; rate().</strong> <code>rate()</code> calculates the per-second average rate of increase of a counter over the given time window. Never display raw counter values &mdash; they only go up and aren&rsquo;t meaningful on their own.
+        </div>
+      </section>
+
+      <!-- Q3 -->
+      <section>
+        <div class="quiz-badge">Question 3 of 5</div>
+        <p class="quiz-question">Which Prometheus metric type should you use for tracking LLM call duration?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Counter &mdash; count total duration</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Gauge &mdash; track current duration</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Histogram &mdash; observe duration distribution (p50, p90, p99)</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Summary &mdash; it&rsquo;s only for durations</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Histogram.</strong> Histograms bucket observations into predefined ranges, allowing you to calculate percentiles (p50, p90, p99) using <code>histogram_quantile()</code>. Essential for understanding latency distributions where averages hide outliers.
+        </div>
+      </section>
+
+      <!-- Q4 -->
+      <section>
+        <div class="quiz-badge">Question 4 of 5</div>
+        <p class="quiz-question">What does the RED method stand for in dashboard design?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Resources, Errors, Deployment</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Requests, Events, Duration</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Rate, Errors, Duration</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Reliability, Efficiency, Durability</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Rate, Errors, Duration.</strong> The RED method focuses on request-driven services: how many requests/s (Rate), what percentage fail (Errors), and how long they take (Duration). It complements the USE method for infrastructure resources.
+        </div>
+      </section>
+
+      <!-- Q5 -->
+      <section>
+        <div class="quiz-badge">Question 5 of 5</div>
+        <p class="quiz-question">How do you make Prometheus auto-discover pods on Kubernetes?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Add each pod IP manually to prometheus.yml</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Install a Prometheus sidecar in every pod</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Use kubernetes_sd_configs with pod annotations (prometheus.io/scrape: "true")</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Prometheus automatically discovers all pods without configuration</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; K8s service discovery with annotations.</strong> Prometheus uses <code>kubernetes_sd_configs</code> to query the K8s API for pods, then <code>relabel_configs</code> to filter for pods with <code>prometheus.io/scrape: "true"</code>. This auto-detects new pods as they scale.
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      width: 1200,
+      height: 700,
+      margin: 0.04,
+      center: true,
+    });
+  </script>
+</body>
+</html>

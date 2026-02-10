@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 14: Observability Fundamentals</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+
+    /* Quiz styles */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 14px 0 20px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 0.68em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.65em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
+    /* Code block */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.58em;
+      text-align: left;
+      color: #e0e0e0;
+      margin: 14px 0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .code-block .comment { color: #888; }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--accent2); }
+    .code-block .func { color: var(--accent3); }
+
+    /* Prevent content overflow */
+    .reveal .slides section { overflow: hidden; }
+
+    /* Pattern label */
+    .pattern-label {
+      display: inline-block;
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.55em;
+      margin-bottom: 8px;
+    }
+
+    /* Warning callout */
+    .warning {
+      background: rgba(229,115,115,0.1);
+      border: 1px solid var(--accent4);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 0.65em;
+      text-align: left;
+    }
+    .warning::before {
+      content: "Important";
+      display: block;
+      font-weight: bold;
+      color: var(--accent4);
+      margin-bottom: 4px;
+    }
+
+    /* Pillar styles */
+    .pillar {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      border-top: 4px solid var(--accent);
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .pillar-icon {
+      font-size: 2em;
+      margin-bottom: 8px;
+    }
+    .pillar h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .pillar p {
+      margin: 0;
+      font-size: 0.6em;
+      color: #ccc;
+      text-align: left;
+    }
+    .pillar-green { border-top-color: var(--accent2); }
+    .pillar-green h4 { color: var(--accent2); }
+    .pillar-orange { border-top-color: var(--accent3); }
+    .pillar-orange h4 { color: var(--accent3); }
+
+    /* Flow step styles */
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      padding: 12px 18px;
+      margin: 8px 0;
+      font-size: 0.65em;
+      text-align: left;
+    }
+    .flow-num {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      border-radius: 50%;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .flow-num-green { background: var(--accent2); }
+    .flow-num-orange { background: var(--accent3); }
+
+    /* Signal badge */
+    .signal-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-size: 0.55em;
+      font-weight: bold;
+    }
+    .signal-metrics { background: rgba(79,195,247,0.2); color: var(--accent); }
+    .signal-logs { background: rgba(129,199,132,0.2); color: var(--accent2); }
+    .signal-traces { background: rgba(255,183,77,0.2); color: var(--accent3); }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>Observability<br>Fundamentals</h1>
+        <p style="font-size:0.9em; color:#ccc;">Metrics &middot; Logs &middot; Traces &middot; OpenTelemetry</p>
+        <p class="subtitle">Session 14 &middot; Day 5, Session 1</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== DAY 5 CONTEXT ==================== -->
+      <section>
+        <h2>Day 5: Observability &amp; Production Operations</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Session 1 (Now)</h4>
+            <p>Observability Fundamentals &mdash; three pillars, OpenTelemetry, instrumenting Python</p>
+          </div>
+          <div class="card card-green" style="opacity:0.5;">
+            <h4>Session 2</h4>
+            <p>Metrics with Prometheus &amp; Grafana &mdash; pull-based collection, PromQL, dashboards</p>
+          </div>
+          <div class="card card-orange" style="opacity:0.5;">
+            <h4>Session 3</h4>
+            <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
+          </div>
+          <div class="card card-red" style="opacity:0.5;">
+            <h4>Session 4</h4>
+            <p>Capstone &amp; Production Readiness &mdash; complete deployment, production checklist</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== RECAP ==================== -->
+      <section>
+        <h2>Session 13 Recap</h2>
+        <p class="subtitle">Kubernetes Operations</p>
+        <div class="card-grid" style="margin-top:20px;">
+          <div class="card card-accent">
+            <h4>Debugging &amp; Troubleshooting</h4>
+            <ul>
+              <li>get &rarr; describe &rarr; logs &rarr; exec workflow</li>
+              <li>Pod status reference (CrashLoopBackOff, OOMKilled, Pending)</li>
+              <li>AI-specific debugging patterns</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Scaling &amp; High Availability</h4>
+            <ul>
+              <li>HPA for auto-scaling on CPU/memory</li>
+              <li>Pod Disruption Budgets for safe operations</li>
+              <li>Production readiness checklist</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway" style="margin-top:16px;">
+          Days 1&ndash;4 built the full pipeline: <span class="highlight">AI code</span> &rarr; <span class="highlight-green">Docker</span> &rarr; <span class="highlight-orange">Kubernetes</span>. Now: how do we <em>see</em> what&rsquo;s happening inside?
+        </div>
+      </section>
+
+      <!-- ==================== WHAT WE'LL COVER ==================== -->
+      <section>
+        <h2>What We&rsquo;ll Cover</h2>
+        <div class="card-grid-3" style="margin-top:24px;">
+          <div class="card card-accent">
+            <h4>01 &mdash; Three Pillars</h4>
+            <p>Metrics, Logs, Traces &mdash; what each tells you and when to use which</p>
+          </div>
+          <div class="card card-green">
+            <h4>02 &mdash; OpenTelemetry</h4>
+            <p>Vendor-neutral framework, OTLP protocol, auto vs manual instrumentation</p>
+          </div>
+          <div class="card card-orange">
+            <h4>03 &mdash; Instrumenting Python</h4>
+            <p>opentelemetry-python SDK, FastAPI auto-instrumentation, custom spans</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--               SECTION 01: THREE PILLARS                -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">01</div>
+        <h2>Three Pillars of Observability</h2>
+        <p class="subtitle">Metrics &middot; Logs &middot; Traces</p>
+      </section>
+
+      <!-- WHY OBSERVABILITY -->
+      <section>
+        <h2>Why Observability?</h2>
+        <p style="font-size:0.8em; color:#ccc; margin-bottom:16px;">Monitoring tells you <em>something is wrong</em>. Observability tells you <em>why</em>.</p>
+        <div class="card-grid">
+          <div class="card card-red">
+            <h4>Without Observability</h4>
+            <ul>
+              <li>Agent returns wrong answers &mdash; no idea why</li>
+              <li>Latency spikes &mdash; which service? which call?</li>
+              <li>Token costs increase &mdash; which prompts changed?</li>
+              <li>Users complain &mdash; can&rsquo;t reproduce the issue</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>With Observability</h4>
+            <ul>
+              <li>Trace every request through agent &rarr; LLM &rarr; tools</li>
+              <li>Pinpoint which service adds latency</li>
+              <li>Track token usage per prompt version</li>
+              <li>Replay exact request path from traces</li>
+            </ul>
+          </div>
+        </div>
+        <div class="analogy">
+          A car dashboard: speedometer (metrics), engine warning light (alerts), diagnostic port (traces), trip computer log (logs). You need all of them to understand <em>how</em> your car is really running.
+        </div>
+      </section>
+
+      <!-- THREE PILLARS OVERVIEW -->
+      <section>
+        <h2>The Three Pillars</h2>
+        <div class="card-grid-3" style="margin-top:24px;">
+          <div class="pillar">
+            <div class="pillar-icon"><span class="signal-metrics" style="font-size:0.6em; padding:6px 14px;">METRICS</span></div>
+            <h4>Quantitative Measurements</h4>
+            <p>Numeric values over time. &ldquo;How many? How fast? How much?&rdquo;<br><br>
+              <strong>Examples:</strong><br>
+              &bull; Request count: 1,247/min<br>
+              &bull; Latency p99: 340ms<br>
+              &bull; CPU utilization: 72%<br>
+              &bull; Token usage: 45K/hour
+            </p>
+          </div>
+          <div class="pillar pillar-green">
+            <div class="pillar-icon"><span class="signal-logs" style="font-size:0.6em; padding:6px 14px;">LOGS</span></div>
+            <h4>Discrete Events</h4>
+            <p>Timestamped text records. &ldquo;What happened?&rdquo;<br><br>
+              <strong>Examples:</strong><br>
+              &bull; ERROR: ChromaDB connection refused<br>
+              &bull; INFO: Model loaded in 82s<br>
+              &bull; WARN: Rate limit approaching<br>
+              &bull; DEBUG: Tool call returned 3 results
+            </p>
+          </div>
+          <div class="pillar pillar-orange">
+            <div class="pillar-icon"><span class="signal-traces" style="font-size:0.6em; padding:6px 14px;">TRACES</span></div>
+            <h4>Request Flow</h4>
+            <p>End-to-end path across services. &ldquo;Where did time go?&rdquo;<br><br>
+              <strong>Examples:</strong><br>
+              &bull; User &rarr; API &rarr; Agent &rarr; LLM (320ms)<br>
+              &bull; Agent &rarr; ChromaDB lookup (45ms)<br>
+              &bull; Agent &rarr; Tool call &rarr; Redis (12ms)<br>
+              &bull; Total request: 480ms
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- METRICS DEEP DIVE -->
+      <section>
+        <h2><span class="signal-metrics">METRICS</span> &mdash; Numbers Over Time</h2>
+        <p style="font-size:0.75em; color:#ccc;">Aggregated, low-cardinality data that answers &ldquo;is anything unusual happening?&rdquo;</p>
+        <table class="compare-table">
+          <tr>
+            <th>Metric Type</th>
+            <th>Description</th>
+            <th>AI Example</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">Counter</span></td>
+            <td>Monotonically increasing value</td>
+            <td>Total requests served, total tokens consumed</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Gauge</span></td>
+            <td>Value that goes up and down</td>
+            <td>Active connections, queue depth, memory usage</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Histogram</span></td>
+            <td>Distribution of values in buckets</td>
+            <td>Request latency (p50, p90, p99), token count per request</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Summary</span></td>
+            <td>Pre-calculated quantiles</td>
+            <td>Model inference time percentiles</td>
+          </tr>
+        </table>
+        <div class="takeaway">
+          Metrics are <span class="highlight-green">cheap to store</span> and <span class="highlight-green">fast to query</span>. They&rsquo;re your first line of defense &mdash; dashboards and alerts are built on metrics.
+        </div>
+      </section>
+
+      <!-- LOGS DEEP DIVE -->
+      <section>
+        <h2><span class="signal-logs">LOGS</span> &mdash; Event Records</h2>
+        <p style="font-size:0.75em; color:#ccc;">Rich, unstructured or structured text capturing discrete events</p>
+        <div class="code-block">
+<span class="comment"># Unstructured log (hard to parse)</span>
+2025-01-15 14:32:01 ERROR Failed to connect to ChromaDB at chromadb-svc:8000
+
+<span class="comment"># Structured log (machine-parseable, preferred)</span>
+{
+  <span class="string">"timestamp"</span>: <span class="string">"2025-01-15T14:32:01Z"</span>,
+  <span class="string">"level"</span>: <span class="string">"ERROR"</span>,
+  <span class="string">"service"</span>: <span class="string">"agent-api"</span>,
+  <span class="string">"message"</span>: <span class="string">"Failed to connect to ChromaDB"</span>,
+  <span class="string">"target_host"</span>: <span class="string">"chromadb-svc:8000"</span>,
+  <span class="string">"trace_id"</span>: <span class="string">"abc123def456"</span>,
+  <span class="string">"retry_count"</span>: 3
+}
+        </div>
+        <div class="card-grid">
+          <div class="card card-green">
+            <h4>Best Practices</h4>
+            <ul>
+              <li>Use <strong>structured logging</strong> (JSON)</li>
+              <li>Include <strong>trace_id</strong> to correlate with traces</li>
+              <li>Use consistent <strong>log levels</strong> (DEBUG, INFO, WARN, ERROR)</li>
+              <li>Don&rsquo;t log sensitive data (API keys, PII)</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>AI-Specific Log Fields</h4>
+            <ul>
+              <li><strong>model</strong>: which LLM was called</li>
+              <li><strong>tokens_in/out</strong>: prompt/completion tokens</li>
+              <li><strong>tool_calls</strong>: tools invoked by agent</li>
+              <li><strong>retrieval_count</strong>: docs from RAG</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRACES DEEP DIVE -->
+      <section>
+        <h2><span class="signal-traces">TRACES</span> &mdash; Request Journey</h2>
+        <p style="font-size:0.75em; color:#ccc;">A trace follows a single request across all services it touches</p>
+
+        <div style="margin:20px 0;">
+          <div style="font-size:0.6em; color:#aaa; margin-bottom:8px;">Trace ID: <span class="highlight">abc-123-def-456</span> &mdash; Total: 480ms</div>
+          <div style="position:relative; padding-left:100px;">
+            <div style="display:flex; align-items:center; margin:6px 0;">
+              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent);">API Gateway</span>
+              <div style="background:var(--accent); height:22px; border-radius:4px; width:96%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">480ms</div>
+            </div>
+            <div style="display:flex; align-items:center; margin:6px 0;">
+              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent2);">Agent</span>
+              <div style="background:var(--accent2); height:22px; border-radius:4px; width:85%; margin-left:4%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">420ms</div>
+            </div>
+            <div style="display:flex; align-items:center; margin:6px 0;">
+              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">LLM Call</span>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:60%; margin-left:8%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">320ms</div>
+            </div>
+            <div style="display:flex; align-items:center; margin:6px 0;">
+              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">ChromaDB</span>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:12%; margin-left:6%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">45ms</div>
+            </div>
+            <div style="display:flex; align-items:center; margin:6px 0;">
+              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">Redis</span>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:5%; margin-left:70%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">12ms</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-grid" style="margin-top:10px;">
+          <div class="card card-accent">
+            <h4>Trace Concepts</h4>
+            <ul>
+              <li><strong>Trace</strong>: End-to-end request journey</li>
+              <li><strong>Span</strong>: One operation within a trace</li>
+              <li><strong>Parent/Child</strong>: Spans nest hierarchically</li>
+              <li><strong>Trace ID</strong>: Shared across all spans</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Why Traces for AI?</h4>
+            <ul>
+              <li>See LLM call latency vs total time</li>
+              <li>Track agent reasoning steps</li>
+              <li>Identify which tool call is slow</li>
+              <li>Correlate with logs using trace_id</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHEN TO USE WHICH -->
+      <section>
+        <h2>When to Use Which Pillar</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Question</th>
+            <th>Signal</th>
+            <th>Example</th>
+          </tr>
+          <tr>
+            <td>&ldquo;Is the system healthy right now?&rdquo;</td>
+            <td><span class="signal-metrics">METRICS</span></td>
+            <td>Dashboard shows request rate, error rate, latency p99</td>
+          </tr>
+          <tr>
+            <td>&ldquo;What went wrong at 3:42 PM?&rdquo;</td>
+            <td><span class="signal-logs">LOGS</span></td>
+            <td>Search logs for ERROR between 3:40&ndash;3:45 PM</td>
+          </tr>
+          <tr>
+            <td>&ldquo;Why is this request slow?&rdquo;</td>
+            <td><span class="signal-traces">TRACES</span></td>
+            <td>Trace shows LLM call took 4.2s (vs usual 300ms)</td>
+          </tr>
+          <tr>
+            <td>&ldquo;Are we burning tokens too fast?&rdquo;</td>
+            <td><span class="signal-metrics">METRICS</span></td>
+            <td>Token counter shows 3x spike after prompt change</td>
+          </tr>
+          <tr>
+            <td>&ldquo;Why did the agent pick the wrong tool?&rdquo;</td>
+            <td><span class="signal-traces">TRACES</span> + <span class="signal-logs">LOGS</span></td>
+            <td>Trace shows reasoning steps, logs show tool parameters</td>
+          </tr>
+        </table>
+        <div class="takeaway">
+          The pillars are <span class="highlight-green">complementary, not competing</span>. Metrics alert you, logs explain what happened, traces show you where and why.
+        </div>
+      </section>
+
+      <!-- AI OBSERVABILITY CHALLENGES -->
+      <section>
+        <h2>AI Observability Challenges</h2>
+        <p style="font-size:0.75em; color:#ccc;">AI systems have unique observability needs beyond traditional services</p>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Non-Deterministic Outputs</h4>
+            <p>Same input can produce different outputs. Need to track prompt versions, temperature, and model responses for reproducibility.</p>
+          </div>
+          <div class="card card-green">
+            <h4>Multi-Step Reasoning</h4>
+            <p>Agents make chains of decisions: plan &rarr; tool call &rarr; reflect &rarr; retry. Each step needs its own span in the trace.</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Cost per Request</h4>
+            <p>LLM calls have direct $ cost (tokens). Must track input/output tokens per call to manage spend and detect runaway agents.</p>
+          </div>
+          <div class="card card-red">
+            <h4>Variable Latency</h4>
+            <p>LLM calls range from 200ms to 30s. Traditional timeout/retry patterns need rethinking. Streaming adds complexity.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 01 SUMMARY -->
+      <section>
+        <h2>Section 01 Summary</h2>
+        <div class="card-grid-3" style="margin-top:20px;">
+          <div class="card card-accent">
+            <h4>Metrics</h4>
+            <p>Numeric time-series: counters, gauges, histograms. Cheap to store, great for dashboards and alerts.</p>
+          </div>
+          <div class="card card-green">
+            <h4>Logs</h4>
+            <p>Discrete events with timestamps. Use structured JSON with trace_id for correlation.</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Traces</h4>
+            <p>End-to-end request flow via spans. Essential for understanding latency and multi-service paths.</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          All three pillars work together. <span class="highlight">Metrics</span> detect problems, <span class="highlight-green">logs</span> explain them, <span class="highlight-orange">traces</span> pinpoint them. AI systems need all three plus domain-specific signals (tokens, cost, reasoning steps).
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--               SECTION 02: OPENTELEMETRY                -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">02</div>
+        <h2>OpenTelemetry</h2>
+        <p class="subtitle">The Vendor-Neutral Standard</p>
+      </section>
+
+      <!-- OTEL OVERVIEW -->
+      <section>
+        <h2>What is OpenTelemetry?</h2>
+        <p style="font-size:0.8em; color:#ccc;">A single framework for collecting all three observability signals</p>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>OpenTelemetry (OTel)</h4>
+            <ul>
+              <li><strong>Vendor-neutral</strong> &mdash; not tied to any backend</li>
+              <li><strong>CNCF project</strong> &mdash; 2nd most active after Kubernetes</li>
+              <li><strong>One SDK</strong> for metrics, logs, and traces</li>
+              <li>Supports 11+ languages (Python, Go, Java, JS, ...)</li>
+              <li>Industry standard for instrumentation</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Why OTel Matters</h4>
+            <ul>
+              <li>Instrument once, export to <em>any</em> backend</li>
+              <li>Switch from Jaeger to Grafana Tempo? Change one config</li>
+              <li>No vendor lock-in on your instrumentation code</li>
+              <li>Community-maintained auto-instrumentation libraries</li>
+              <li>Consistent API across all languages</li>
+            </ul>
+          </div>
+        </div>
+        <div class="analogy">
+          OTel is like USB-C for observability. Instead of every device having a proprietary cable, you have one universal connector that works with any charger (backend).
+        </div>
+      </section>
+
+      <!-- OTEL ARCHITECTURE -->
+      <section>
+        <h2>OTel Architecture</h2>
+        <div style="margin:16px 0;">
+          <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
+            <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+              <div class="box" style="min-width:130px;"><strong>Your App</strong><br><span style="font-size:0.8em; color:#aaa;">OTel SDK</span></div>
+              <div style="font-size:0.5em; color:#aaa;">Traces + Metrics + Logs</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+              <div class="box box-green" style="min-width:130px;"><strong>OTLP</strong><br><span style="font-size:0.8em; color:#aaa;">Protocol</span></div>
+              <div style="font-size:0.5em; color:#aaa;">gRPC or HTTP</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+              <div class="box box-orange" style="min-width:130px;"><strong>OTel Collector</strong><br><span style="font-size:0.8em; color:#aaa;">Optional</span></div>
+              <div style="font-size:0.5em; color:#aaa;">Process &amp; route</div>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
+              <div class="box box-red" style="min-width:130px;"><strong>Backend</strong><br><span style="font-size:0.8em; color:#aaa;">Any vendor</span></div>
+              <div style="font-size:0.5em; color:#aaa;">Jaeger, Prometheus, etc.</div>
+            </div>
+          </div>
+        </div>
+        <table class="compare-table" style="margin-top:14px;">
+          <tr>
+            <th>Component</th>
+            <th>Role</th>
+            <th>Description</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">SDK</span></td>
+            <td>Instrumentation</td>
+            <td>Creates spans, metrics, log records in your application code</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-green">OTLP</span></td>
+            <td>Transport</td>
+            <td>OpenTelemetry Protocol &mdash; standard wire format (gRPC or HTTP/protobuf)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-orange">Collector</span></td>
+            <td>Pipeline</td>
+            <td>Receives, processes, and exports telemetry (batching, filtering, routing)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-red">Backend</span></td>
+            <td>Storage &amp; UI</td>
+            <td>Jaeger (traces), Prometheus (metrics), Loki (logs), Grafana (dashboards)</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- OTLP PROTOCOL -->
+      <section>
+        <h2>OTLP &mdash; The Universal Protocol</h2>
+        <p style="font-size:0.75em; color:#ccc;">OpenTelemetry Protocol is the standard for transmitting telemetry data</p>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>gRPC (Default)</h4>
+            <ul>
+              <li>Port: <strong>4317</strong></li>
+              <li>Binary protobuf format</li>
+              <li>Most efficient</li>
+              <li>Bidirectional streaming</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>HTTP/protobuf</h4>
+            <ul>
+              <li>Port: <strong>4318</strong></li>
+              <li>Binary over HTTP POST</li>
+              <li>Firewall-friendly</li>
+              <li>Works through proxies</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>HTTP/JSON</h4>
+            <ul>
+              <li>Port: <strong>4318</strong></li>
+              <li>Human-readable</li>
+              <li>Easiest to debug</li>
+              <li>Least efficient</li>
+            </ul>
+          </div>
+        </div>
+        <div class="code-block">
+<span class="comment"># Environment variables to configure OTLP export</span>
+<span class="keyword">OTEL_EXPORTER_OTLP_ENDPOINT</span>=<span class="string">"http://otel-collector:4317"</span>
+<span class="keyword">OTEL_EXPORTER_OTLP_PROTOCOL</span>=<span class="string">"grpc"</span>          <span class="comment"># or "http/protobuf"</span>
+<span class="keyword">OTEL_SERVICE_NAME</span>=<span class="string">"agent-api"</span>
+<span class="keyword">OTEL_RESOURCE_ATTRIBUTES</span>=<span class="string">"deployment.environment=production,service.version=2.0"</span>
+        </div>
+      </section>
+
+      <!-- AUTO VS MANUAL INSTRUMENTATION -->
+      <section>
+        <h2>Auto vs Manual Instrumentation</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Auto-Instrumentation</h4>
+            <ul>
+              <li><strong>Zero code changes</strong> &mdash; just install packages</li>
+              <li>Instruments frameworks automatically (FastAPI, requests, SQLAlchemy)</li>
+              <li>Covers HTTP endpoints, database calls, external requests</li>
+              <li>Great starting point &mdash; get spans immediately</li>
+            </ul>
+            <div class="code-block" style="margin-top:8px;">
+<span class="comment"># Run with auto-instrumentation</span>
+opentelemetry-instrument \
+  --service_name agent-api \
+  python -m uvicorn main:app
+            </div>
+          </div>
+          <div class="card card-green">
+            <h4>Manual Instrumentation</h4>
+            <ul>
+              <li><strong>Custom spans</strong> for business logic</li>
+              <li>Track LLM calls, tool usage, reasoning steps</li>
+              <li>Add custom attributes (tokens, model, cost)</li>
+              <li>Full control over span names and hierarchy</li>
+            </ul>
+            <div class="code-block" style="margin-top:8px;">
+<span class="comment"># Create custom span</span>
+<span class="keyword">with</span> tracer.start_as_current_span(
+    <span class="string">"llm_call"</span>) <span class="keyword">as</span> span:
+    span.set_attribute(<span class="string">"llm.model"</span>, <span class="string">"groq/llama3"</span>)
+    span.set_attribute(<span class="string">"llm.tokens"</span>, 1250)
+            </div>
+          </div>
+        </div>
+        <div class="takeaway">
+          Use <span class="highlight">both</span>: auto-instrumentation for HTTP/DB plumbing, manual instrumentation for AI-specific logic (LLM calls, agent steps, tool usage).
+        </div>
+      </section>
+
+      <!-- OTEL COLLECTOR -->
+      <section>
+        <h2>OTel Collector</h2>
+        <p style="font-size:0.75em; color:#ccc;">Optional but recommended &mdash; a pipeline between your app and backends</p>
+        <div class="diagram">
+          <div class="box" style="min-width:90px;">App 1</div>
+          <div class="box" style="min-width:90px;">App 2</div>
+          <div class="box" style="min-width:90px;">App 3</div>
+        </div>
+        <div style="text-align:center; font-size:1.2em; color:#888;">&darr; &darr; &darr;</div>
+        <div style="text-align:center; margin:10px 0;">
+          <div class="box box-orange box-large" style="display:inline-block;">
+            <strong>OTel Collector</strong><br>
+            <span style="font-size:0.8em;">Receivers &rarr; Processors &rarr; Exporters</span>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:1.2em; color:#888;">&darr; &darr; &darr;</div>
+        <div class="diagram">
+          <div class="box box-green" style="min-width:90px;">Jaeger<br><span style="font-size:0.8em;">Traces</span></div>
+          <div class="box box-green" style="min-width:90px;">Prometheus<br><span style="font-size:0.8em;">Metrics</span></div>
+          <div class="box box-green" style="min-width:90px;">Loki<br><span style="font-size:0.8em;">Logs</span></div>
+        </div>
+        <div class="card-grid-3" style="margin-top:14px;">
+          <div class="card card-accent">
+            <h4>Receivers</h4>
+            <p>Accept data: OTLP, Prometheus, Jaeger, Zipkin formats</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Processors</h4>
+            <p>Batch, filter, transform, sample, add attributes</p>
+          </div>
+          <div class="card card-green">
+            <h4>Exporters</h4>
+            <p>Send to backends: OTLP, Prometheus, Jaeger, file, console</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- OTEL COLLECTOR CONFIG -->
+      <section>
+        <h2>Collector Configuration</h2>
+        <div class="code-block">
+<span class="comment"># otel-collector-config.yaml</span>
+<span class="keyword">receivers</span>:
+  <span class="func">otlp</span>:
+    protocols:
+      grpc:
+        endpoint: <span class="string">0.0.0.0:4317</span>
+      http:
+        endpoint: <span class="string">0.0.0.0:4318</span>
+
+<span class="keyword">processors</span>:
+  <span class="func">batch</span>:
+    timeout: <span class="string">5s</span>
+    send_batch_size: <span class="string">1000</span>
+  <span class="func">memory_limiter</span>:
+    limit_mib: <span class="string">512</span>
+
+<span class="keyword">exporters</span>:
+  <span class="func">otlp/jaeger</span>:
+    endpoint: <span class="string">jaeger:4317</span>
+    tls:
+      insecure: <span class="string">true</span>
+  <span class="func">prometheus</span>:
+    endpoint: <span class="string">0.0.0.0:8889</span>
+
+<span class="keyword">service</span>:
+  pipelines:
+    <span class="func">traces</span>:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/jaeger]
+    <span class="func">metrics</span>:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus]
+        </div>
+      </section>
+
+      <!-- BACKEND OPTIONS -->
+      <section>
+        <h2>Popular Backend Combinations</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Signal</th>
+            <th>Open Source Backend</th>
+            <th>Visualization</th>
+            <th>Cloud Alternative</th>
+          </tr>
+          <tr>
+            <td><span class="signal-traces">Traces</span></td>
+            <td>Jaeger, Tempo</td>
+            <td>Jaeger UI, Grafana</td>
+            <td>Datadog, New Relic, Honeycomb</td>
+          </tr>
+          <tr>
+            <td><span class="signal-metrics">Metrics</span></td>
+            <td>Prometheus, Mimir</td>
+            <td>Grafana</td>
+            <td>Datadog, CloudWatch, Dynatrace</td>
+          </tr>
+          <tr>
+            <td><span class="signal-logs">Logs</span></td>
+            <td>Loki, Elasticsearch</td>
+            <td>Grafana, Kibana</td>
+            <td>Datadog, Splunk, CloudWatch</td>
+          </tr>
+        </table>
+        <div class="card-grid" style="margin-top:16px;">
+          <div class="card card-green">
+            <h4>The &ldquo;PLG&rdquo; Stack (Our Choice)</h4>
+            <ul>
+              <li><strong>P</strong>rometheus &mdash; metrics collection</li>
+              <li><strong>L</strong>oki &mdash; log aggregation</li>
+              <li><strong>G</strong>rafana &mdash; unified dashboards</li>
+              <li>+ Jaeger or Tempo for traces</li>
+            </ul>
+          </div>
+          <div class="card card-accent">
+            <h4>Why Open Source?</h4>
+            <ul>
+              <li>Deploy in your own K8s cluster</li>
+              <li>No data leaving your network</li>
+              <li>Full control over retention</li>
+              <li>No per-host or per-GB pricing</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 02 SUMMARY -->
+      <section>
+        <h2>Section 02 Summary</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>OpenTelemetry</h4>
+            <ul>
+              <li>Vendor-neutral CNCF standard</li>
+              <li>One SDK for metrics + logs + traces</li>
+              <li>OTLP protocol (gRPC:4317, HTTP:4318)</li>
+              <li>Instrument once, export anywhere</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Architecture</h4>
+            <ul>
+              <li>SDK &rarr; OTLP &rarr; Collector &rarr; Backend</li>
+              <li>Auto + manual instrumentation</li>
+              <li>Collector: receivers &rarr; processors &rarr; exporters</li>
+              <li>PLG stack for open-source observability</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--         SECTION 03: INSTRUMENTING PYTHON               -->
+      <!-- ====================================================== -->
+      <section>
+        <div class="section-number">03</div>
+        <h2>Instrumenting Python Applications</h2>
+        <p class="subtitle">opentelemetry-python SDK &middot; FastAPI &middot; Custom Spans</p>
+      </section>
+
+      <!-- PYTHON OTEL PACKAGES -->
+      <section>
+        <h2>Python OTel Packages</h2>
+        <div class="code-block">
+<span class="comment"># Core SDK</span>
+pip install opentelemetry-api
+pip install opentelemetry-sdk
+
+<span class="comment"># OTLP Exporter (sends data to collector/backend)</span>
+pip install opentelemetry-exporter-otlp
+
+<span class="comment"># Auto-instrumentation for FastAPI</span>
+pip install opentelemetry-instrumentation-fastapi
+
+<span class="comment"># Additional auto-instrumentations</span>
+pip install opentelemetry-instrumentation-requests   <span class="comment"># HTTP client</span>
+pip install opentelemetry-instrumentation-redis       <span class="comment"># Redis calls</span>
+pip install opentelemetry-instrumentation-httpx        <span class="comment"># httpx client</span>
+pip install opentelemetry-instrumentation-logging      <span class="comment"># Log correlation</span>
+
+<span class="comment"># Or install everything at once</span>
+pip install opentelemetry-distro
+opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and install</span>
+        </div>
+        <div class="takeaway">
+          <code>opentelemetry-distro</code> + <code>opentelemetry-bootstrap</code> automatically detects which libraries you use and installs the matching instrumentations.
+        </div>
+      </section>
+
+      <!-- SETUP TRACER -->
+      <section>
+        <h2>Setting Up the Tracer</h2>
+        <div class="code-block">
+<span class="comment"># tracing.py &mdash; OTel initialization</span>
+<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
+<span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
+<span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> BatchSpanProcessor
+<span class="keyword">from</span> opentelemetry.exporter.otlp.proto.grpc.trace_exporter <span class="keyword">import</span> OTLPSpanExporter
+<span class="keyword">from</span> opentelemetry.sdk.resources <span class="keyword">import</span> Resource
+
+<span class="comment"># 1. Define the service identity</span>
+resource = Resource.create({
+    <span class="string">"service.name"</span>: <span class="string">"agent-api"</span>,
+    <span class="string">"service.version"</span>: <span class="string">"2.0.0"</span>,
+    <span class="string">"deployment.environment"</span>: <span class="string">"production"</span>,
+})
+
+<span class="comment"># 2. Create a TracerProvider with OTLP export</span>
+provider = TracerProvider(resource=resource)
+processor = BatchSpanProcessor(
+    OTLPSpanExporter(endpoint=<span class="string">"http://otel-collector:4317"</span>)
+)
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+
+<span class="comment"># 3. Get a tracer for your module</span>
+tracer = trace.get_tracer(<span class="string">"agent.api"</span>)
+        </div>
+        <div style="font-size:0.65em; color:#aaa; margin-top:10px;">
+          Resource attributes identify <em>which service</em> generated the telemetry. Every span carries these.
+        </div>
+      </section>
+
+      <!-- AUTO-INSTRUMENT FASTAPI -->
+      <section>
+        <h2>Auto-Instrumenting FastAPI</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Option A: Code-Based</h4>
+            <div class="code-block" style="margin-top:8px;">
+<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+<span class="keyword">from</span> opentelemetry.instrumentation.fastapi \
+    <span class="keyword">import</span> FastAPIInstrumentor
+
+app = FastAPI()
+
+<span class="comment"># Add OTel instrumentation</span>
+FastAPIInstrumentor.instrument_app(app)
+
+<span class="keyword">@app.get</span>(<span class="string">"/health"</span>)
+<span class="keyword">async def</span> <span class="func">health</span>():
+    <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ok"</span>}
+
+<span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
+<span class="keyword">async def</span> <span class="func">chat</span>(query: str):
+    <span class="comment"># This endpoint auto-gets a span!</span>
+    <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"..."</span>}
+            </div>
+          </div>
+          <div class="card card-green">
+            <h4>Option B: Zero-Code</h4>
+            <div class="code-block" style="margin-top:8px;">
+<span class="comment"># No code changes needed!</span>
+<span class="comment"># Just run with the instrument wrapper:</span>
+
+opentelemetry-instrument \
+  --service_name agent-api \
+  --exporter_otlp_endpoint \
+    http://otel-collector:4317 \
+  python -m uvicorn main:app \
+    --host 0.0.0.0 --port 8000
+
+<span class="comment"># Every FastAPI endpoint now</span>
+<span class="comment"># produces spans automatically</span>
+            </div>
+            <p style="margin-top:10px;">Spans include: HTTP method, path, status code, duration, headers</p>
+          </div>
+        </div>
+        <div class="takeaway">
+          Auto-instrumentation creates spans for <em>every HTTP request</em>. You get endpoint latency, error rates, and request tracing with zero code changes.
+        </div>
+      </section>
+
+      <!-- WHAT AUTO-INSTRUMENTATION GIVES YOU -->
+      <section>
+        <h2>What You Get Automatically</h2>
+        <p style="font-size:0.75em; color:#ccc;">Auto-instrumentation covers the &ldquo;plumbing&rdquo; &mdash; framework-level operations</p>
+        <table class="compare-table">
+          <tr>
+            <th>Library</th>
+            <th>Auto-Instrumented Spans</th>
+            <th>Attributes</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">FastAPI</span></td>
+            <td>Every HTTP endpoint (GET, POST, etc.)</td>
+            <td>method, url, status_code, user_agent</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">requests / httpx</span></td>
+            <td>Outgoing HTTP calls</td>
+            <td>url, method, status_code, duration</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Redis</span></td>
+            <td>Every Redis command (GET, SET, etc.)</td>
+            <td>db.system, db.statement, net.peer.name</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">SQLAlchemy</span></td>
+            <td>Database queries</td>
+            <td>db.system, db.statement, db.name</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">logging</span></td>
+            <td>Injects trace_id into log records</td>
+            <td>otelTraceID, otelSpanID</td>
+          </tr>
+        </table>
+        <div class="warning">
+          Auto-instrumentation does NOT trace LLM calls, agent reasoning, or tool usage. That requires <strong>manual instrumentation</strong> &mdash; covered next.
+        </div>
+      </section>
+
+      <!-- CUSTOM SPANS -->
+      <section>
+        <h2>Custom Spans for AI Logic</h2>
+        <div class="code-block">
+<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
+
+tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
+
+<span class="keyword">async def</span> <span class="func">process_query</span>(query: str):
+    <span class="comment"># Parent span for the entire agent workflow</span>
+    <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"agent_workflow"</span>) <span class="keyword">as</span> span:
+        span.set_attribute(<span class="string">"agent.query"</span>, query)
+
+        <span class="comment"># Child span: RAG retrieval</span>
+        <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"rag_retrieval"</span>) <span class="keyword">as</span> rag_span:
+            docs = <span class="keyword">await</span> chromadb.query(query, n_results=5)
+            rag_span.set_attribute(<span class="string">"rag.docs_retrieved"</span>, len(docs))
+            rag_span.set_attribute(<span class="string">"rag.collection"</span>, <span class="string">"knowledge_base"</span>)
+
+        <span class="comment"># Child span: LLM call</span>
+        <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"llm_call"</span>) <span class="keyword">as</span> llm_span:
+            response = <span class="keyword">await</span> llm.invoke(query, context=docs)
+            llm_span.set_attribute(<span class="string">"llm.model"</span>, <span class="string">"groq/llama3-70b"</span>)
+            llm_span.set_attribute(<span class="string">"llm.tokens_in"</span>, response.usage.prompt_tokens)
+            llm_span.set_attribute(<span class="string">"llm.tokens_out"</span>, response.usage.completion_tokens)
+            llm_span.set_attribute(<span class="string">"llm.cost_usd"</span>, calculate_cost(response.usage))
+
+        span.set_attribute(<span class="string">"agent.tools_used"</span>, 2)
+        <span class="keyword">return</span> response.content
+        </div>
+      </section>
+
+      <!-- SPAN ATTRIBUTES FOR AI -->
+      <section>
+        <h2>AI Span Attributes</h2>
+        <p style="font-size:0.75em; color:#ccc;">Recommended attributes for AI-specific spans (emerging OTel semantic conventions)</p>
+        <table class="compare-table">
+          <tr>
+            <th>Attribute</th>
+            <th>Type</th>
+            <th>Example</th>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent);">llm.model</code></td>
+            <td>string</td>
+            <td><code>"groq/llama3-70b"</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent);">llm.tokens_in</code></td>
+            <td>int</td>
+            <td><code>850</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent);">llm.tokens_out</code></td>
+            <td>int</td>
+            <td><code>420</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent);">llm.cost_usd</code></td>
+            <td>float</td>
+            <td><code>0.0038</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent2);">rag.docs_retrieved</code></td>
+            <td>int</td>
+            <td><code>5</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent2);">rag.collection</code></td>
+            <td>string</td>
+            <td><code>"knowledge_base"</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent3);">agent.tools_used</code></td>
+            <td>int</td>
+            <td><code>3</code></td>
+          </tr>
+          <tr>
+            <td><code style="color:var(--accent3);">agent.steps</code></td>
+            <td>int</td>
+            <td><code>4</code></td>
+          </tr>
+        </table>
+        <div class="takeaway">
+          Custom attributes turn generic traces into <span class="highlight-green">AI-aware traces</span>. You can now filter by model, sort by token cost, or find the most expensive agent workflows.
+        </div>
+      </section>
+
+      <!-- CUSTOM METRICS -->
+      <section>
+        <h2>Custom Metrics in Python</h2>
+        <div class="code-block">
+<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> metrics
+<span class="keyword">from</span> opentelemetry.sdk.metrics <span class="keyword">import</span> MeterProvider
+<span class="keyword">from</span> opentelemetry.sdk.metrics.export <span class="keyword">import</span> PeriodicExportingMetricReader
+<span class="keyword">from</span> opentelemetry.exporter.otlp.proto.grpc.metric_exporter <span class="keyword">import</span> OTLPMetricExporter
+
+<span class="comment"># Setup meter provider</span>
+reader = PeriodicExportingMetricReader(OTLPMetricExporter())
+provider = MeterProvider(metric_readers=[reader])
+metrics.set_meter_provider(provider)
+
+meter = metrics.get_meter(<span class="string">"agent.api"</span>)
+
+<span class="comment"># Define metrics</span>
+request_counter = meter.create_counter(
+    <span class="string">"agent.requests.total"</span>,
+    description=<span class="string">"Total agent requests"</span>,
+)
+token_counter = meter.create_counter(
+    <span class="string">"agent.tokens.total"</span>,
+    description=<span class="string">"Total tokens consumed"</span>,
+)
+latency_histogram = meter.create_histogram(
+    <span class="string">"agent.request.duration"</span>,
+    unit=<span class="string">"ms"</span>,
+    description=<span class="string">"Request duration in milliseconds"</span>,
+)
+
+<span class="comment"># Record metrics in your handlers</span>
+request_counter.add(1, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
+token_counter.add(1270, {<span class="string">"direction"</span>: <span class="string">"total"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
+latency_histogram.record(342.5, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>})
+        </div>
+      </section>
+
+      <!-- LOG CORRELATION -->
+      <section>
+        <h2>Log Correlation with Trace IDs</h2>
+        <p style="font-size:0.75em; color:#ccc;">Connect logs to traces so you can jump between them</p>
+        <div class="code-block">
+<span class="keyword">import</span> logging
+<span class="keyword">from</span> opentelemetry.instrumentation.logging <span class="keyword">import</span> LoggingInstrumentor
+
+<span class="comment"># Enable trace context injection into logs</span>
+LoggingInstrumentor().instrument(set_logging_format=<span class="keyword">True</span>)
+
+<span class="comment"># Configure structured logging</span>
+logging.basicConfig(
+    level=logging.INFO,
+    format=<span class="string">'%(asctime)s %(levelname)s [%(name)s] '</span>
+           <span class="string">'[trace_id=%(otelTraceID)s span_id=%(otelSpanID)s] '</span>
+           <span class="string">'%(message)s'</span>
+)
+logger = logging.getLogger(<span class="string">"agent"</span>)
+
+<span class="comment"># Now every log line includes the trace context</span>
+logger.info(<span class="string">"Processing query"</span>)
+<span class="comment"># Output:</span>
+<span class="comment"># 2025-01-15 14:32:01 INFO [agent]</span>
+<span class="comment"># [trace_id=abc123def456 span_id=789xyz] Processing query</span>
+        </div>
+        <div class="diagram" style="margin-top:16px;">
+          <div class="box" style="font-size:0.6em;">See error in<br><strong>Grafana/Loki</strong><br>(logs)</div>
+          <div class="arrow">&rarr;</div>
+          <div class="box box-orange" style="font-size:0.6em;">Click<br><strong>trace_id</strong><br>link</div>
+          <div class="arrow">&rarr;</div>
+          <div class="box box-green" style="font-size:0.6em;">Jump to<br><strong>Jaeger/Tempo</strong><br>(trace)</div>
+          <div class="arrow">&rarr;</div>
+          <div class="box box-red" style="font-size:0.6em;">See exact<br><strong>span</strong> that<br>caused error</div>
+        </div>
+      </section>
+
+      <!-- PUTTING IT ALL TOGETHER -->
+      <section>
+        <h2>Complete FastAPI + OTel Setup</h2>
+        <div class="code-block">
+<span class="comment"># main.py &mdash; Production FastAPI with full OTel</span>
+<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+<span class="keyword">from</span> tracing <span class="keyword">import</span> tracer, setup_otel   <span class="comment"># our tracing.py module</span>
+<span class="keyword">from</span> opentelemetry.instrumentation.fastapi <span class="keyword">import</span> FastAPIInstrumentor
+<span class="keyword">from</span> opentelemetry.instrumentation.requests <span class="keyword">import</span> RequestsInstrumentor
+<span class="keyword">from</span> opentelemetry.instrumentation.redis <span class="keyword">import</span> RedisInstrumentor
+
+<span class="comment"># Initialize OTel</span>
+setup_otel()
+
+app = FastAPI(title=<span class="string">"AI Agent API"</span>)
+
+<span class="comment"># Auto-instrument frameworks</span>
+FastAPIInstrumentor.instrument_app(app)
+RequestsInstrumentor().instrument()
+RedisInstrumentor().instrument()
+
+<span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
+<span class="keyword">async def</span> <span class="func">chat</span>(query: str):
+    <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"chat_handler"</span>) <span class="keyword">as</span> span:
+        span.set_attribute(<span class="string">"agent.query_length"</span>, len(query))
+
+        <span class="comment"># RAG + LLM calls (auto-instrumented HTTP + custom spans)</span>
+        result = <span class="keyword">await</span> agent.process(query)
+
+        span.set_attribute(<span class="string">"agent.response_length"</span>, len(result))
+        <span class="keyword">return</span> {<span class="string">"response"</span>: result}
+        </div>
+      </section>
+
+      <!-- K8S DEPLOYMENT WITH OTEL -->
+      <section>
+        <h2>Deploying with OTel on Kubernetes</h2>
+        <div class="code-block">
+<span class="comment"># agent-deployment.yaml (relevant sections)</span>
+<span class="keyword">apiVersion</span>: apps/v1
+<span class="keyword">kind</span>: Deployment
+<span class="keyword">metadata</span>:
+  name: agent-api
+<span class="keyword">spec</span>:
+  template:
+    spec:
+      containers:
+      - name: agent
+        image: agent-api:2.0
+        <span class="keyword">env</span>:
+        <span class="comment"># OTel configuration via environment variables</span>
+        - name: <span class="func">OTEL_SERVICE_NAME</span>
+          value: <span class="string">"agent-api"</span>
+        - name: <span class="func">OTEL_EXPORTER_OTLP_ENDPOINT</span>
+          value: <span class="string">"http://otel-collector.monitoring:4317"</span>
+        - name: <span class="func">OTEL_RESOURCE_ATTRIBUTES</span>
+          value: <span class="string">"deployment.environment=production,service.version=2.0"</span>
+        - name: <span class="func">OTEL_TRACES_SAMPLER</span>
+          value: <span class="string">"parentbased_traceidratio"</span>
+        - name: <span class="func">OTEL_TRACES_SAMPLER_ARG</span>
+          value: <span class="string">"0.1"</span>    <span class="comment"># Sample 10% of traces in production</span>
+        </div>
+        <div class="warning">
+          In production, use <strong>sampling</strong> (e.g., 10%) to avoid overwhelming your trace backend. Always sample 100% of errors regardless of the ratio.
+        </div>
+      </section>
+
+      <!-- SECTION 03 SUMMARY -->
+      <section>
+        <h2>Section 03 Summary</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Auto-Instrumentation</h4>
+            <ul>
+              <li><code>opentelemetry-instrument</code> for zero-code setup</li>
+              <li>Covers FastAPI, requests, Redis, SQLAlchemy</li>
+              <li>Creates spans for HTTP endpoints and DB calls</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Manual Instrumentation</h4>
+            <ul>
+              <li>Custom spans for LLM calls, RAG, tools</li>
+              <li>AI attributes: model, tokens, cost</li>
+              <li>Log correlation via trace_id injection</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway">
+          Auto-instrumentation is your <span class="highlight">starting point</span> (5 minutes to set up). Manual instrumentation adds <span class="highlight-green">AI-specific visibility</span> (tokens, cost, reasoning). Both work together seamlessly.
+        </div>
+      </section>
+
+      <!-- ==================== DAY 5 INTRO ==================== -->
+      <section>
+        <h2>Day 5 Journey: Observability</h2>
+        <div class="flow-step">
+          <span class="flow-num">1</span>
+          <div><strong style="color:var(--accent);">Observability Fundamentals</strong> (this session) &mdash; Three pillars, OpenTelemetry, Python instrumentation</div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-num flow-num-green">2</span>
+          <div><strong style="color:var(--accent2);">Prometheus &amp; Grafana</strong> &mdash; Pull-based metrics, PromQL, AI dashboards</div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-num flow-num-orange">3</span>
+          <div><strong style="color:var(--accent3);">LangFuse</strong> &mdash; AI-specific observability, LLM traces, cost tracking</div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-num" style="background:var(--accent4);">4</span>
+          <div><strong style="color:var(--accent4);">Capstone</strong> &mdash; Complete production deployment with full observability</div>
+        </div>
+      </section>
+
+      <!-- ==================== WHAT'S NEXT ==================== -->
+      <section>
+        <h2>What&rsquo;s Next</h2>
+        <h3>Session 15: Metrics with Prometheus &amp; Grafana</h3>
+        <div class="card-grid-3" style="margin-top:20px;">
+          <div class="card card-accent">
+            <h4>Prometheus Architecture</h4>
+            <ul>
+              <li>Pull-based metrics collection</li>
+              <li>PromQL query language</li>
+              <li>Alert rules and Alertmanager</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>AI Metrics</h4>
+            <ul>
+              <li>Request latency &amp; throughput</li>
+              <li>Token usage and costs</li>
+              <li>Model inference time</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Grafana Dashboards</h4>
+            <ul>
+              <li>Data sources and panels</li>
+              <li>Dashboard design principles</li>
+              <li>Alerts and notifications</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== QUESTIONS ==================== -->
+      <section>
+        <h1>Questions?</h1>
+        <br>
+        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss observability concepts<br>before we move to Prometheus &amp; Grafana</p>
+        <br>
+        <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
+          <h4>Session 14 Complete</h4>
+          <p>Three Pillars &middot; OpenTelemetry &middot; Python Instrumentation</p>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!--                      Q&A SLIDES                        -->
+      <!-- ====================================================== -->
+
+      <!-- Q1 -->
+      <section>
+        <div class="quiz-badge">Question 1 of 5</div>
+        <p class="quiz-question">Which observability pillar is best for answering &ldquo;Why is this specific request slow?&rdquo;</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Metrics &mdash; check latency percentiles</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Logs &mdash; search for slow request entries</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Traces &mdash; follow the request path across services</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Alerts &mdash; check which alert fired</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Traces.</strong> Traces show the exact path a specific request took through all services, revealing which span (operation) consumed the most time. Metrics show aggregates (p99), not individual requests.
+        </div>
+      </section>
+
+      <!-- Q2 -->
+      <section>
+        <div class="quiz-badge">Question 2 of 5</div>
+        <p class="quiz-question">What does OTLP stand for and what is its default gRPC port?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Open Tracing Log Protocol, port 9090</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>OpenTelemetry Protocol, port 4317</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>OpenTelemetry Protocol, port 4318</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Open Telemetry Log Protocol, port 8080</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; OpenTelemetry Protocol, port 4317.</strong> OTLP uses gRPC on port 4317 by default. Port 4318 is for HTTP/protobuf transport. OTLP is the standard wire format for all three signals.
+        </div>
+      </section>
+
+      <!-- Q3 -->
+      <section>
+        <div class="quiz-badge">Question 3 of 5</div>
+        <p class="quiz-question">What is the key difference between auto and manual instrumentation?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Auto is for production, manual is for development only</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Auto creates metrics, manual creates traces</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent)</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Auto is faster, manual produces more accurate data</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Auto covers frameworks, manual covers business logic.</strong> Auto-instrumentation detects HTTP endpoints, database calls, and external requests. Manual instrumentation is needed for custom spans around LLM calls, RAG retrieval, and agent reasoning steps.
+        </div>
+      </section>
+
+      <!-- Q4 -->
+      <section>
+        <div class="quiz-badge">Question 4 of 5</div>
+        <p class="quiz-question">Why should you include <code>trace_id</code> in your log messages?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>It makes logs smaller and more efficient</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>It lets you jump from a log entry to its full distributed trace</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>It&rsquo;s required by the OTLP protocol specification</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>It prevents duplicate log entries across services</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; Correlate logs with traces.</strong> When you find an error in logs, the trace_id lets you click through to the distributed trace in Jaeger/Tempo, showing exactly which service and operation caused the error.
+        </div>
+      </section>
+
+      <!-- Q5 -->
+      <section>
+        <div class="quiz-badge">Question 5 of 5</div>
+        <p class="quiz-question">Which OTel Collector component is responsible for batching, filtering, and transforming telemetry data?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Receivers</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>Processors</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>Exporters</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Extensions</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; Processors.</strong> The Collector pipeline is: Receivers (accept data) &rarr; Processors (batch, filter, transform, sample) &rarr; Exporters (send to backends). Processors sit in the middle and modify or filter data in transit.
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      width: 1200,
+      height: 700,
+      margin: 0.04,
+      center: true,
+    });
+  </script>
+</body>
+</html>
