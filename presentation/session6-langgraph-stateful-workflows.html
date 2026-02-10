@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 6: LangGraph — Stateful Workflows</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+
+    /* Quiz styles */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 14px 0 20px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 0.68em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.65em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
+    /* Code block */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.58em;
+      text-align: left;
+      color: #e0e0e0;
+      margin: 14px 0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .code-block .comment { color: #888; }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--accent2); }
+    .code-block .func { color: var(--accent3); }
+    .code-block .output { color: #aaa; font-style: italic; }
+
+    /* Prevent content overflow */
+    .reveal .slides section { overflow: hidden; }
+
+    /* Layer diagram */
+    .layer-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 16px 0;
+    }
+    .layer-bar {
+      width: 85%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 0.65em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .layer-bar .layer-title {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .layer-bar .layer-items {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9em;
+    }
+
+    /* Pipe diagram */
+    .pipe-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 14px 0;
+    }
+    .pipe-box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.6em;
+      text-align: center;
+    }
+    .pipe-box-green { border-color: var(--accent2); }
+    .pipe-box-orange { border-color: var(--accent3); }
+    .pipe-box-red { border-color: var(--accent4); }
+    .pipe-sym { font-size: 1.4em; color: var(--accent3); font-weight: bold; }
+
+    /* Graph node diagram */
+    .graph-flow {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+    .graph-node {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.55em;
+      text-align: center;
+    }
+    .graph-node-green { border-color: var(--accent2); }
+    .graph-node-orange { border-color: var(--accent3); }
+    .graph-node-red { border-color: var(--accent4); }
+    .graph-arrow { font-size: 1.4em; color: #888; align-self: center; }
+    .graph-diamond {
+      background: var(--bg-card);
+      border: 2px solid var(--accent3);
+      width: 80px;
+      height: 80px;
+      transform: rotate(45deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+    }
+    .graph-diamond-text {
+      transform: rotate(-45deg);
+      font-size: 0.5em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>LangGraph: Stateful Workflows</h1>
+        <p style="font-size:0.9em; color:#ccc;">Beyond Agents &mdash; Building Complex, Controllable Workflows</p>
+        <p class="subtitle">Session 6 &middot; Day 2, Session 3</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== AGENDA ==================== -->
+      <section>
+        <h2>Session 6: What We'll Cover</h2>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>1. StateGraph Fundamentals</h4>
+            <p>What is LangGraph, why go beyond agents, state definitions with TypedDict</p>
+          </div>
+          <div class="card card-green">
+            <h4>2. Nodes & Edges</h4>
+            <p>Processing nodes, connections, conditional routing, building graph flows</p>
+          </div>
+          <div class="card card-orange">
+            <h4>3. Checkpointing & Human-in-Loop</h4>
+            <p>State persistence, interrupt/resume, human approval gates</p>
+          </div>
+          <div class="card card-red">
+            <h4>4. Putting It Together</h4>
+            <p>Building a complete multi-step workflow with branching and approval</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PART 1: STATEGRAPH FUNDAMENTALS ==================== -->
+      <section>
+        <section>
+          <div class="section-number">01</div>
+          <h2>StateGraph Fundamentals</h2>
+          <p class="subtitle">What is LangGraph &middot; Why Graphs &middot; Defining State</p>
+        </section>
+
+        <!-- WHY LANGGRAPH -->
+        <section>
+          <h2>Why LangGraph?</h2>
+          <h3>When agents aren't enough</h3>
+          <div class="card-grid" style="margin-top:14px;">
+            <div class="card card-accent" style="padding:16px;">
+              <h4>ReAct Agent (Session 5)</h4>
+              <ul>
+                <li>LLM decides everything at runtime</li>
+                <li>Great for flexible, open-ended tasks</li>
+                <li>Hard to guarantee specific steps run</li>
+                <li>Difficult to add human approval</li>
+                <li>Limited control over execution flow</li>
+              </ul>
+            </div>
+            <div class="card card-green" style="padding:16px;">
+              <h4>LangGraph (Today)</h4>
+              <ul>
+                <li>YOU define the workflow structure</li>
+                <li>Explicit nodes, edges, and conditions</li>
+                <li>Guaranteed execution order where needed</li>
+                <li>Built-in human-in-the-loop support</li>
+                <li>Full state management and persistence</li>
+              </ul>
+            </div>
+          </div>
+          <div class="analogy">
+            A ReAct agent is like a freelancer who decides their own process.
+            LangGraph is like a project manager's Kanban board &mdash; clear stages,
+            defined transitions, approval gates, and every task's status is tracked.
+          </div>
+        </section>
+
+        <!-- WHAT IS A GRAPH -->
+        <section>
+          <h2>What is a StateGraph?</h2>
+          <h3>A workflow defined as nodes + edges + state</h3>
+          <div class="graph-flow" style="margin-top:20px;">
+            <div class="graph-node" style="border-color:var(--accent);">
+              <strong>START</strong>
+            </div>
+            <span class="graph-arrow">&rarr;</span>
+            <div class="graph-node graph-node-green">
+              <strong>Classify</strong><br>
+              <span style="font-size:0.85em;">Node</span>
+            </div>
+            <span class="graph-arrow">&rarr;</span>
+            <div class="graph-diamond">
+              <div class="graph-diamond-text"><strong>Route?</strong></div>
+            </div>
+            <span class="graph-arrow">&rarr;</span>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div class="graph-node graph-node-orange" style="width:80px; height:80px;">
+                <strong>Handle A</strong>
+              </div>
+              <div class="graph-node graph-node-red" style="width:80px; height:80px;">
+                <strong>Handle B</strong>
+              </div>
+            </div>
+            <span class="graph-arrow">&rarr;</span>
+            <div class="graph-node" style="border-color:#888;">
+              <strong>END</strong>
+            </div>
+          </div>
+          <div class="card-grid-3" style="margin-top:14px;">
+            <div class="card card-accent" style="padding:12px;">
+              <h4>State</h4>
+              <p>A shared data dictionary that flows through the graph. Each node reads and updates it.</p>
+            </div>
+            <div class="card card-green" style="padding:12px;">
+              <h4>Nodes</h4>
+              <p>Python functions that process the state. Each node does one step of work.</p>
+            </div>
+            <div class="card card-orange" style="padding:12px;">
+              <h4>Edges</h4>
+              <p>Connections between nodes. Can be fixed or conditional (branching).</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- DEFINING STATE -->
+        <section>
+          <h2>Defining State with TypedDict</h2>
+          <h3>The shared data structure for your workflow</h3>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
+            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated<br>
+            <span class="keyword">from</span> operator <span class="keyword">import</span> add<br>
+            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph<br>
+            <br>
+            <span class="comment"># Define the state schema</span><br>
+            <span class="keyword">class</span> <span class="func">WorkflowState</span>(TypedDict):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;messages: Annotated[<span class="keyword">list</span>, add]&nbsp;&nbsp;<span class="comment"># append new items to list</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;current_step: <span class="keyword">str</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># overwrite on update</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;approved: <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># overwrite on update</span><br>
+            <br>
+            <span class="comment"># Create the graph with this state</span><br>
+            graph = StateGraph(WorkflowState)
+          </div>
+          <div class="card-grid" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>Regular Fields</h4>
+              <p>Fields like <code>str</code>, <code>bool</code>, <code>int</code> get <strong>overwritten</strong> when a node returns a new value. Last write wins.</p>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Annotated Fields (Reducers)</h4>
+              <p><code>Annotated[list, add]</code> means new values are <strong>appended</strong> to the list, not replaced. This is perfect for message history.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- YOUR FIRST GRAPH -->
+        <section>
+          <h2>Your First LangGraph Workflow</h2>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
+            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict<br>
+            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END<br>
+            <br>
+            <span class="keyword">class</span> <span class="func">State</span>(TypedDict):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;name: <span class="keyword">str</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;greeting: <span class="keyword">str</span><br>
+            <br>
+            <span class="comment"># Node: a function that takes state and returns updates</span><br>
+            <span class="keyword">def</span> <span class="func">greet</span>(state: State) -> <span class="keyword">dict</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"greeting"</span>: <span class="keyword">f</span><span class="string">"Hello, {state['name']}! Welcome to UniGPS."</span>}<br>
+            <br>
+            <span class="comment"># Build the graph</span><br>
+            graph = StateGraph(State)<br>
+            graph.<span class="func">add_node</span>(<span class="string">"greet"</span>, greet)<br>
+            graph.<span class="func">add_edge</span>(START, <span class="string">"greet"</span>)&nbsp;&nbsp;<span class="comment"># START → greet</span><br>
+            graph.<span class="func">add_edge</span>(<span class="string">"greet"</span>, END)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># greet → END</span><br>
+            <br>
+            <span class="comment"># Compile and run</span><br>
+            app = graph.<span class="func">compile</span>()<br>
+            result = app.<span class="func">invoke</span>({<span class="string">"name"</span>: <span class="string">"Priya"</span>})<br>
+            <span class="func">print</span>(result[<span class="string">"greeting"</span>])&nbsp;&nbsp;<span class="output"># "Hello, Priya! Welcome to UniGPS."</span>
+          </div>
+          <div class="takeaway">
+            Every graph follows three steps: <strong>define state</strong> (TypedDict),
+            <strong>add nodes</strong> (Python functions), <strong>connect with edges</strong> (START &rarr; nodes &rarr; END).
+            Then <code>compile()</code> and <code>invoke()</code>.
+          </div>
+        </section>
+
+        <!-- AGENTS vs GRAPHS -->
+        <section>
+          <h2>When to Use What?</h2>
+          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+            <tr>
+              <th>Feature</th>
+              <th>ReAct Agent</th>
+              <th>LangGraph Workflow</th>
+            </tr>
+            <tr>
+              <td>Control flow</td>
+              <td>LLM decides everything</td>
+              <td>You define the structure</td>
+            </tr>
+            <tr>
+              <td>Best for</td>
+              <td>Open-ended Q&A, exploration</td>
+              <td>Structured processes, pipelines</td>
+            </tr>
+            <tr>
+              <td>Human approval</td>
+              <td>Not built-in</td>
+              <td>Built-in interrupt/resume</td>
+            </tr>
+            <tr>
+              <td>Error handling</td>
+              <td>LLM retries or gives up</td>
+              <td>Explicit retry nodes & fallbacks</td>
+            </tr>
+            <tr>
+              <td>State management</td>
+              <td>Message list only</td>
+              <td>Full typed state with reducers</td>
+            </tr>
+            <tr>
+              <td>Complexity</td>
+              <td>Simple to set up</td>
+              <td>More code but more predictable</td>
+            </tr>
+          </table>
+          <div class="takeaway">
+            <strong>Rule of thumb:</strong> If the LLM needs to figure out <em>what</em> to do &rarr; use an agent.
+            If <em>you</em> know the steps but need the LLM at certain stages &rarr; use LangGraph.
+            You can even combine both &mdash; put agents inside graph nodes!
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PART 2: NODES & EDGES ==================== -->
+      <section>
+        <section>
+          <div class="section-number">02</div>
+          <h2>Nodes & Edges</h2>
+          <p class="subtitle">Processing Steps &middot; Connections &middot; Conditional Routing</p>
+        </section>
+
+        <!-- NODES EXPLAINED -->
+        <section>
+          <h2>Nodes: Processing Steps</h2>
+          <h3>Each node is a Python function that transforms state</h3>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
+            <span class="comment"># A node receives the full state and returns updates</span><br>
+            <span class="keyword">def</span> <span class="func">classify_request</span>(state):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Classify whether a request is HR, Tech, or Finance."""</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;message = state[<span class="string">"message"</span>]<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"wfh"</span> <span class="keyword">in</span> message.lower():<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span>}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> <span class="string">"deploy"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"database"</span> <span class="keyword">in</span> message.lower():<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"tech"</span>}<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"general"</span>}<br>
+            <br>
+            graph.<span class="func">add_node</span>(<span class="string">"classify"</span>, classify_request)
+          </div>
+          <div class="card-grid" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>Node Rules</h4>
+              <ul>
+                <li>Takes the <strong>full state</strong> as input</li>
+                <li>Returns a <strong>dict</strong> with state updates</li>
+                <li>Only returned keys are updated</li>
+                <li>Non-returned keys stay unchanged</li>
+              </ul>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Node Types</h4>
+              <ul>
+                <li><strong>Pure logic:</strong> classify, validate, transform</li>
+                <li><strong>LLM-powered:</strong> call an LLM inside the node</li>
+                <li><strong>Tool-calling:</strong> run tools or APIs</li>
+                <li><strong>Side effects:</strong> send emails, write to DB</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- EDGES EXPLAINED -->
+        <section>
+          <h2>Edges: Connections Between Nodes</h2>
+          <div class="card-grid-3" style="margin-top:14px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>Normal Edge</h4>
+              <p>Always go from A to B.</p>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
+                graph.add_edge(<br>
+                &nbsp;&nbsp;<span class="string">"classify"</span>,<br>
+                &nbsp;&nbsp;<span class="string">"respond"</span><br>
+                )
+              </div>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Entry Edge</h4>
+              <p>Where the graph starts.</p>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
+                graph.add_edge(<br>
+                &nbsp;&nbsp;START,<br>
+                &nbsp;&nbsp;<span class="string">"classify"</span><br>
+                )
+              </div>
+            </div>
+            <div class="card card-orange" style="padding:14px;">
+              <h4>Exit Edge</h4>
+              <p>Where the graph ends.</p>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
+                graph.add_edge(<br>
+                &nbsp;&nbsp;<span class="string">"respond"</span>,<br>
+                &nbsp;&nbsp;END<br>
+                )
+              </div>
+            </div>
+          </div>
+          <div class="pipe-flow" style="margin-top:16px;">
+            <div class="pipe-box" style="border-color:var(--accent);">
+              <strong>START</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-green">
+              <strong>classify</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-orange">
+              <strong>respond</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box" style="border-color:#888;">
+              <strong>END</strong>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONDITIONAL EDGES -->
+        <section>
+          <h2>Conditional Edges</h2>
+          <h3>Route to different nodes based on state</h3>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
+            <span class="comment"># Routing function — reads state and returns next node name</span><br>
+            <span class="keyword">def</span> <span class="func">route_request</span>(state) -> <span class="keyword">str</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_hr"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> state[<span class="string">"category"</span>] == <span class="string">"tech"</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_tech"</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_general"</span><br>
+            <br>
+            <span class="comment"># Add conditional edge from "classify" node</span><br>
+            graph.<span class="func">add_conditional_edges</span>(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"classify"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># source node</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;route_request,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># routing function</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># mapping: return value → node name</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_hr"</span>: <span class="string">"handle_hr"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_tech"</span>: <span class="string">"handle_tech"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_general"</span>: <span class="string">"handle_general"</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+            )
+          </div>
+          <div class="takeaway">
+            Conditional edges let you build <strong>branching workflows</strong>. The routing function
+            reads the current state and returns the name of the next node to execute.
+            This is how you create if/else logic in your graph.
+          </div>
+        </section>
+
+        <!-- COMPLETE BRANCHING EXAMPLE -->
+        <section>
+          <h2>Complete Branching Workflow</h2>
+          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;">
+            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict<br>
+            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END<br>
+            <br>
+            <span class="keyword">class</span> <span class="func">State</span>(TypedDict):<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;message: <span class="keyword">str</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;category: <span class="keyword">str</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;response: <span class="keyword">str</span><br>
+            <br>
+            <span class="keyword">def</span> <span class="func">classify</span>(state): <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span> <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> state[<span class="string">"message"</span>] <span class="keyword">else</span> <span class="string">"tech"</span>}<br>
+            <span class="keyword">def</span> <span class="func">handle_hr</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"HR: You get 24 annual leave days."</span>}<br>
+            <span class="keyword">def</span> <span class="func">handle_tech</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"Tech: Use FastAPI for new services."</span>}<br>
+            <span class="keyword">def</span> <span class="func">route</span>(state): <span class="keyword">return</span> <span class="string">"hr_node"</span> <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span> <span class="keyword">else</span> <span class="string">"tech_node"</span><br>
+            <br>
+            graph = StateGraph(State)<br>
+            graph.add_node(<span class="string">"classify"</span>, classify)<br>
+            graph.add_node(<span class="string">"hr_node"</span>, handle_hr)<br>
+            graph.add_node(<span class="string">"tech_node"</span>, handle_tech)<br>
+            <br>
+            graph.add_edge(START, <span class="string">"classify"</span>)<br>
+            graph.add_conditional_edges(<span class="string">"classify"</span>, route, {<span class="string">"hr_node"</span>: <span class="string">"hr_node"</span>, <span class="string">"tech_node"</span>: <span class="string">"tech_node"</span>})<br>
+            graph.add_edge(<span class="string">"hr_node"</span>, END)<br>
+            graph.add_edge(<span class="string">"tech_node"</span>, END)<br>
+            <br>
+            app = graph.compile()<br>
+            result = app.invoke({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>})<br>
+            <span class="func">print</span>(result[<span class="string">"response"</span>])&nbsp;&nbsp;<span class="output"># "HR: You get 24 annual leave days."</span>
+          </div>
+        </section>
+
+        <!-- CYCLES IN GRAPHS -->
+        <section>
+          <h2>Cycles: Looping Back</h2>
+          <h3>Edges can create loops for retry or refinement</h3>
+          <div class="pipe-flow" style="margin-top:16px;">
+            <div class="pipe-box" style="border-color:var(--accent);">
+              <strong>START</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-green">
+              <strong>Draft</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-orange">
+              <strong>Review</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-red">
+              <strong>Good?</strong>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box" style="border-color:#888;">
+              <strong>END</strong>
+            </div>
+          </div>
+          <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:4px;">
+            If review fails &rarr; loop back to Draft (cycle!)
+          </p>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
+            <span class="keyword">def</span> <span class="func">should_continue</span>(state) -> <span class="keyword">str</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"quality_score"</span>] >= 8:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"end"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Good enough, finish</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= 3:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"end"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Too many retries, stop</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"retry"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Loop back to draft</span><br>
+            <br>
+            graph.<span class="func">add_conditional_edges</span>(<span class="string">"review"</span>, should_continue, {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"end"</span>: END,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"retry"</span>: <span class="string">"draft"</span>,&nbsp;&nbsp;<span class="comment"># ← loop back!</span><br>
+            })
+          </div>
+          <div class="takeaway">
+            Unlike simple chains, LangGraph supports <strong>cycles</strong> &mdash; edges that go backward.
+            This is powerful for retry logic, iterative refinement, and self-correcting workflows.
+            Always include a max-retry guard to prevent infinite loops.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PART 3: CHECKPOINTING & HITL ==================== -->
+      <section>
+        <section>
+          <div class="section-number">03</div>
+          <h2>Checkpointing & Human-in-the-Loop</h2>
+          <p class="subtitle">State Persistence &middot; Interrupt &middot; Resume &middot; Approval Gates</p>
+        </section>
+
+        <!-- CHECKPOINTING -->
+        <section>
+          <h2>Checkpointing: Save & Resume State</h2>
+          <h3>Persist workflow state at every step</h3>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
+            <span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver<br>
+            <br>
+            <span class="comment"># Compile with a checkpointer</span><br>
+            memory = MemorySaver()<br>
+            app = graph.<span class="func">compile</span>(checkpointer=memory)<br>
+            <br>
+            <span class="comment"># Run with a thread_id — state is saved after each node</span><br>
+            config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"workflow-001"</span>}}<br>
+            result = app.<span class="func">invoke</span>({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>}, config)<br>
+            <br>
+            <span class="comment"># Later: inspect the saved state</span><br>
+            snapshot = app.<span class="func">get_state</span>(config)<br>
+            <span class="func">print</span>(snapshot.values)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># Full state at last checkpoint</span><br>
+            <span class="func">print</span>(snapshot.next)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># Which node runs next (or empty if done)</span>
+          </div>
+          <div class="card-grid" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>Development</h4>
+              <p><code>MemorySaver()</code> &mdash; in-memory, fast, lost on restart. Perfect for dev/testing.</p>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Production</h4>
+              <p><code>SqliteSaver(db_path)</code> or <code>PostgresSaver(conn)</code> &mdash; persistent, survives restarts, scales.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATE INSPECTION -->
+        <section>
+          <h2>Inspecting Workflow State</h2>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
+            <span class="comment"># Get the current state snapshot</span><br>
+            snapshot = app.<span class="func">get_state</span>(config)<br>
+            <br>
+            <span class="comment"># What data is in the state?</span><br>
+            <span class="func">print</span>(snapshot.values)<br>
+            <span class="output"># {"message": "How many leave days?", "category": "hr", "response": "24 days"}</span><br>
+            <br>
+            <span class="comment"># Which node runs next? (empty tuple = workflow is done)</span><br>
+            <span class="func">print</span>(snapshot.next)<br>
+            <span class="output"># () &larr; empty means workflow completed</span><br>
+            <br>
+            <span class="comment"># You can even UPDATE the state manually</span><br>
+            app.<span class="func">update_state</span>(config, {<span class="string">"approved"</span>: <span class="keyword">True</span>})<br>
+            <span class="comment"># Then resume: app.invoke(None, config)</span>
+          </div>
+          <div class="takeaway">
+            Checkpointing gives you <strong>full visibility</strong> into your workflow.
+            You can inspect the state at any point, see which node runs next,
+            and even manually update the state before resuming &mdash; this is the
+            foundation for human-in-the-loop.
+          </div>
+        </section>
+
+        <!-- HUMAN-IN-THE-LOOP -->
+        <section>
+          <h2>Human-in-the-Loop</h2>
+          <h3>Pause the workflow for human approval</h3>
+          <div class="pipe-flow" style="margin-top:16px;">
+            <div class="pipe-box" style="border-color:var(--accent);">
+              <strong>Draft</strong><br><span style="font-size:0.85em;">email</span>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-orange" style="border-width:3px;">
+              <strong>PAUSE</strong><br><span style="font-size:0.85em;">Human reviews</span>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box pipe-box-green">
+              <strong>Send</strong><br><span style="font-size:0.85em;">email</span>
+            </div>
+            <span class="pipe-sym">&rarr;</span>
+            <div class="pipe-box" style="border-color:#888;">
+              <strong>END</strong>
+            </div>
+          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
+            <span class="comment"># Compile with interrupt_before — pauses BEFORE "send_email" runs</span><br>
+            app = graph.<span class="func">compile</span>(<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;checkpointer=MemorySaver(),<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;interrupt_before=[<span class="string">"send_email"</span>]&nbsp;&nbsp;<span class="comment"># ← pause point</span><br>
+            )<br>
+            <br>
+            <span class="comment"># Run — stops before send_email</span><br>
+            result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft an email to the team"</span>}, config)<br>
+            <span class="comment"># Workflow paused! Human reviews the draft...</span><br>
+            <br>
+            <span class="comment"># Human approves → resume from where it paused</span><br>
+            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;<span class="comment"># ← None means "continue"</span><br>
+            <span class="comment"># send_email node now executes</span>
+          </div>
+        </section>
+
+        <!-- HITL WITH STATE UPDATE -->
+        <section>
+          <h2>Human Edits Before Resuming</h2>
+          <h3>The human can modify the state before approving</h3>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
+            <span class="comment"># Step 1: Run until pause point</span><br>
+            result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft email to team about Friday lunch"</span>}, config)<br>
+            <br>
+            <span class="comment"># Step 2: Inspect what the draft node produced</span><br>
+            snapshot = app.<span class="func">get_state</span>(config)<br>
+            <span class="func">print</span>(snapshot.values[<span class="string">"draft"</span>])<br>
+            <span class="output"># "Hi team, lunch on Friday at 1 PM."</span><br>
+            <br>
+            <span class="comment"># Step 3: Human edits the draft</span><br>
+            app.<span class="func">update_state</span>(config, {<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"draft"</span>: <span class="string">"Hi team, Friday lunch at 12:30 PM at the cafeteria. See you there!"</span><br>
+            })<br>
+            <br>
+            <span class="comment"># Step 4: Resume — sends the edited version</span><br>
+            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)
+          </div>
+          <div class="takeaway">
+            Human-in-the-loop isn't just approve/reject. The human can <strong>inspect the state</strong>,
+            <strong>modify values</strong>, and <strong>resume</strong>. This is critical for production AI:
+            draft emails, review generated content, approve financial transactions, validate data.
+          </div>
+        </section>
+
+        <!-- INTERRUPT OPTIONS -->
+        <section>
+          <h2>Interrupt Strategies</h2>
+          <div class="card-grid" style="margin-top:14px;">
+            <div class="card card-accent" style="padding:16px;">
+              <h4><code>interrupt_before</code></h4>
+              <p>Pause <strong>before</strong> a node runs. Use when the human should review
+              the state <em>before</em> an action happens.</p>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
+                <span class="comment"># Pause before sending</span><br>
+                interrupt_before=[<span class="string">"send_email"</span>]
+              </div>
+              <p style="margin-top:6px; font-size:0.85em;">Common: send emails, make payments, delete data</p>
+            </div>
+            <div class="card card-green" style="padding:16px;">
+              <h4><code>interrupt_after</code></h4>
+              <p>Pause <strong>after</strong> a node runs. Use when the human should review
+              the <em>output</em> of a step.</p>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
+                <span class="comment"># Pause after drafting</span><br>
+                interrupt_after=[<span class="string">"draft_email"</span>]
+              </div>
+              <p style="margin-top:6px; font-size:0.85em;">Common: review drafts, verify classifications, check data</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CHECKPOINTER BACKENDS -->
+        <section>
+          <h2>Checkpoint Backends</h2>
+          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+            <tr>
+              <th>Backend</th>
+              <th>Import</th>
+              <th>Persistence</th>
+              <th>Use Case</th>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent);">MemorySaver</strong></td>
+              <td><code>langgraph.checkpoint.memory</code></td>
+              <td>In-memory (lost on restart)</td>
+              <td>Development, testing, demos</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent2);">SqliteSaver</strong></td>
+              <td><code>langgraph.checkpoint.sqlite</code></td>
+              <td>Local file (survives restart)</td>
+              <td>Single-server production</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent3);">PostgresSaver</strong></td>
+              <td><code>langgraph.checkpoint.postgres</code></td>
+              <td>Remote database (scalable)</td>
+              <td>Multi-server production</td>
+            </tr>
+          </table>
+          <div class="code-block" style="font-size:0.52em; margin-top:12px;">
+            <span class="comment"># Switch from dev to production — just change the checkpointer!</span><br>
+            <span class="comment"># memory = MemorySaver()  ← development</span><br>
+            memory = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)&nbsp;&nbsp;<span class="comment"># ← production</span><br>
+            app = graph.<span class="func">compile</span>(checkpointer=memory)
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PUTTING IT ALL TOGETHER ==================== -->
+      <section>
+        <section>
+          <h2>The Complete Picture</h2>
+          <h3>LangGraph Workflow Architecture</h3>
+          <div class="layer-stack" style="margin-top:16px;">
+            <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:1px solid var(--accent);">
+              <span class="layer-title" style="color:var(--accent);">State (TypedDict)</span>
+              <span class="layer-items">Shared data flowing through the graph</span>
+            </div>
+            <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:1px solid var(--accent2);">
+              <span class="layer-title" style="color:var(--accent2);">Nodes (Functions)</span>
+              <span class="layer-items">classify &rarr; route &rarr; handle &rarr; respond</span>
+            </div>
+            <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:1px solid var(--accent3);">
+              <span class="layer-title" style="color:var(--accent3);">Edges (Routing)</span>
+              <span class="layer-items">Fixed edges + conditional branches + cycles</span>
+            </div>
+            <div class="layer-bar" style="background:rgba(229,115,115,0.15); border:1px solid var(--accent4);">
+              <span class="layer-title" style="color:var(--accent4);">Checkpointer (Persistence)</span>
+              <span class="layer-items">MemorySaver / SqliteSaver + interrupt/resume</span>
+            </div>
+          </div>
+          <div class="card-grid" style="margin-top:12px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>What you learned today</h4>
+              <ul>
+                <li>Why LangGraph vs plain agents</li>
+                <li>StateGraph + TypedDict state definitions</li>
+                <li>Nodes, edges, and conditional routing</li>
+                <li>Cycles for retry and refinement</li>
+                <li>Checkpointing for state persistence</li>
+                <li>Human-in-the-loop with interrupt/resume</li>
+              </ul>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Key APIs</h4>
+              <ul>
+                <li><code>StateGraph(State)</code> &rarr; create graph</li>
+                <li><code>add_node(name, fn)</code> &rarr; add step</li>
+                <li><code>add_edge(a, b)</code> &rarr; connect steps</li>
+                <li><code>add_conditional_edges()</code> &rarr; branch</li>
+                <li><code>compile(checkpointer=)</code> &rarr; build</li>
+                <li><code>interrupt_before/after</code> &rarr; HITL</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUICK REFERENCE -->
+        <section>
+          <h2>LangGraph Quick Reference</h2>
+          <table class="compare-table" style="font-size:0.52em;">
+            <tr>
+              <th>What You Want</th>
+              <th>LangGraph API</th>
+              <th>Import From</th>
+            </tr>
+            <tr>
+              <td>Create a graph</td>
+              <td><code>StateGraph(MyState)</code></td>
+              <td><code>langgraph.graph</code></td>
+            </tr>
+            <tr>
+              <td>Mark start/end</td>
+              <td><code>START</code>, <code>END</code></td>
+              <td><code>langgraph.graph</code></td>
+            </tr>
+            <tr>
+              <td>Add a processing step</td>
+              <td><code>graph.add_node("name", fn)</code></td>
+              <td>Built-in method</td>
+            </tr>
+            <tr>
+              <td>Fixed connection</td>
+              <td><code>graph.add_edge("a", "b")</code></td>
+              <td>Built-in method</td>
+            </tr>
+            <tr>
+              <td>Branching</td>
+              <td><code>graph.add_conditional_edges()</code></td>
+              <td>Built-in method</td>
+            </tr>
+            <tr>
+              <td>Compile and run</td>
+              <td><code>graph.compile().invoke()</code></td>
+              <td>Built-in method</td>
+            </tr>
+            <tr>
+              <td>Human approval gate</td>
+              <td><code>interrupt_before=["node"]</code></td>
+              <td>Parameter of <code>compile()</code></td>
+            </tr>
+            <tr>
+              <td>Append reducer</td>
+              <td><code>Annotated[list, add]</code></td>
+              <td><code>typing</code>, <code>operator</code></td>
+            </tr>
+          </table>
+        </section>
+      </section>
+
+      <!-- ==================== RECAP ==================== -->
+      <section>
+        <section>
+          <h2>Session 6 Recap</h2>
+          <div class="card-grid" style="margin-top:14px;">
+            <div class="card card-accent" style="padding:14px;">
+              <h4>StateGraph</h4>
+              <p>Define workflows as graphs with typed state. Nodes are functions,
+              edges are connections. More structured and predictable than agents.</p>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Nodes & Edges</h4>
+              <p>Nodes process state and return updates. Conditional edges enable branching.
+              Cycles allow retry loops with max-attempt guards.</p>
+            </div>
+            <div class="card card-orange" style="padding:14px;">
+              <h4>Checkpointing</h4>
+              <p>MemorySaver for dev, SqliteSaver for production.
+              Full state inspection with get_state() and update_state().</p>
+            </div>
+            <div class="card card-red" style="padding:14px;">
+              <h4>Human-in-the-Loop</h4>
+              <p>interrupt_before/after pauses the workflow. Humans can inspect, modify state,
+              and resume. Critical for production AI systems.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHAT'S NEXT -->
+        <section>
+          <h2>What's Next?</h2>
+          <br>
+          <div class="card card-accent" style="text-align:center; padding:24px;">
+            <h4>Day 3: Advanced Agents & Production Development</h4>
+            <br>
+            <div class="card-grid-3" style="margin-top:0;">
+              <div class="card" style="padding:14px;">
+                <h4>Advanced LangGraph</h4>
+                <p>Multi-branch graphs, parallel execution, error handling</p>
+              </div>
+              <div class="card" style="padding:14px;">
+                <h4>Multi-Agent Systems</h4>
+                <p>Supervisor/Worker, agent handoffs, collaboration</p>
+              </div>
+              <div class="card" style="padding:14px;">
+                <h4>Production APIs</h4>
+                <p>FastAPI integration, testing, performance</p>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+            From simple graphs to production-grade multi-agent systems.
+          </p>
+        </section>
+
+        <!-- QUESTIONS -->
+        <section>
+          <h1 style="font-size:3em;">Questions?</h1>
+          <br>
+          <p style="color:#aaa; font-size:0.7em;">
+            Ask about StateGraph, nodes, edges, checkpointing, or human-in-the-loop.
+          </p>
+        </section>
+      </section>
+
+      <!-- ==================== QUIZ: SESSION 6 SELF-CHECK ==================== -->
+      <section>
+        <section>
+          <h1 style="font-size:2.5em;">Session 6 Quiz</h1>
+          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
+          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+            Think about your answer. We'll discuss, then I'll reveal it.
+          </p>
+        </section>
+
+        <!-- Q1 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <div class="quiz-question">
+            What are the <strong>three core components</strong> of a LangGraph StateGraph?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Prompt, LLM, Parser</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>State, Nodes, Edges</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Tools, Memory, Agent</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Embeddings, Vectors, Retriever</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q1 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="quiz-question">
+            What are the <strong>three core components</strong> of a LangGraph StateGraph?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Prompt, LLM, Parser</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>State, Nodes, Edges</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Tools, Memory, Agent</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Embeddings, Vectors, Retriever</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> A StateGraph is built from: <strong>State</strong> (TypedDict defining the data schema),
+            <strong>Nodes</strong> (Python functions that process state), and <strong>Edges</strong>
+            (connections between nodes, including conditional routing).
+            Option A describes a chain, C describes an agent, D describes RAG.
+          </div>
+        </section>
+
+        <!-- Q2 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <div class="quiz-question">
+            What does <code>Annotated[list, add]</code> do in a LangGraph state definition?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>It makes the list read-only</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>It appends new values to the list instead of replacing it</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>It limits the list to a maximum size</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>It sorts the list automatically</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q2 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="quiz-question">
+            What does <code>Annotated[list, add]</code> do in a LangGraph state definition?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>It makes the list read-only</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>It appends new values to the list instead of replacing it</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>It limits the list to a maximum size</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>It sorts the list automatically</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> <code>Annotated[list, add]</code> defines a <strong>reducer</strong>.
+            When a node returns a list for this field, the values are <em>appended</em> (using
+            <code>operator.add</code>) rather than overwriting. This is how message histories accumulate
+            across nodes. Without the annotation, returning a new list would replace the old one.
+          </div>
+        </section>
+
+        <!-- Q3 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <div class="quiz-question">
+            How do you create a <strong>branching workflow</strong> where different inputs go to different nodes?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Use <code>add_conditional_edges()</code> with a routing function</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Use <code>add_edge()</code> with multiple destinations</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Put if/else inside the <code>compile()</code> call</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Create separate graphs for each branch</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q3 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="quiz-question">
+            How do you create a <strong>branching workflow</strong> where different inputs go to different nodes?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option correct">
+              <span class="opt-letter">A</span>
+              <span>Use <code>add_conditional_edges()</code> with a routing function</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">B</span>
+              <span>Use <code>add_edge()</code> with multiple destinations</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Put if/else inside the <code>compile()</code> call</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Create separate graphs for each branch</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why A?</strong> <code>add_conditional_edges(source, routing_fn, mapping)</code>
+            takes a routing function that reads the current state and returns the name of the
+            next node. The mapping dict maps return values to node names. <code>add_edge()</code>
+            only supports a single fixed destination.
+          </div>
+        </section>
+
+        <!-- Q4 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <div class="quiz-question">
+            What does <code>interrupt_before=["send_email"]</code> do in a compiled graph?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>It deletes the "send_email" node from the graph</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>It pauses the workflow before the node runs, waiting for human approval to continue</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>It runs the "send_email" node in a separate thread</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>It skips the "send_email" node entirely</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q4 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="quiz-question">
+            What does <code>interrupt_before=["send_email"]</code> do in a compiled graph?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>It deletes the "send_email" node from the graph</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>It pauses the workflow before the node runs, waiting for human approval to continue</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>It runs the "send_email" node in a separate thread</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>It skips the "send_email" node entirely</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> <code>interrupt_before</code> creates a <strong>pause point</strong>.
+            The workflow runs normally until it reaches "send_email", then stops.
+            A human can inspect the state, optionally modify it, and call
+            <code>invoke(None, config)</code> to resume. The node is not skipped or deleted.
+          </div>
+        </section>
+
+        <!-- Q5 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <div class="quiz-question">
+            How do you <strong>resume</strong> a workflow that was paused by an interrupt?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Call <code>app.restart(config)</code></span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Call <code>app.invoke(None, config)</code> with the same config/thread_id</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Create a new graph and call <code>invoke()</code> with the original state</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Call <code>app.compile(resume=True)</code></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="quiz-question">
+            How do you <strong>resume</strong> a workflow that was paused by an interrupt?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Call <code>app.restart(config)</code></span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>Call <code>app.invoke(None, config)</code> with the same config/thread_id</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Create a new graph and call <code>invoke()</code> with the original state</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Call <code>app.compile(resume=True)</code></span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> Passing <code>None</code> as the input tells LangGraph
+            "continue from where you left off." The checkpointer saved the state at the
+            interrupt point. Using the same <code>thread_id</code> in config lets it find
+            the paused workflow. You can also call <code>update_state()</code> before resuming
+            to modify the state.
+          </div>
+        </section>
+
+        <!-- QUIZ SCORE -->
+        <section>
+          <h2>How Did You Do?</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
+              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <p>Review the graph diagrams and code examples &mdash; the labs will reinforce these concepts.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
+              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <p>Solid understanding of LangGraph! The hands-on labs will take you further.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
+              <h4 style="color:var(--accent2);">5 correct</h4>
+              <p>Graph master! You're ready to build complex workflows.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      center: true,
+      width: 1100,
+      height: 700,
+      margin: 0.06,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
