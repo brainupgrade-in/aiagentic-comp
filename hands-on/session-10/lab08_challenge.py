@@ -1,498 +1,396 @@
 """
-Lab 08 Challenge: Complete Production Docker Setup for UniGPS
-================================================================
-Combine everything from Labs 01-07 into a production-ready Docker setup.
+Lab 08 Challenge: End-to-End Coding Agent Simulation
+======================================================
+Build a mini coding agent that combines everything from Session 10:
+- Tool registry and dispatcher (Lab 01-02)
+- Context management and token budgeting (Lab 03)
+- Code generation from intent (Lab 05)
+- AST-based code review (Lab 07)
 
-Your goal: Create a complete, production-quality Docker configuration
-for the UniGPS AI Agent that includes ALL best practices.
+The agent processes a natural-language task through:
+  1. Register tools
+  2. Parse the task into a plan
+  3. Generate code files
+  4. Review the generated code
+  5. Produce a final report
 
-If Docker is available, you can build and run the entire stack!
+No API key needed — pure Python standard library.
 """
 
 import os
 import shutil
-import textwrap
+import json
+import ast
+import fnmatch
+import math
 
-WORKDIR = "/tmp/docker-lab-08"
+WORKDIR = "/tmp/aidev-lab-10-08"
 
 print("=" * 60)
-print("  Challenge: Complete Production Docker Setup")
+print("  Challenge: End-to-End Coding Agent Simulation")
 print("=" * 60)
 
 if os.path.exists(WORKDIR):
     shutil.rmtree(WORKDIR)
 os.makedirs(WORKDIR, exist_ok=True)
 
+
 # ============================================================
-# The Application (provided — don't modify)
+# PROVIDED: Helper functions (from earlier labs)
 # ============================================================
 
-app_code = textwrap.dedent('''\
-    """UniGPS AI Agent — Production Application"""
-    import os
-    import time
-    from datetime import datetime
-    from functools import lru_cache
-    from fastapi import FastAPI, HTTPException
-    from pydantic import BaseModel, Field
+def read_file(path):
+    """Read file contents."""
+    try:
+        with open(path, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return f"ERROR: File not found: {path}"
+    except Exception as e:
+        return f"ERROR: {e}"
 
-    app = FastAPI(
-        title="UniGPS Production Agent API",
-        version="2.0.0",
-        description="Production-ready AI support agent",
-    )
+def write_file(path, content):
+    """Write content to file."""
+    try:
+        os.makedirs(os.path.dirname(path) if os.path.dirname(path) else ".", exist_ok=True)
+        with open(path, "w") as f:
+            f.write(content)
+        return f"OK: Wrote {len(content)} chars to {path}"
+    except Exception as e:
+        return f"ERROR: {e}"
 
-    _start_time = datetime.now()
-    _request_count = 0
+def search_files(pattern, directory=WORKDIR):
+    """Search for files matching a glob pattern."""
+    matches = []
+    for root, dirs, files in os.walk(directory):
+        for filename in files:
+            if fnmatch.fnmatch(filename, pattern):
+                matches.append(os.path.join(root, filename))
+    return matches
 
-    TEMPLATES = {
-        "hr": "Please visit the HR portal or email hr@unigps.in.",
-        "tech": "Please create a Jira ticket or contact IT at ext. 5555.",
-        "finance": "Please email finance@unigps.in with details.",
-        "general": "Your request has been noted. A team member will respond shortly.",
-    }
-
-    class SupportRequest(BaseModel):
-        employee_name: str = Field(..., min_length=2, max_length=100)
-        request: str = Field(..., min_length=5, max_length=1000)
-
-    class SupportResponse(BaseModel):
-        ticket_id: str
-        category: str
-        response: str
-        timing_ms: float
-
-    @lru_cache(maxsize=200)
-    def classify(text: str) -> str:
-        """Classify request by keywords (cached)."""
-        text = text.lower()
-        if any(w in text for w in ["leave", "salary", "hr", "vacation", "payroll"]):
-            return "hr"
-        elif any(w in text for w in ["server", "bug", "deploy", "error", "crash"]):
-            return "tech"
-        elif any(w in text for w in ["expense", "invoice", "budget", "reimburse"]):
-            return "finance"
-        return "general"
-
-    @app.get("/health")
-    async def health():
-        uptime = (datetime.now() - _start_time).total_seconds()
-        cache = classify.cache_info()
-        return {
-            "status": "healthy",
-            "agent": "ready",
-            "version": os.getenv("APP_VERSION", "2.0.0"),
-            "uptime_seconds": round(uptime, 1),
-            "total_requests": _request_count,
-            "cache_hits": cache.hits,
-            "cache_size": cache.currsize,
-        }
-
-    @app.post("/api/support", response_model=SupportResponse)
-    async def handle_support(req: SupportRequest):
-        global _request_count
-        _request_count += 1
-        start = time.time()
-
-        category = classify(req.request)
-        response_text = f"[{category.upper()}] {TEMPLATES[category]}"
-        elapsed_ms = (time.time() - start) * 1000
-
-        return SupportResponse(
-            ticket_id=f"TKT-{_request_count:04d}",
-            category=category,
-            response=response_text,
-            timing_ms=round(elapsed_ms, 2),
-        )
-
-    @app.get("/api/stats")
-    async def stats():
-        cache = classify.cache_info()
-        return {
-            "total_requests": _request_count,
-            "cache": {
-                "hits": cache.hits,
-                "misses": cache.misses,
-                "size": cache.currsize,
-            },
-        }
-''')
-
-requirements = textwrap.dedent('''\
-    fastapi==0.104.1
-    uvicorn[standard]==0.24.0
-    pydantic==2.5.0
-    langchain-core==0.1.23
-    langchain-groq==0.0.3
-    langgraph==0.0.26
-    python-dotenv==1.0.0
-    redis==5.0.1
-    httpx==0.25.2
-''')
-
-test_code = textwrap.dedent('''\
-    """Tests for the UniGPS Agent API"""
-    from fastapi.testclient import TestClient
-    from main import app
-
-    client = TestClient(app)
-
-    def test_health():
-        resp = client.get("/health")
-        assert resp.status_code == 200
-        assert resp.json()["status"] == "healthy"
-
-    def test_support_hr():
-        resp = client.post("/api/support", json={
-            "employee_name": "Priya",
-            "request": "I need sick leave for 3 days",
-        })
-        assert resp.status_code == 200
-        data = resp.json()
-        assert data["category"] == "hr"
-        assert data["ticket_id"].startswith("TKT-")
-
-    def test_support_tech():
-        resp = client.post("/api/support", json={
-            "employee_name": "Vikram",
-            "request": "Production server is down",
-        })
-        assert resp.status_code == 200
-        assert resp.json()["category"] == "tech"
-
-    def test_validation():
-        resp = client.post("/api/support", json={
-            "employee_name": "P",
-            "request": "Hi",
-        })
-        assert resp.status_code == 422
-
-    def test_stats():
-        resp = client.get("/api/stats")
-        assert resp.status_code == 200
-        assert "cache" in resp.json()
-''')
-
-# Write application files
-with open(os.path.join(WORKDIR, "main.py"), "w") as f:
-    f.write(app_code)
-with open(os.path.join(WORKDIR, "requirements.txt"), "w") as f:
-    f.write(requirements)
-os.makedirs(os.path.join(WORKDIR, "tests"), exist_ok=True)
-with open(os.path.join(WORKDIR, "tests", "test_main.py"), "w") as f:
-    f.write(test_code)
-with open(os.path.join(WORKDIR, "tests", "__init__.py"), "w") as f:
-    f.write("")
-
-print(f"\n  Application files created in {WORKDIR}/:")
-print(f"    main.py            — FastAPI app with /health, /api/support, /api/stats")
-print(f"    requirements.txt   — 9 dependencies")
-print(f"    tests/test_main.py — 5 tests")
+def token_counter(text):
+    """Estimate token count."""
+    words = text.split()
+    if len(words) == 0:
+        return 0
+    return math.ceil(len(words) * 1.3)
 
 
 # ============================================================
-# YOUR CHALLENGE: Create ALL Docker files
+# TODO 1: Build the tool registry and dispatcher
 # ============================================================
 
-print("\n\n" + "=" * 60)
-print("  YOUR CHALLENGE")
-print("=" * 60)
-print()
-print("  Create the following 4 files:")
-print("    1. Dockerfile          — Multi-stage, non-root, health check")
-print("    2. .dockerignore       — Exclude unnecessary files")
-print("    3. docker-compose.yml  — Agent + Redis + test runner")
-print("    4. .env.example        — Template for required env vars")
-print()
-print("  Requirements:")
-print("    - Multi-stage build (builder → runtime)")
-print("    - Non-root user (appuser)")
-print("    - HEALTHCHECK instruction")
-print("    - Layer caching (requirements before code)")
-print("    - .dockerignore excludes .git, .env, __pycache__, etc.")
-print("    - docker-compose with agent + redis + health checks")
-print("    - .env.example documents required environment variables")
+print("\n--- TODO 1: Tool Registry & Dispatcher ---\n")
 
-# ============================================================
-# TODO 1: Production Dockerfile
-# ============================================================
+print("  Create a tool_registry dict and a dispatch function.")
+print("  The registry must include: read_file, write_file, search_files,")
+print("  count_tokens (maps to token_counter), and review_code.\n")
 
-print("\n\n--- TODO 1: Production Dockerfile ---\n")
-
-# TODO: Write a production Dockerfile with ALL best practices:
-# - Multi-stage build (builder → runtime)
-# - Non-root user
-# - HEALTHCHECK
-# - Layer caching
-# - --no-cache-dir
-# - curl for health checks
-# - Proper ENV settings
-
-challenge_dockerfile = ""  # Write your Dockerfile here
-
-# Uncomment:
-# challenge_dockerfile = textwrap.dedent('''\
-#     # Stage 1: Builder
-#     FROM python:3.11-slim AS builder
-#     WORKDIR /app
-#     COPY requirements.txt .
-#     RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
-#
-#     # Stage 2: Runtime
-#     FROM python:3.11-slim
-#     WORKDIR /app
-#
-#     # Install curl for health checks
-#     RUN apt-get update && apt-get install -y --no-install-recommends curl \\
-#         && rm -rf /var/lib/apt/lists/*
-#
-#     # Copy installed packages from builder
-#     COPY --from=builder /install /usr/local
-#
-#     # Create non-root user
-#     RUN useradd --create-home appuser
-#
-#     # Copy application code
-#     COPY --chown=appuser:appuser . .
-#
-#     # Switch to non-root user
-#     USER appuser
-#
-#     # Environment
-#     ENV PYTHONUNBUFFERED=1
-#     ENV APP_VERSION=2.0.0
-#
-#     # Port
-#     EXPOSE 8000
-#
-#     # Health check
-#     HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \\
-#         CMD curl -f http://localhost:8000/health || exit 1
-#
-#     # Start
-#     CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-# ''')
+# YOUR CODE HERE
+# Step A: Define a review_code tool function
+def review_code(code):
+    """
+    Analyse Python code and return a review dict with:
+    - functions_count: number of function definitions
+    - issues: list of issue strings (long functions > 15 lines, > 4 params)
+    """
+    # TODO: Parse with ast, walk tree, count functions,
+    #       detect long functions (>15 lines) and too many params (>4)
+    return "___"
 
 
-# ============================================================
-# TODO 2: .dockerignore + docker-compose.yml + .env.example
-# ============================================================
-
-print("--- TODO 2: .dockerignore + docker-compose.yml + .env.example ---\n")
-
-challenge_dockerignore = ""    # Write your .dockerignore
-challenge_compose = ""         # Write your docker-compose.yml
-challenge_env_example = ""     # Write your .env.example
-
-# Uncomment:
-# challenge_dockerignore = textwrap.dedent('''\
-#     # Version control
-#     .git
-#     .gitignore
-#
-#     # Python
-#     __pycache__
-#     *.pyc
-#     *.pyo
-#     .venv/
-#     venv/
-#     *.egg-info
-#
-#     # Environment (secrets!)
-#     .env
-#     .env.*
-#     !.env.example
-#
-#     # IDE
-#     .vscode/
-#     .idea/
-#     .mypy_cache
-#     .pytest_cache
-#
-#     # Docker
-#     Dockerfile
-#     Dockerfile.*
-#     docker-compose*.yml
-#     .dockerignore
-#
-#     # Docs
-#     docs/
-#     *.md
-# ''')
-
-# challenge_compose = textwrap.dedent('''\
-#     services:
-#       agent:
-#         build:
-#           context: .
-#           dockerfile: Dockerfile
-#         ports:
-#           - "8000:8000"
-#         environment:
-#           - PYTHONUNBUFFERED=1
-#           - REDIS_URL=redis://redis:6379
-#         env_file:
-#           - .env
-#         depends_on:
-#           redis:
-#             condition: service_healthy
-#         healthcheck:
-#           test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-#           interval: 30s
-#           timeout: 5s
-#           retries: 3
-#           start_period: 10s
-#         restart: unless-stopped
-#
-#       redis:
-#         image: redis:7-alpine
-#         ports:
-#           - "6379:6379"
-#         volumes:
-#           - redis-data:/data
-#         healthcheck:
-#           test: ["CMD", "redis-cli", "ping"]
-#           interval: 10s
-#           timeout: 3s
-#           retries: 3
-#         restart: unless-stopped
-#
-#     volumes:
-#       redis-data:
-# ''')
-
-# challenge_env_example = textwrap.dedent('''\
-#     # UniGPS AI Agent — Environment Variables
-#     # Copy this file to .env and fill in your values
-#
-#     # Required: LLM API Key
-#     GROQ_API_KEY=your-groq-api-key-here
-#
-#     # Optional: Application settings
-#     APP_VERSION=2.0.0
-#     LOG_LEVEL=info
-#
-#     # Optional: Redis (defaults are fine for docker-compose)
-#     REDIS_URL=redis://redis:6379
-# ''')
+# Step B: Create the tool registry
+# tool_registry = { "read_file": read_file, "write_file": write_file, ... }
+tool_registry = "___"
 
 
-# ============================================================
-# Validation
-# ============================================================
-
-print("\n--- Challenge Validation ---\n")
-
-def validate_challenge():
-    """Validate all challenge deliverables."""
-    results = []
-
-    # Dockerfile checks
-    if challenge_dockerfile:
-        results.append(("Dockerfile created", True))
-        results.append(("Multi-stage (2+ FROM)", challenge_dockerfile.count("FROM ") >= 2))
-        results.append(("Builder stage (AS builder)", " AS " in challenge_dockerfile))
-        results.append(("COPY --from=builder", "--from=builder" in challenge_dockerfile))
-        results.append(("Non-root user (useradd)", "useradd" in challenge_dockerfile))
-        results.append(("USER instruction", "\nUSER " in challenge_dockerfile))
-        results.append(("HEALTHCHECK added", "HEALTHCHECK" in challenge_dockerfile))
-        results.append(("--no-cache-dir", "--no-cache-dir" in challenge_dockerfile))
-        results.append(("Layer caching (req before code)",
-            challenge_dockerfile.find("requirements.txt") < challenge_dockerfile.rfind("COPY . .")
-            if "COPY . ." in challenge_dockerfile else False))
-        results.append(("curl installed", "curl" in challenge_dockerfile))
-        results.append(("PYTHONUNBUFFERED=1", "PYTHONUNBUFFERED" in challenge_dockerfile))
-        results.append(("CMD exec form", 'CMD ["' in challenge_dockerfile))
-
-        with open(os.path.join(WORKDIR, "Dockerfile"), "w") as f:
-            f.write(challenge_dockerfile)
-    else:
-        results.append(("Dockerfile created", False))
-
-    # .dockerignore checks
-    if challenge_dockerignore:
-        results.append((".dockerignore created", True))
-        results.append(("Excludes .git", ".git" in challenge_dockerignore))
-        results.append(("Excludes .env", ".env" in challenge_dockerignore))
-        results.append(("Excludes __pycache__", "__pycache__" in challenge_dockerignore))
-        results.append(("Excludes .venv", ".venv" in challenge_dockerignore or "venv" in challenge_dockerignore))
-
-        with open(os.path.join(WORKDIR, ".dockerignore"), "w") as f:
-            f.write(challenge_dockerignore)
-    else:
-        results.append((".dockerignore created", False))
-
-    # docker-compose.yml checks
-    if challenge_compose:
-        results.append(("docker-compose.yml created", True))
-        results.append(("Agent service defined", "agent" in challenge_compose))
-        results.append(("Redis service defined", "redis" in challenge_compose))
-        results.append(("depends_on used", "depends_on" in challenge_compose))
-        results.append(("Volumes defined", "volumes:" in challenge_compose))
-        results.append(("Health checks in compose", "healthcheck" in challenge_compose))
-
-        with open(os.path.join(WORKDIR, "docker-compose.yml"), "w") as f:
-            f.write(challenge_compose)
-    else:
-        results.append(("docker-compose.yml created", False))
-
-    # .env.example checks
-    if challenge_env_example:
-        results.append((".env.example created", True))
-        results.append(("Documents GROQ_API_KEY", "GROQ_API_KEY" in challenge_env_example))
-
-        with open(os.path.join(WORKDIR, ".env.example"), "w") as f:
-            f.write(challenge_env_example)
-    else:
-        results.append((".env.example created", False))
-
-    return results
-
-results = validate_challenge()
-passed = sum(1 for _, ok in results if ok)
-total = len(results)
-
-print(f"  Results: {passed}/{total} checks passed\n")
-for name, ok in results:
-    icon = "+" if ok else "-"
-    print(f"    [{icon}] {'PASS' if ok else 'TODO'}: {name}")
+# Step C: Create the dispatcher
+def dispatch(tool_name, **kwargs):
+    """Dispatch a tool call. Return error for unknown tools."""
+    # TODO: Look up tool_name in tool_registry, call with kwargs
+    return "___"
 
 
-# ============================================================
-# Summary
-# ============================================================
+score1 = 0
+checks_1 = []
 
-print(f"\n\n--- Challenge Summary ---\n")
-
-grade = passed / total * 100 if total > 0 else 0
-
-if grade >= 90:
-    status = "Excellent! Production-ready Docker setup!"
-elif grade >= 70:
-    status = "Good progress! A few patterns to add."
-elif grade >= 40:
-    status = "Getting there — review the solution for missing pieces."
+# Check review_code
+test_review = review_code("def f(a, b, c, d, e):\n    pass\n")
+if test_review == "___":
+    checks_1.append(("review_code works", "TODO"))
 else:
-    status = "Start with the Dockerfile, then add the other files."
+    if isinstance(test_review, dict) and "functions_count" in test_review:
+        checks_1.append(("review_code works", "PASS"))
+        score1 += 1
+    else:
+        checks_1.append((f"review_code works (got {test_review})", "FAIL"))
 
-print(f"  Score: {passed}/{total} ({grade:.0f}%)")
-print(f"  Status: {status}")
+# Check registry
+if tool_registry == "___":
+    checks_1.append(("Registry has 5 tools", "TODO"))
+else:
+    if isinstance(tool_registry, dict) and len(tool_registry) >= 5:
+        checks_1.append(("Registry has 5+ tools", "PASS"))
+        score1 += 1
+    else:
+        checks_1.append((f"Registry has 5+ tools (got {len(tool_registry) if isinstance(tool_registry, dict) else '?'})", "FAIL"))
 
-print(f"\n  Files in {WORKDIR}/:")
-for root, dirs, files in os.walk(WORKDIR):
-    for f in sorted(files):
-        rel = os.path.relpath(os.path.join(root, f), WORKDIR)
-        size = os.path.getsize(os.path.join(root, f))
-        print(f"    {rel:<30} ({size} bytes)")
+# Check dispatcher
+test_dispatch = dispatch("write_file", path=os.path.join(WORKDIR, "test_dispatch.txt"), content="hello")
+if test_dispatch == "___":
+    checks_1.append(("Dispatcher routes calls", "TODO"))
+else:
+    if isinstance(test_dispatch, str) and "OK" in test_dispatch:
+        checks_1.append(("Dispatcher routes calls", "PASS"))
+        score1 += 1
+    else:
+        checks_1.append((f"Dispatcher routes calls (got {test_dispatch})", "FAIL"))
 
-docker_available = shutil.which("docker") is not None
-if docker_available and grade >= 70:
-    print(f"\n  Docker detected! Try building:")
-    print(f"    cd {WORKDIR}")
-    print(f"    docker build -t unigps-agent:2.0 .")
-    print(f"    docker run -p 8000:8000 unigps-agent:2.0")
-    print(f"    # Open http://localhost:8000/health")
-    print(f"    # Or: docker compose up -d (needs all files)")
-elif not docker_available:
-    print(f"\n  Docker not installed — files are still valid.")
-    print(f"  You can build them on any machine with Docker.")
+for check, status in checks_1:
+    print(f"    [{status}] {check}")
+
+print(f"\n  Score: {score1}/3")
+
+
+# ============================================================
+# TODO 2: Parse task and create a plan
+# ============================================================
+
+print("\n\n--- TODO 2: Parse Task & Create Plan ---\n")
+
+task_description = "Build a Python TODO list API with add, remove, and list operations"
+
+print(f"  Task: \"{task_description}\"\n")
+
+# YOUR CODE HERE
+def create_plan(task):
+    """
+    Parse a task description and create an execution plan.
+
+    Returns a dict with:
+        "app_type": str (e.g., "api", "script", "cli")
+        "language": str (e.g., "python")
+        "files_to_create": list of file path strings
+        "features": list of feature strings extracted from the task
+    """
+    # TODO: Detect app_type from keywords
+    # TODO: Detect language
+    # TODO: Generate file list based on app_type
+    # TODO: Extract features (look for verbs/nouns: "add", "remove", "list", etc.)
+    return "___"
+
+
+score2 = 0
+checks_2 = []
+
+plan = create_plan(task_description)
+
+if plan == "___":
+    checks_2.append(("Returns a dict", "TODO"))
+    checks_2.append(("Has app_type", "TODO"))
+    checks_2.append(("Has files_to_create", "TODO"))
+    checks_2.append(("Has features", "TODO"))
+else:
+    if isinstance(plan, dict):
+        checks_2.append(("Returns a dict", "PASS"))
+        score2 += 1
+    else:
+        checks_2.append(("Returns a dict", "FAIL"))
+
+    if isinstance(plan, dict) and plan.get("app_type") == "api":
+        checks_2.append(("app_type = 'api'", "PASS"))
+        score2 += 1
+    else:
+        checks_2.append((f"app_type = 'api' (got {plan.get('app_type') if isinstance(plan, dict) else plan})", "FAIL"))
+
+    files = plan.get("files_to_create", []) if isinstance(plan, dict) else []
+    if isinstance(files, list) and len(files) >= 2:
+        checks_2.append(("Has files_to_create (2+)", "PASS"))
+        score2 += 1
+    else:
+        checks_2.append((f"Has files_to_create (got {files})", "FAIL"))
+
+    features = plan.get("features", []) if isinstance(plan, dict) else []
+    if isinstance(features, list) and len(features) >= 2:
+        checks_2.append(("Has features (2+)", "PASS"))
+        score2 += 1
+    else:
+        checks_2.append((f"Has features (got {features})", "FAIL"))
+
+for check, status in checks_2:
+    print(f"    [{status}] {check}")
+
+print(f"\n  Score: {score2}/4")
+
+
+# ============================================================
+# TODO 3: Generate code files
+# ============================================================
+
+print("\n\n--- TODO 3: Generate Code Files ---\n")
+
+print("  Using the plan from TODO 2, generate Python source files.")
+print("  Write each file to WORKDIR using the dispatch function.\n")
+
+# YOUR CODE HERE
+def generate_code(plan_dict):
+    """
+    Generate Python source files based on the plan.
+
+    For each file in plan_dict["files_to_create"], generate appropriate
+    skeleton code and write it to WORKDIR using dispatch("write_file", ...).
+
+    The main file (e.g., main.py or app.py) should contain:
+        - A class or functions matching the features
+        - Proper Python syntax (must compile with ast.parse)
+
+    Returns:
+        list of file paths that were created
+    """
+    # TODO: For each file in the plan, generate appropriate content
+    # TODO: Use dispatch("write_file", ...) to write each file
+    # TODO: Return list of created file paths
+    return "___"
+
+
+score3 = 0
+checks_3 = []
+
+# Use a fallback plan if TODO 2 wasn't completed
+if plan == "___":
+    plan_for_gen = {
+        "app_type": "api",
+        "language": "python",
+        "files_to_create": ["main.py", "tests/test_main.py", "README.md"],
+        "features": ["add", "remove", "list"],
+    }
+else:
+    plan_for_gen = plan
+
+created_files = generate_code(plan_for_gen)
+
+if created_files == "___":
+    checks_3.append(("Files were created", "TODO"))
+    checks_3.append(("Main file has valid Python", "TODO"))
+else:
+    if isinstance(created_files, list) and len(created_files) >= 1:
+        checks_3.append(("Files were created", "PASS"))
+        score3 += 1
+    else:
+        checks_3.append((f"Files were created (got {created_files})", "FAIL"))
+
+    # Check that at least one .py file has valid syntax
+    py_files = search_files("*.py", WORKDIR)
+    valid_syntax = False
+    for pf in py_files:
+        content = read_file(pf)
+        try:
+            ast.parse(content)
+            valid_syntax = True
+            break
+        except SyntaxError:
+            pass
+
+    if valid_syntax:
+        checks_3.append(("Main file has valid Python", "PASS"))
+        score3 += 1
+    else:
+        checks_3.append(("Main file has valid Python", "FAIL"))
+
+for check, status in checks_3:
+    print(f"    [{status}] {check}")
+
+print(f"\n  Score: {score3}/2")
+
+
+# ============================================================
+# TODO 4: Review and produce final report
+# ============================================================
+
+print("\n\n--- TODO 4: Review & Final Report ---\n")
+
+print("  Review all generated Python files and produce a final agent report.\n")
+
+# YOUR CODE HERE
+def agent_report(workdir):
+    """
+    Review all .py files in workdir and produce a comprehensive report.
+
+    Returns a dict with:
+        "task": str (the original task description)
+        "files_created": list of file paths
+        "total_functions": int (across all files)
+        "total_issues": int (across all files)
+        "reviews": list of per-file review dicts
+        "status": "success" if no issues, "needs_review" otherwise
+    """
+    # TODO: Find all .py files in workdir
+    # TODO: For each file, read it and run review_code
+    # TODO: Aggregate results into the report
+    return "___"
+
+
+score4 = 0
+checks_4 = []
+
+report = agent_report(WORKDIR)
+
+if report == "___":
+    checks_4.append(("Report is a dict", "TODO"))
+    checks_4.append(("Has files_created", "TODO"))
+    checks_4.append(("Has status field", "TODO"))
+else:
+    if isinstance(report, dict):
+        checks_4.append(("Report is a dict", "PASS"))
+        score4 += 1
+    else:
+        checks_4.append(("Report is a dict", "FAIL"))
+
+    fc = report.get("files_created", []) if isinstance(report, dict) else []
+    if isinstance(fc, list) and len(fc) >= 1:
+        checks_4.append(("Has files_created", "PASS"))
+        score4 += 1
+    else:
+        checks_4.append((f"Has files_created (got {fc})", "FAIL"))
+
+    status = report.get("status") if isinstance(report, dict) else None
+    if status in ("success", "needs_review"):
+        checks_4.append(("Has status field", "PASS"))
+        score4 += 1
+    else:
+        checks_4.append((f"Has status field (got {status})", "FAIL"))
+
+    # Save report
+    if isinstance(report, dict):
+        report_path = os.path.join(WORKDIR, "agent-report.json")
+        with open(report_path, "w") as f:
+            json.dump(report, f, indent=2)
+        print(f"    Report saved to {report_path}")
+
+for check, status in checks_4:
+    print(f"    [{status}] {check}")
+
+print(f"\n  Score: {score4}/3")
+
+
+# ============================================================
+# Final Summary
+# ============================================================
+
+total = score1 + score2 + score3 + score4
+max_total = 3 + 4 + 2 + 3
+
+print(f"\n\n{'='*60}")
+print(f"  Challenge Summary")
+print(f"{'='*60}")
+print(f"  You built a mini coding agent with:")
+print(f"    - Tool registry + dispatcher (TODO 1)")
+print(f"    - Task parsing + planning     (TODO 2)")
+print(f"    - Code generation              (TODO 3)")
+print(f"    - Review + reporting           (TODO 4)")
+print(f"\n  TODO 1: {score1}/3  tool registry & dispatcher")
+print(f"  TODO 2: {score2}/4  task parsing & planning")
+print(f"  TODO 3: {score3}/2  code generation")
+print(f"  TODO 4: {score4}/3  review & reporting")
+print(f"\n  Total: {total}/{max_total}")
+print(f"\n  Files generated in {WORKDIR}/")

@@ -5,10 +5,10 @@
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
 **Client:** Oracle
-**Duration:** 5 days (16 sessions, ~3-4 sessions/day + hands-on labs)
+**Duration:** 5 days (15 sessions, ~3-4 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
-**Slides:** 16 HTML presentations in `presentation/`
-**Hands-on:** 125 labs + 125 solutions in `hands-on/session-1/` through `session-16/`
+**Slides:** 15 HTML presentations in `presentation/`
+**Hands-on:** 117 labs + 117 solutions in `hands-on/session-1/` through `session-15/`
 
 ## Lab Environment
 
@@ -26,7 +26,7 @@
 |----------|--------|-----------|
 | LLM (Day 1) | Ollama + llama3.2:1b | Smallest model (~1.3 GB), sufficient for demos, removed after Day 1 |
 | LLM (Days 2-5) | Groq free API | Offloads inference to cloud, saves ~2 GB RAM/storage. Each participant creates own Groq API key |
-| Kubernetes | MicroK8s (brief demo) | Lighter than Kind/Minikube (~300-500 MB base). Installed for Day 4 demo only, then removed |
+| MCP SDK | MCP Python SDK (`mcp>=1.0`) | Standard protocol for AI tool integration. Lightweight, no infrastructure overhead |
 | Observability | Docker Compose (not K8s) | Lower overhead on 2-core. Prometheus, Grafana, LangFuse run as containers on Day 5 |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
@@ -48,8 +48,8 @@ Day 1: Ollama + LangChain + ChromaDB (~5-6 GB RAM)
 Day 2-3: LangChain + Groq API + ChromaDB (~3.5-4.5 GB RAM)
          → no cleanup needed
 
-Day 4: Docker + MicroK8s brief demo (~5.5-7 GB RAM)
-       → cleanup: remove MicroK8s completely
+Day 4: Python + MCP SDK (~3-4 GB RAM)
+       → cleanup: remove /tmp/aidev-lab-* temp files
 
 Day 5: Docker Compose observability stack (~5-7 GB RAM)
        → all containers have mem_limit set
@@ -71,15 +71,19 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
-├── presentation/                        16 HTML slide decks (one per session)
+├── presentation/                        15 HTML slide decks (one per session)
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── ...
-│   └── session16-capstone-production-readiness.html
-├── hands-on/                            16 session directories with labs + solutions
+│   ├── session10-ai-coding-agents-vibe-coding.html
+│   ├── session11-model-context-protocol.html
+│   ├── session12-building-custom-ai-dev-tools.html
+│   ├── ...
+│   └── session15-capstone-production-readiness.html
+├── hands-on/                            15 session directories with labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README
 │   ├── session-2/                       7 labs + 7 solutions + README
-│   ├── session-3/ through session-16/   8 labs + 8 solutions + README each
-│   └── (session-1 has lab01-lab06, session-2 has lab01-lab07, sessions 3-16 have lab01-lab08)
+│   ├── session-3/ through session-15/   8 labs + 8 solutions + README each
+│   └── (session-1 has lab01-lab06, session-2 has lab01-lab07, sessions 3-15 have lab01-lab08)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
     ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
@@ -87,8 +91,8 @@ Oracle/
     ├── day2-cleanup.sh                  Clean ChromaDB containers + temp files
     ├── day3-setup.sh                    Verify FastAPI packages + pull ChromaDB
     ├── day3-cleanup.sh                  Stop servers + clean up for Day 4
-    ├── day4-setup.sh                    Install MicroK8s + enable addons
-    ├── day4-cleanup.sh                  Remove MicroK8s (~2-3 GB freed)
+    ├── day4-setup.sh                    Verify Python, install MCP SDK, check GROQ_API_KEY
+    ├── day4-cleanup.sh                  Remove temp files, kill stale processes
     ├── day5-setup.sh                    Start observability stack via docker-compose
     ├── day5-cleanup.sh                  Tear down stack + docker prune
     ├── day5-docker-compose.yml          Prometheus + Grafana + LangFuse + PostgreSQL (note: in scripts/, not project root)
@@ -103,8 +107,8 @@ Oracle/
 | 1 | Agentic AI Foundations & LangChain | 1-3 | Ollama, LangChain, LCEL, ReAct, Chain-of-Thought |
 | 2 | RAG, Agents & LangGraph | 4-6 | RAG, ChromaDB, Agents, Memory, LangGraph |
 | 3 | Advanced Patterns & Production | 7-9 | Advanced LangGraph, Multi-Agent, FastAPI |
-| 4 | Containerization & Kubernetes | 10-13 | Docker, Kubernetes, Deployments, Operations |
-| 5 | Observability & Capstone | 14-16 | OpenTelemetry, LangFuse, Production Readiness |
+| 4 | AI Coding Agents & Developer Tools | 10-12 | AI Coding Agents, MCP, Vibe Coding, Tool Registries |
+| 5 | Observability & Capstone | 13-15 | OpenTelemetry, LangFuse, Production Readiness |
 
 ## Session-by-Session Details
 
@@ -119,20 +123,18 @@ Oracle/
 | 7 | Advanced LangGraph Workflows | 8 | Human-in-the-loop, subgraphs, parallel execution |
 | 8 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
 | 9 | Production Application Development | 8 | FastAPI, error handling, testing, deployment patterns |
-| 10 | Docker for AI Applications | 8 | Dockerfiles, multi-stage builds, compose, optimization |
-| 11 | Kubernetes Fundamentals | 8 | Pods, Deployments, Services, ConfigMaps, Secrets |
-| 12 | Deploying AI Stack on K8s | 8 | StatefulSets, PVCs, Ingress, Helm, production manifests |
-| 13 | Kubernetes Operations | 8 | Debugging, resource management, scaling, troubleshooting |
-| 14 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
-| 15 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
-| 16 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
+| 10 | AI Coding Agents & Vibe Coding | 8 | Agent loop, context management, prompt engineering, NL-to-code |
+| 11 | Model Context Protocol (MCP) | 8 | MCP architecture, JSON-RPC 2.0, FastMCP, tools/resources/prompts |
+| 12 | Building Custom AI Dev Tools | 8 | Code quality servers, review agents, tool registries, sandboxing |
+| 13 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
+| 14 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
+| 15 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
 
 ## Key Ports
 
 | Port | Service | Days Active |
 |------|---------|-------------|
 | 8000 | FastAPI application | 3-5 |
-| 8080 | LangFuse | 5 |
 | 9090 | Prometheus | 5 |
 | 3000 | Grafana | 5 |
 | 11434 | Ollama | 1 only |
@@ -200,7 +202,7 @@ python hands-on/session-NN/solutions/labXX_topic.py
 - Generated YAML/config files saved to `/tmp/k8s-lab-NN-XX/`
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 125 labs + 125 solutions across 16 sessions (~60-75 min per session)
+**Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session)
 
 ## Error Recovery (Constrained Environment)
 
@@ -222,14 +224,14 @@ bash scripts/check-resources.sh
 bash scripts/day1-setup.sh      # Ollama + model
 bash scripts/day2-setup.sh      # Verify Groq API + packages
 bash scripts/day3-setup.sh      # Verify FastAPI + ChromaDB
-bash scripts/day4-setup.sh      # MicroK8s
+bash scripts/day4-setup.sh      # MCP SDK + verify env
 bash scripts/day5-setup.sh      # Observability stack
 
 # Day-specific cleanup
 bash scripts/day1-cleanup.sh    # Remove Ollama
 bash scripts/day2-cleanup.sh    # Clean temp files
 bash scripts/day3-cleanup.sh    # Stop servers
-bash scripts/day4-cleanup.sh    # Remove MicroK8s
+bash scripts/day4-cleanup.sh    # Remove temp files
 bash scripts/day5-cleanup.sh    # Tear down Docker Compose
 ```
 

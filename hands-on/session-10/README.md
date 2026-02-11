@@ -1,64 +1,48 @@
-# Session 10: Docker for AI Applications — Hands-on Labs
+# Session 10: AI Coding Agents & Vibe Coding — Hands-on Labs
 
 ## Prerequisites
 
-- Session 9 completed (FastAPI + LangGraph agent working)
-- Docker installed (optional — labs validate files even without Docker)
 - Python 3.10+ installed
+- No external packages needed — these labs use only the Python standard library
 
 ```bash
-# Check Docker is installed (optional)
-docker --version
-
-# No pip packages needed — these labs generate Docker files
+python --version  # 3.10+
 ```
 
 ## Labs Overview
 
-| Lab | Topic | What You'll Learn | Needs Docker? |
-|-----|-------|-------------------|---------------|
-| 01 | Docker Basics | Containers vs VMs concepts, first Dockerfile | No |
-| 02 | Writing Dockerfiles | Core instructions, FastAPI Dockerfile | No |
-| 03 | Layer Caching | Bad vs good layer ordering, cache optimization | No |
-| 04 | Multi-Stage Builds | Builder + runtime stages, image size reduction | No |
-| 05 | .dockerignore | Build context optimization, file exclusion | No |
-| 06 | Security Hardening | Non-root user, health checks, ENV management | No |
-| 07 | Docker Compose | Multi-service AI stack, networking, volumes | No |
-| 08 | **Challenge** | Complete production Docker setup for UniGPS | Optional |
+| Lab | Topic | What You'll Learn |
+|-----|-------|-------------------|
+| 01 | Coding Agent Anatomy | Agent loop model: plan/code/test, tool registry |
+| 02 | Tool Calling Patterns | File R/W/search tools, tool dispatcher, multi-step chains |
+| 03 | Context Management | Token budgeting, priority file selector, CLAUDE.md generation |
+| 04 | Prompt Engineering for Code | Vague vs precise prompts, structured prompt templates |
+| 05 | Vibe Coding Simulation | NL parser → file structure → pseudo-code generation |
+| 06 | Agent Comparison | Feature scoring for OpenCode/Claude Code/Copilot/Cursor |
+| 07 | Code Review Basics | AST-based issue detection, structured review report |
+| 08 | **Challenge** | End-to-end coding agent simulation |
 
 ## How to Run
 
 ```bash
 cd hands-on/session-10
 
-# Run a lab (generates files in /tmp/docker-lab-XX/)
-python lab01_docker_basics.py
+# Run a lab
+python lab01_coding_agent_anatomy.py
 
 # Check the solution
-python solutions/lab01_docker_basics.py
-
-# If Docker is available, lab 08 can actually build:
-python lab08_challenge.py
-# Then: cd /tmp/docker-lab-08 && docker build -t unigps-agent:1.0 .
+python solutions/lab01_coding_agent_anatomy.py
 ```
 
 ## Tips
 
-- All 8 labs work WITHOUT Docker installed — they generate and validate files
-- If Docker is available, you can build and test the generated Dockerfiles
-- Look for `# TODO` markers — that's where you write Dockerfile content
-- Each lab has 2 TODOs with instructions
-- Generated files appear in `/tmp/docker-lab-XX/` directories
+- Look for `# TODO` markers — that's where you write code
+- Labs 01-03 cover agent internals
+- Labs 04-06 cover prompt engineering and vibe coding
+- Lab 07 covers code review
+- Lab 08 is the comprehensive challenge
+- Generated files appear in `/tmp/aidev-lab-10-XX/` directories
 - Compare your work with `solutions/` when done
-
-## What Gets Generated
-
-Each lab creates real Docker files you can inspect:
-- `Dockerfile` — the container build instructions
-- `.dockerignore` — build context exclusions
-- `docker-compose.yml` — multi-service configuration
-- `requirements.txt` — Python dependencies
-- `main.py` — sample FastAPI application
 
 ## Estimated Time
 

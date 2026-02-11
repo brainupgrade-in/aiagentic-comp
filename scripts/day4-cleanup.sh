@@ -2,7 +2,7 @@
 set -e
 
 echo "============================================"
-echo "  Day 4: MicroK8s Cleanup"
+echo "  Day 4: AI Coding Agents & MCP Cleanup"
 echo "============================================"
 echo ""
 
@@ -11,19 +11,20 @@ df -h / | tail -1 | awk '{print "  Storage: "$3" used / "$2" total ("$5" used)"}
 free -h | awk '/Mem:/{print "  Memory: "$3" used / "$2" total"}'
 echo ""
 
-# Remove MicroK8s
-echo "[1/2] Removing MicroK8s..."
-sudo microk8s stop 2>/dev/null || true
-sudo snap remove microk8s --purge
+# Clean up lab temp files
+echo "[1/2] Removing lab temp files..."
+rm -rf /tmp/aidev-lab-10-* /tmp/aidev-lab-11-* /tmp/aidev-lab-12-*
+echo "  Removed /tmp/aidev-lab-* directories"
 
-# Clean up kubectl alias
-echo "[2/2] Cleaning up..."
-sed -i '/alias kubectl/d' ~/.bashrc 2>/dev/null || true
+# Kill any stale Python processes from labs
+echo "[2/2] Stopping stale processes..."
+pkill -f "uvicorn.*8000" 2>/dev/null || true
+pkill -f "mcp.*server" 2>/dev/null || true
 
 echo ""
 echo "After cleanup:"
 df -h / | tail -1 | awk '{print "  Storage: "$3" used / "$2" total ("$5" used)"}'
 free -h | awk '/Mem:/{print "  Memory: "$3" used / "$2" total"}'
 echo ""
-echo "MicroK8s removed. Resources freed for Day 5 labs."
+echo "Day 4 cleanup complete. Ready for Day 5 observability labs."
 echo ""

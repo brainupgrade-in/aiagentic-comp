@@ -1,413 +1,507 @@
+#!/usr/bin/env python3
 """
-Lab 08 Challenge Solution: Complete AI Stack on Kubernetes
-============================================================
+Lab 08 Solution: Challenge — Complete MCP System
+
+Build a full MCP system: a server with 3 tools, 2 resources, and 1 prompt
+template, plus a client that discovers and exercises every capability.
+
+No external packages required — standard library only.
 """
 
 import os
+import ast
+import json
 import shutil
-import textwrap
-import base64
+import fnmatch
+from typing import Any, Dict, List, Optional
 
-WORKDIR = "/tmp/k8s-lab-08"
+WORKDIR = "/tmp/aidev-lab-11-08"
 
-print("=" * 60)
-print("  Challenge Solution: Complete AI Stack on Kubernetes")
-print("=" * 60)
-
+# ── Cleanup & Setup ──────────────────────────────────────────────────────────
 if os.path.exists(WORKDIR):
     shutil.rmtree(WORKDIR)
 os.makedirs(WORKDIR, exist_ok=True)
 
+# Create sample project for tools/resources to operate on
+proj = os.path.join(WORKDIR, "sample_project")
+os.makedirs(os.path.join(proj, "src"), exist_ok=True)
+os.makedirs(os.path.join(proj, "tests"), exist_ok=True)
 
-# ============================================================
-# TODO 1 Solution: ConfigMap + Secret
-# ============================================================
+with open(os.path.join(proj, "src", "app.py"), "w") as f:
+    f.write("""\
+import os
+import sys
 
-print("\n--- TODO 1 Solution: ConfigMap + Secret ---\n")
+class AppServer:
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
 
-todo1_configmap = textwrap.dedent("""\
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: agent-config
-    data:
-      LOG_LEVEL: "info"
-      APP_VERSION: "2.0.0"
-      REDIS_URL: "redis://redis-svc:6379"
-      CHROMA_URL: "http://chromadb-svc:8000"
+    def start(self):
+        print(f"Starting on {self.host}:{self.port}")
+
+def create_app():
+    return AppServer("localhost", 8000)
+
+if __name__ == "__main__":
+    app = create_app()
+    app.start()
 """)
 
-groq_b64 = base64.b64encode(b"gsk_production_key_abc123").decode()
+with open(os.path.join(proj, "src", "utils.py"), "w") as f:
+    f.write("import json\n\ndef load_config(path):\n    with open(path) as f:\n        return json.load(f)\n")
 
-todo1_secret = textwrap.dedent(f"""\
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: agent-secrets
-    type: Opaque
-    data:
-      GROQ_API_KEY: {groq_b64}
-""")
+with open(os.path.join(proj, "tests", "test_app.py"), "w") as f:
+    f.write("def test_create_app():\n    assert True\n\ndef test_start():\n    assert True\n")
 
-with open(os.path.join(WORKDIR, "configmap.yaml"), "w") as f:
-    f.write(todo1_configmap)
-with open(os.path.join(WORKDIR, "secret.yaml"), "w") as f:
-    f.write(todo1_secret)
+with open(os.path.join(proj, "config.json"), "w") as f:
+    json.dump({"debug": True, "log_level": "INFO", "max_retries": 3}, f, indent=2)
 
-print("  ConfigMap: agent-config")
-print("    LOG_LEVEL=info, APP_VERSION=2.0.0")
-print("    REDIS_URL=redis://redis-svc:6379")
-print("    CHROMA_URL=http://chromadb-svc:8000")
-print(f"\n  Secret: agent-secrets")
-print(f"    GROQ_API_KEY={groq_b64}")
+with open(os.path.join(proj, "README.md"), "w") as f:
+    f.write("# Sample Project\nA demo project for MCP challenge lab.\n")
 
+score = 0
+total = 0
 
-# ============================================================
-# TODO 2 Solution: Agent Deployment + Service
-# ============================================================
+print("=" * 70)
+print("CHALLENGE: Build a Complete MCP System")
+print("=" * 70)
+print()
+print("  You will build:")
+print("    - 3 tools:     analyze_code, search_files, run_linter")
+print("    - 2 resources: project_structure, config_file")
+print("    - 1 prompt:    code_review_prompt")
+print("    - A client workflow that exercises all capabilities")
+print()
 
-print("\n\n--- TODO 2 Solution: Agent Deployment + Service ---\n")
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  TODO 1 — Define 3 Tool Functions                                          ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
 
-todo2_deployment = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: unigps-agent
-      labels:
-        app: agent
-        component: api
-    spec:
-      replicas: 3
-      strategy:
-        type: RollingUpdate
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
-      selector:
-        matchLabels:
-          app: agent
-      template:
-        metadata:
-          labels:
-            app: agent
-            component: api
-        spec:
-          containers:
-          - name: agent
-            image: unigps-agent:2.0
-            ports:
-            - containerPort: 8000
-            envFrom:
-            - configMapRef:
-                name: agent-config
-            - secretRef:
-                name: agent-secrets
-            env:
-            - name: PYTHONUNBUFFERED
-              value: "1"
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "250m"
-              limits:
-                memory: "1Gi"
-                cpu: "1000m"
-            readinessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 5
-              periodSeconds: 10
-              failureThreshold: 3
-            livenessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 15
-              periodSeconds: 20
-              failureThreshold: 3
-""")
+print("=" * 70)
+print("TODO 1: Define 3 tool functions")
+print("=" * 70)
+print()
 
-todo2_service = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: agent-svc
-    spec:
-      type: LoadBalancer
-      selector:
-        app: agent
-      ports:
-      - port: 80
-        targetPort: 8000
-""")
+def analyze_code(file_path: str) -> Dict[str, Any]:
+    """Analyze a Python file and return metrics.
 
-with open(os.path.join(WORKDIR, "agent-deployment.yaml"), "w") as f:
-    f.write(todo2_deployment)
-with open(os.path.join(WORKDIR, "agent-service.yaml"), "w") as f:
-    f.write(todo2_service)
+    Args:
+        file_path: Absolute path to a Python file
 
-print("  Agent Deployment: 3 replicas, probes, resources, envFrom")
-print("  Agent Service: LoadBalancer (port 80 → 8000)")
+    Returns:
+        Dict with: file, line_count, function_count, class_count, import_count
+    """
+    with open(file_path) as f:
+        source = f.read()
+    tree = ast.parse(source)
+    function_count = sum(1 for node in ast.walk(tree) if isinstance(node, ast.FunctionDef))
+    class_count = sum(1 for node in ast.walk(tree) if isinstance(node, ast.ClassDef))
+    import_count = sum(1 for node in ast.walk(tree)
+                       if isinstance(node, (ast.Import, ast.ImportFrom)))
+    line_count = len(source.splitlines())
+    return {
+        "file": os.path.basename(file_path),
+        "line_count": line_count,
+        "function_count": function_count,
+        "class_count": class_count,
+        "import_count": import_count,
+    }
 
 
-# ============================================================
-# TODO 3 Solution: Redis Deployment + Service
-# ============================================================
+def search_files(pattern: str, directory: str) -> List[str]:
+    """Search for files matching a glob pattern.
 
-print("\n\n--- TODO 3 Solution: Redis Deployment + Service ---\n")
+    Args:
+        pattern: Glob pattern (e.g. '*.py')
+        directory: Root directory to search
 
-todo3_deployment = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: redis
-      labels:
-        app: redis
-        component: cache
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: redis
-      template:
-        metadata:
-          labels:
-            app: redis
-            component: cache
-        spec:
-          containers:
-          - name: redis
-            image: redis:7-alpine
-            ports:
-            - containerPort: 6379
-            resources:
-              requests:
-                memory: "64Mi"
-                cpu: "100m"
-              limits:
-                memory: "128Mi"
-                cpu: "200m"
-            livenessProbe:
-              tcpSocket:
-                port: 6379
-              initialDelaySeconds: 5
-              periodSeconds: 10
-              failureThreshold: 3
-            readinessProbe:
-              exec:
-                command:
-                - redis-cli
-                - ping
-              initialDelaySeconds: 5
-              periodSeconds: 10
-              failureThreshold: 3
-""")
-
-todo3_service = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: redis-svc
-    spec:
-      type: ClusterIP
-      selector:
-        app: redis
-      ports:
-      - port: 6379
-        targetPort: 6379
-""")
-
-with open(os.path.join(WORKDIR, "redis-deployment.yaml"), "w") as f:
-    f.write(todo3_deployment)
-with open(os.path.join(WORKDIR, "redis-service.yaml"), "w") as f:
-    f.write(todo3_service)
-
-print("  Redis Deployment: 1 replica, tcpSocket liveness, exec readiness")
-print("  Redis Service: ClusterIP (redis-svc:6379)")
+    Returns:
+        Sorted list of relative paths matching the pattern
+    """
+    matches = []
+    for root, dirs, files in os.walk(directory):
+        for filename in files:
+            if fnmatch.fnmatch(filename, pattern):
+                full = os.path.join(root, filename)
+                rel = os.path.relpath(full, directory)
+                matches.append(rel)
+    return sorted(matches)
 
 
-# ============================================================
-# TODO 4 Solution: ChromaDB Deployment + Service + PVC
-# ============================================================
+def run_linter(file_path: str) -> Dict[str, Any]:
+    """Run basic lint checks on a Python file.
 
-print("\n\n--- TODO 4 Solution: ChromaDB Deployment + Service + PVC ---\n")
+    Checks:
+        - Lines longer than 79 characters
+        - Missing docstrings on functions
+        - Use of 'import *'
 
-todo4_pvc = textwrap.dedent("""\
-    apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: chroma-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-""")
+    Args:
+        file_path: Path to a Python file
 
-todo4_deployment = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: chromadb
-      labels:
-        app: chromadb
-        component: vectorstore
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: chromadb
-      template:
-        metadata:
-          labels:
-            app: chromadb
-            component: vectorstore
-        spec:
-          containers:
-          - name: chromadb
-            image: chromadb/chroma:latest
-            ports:
-            - containerPort: 8000
-            resources:
-              requests:
-                memory: "512Mi"
-                cpu: "500m"
-              limits:
-                memory: "2Gi"
-                cpu: "1000m"
-            readinessProbe:
-              httpGet:
-                path: /api/v1/heartbeat
-                port: 8000
-              initialDelaySeconds: 10
-              periodSeconds: 15
-              failureThreshold: 3
-            livenessProbe:
-              httpGet:
-                path: /api/v1/heartbeat
-                port: 8000
-              initialDelaySeconds: 30
-              periodSeconds: 30
-              failureThreshold: 3
-            volumeMounts:
-            - name: chroma-storage
-              mountPath: /chroma/chroma
-          volumes:
-          - name: chroma-storage
-            persistentVolumeClaim:
-              claimName: chroma-data
-""")
+    Returns:
+        Dict with: file, issues (list of issue dicts), issue_count
+    """
+    with open(file_path) as f:
+        source = f.read()
+    lines = source.splitlines()
+    issues = []
 
-todo4_service = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: chromadb-svc
-    spec:
-      type: ClusterIP
-      selector:
-        app: chromadb
-      ports:
-      - port: 8000
-        targetPort: 8000
-""")
+    # Check line length
+    for i, line in enumerate(lines, 1):
+        if len(line) > 79:
+            issues.append({
+                "line": i,
+                "rule": "line-too-long",
+                "message": f"Line {i} is {len(line)} chars (max 79)",
+            })
 
-with open(os.path.join(WORKDIR, "chromadb-pvc.yaml"), "w") as f:
-    f.write(todo4_pvc)
-with open(os.path.join(WORKDIR, "chromadb-deployment.yaml"), "w") as f:
-    f.write(todo4_deployment)
-with open(os.path.join(WORKDIR, "chromadb-service.yaml"), "w") as f:
-    f.write(todo4_service)
+    # Check wildcard imports
+    for i, line in enumerate(lines, 1):
+        if "import *" in line:
+            issues.append({
+                "line": i,
+                "rule": "wildcard-import",
+                "message": f"Wildcard import on line {i}",
+            })
 
-print("  ChromaDB PVC: 5Gi ReadWriteOnce")
-print("  ChromaDB Deployment: 1 replica, /api/v1/heartbeat probes, volumeMount")
-print("  ChromaDB Service: ClusterIP (chromadb-svc:8000)")
+    # Check missing docstrings
+    tree = ast.parse(source)
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef):
+            has_docstring = (
+                node.body
+                and isinstance(node.body[0], ast.Expr)
+                and isinstance(node.body[0].value, ast.Constant)
+                and isinstance(node.body[0].value.value, str)
+            )
+            if not has_docstring:
+                issues.append({
+                    "line": node.lineno,
+                    "rule": "missing-docstring",
+                    "message": f"Function '{node.name}' missing docstring",
+                })
+
+    return {
+        "file": os.path.basename(file_path),
+        "issues": issues,
+        "issue_count": len(issues),
+    }
 
 
-# ============================================================
-# Validation
-# ============================================================
+# ── Validate TODO 1 ─────────────────────────────────────────────────────────
+# Test analyze_code
+total += 1
+try:
+    app_path = os.path.join(proj, "src", "app.py")
+    analysis = analyze_code(app_path)
+    checks = [
+        isinstance(analysis, dict),
+        analysis.get("file") == "app.py",
+        analysis.get("line_count") == 16,
+        analysis.get("function_count") == 3,  # __init__, start, create_app
+        analysis.get("class_count") == 1,      # AppServer
+        analysis.get("import_count") == 2,     # os, sys
+    ]
+    if all(checks):
+        score += 1
+        print(f"[PASS] analyze_code: {analysis}")
+    else:
+        failed = [i for i, c in enumerate(checks) if not c]
+        print(f"[FAIL] analyze_code checks failed at indices: {failed}")
+        print(f"       Got: {analysis}")
+except Exception as e:
+    print(f"[FAIL] analyze_code exception: {e}")
 
-print("\n\n--- Challenge Validation ---\n")
+# Test search_files
+total += 1
+try:
+    found = search_files("*.py", proj)
+    expected = sorted(["src/app.py", "src/utils.py", "tests/test_app.py"])
+    if isinstance(found, list) and sorted(found) == expected:
+        score += 1
+        print(f"[PASS] search_files: {found}")
+    else:
+        print(f"[FAIL] search_files expected {expected}, got {found}")
+except Exception as e:
+    print(f"[FAIL] search_files exception: {e}")
 
-results = []
+# Test run_linter
+total += 1
+try:
+    lint = run_linter(app_path)
+    checks = [
+        isinstance(lint, dict),
+        lint.get("file") == "app.py",
+        isinstance(lint.get("issues"), list),
+        isinstance(lint.get("issue_count"), int),
+        any(i.get("rule") == "missing-docstring" for i in lint.get("issues", [])),
+    ]
+    if all(checks):
+        score += 1
+        print(f"[PASS] run_linter found {lint['issue_count']} issues")
+    else:
+        print(f"[FAIL] run_linter: {lint}")
+except Exception as e:
+    print(f"[FAIL] run_linter exception: {e}")
+print()
 
-# TODO 1
-results.append(("ConfigMap: apiVersion v1", "apiVersion: v1" in todo1_configmap))
-results.append(("ConfigMap: kind ConfigMap", "kind: ConfigMap" in todo1_configmap))
-results.append(("ConfigMap: has data section", "data:" in todo1_configmap))
-results.append(("ConfigMap: has REDIS_URL", "REDIS_URL" in todo1_configmap))
-results.append(("ConfigMap: has CHROMA_URL", "CHROMA_URL" in todo1_configmap))
-results.append(("Secret: kind Secret", "kind: Secret" in todo1_secret))
-results.append(("Secret: type Opaque", "type: Opaque" in todo1_secret))
-results.append(("Secret: has GROQ_API_KEY", "GROQ_API_KEY" in todo1_secret))
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  TODO 2 — Define 2 Resource Functions                                      ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
 
-# TODO 2
-results.append(("Agent Deploy: kind Deployment", "kind: Deployment" in todo2_deployment))
-results.append(("Agent Deploy: replicas 3", "replicas: 3" in todo2_deployment))
-results.append(("Agent Deploy: image unigps-agent", "unigps-agent" in todo2_deployment))
-results.append(("Agent Deploy: has resources", "resources:" in todo2_deployment))
-results.append(("Agent Deploy: has readinessProbe", "readinessProbe:" in todo2_deployment))
-results.append(("Agent Deploy: has livenessProbe", "livenessProbe:" in todo2_deployment))
-results.append(("Agent Deploy: has envFrom", "envFrom:" in todo2_deployment))
-results.append(("Agent Service: kind Service", "kind: Service" in todo2_service))
-results.append(("Agent Service: LoadBalancer", "LoadBalancer" in todo2_service))
-results.append(("Agent Service: port 80", "port: 80" in todo2_service))
+print("=" * 70)
+print("TODO 2: Define 2 resource functions")
+print("=" * 70)
+print()
 
-# TODO 3
-results.append(("Redis Deploy: kind Deployment", "kind: Deployment" in todo3_deployment))
-results.append(("Redis Deploy: image redis", "redis:" in todo3_deployment))
-results.append(("Redis Deploy: has resources", "resources:" in todo3_deployment))
-results.append(("Redis Deploy: has livenessProbe", "livenessProbe:" in todo3_deployment))
-results.append(("Redis Deploy: tcpSocket or exec", "tcpSocket:" in todo3_deployment or "exec:" in todo3_deployment))
-results.append(("Redis Service: ClusterIP", "ClusterIP" in todo3_service))
-results.append(("Redis Service: port 6379", "6379" in todo3_service))
+def project_structure() -> str:
+    """Return the project directory tree as a formatted string.
 
-# TODO 4
-results.append(("ChromaDB Deploy: kind Deployment", "kind: Deployment" in todo4_deployment))
-results.append(("ChromaDB Deploy: image chromadb", "chromadb" in todo4_deployment))
-results.append(("ChromaDB Deploy: has resources", "resources:" in todo4_deployment))
-results.append(("ChromaDB Deploy: has probes", "readinessProbe:" in todo4_deployment or "livenessProbe:" in todo4_deployment))
-results.append(("ChromaDB Deploy: volumeMount", "volumeMount" in todo4_deployment or "volumes:" in todo4_deployment))
-results.append(("ChromaDB Service: port 8000", "8000" in todo4_service))
-results.append(("PVC: PersistentVolumeClaim", "PersistentVolumeClaim" in todo4_pvc))
-results.append(("PVC: storage 5Gi", "5Gi" in todo4_pvc))
+    Lists all files recursively with indentation showing depth.
+    Static resource: project://structure
 
-passed = sum(1 for _, ok in results if ok)
-total = len(results)
-
-print(f"  Results: {passed}/{total} checks passed\n")
-for name, ok in results:
-    print(f"    [{'PASS' if ok else 'FAIL'}] {name}")
+    Returns:
+        Formatted directory tree string
+    """
+    lines = []
+    for root, dirs, files in os.walk(proj):
+        depth = root.replace(proj, "").count(os.sep)
+        indent = "  " * depth
+        dirname = os.path.basename(root)
+        lines.append(f"{indent}{dirname}/")
+        sub_indent = "  " * (depth + 1)
+        for f in sorted(files):
+            lines.append(f"{sub_indent}{f}")
+    return "\n".join(lines)
 
 
-# ============================================================
-# Summary
-# ============================================================
+def config_file() -> str:
+    """Read and return the project configuration.
 
-print(f"\n\n--- Challenge Complete ---\n")
-print(f"  Score: {passed}/{total} ({passed/total*100:.0f}%)")
-print(f"\n  Files created in {WORKDIR}/:")
-for root, dirs, files in os.walk(WORKDIR):
-    for f in sorted(files):
-        rel = os.path.relpath(os.path.join(root, f), WORKDIR)
-        size = os.path.getsize(os.path.join(root, f))
-        print(f"    {rel:<35} ({size} bytes)")
+    Static resource: config://project
 
-print(f"\n  Deploy order on a real cluster:")
-print(f"    1. kubectl apply -f configmap.yaml -f secret.yaml")
-print(f"    2. kubectl apply -f chromadb-pvc.yaml")
-print(f"    3. kubectl apply -f redis-deployment.yaml -f redis-service.yaml")
-print(f"    4. kubectl apply -f chromadb-deployment.yaml -f chromadb-service.yaml")
-print(f"    5. kubectl apply -f agent-deployment.yaml -f agent-service.yaml")
-print(f"    6. kubectl get all")
+    Returns:
+        JSON string of config.json contents
+    """
+    config_path = os.path.join(proj, "config.json")
+    with open(config_path) as f:
+        return f.read()
 
-print("\n" + "=" * 60)
-print("Challenge Solution complete!")
-print("- ConfigMap + Secret: environment config and API keys")
-print("- Agent: 3 replicas, readiness/liveness probes, resources, envFrom, LB")
-print("- Redis: 1 replica, tcpSocket/exec probes, ClusterIP")
-print("- ChromaDB: 1 replica, httpGet probes, PVC, ClusterIP")
-print(f"- {passed}/{total} validation checks passing")
+
+# ── Validate TODO 2 ─────────────────────────────────────────────────────────
+total += 1
+try:
+    tree = project_structure()
+    checks = [
+        isinstance(tree, str),
+        "app.py" in tree,
+        "config.json" in tree,
+        "test_app.py" in tree,
+        "src" in tree,
+    ]
+    if all(checks):
+        score += 1
+        print("[PASS] project_structure resource:")
+        for line in tree.split("\n")[:10]:
+            print(f"       {line}")
+    else:
+        print(f"[FAIL] project_structure: {tree!r}")
+except Exception as e:
+    print(f"[FAIL] project_structure exception: {e}")
+
+total += 1
+try:
+    cfg = config_file()
+    parsed = json.loads(cfg)
+    checks = [
+        parsed.get("debug") is True,
+        parsed.get("log_level") == "INFO",
+        parsed.get("max_retries") == 3,
+    ]
+    if all(checks):
+        score += 1
+        print(f"[PASS] config_file resource: {cfg.strip()}")
+    else:
+        print(f"[FAIL] config_file: {cfg!r}")
+except Exception as e:
+    print(f"[FAIL] config_file exception: {e}")
+print()
+
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  TODO 3 — Define 1 Prompt Template                                         ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+print("=" * 70)
+print("TODO 3: Define a code_review_prompt template")
+print("=" * 70)
+print()
+
+def code_review_prompt(file_name: str, code: str, metrics: str) -> List[Dict[str, str]]:
+    """Build a code review prompt with context.
+
+    Creates a structured prompt that an LLM would use to review code,
+    incorporating the file metrics and source code.
+
+    Args:
+        file_name: Name of the file being reviewed
+        code: Source code content
+        metrics: JSON string of code metrics
+
+    Returns:
+        List of message dicts with "role" and "content" keys
+    """
+    return [
+        {
+            "role": "system",
+            "content": ("You are a senior code reviewer. Analyze the code for "
+                        "quality, security, and maintainability issues."),
+        },
+        {
+            "role": "user",
+            "content": (f"Please review the following file:\n\n"
+                        f"File: {file_name}\n"
+                        f"Metrics: {metrics}\n\n"
+                        f"```python\n{code}\n```\n\n"
+                        f"Provide specific, actionable feedback."),
+        },
+    ]
+
+# ── Validate TODO 3 ─────────────────────────────────────────────────────────
+total += 1
+try:
+    prompt_msgs = code_review_prompt("app.py", "print('hello')", '{"lines": 1}')
+    checks = [
+        isinstance(prompt_msgs, list),
+        len(prompt_msgs) == 2,
+        prompt_msgs[0].get("role") == "system",
+        "reviewer" in prompt_msgs[0].get("content", "").lower(),
+        prompt_msgs[1].get("role") == "user",
+        "app.py" in prompt_msgs[1].get("content", ""),
+        "print('hello')" in prompt_msgs[1].get("content", ""),
+        '{"lines": 1}' in prompt_msgs[1].get("content", ""),
+    ]
+    if all(checks):
+        score += 1
+        print("[PASS] code_review_prompt generates correct messages")
+        print(f"       System: {prompt_msgs[0]['content'][:60]}...")
+        print(f"       User:   {prompt_msgs[1]['content'][:60]}...")
+    else:
+        failed = [i for i, c in enumerate(checks) if not c]
+        print(f"[FAIL] Prompt checks failed at indices: {failed}")
+        print(f"       Got: {prompt_msgs}")
+except Exception as e:
+    print(f"[FAIL] code_review_prompt exception: {e}")
+print()
+
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  TODO 4 — Client Workflow                                                  ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+print("=" * 70)
+print("TODO 4: Build a client workflow exercising all capabilities")
+print("=" * 70)
+print()
+
+def run_full_workflow() -> Dict[str, Any]:
+    """Execute a complete client workflow against the MCP server."""
+    # Step 1 — Capabilities
+    capabilities = {
+        "tools": ["analyze_code", "search_files", "run_linter"],
+        "resources": ["project://structure", "config://project"],
+        "prompts": ["code_review_prompt"],
+    }
+
+    # Step 2 — Call each tool
+    app_path = os.path.join(proj, "src", "app.py")
+    tool_results = {
+        "analyze_code": analyze_code(app_path),
+        "search_files": search_files("*.py", proj),
+        "run_linter": run_linter(app_path),
+    }
+
+    # Step 3 — Read each resource
+    resource_results = {
+        "project://structure": project_structure(),
+        "config://project": config_file(),
+    }
+
+    # Step 4 — Use the prompt
+    with open(app_path) as f:
+        code_content = f.read()
+    metrics_json = json.dumps(tool_results["analyze_code"])
+    prompt_result = code_review_prompt("app.py", code_content, metrics_json)
+
+    return {
+        "capabilities": capabilities,
+        "tool_results": tool_results,
+        "resource_results": resource_results,
+        "prompt_result": prompt_result,
+        "total_steps": 4,
+    }
+
+# ── Validate TODO 4 ─────────────────────────────────────────────────────────
+total += 1
+try:
+    report = run_full_workflow()
+    checks = [
+        isinstance(report, dict),
+        # Capabilities
+        len(report.get("capabilities", {}).get("tools", [])) == 3,
+        len(report.get("capabilities", {}).get("resources", [])) == 2,
+        len(report.get("capabilities", {}).get("prompts", [])) == 1,
+        # Tool results
+        "analyze_code" in report.get("tool_results", {}),
+        "search_files" in report.get("tool_results", {}),
+        "run_linter" in report.get("tool_results", {}),
+        isinstance(report.get("tool_results", {}).get("search_files"), list),
+        # Resource results
+        "project://structure" in report.get("resource_results", {}),
+        "config://project" in report.get("resource_results", {}),
+        # Prompt
+        isinstance(report.get("prompt_result"), list),
+        len(report.get("prompt_result", [])) == 2,
+        # Steps
+        report.get("total_steps") == 4,
+    ]
+    if all(checks):
+        score += 1
+        print("[PASS] Full workflow completed successfully!")
+        cap = report["capabilities"]
+        print(f"       Tools:     {cap['tools']}")
+        print(f"       Resources: {cap['resources']}")
+        print(f"       Prompts:   {cap['prompts']}")
+        tr = report["tool_results"]
+        print(f"       analyze_code: {tr['analyze_code'].get('line_count', '?')} lines")
+        print(f"       search_files: {len(tr['search_files'])} files found")
+        print(f"       run_linter:   {tr['run_linter'].get('issue_count', '?')} issues")
+
+        # Save full report
+        out_path = os.path.join(WORKDIR, "challenge_report.json")
+        with open(out_path, "w") as f:
+            json.dump(report, f, indent=2, default=str)
+        print(f"       Report saved to {out_path}")
+    else:
+        failed = [i for i, c in enumerate(checks) if not c]
+        print(f"[FAIL] Workflow checks failed at indices: {failed}")
+        if isinstance(report, dict):
+            print(f"       Keys: {list(report.keys())}")
+        else:
+            print(f"       Got: {report}")
+except Exception as e:
+    print(f"[FAIL] Workflow exception: {e}")
+print()
+
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  RESULTS                                                                    ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+print("=" * 70)
+print(f"Challenge Lab 08 Score: {score}/{total}")
+print("=" * 70)
+if score == total:
+    print("Congratulations! You completed the MCP Challenge!")
+else:
+    print(f"Keep going — {total - score} check(s) remaining.")
+print("=" * 70)

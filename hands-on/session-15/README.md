@@ -1,4 +1,4 @@
-# Session 15: AI-Specific Observability with LangFuse — Hands-on Labs
+# Session 15: Capstone & Production Readiness — Hands-on Labs
 
 ## Prerequisites
 
@@ -14,14 +14,14 @@ python --version  # 3.10+
 
 | Lab | Topic | What You'll Learn | Needs K8s? |
 |-----|-------|-------------------|------------|
-| 01 | LangFuse Fundamentals | Architecture, trace hierarchy, tool comparison | No |
-| 02 | LangFuse Setup | Docker Compose deployment, environment variables | No |
-| 03 | LangChain Integration | CallbackHandler, RAG tracing, handler config | No |
-| 04 | Tracing Agents | Multi-step traces, bottleneck analysis, debugging | No |
-| 05 | Feedback & Evaluation | User scores, automated eval, quality tracking | No |
-| 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
-| 07 | Cost & Token Analysis | Cost tracking, Prometheus bridge, dashboard PromQL | No |
-| 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
+| 01 | Production Checklist | Six categories, deployment order, resource recommendations | No |
+| 02 | Health Checks & Probes | /health endpoint, readiness/liveness/startup probes | No |
+| 03 | Resource & Autoscaling | Requests/limits, HPA, PodDisruptionBudget | No |
+| 04 | Secrets Management | K8s Secrets, base64, secretKeyRef injection | No |
+| 05 | Structured Logging | JSON logs, trace_id correlation, AI log fields | No |
+| 06 | Alerting Configuration | Alert rules, severity levels, Alertmanager routing | No |
+| 07 | Backup & Recovery | PVC snapshots, pg_dump, GitOps, RTO/RPO | No |
+| 08 | **Challenge** | Complete production deployment: Deployment + StatefulSet + HA | No |
 
 ## How to Run
 
@@ -29,19 +29,19 @@ python --version  # 3.10+
 cd hands-on/session-15
 
 # Run a lab
-python lab01_langfuse_fundamentals.py
+python lab01_production_checklist.py
 
 # Check the solution
-python solutions/lab01_langfuse_fundamentals.py
+python solutions/lab01_production_checklist.py
 ```
 
 ## Tips
 
 - All 8 labs work WITHOUT a Kubernetes cluster
 - Look for `# TODO` markers — that's where you write code or YAML
-- Labs 01-03 cover LangFuse setup and LangChain integration
-- Labs 04-06 cover tracing, feedback, and prompt management
-- Lab 07 covers cost analysis with Prometheus bridge
+- Labs 01-04 cover production fundamentals (health, resources, secrets)
+- Labs 05-06 cover logging and alerting
+- Lab 07 covers backup and disaster recovery
 - Lab 08 is the challenge combining all concepts
 - Generated files appear in `/tmp/k8s-lab-15-XX/` directories
 - Compare your work with `solutions/` when done

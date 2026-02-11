@@ -2,7 +2,7 @@
 
 A 5-day hands-on training covering the full spectrum of Agentic AI development -- from LangChain fundamentals to production deployment with enterprise-grade observability.
 
-**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 125 hands-on exercises
+**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 117 hands-on exercises
 
 ---
 
@@ -47,41 +47,40 @@ cp .env.example .env
 | 1 | Introduction to Agentic AI | 6 |
 | 2 | Reasoning, Planning & Tool Use | 7 |
 | 3 | LangChain Fundamentals | 8 |
-| 4 | Building RAG Applications | 8 |
 
-### Day 2: RAG Applications & LangChain Ecosystem
+### Day 2: RAG, Agents & LangGraph
 
 | Session | Topic | Labs |
 |---------|-------|------|
+| 4 | Building RAG Applications | 8 |
 | 5 | LangChain Agents & Memory | 8 |
 | 6 | LangGraph Stateful Workflows | 8 |
-| 7 | Advanced LangGraph Workflows | 8 |
 
-### Day 3: Advanced Agents & Production Development
+### Day 3: Advanced Patterns & Production
 
 | Session | Topic | Labs |
 |---------|-------|------|
+| 7 | Advanced LangGraph Workflows | 8 |
 | 8 | Multi-Agent Systems | 8 |
 | 9 | Production Application Development | 8 |
 
-### Day 4: Docker & Kubernetes Deployment
+### Day 4: AI Coding Agents & MCP
 
 | Session | Topic | Labs |
 |---------|-------|------|
-| 10 | Docker for AI Applications | 8 |
-| 11 | Kubernetes Fundamentals | 8 |
-| 12 | Deploying AI Stack on K8s | 8 |
-| 13 | Kubernetes Operations | 8 |
+| 10 | AI Coding Agents & Vibe Coding | 8 |
+| 11 | Model Context Protocol (MCP) | 8 |
+| 12 | Building Custom AI Dev Tools | 8 |
 
 ### Day 5: Observability & Production Operations
 
 | Session | Topic | Labs |
 |---------|-------|------|
-| 14 | Observability Fundamentals | 8 |
-| 15 | AI-Specific Observability with LangFuse | 8 |
-| 16 | Capstone & Production Readiness | 8 |
+| 13 | Observability Fundamentals | 8 |
+| 14 | AI-Specific Observability with LangFuse | 8 |
+| 15 | Capstone & Production Readiness | 8 |
 
-**Total: 16 sessions, 125 labs, 125 solutions**
+**Total: 15 sessions, 117 labs, 117 solutions**
 
 ---
 
@@ -89,17 +88,17 @@ cp .env.example .env
 
 ```
 .
-├── presentation/              16 HTML slide decks
+├── presentation/              15 HTML slide decks
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── ...
-│   └── session16-capstone-production-readiness.html
+│   └── session15-capstone-production-readiness.html
 │
-├── hands-on/                  16 session directories
+├── hands-on/                  15 session directories
 │   ├── session-1/             6 labs + solutions + README
 │   ├── session-2/             7 labs + solutions + README
 │   ├── session-3/             8 labs + solutions + README
 │   ├── ...
-│   └── session-16/            8 labs + solutions + README
+│   └── session-15/            8 labs + solutions + README
 │
 ├── scripts/                   Day-specific automation
 │   ├── day1-setup.sh          Install Ollama + llama3.2:1b
@@ -108,8 +107,8 @@ cp .env.example .env
 │   ├── day2-cleanup.sh        Clean temp files
 │   ├── day3-setup.sh          Verify FastAPI + pull ChromaDB
 │   ├── day3-cleanup.sh        Stop servers + clean up
-│   ├── day4-setup.sh          Install MicroK8s
-│   ├── day4-cleanup.sh        Remove MicroK8s (~2-3 GB freed)
+│   ├── day4-setup.sh          MCP SDK + AI coding tools
+│   ├── day4-cleanup.sh        Clean up MCP servers + temp files
 │   ├── day5-setup.sh          Start observability stack
 │   ├── day5-cleanup.sh        Tear down Docker Compose
 │   ├── day5-docker-compose.yml
@@ -165,7 +164,7 @@ bash scripts/day2-cleanup.sh    # End of day
 bash scripts/day3-setup.sh
 bash scripts/day3-cleanup.sh    # End of day
 
-# Day 4: Docker + Kubernetes
+# Day 4: AI Coding Agents + MCP
 bash scripts/day4-setup.sh
 bash scripts/day4-cleanup.sh    # End of day
 
@@ -200,8 +199,7 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 | **AI Framework** | LangChain, LangGraph |
 | **Vector DB** | ChromaDB |
 | **API** | FastAPI, Uvicorn |
-| **Containers** | Docker, Docker Compose |
-| **Orchestration** | Kubernetes (MicroK8s) |
+| **AI Dev Tools** | MCP Python SDK, AI Coding Agents |
 | **Observability** | OpenTelemetry, Prometheus, Grafana, LangFuse |
 
 ---
@@ -211,7 +209,7 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 - Basic Python programming
 - Basic understanding of APIs and REST
 - Familiarity with command line / terminal
-- Docker knowledge helpful but not required
+- Familiarity with AI coding assistants helpful but not required
 - GitHub account (for Codespaces)
 
 ---

@@ -1,8 +1,8 @@
 """
-Lab 08 Challenge: Complete Observability Stack
-================================================
-Design and configure a complete observability setup
-for an AI agent application: metrics, logs, traces.
+Lab 08 Challenge: Complete LangFuse Observability Pipeline
+============================================================
+Build end-to-end LangFuse integration with LangChain,
+Prometheus bridge, dashboard design, and alert rules.
 """
 
 import os
@@ -12,7 +12,7 @@ import textwrap
 WORKDIR = "/tmp/k8s-lab-14-08"
 
 print("=" * 60)
-print("  Challenge: Complete Observability Stack")
+print("  Challenge: Complete LangFuse Observability Pipeline")
 print("=" * 60)
 
 if os.path.exists(WORKDIR):
@@ -24,127 +24,127 @@ os.makedirs(WORKDIR, exist_ok=True)
 # Challenge Overview
 # ============================================================
 
-print("\n  Design a complete observability setup for an AI agent:\n")
-print("    AI Stack:")
-print("      agent-api (3 replicas) → ChromaDB + Redis")
+print("\n  Build a complete LangFuse observability pipeline:\n")
+print("    1. LangChain instrumentation with CallbackHandler")
+print("    2. Feedback collection and evaluation")
+print("    3. Cost tracking with Prometheus bridge")
+print("    4. Dashboard design + alert rules")
 print()
-print("    Observability Stack (monitoring namespace):")
-print("      OTel Collector → Jaeger (traces)")
-print("                     → Prometheus (metrics)")
-print("                     → Loki (logs)")
-print("      Grafana ← all three backends")
-print()
-print("    Deliverables:")
-print("      1. OTel Collector ConfigMap")
-print("      2. Agent Deployment with OTel env vars")
-print("      3. Observability design (what to instrument)")
+print("    Architecture:")
+print("      LangChain Agent ──callback──> LangFuse Server ──> PostgreSQL")
+print("                                        │")
+print("                                   Cost/Token data")
+print("                                        │")
+print("                                   Prometheus ──> Grafana")
+print("                                        │")
+print("                                   Alertmanager ──> Slack")
 
 
 # ============================================================
-# TODO 1: OTel Collector ConfigMap
+# TODO 1: Complete Instrumentation Code
 # ============================================================
 
-print("\n\n--- TODO 1: OTel Collector ConfigMap ---\n")
+print("\n\n--- TODO 1: Complete Instrumentation Code ---\n")
 
-print("  Create a complete OTel Collector ConfigMap:")
-print("    - Receiver: OTLP (gRPC 4317, HTTP 4318)")
-print("    - Processors: batch (timeout 5s), memory_limiter (512 MiB)")
-print("    - Exporter traces: otlp/jaeger (endpoint jaeger:4317)")
-print("    - Exporter metrics: prometheus (endpoint 0.0.0.0:8889)")
-print("    - Pipeline traces: otlp → memory_limiter,batch → otlp/jaeger")
-print("    - Pipeline metrics: otlp → memory_limiter,batch → prometheus")
+print("  Write a complete LangFuse instrumentation module with:")
+print("    - CallbackHandler from langfuse.callback")
+print("    - Langfuse client for scores and prompts")
+print("    - Handler with user_id, session_id, tags")
+print("    - get_prompt() for runtime prompt fetching")
+print("    - score() for user feedback (user_feedback)")
+print("    - score() for automated eval (relevance)")
+print("    - get_trace_id() for linking feedback")
 
-todo1_yaml = textwrap.dedent("""\
-    # TODO: Complete OTel Collector ConfigMap
-    # apiVersion: v1, kind: ConfigMap
-    # name: otel-collector-config, namespace: monitoring
-    # data.config.yaml with full collector config
+todo1_code = textwrap.dedent("""\
+    # TODO: Complete LangFuse instrumentation module
 
 """)
 
-with open(os.path.join(WORKDIR, "otel-collector-configmap.yaml"), "w") as f:
-    f.write(todo1_yaml)
+with open(os.path.join(WORKDIR, "langfuse_instrumentation.py"), "w") as f:
+    f.write(todo1_code)
 
 
 # ============================================================
-# TODO 2: Agent Deployment with OTel
+# TODO 2: Prometheus Bridge
 # ============================================================
 
-print("\n\n--- TODO 2: Agent Deployment with OTel ---\n")
+print("\n\n--- TODO 2: Prometheus Cost Bridge ---\n")
 
-print("  Create a K8s Deployment for agent-api with full OTel config:")
-print("    - name: agent-api, replicas: 3, image: agent-api:2.0")
-print("    - containerPort: 8000")
-print("    - env OTEL_SERVICE_NAME: agent-api")
-print("    - env OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.monitoring:4317")
-print("    - env OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production,service.version=2.0")
-print("    - env OTEL_TRACES_SAMPLER: parentbased_traceidratio")
-print("    - env OTEL_TRACES_SAMPLER_ARG: 0.1")
-print("    - Prometheus annotations: scrape=true, port=8000, path=/metrics")
-print("    - readinessProbe: /health port 8000 (delay=5, period=10)")
-print("    - resources: requests 256Mi/250m, limits 1Gi/1000m")
+print("  Write code that bridges LangFuse data to Prometheus:")
+print("    - Counter: langfuse_llm_cost_usd_total (labels: model, user_id)")
+print("    - Counter: langfuse_tokens_total (labels: model, direction)")
+print("    - Histogram: langfuse_generation_duration_seconds (labels: model)")
+print("    - Counter: langfuse_feedback_total (labels: score_name, value)")
+print("    - PRICING dict with at least 3 models")
+print("    - record_generation() function")
+print("    - generate_latest for /metrics endpoint")
 
-todo2_yaml = textwrap.dedent("""\
-    # TODO: Agent Deployment with OTel env vars and Prometheus annotations
+todo2_code = textwrap.dedent("""\
+    # TODO: Prometheus bridge for LangFuse metrics
 
 """)
 
-with open(os.path.join(WORKDIR, "agent-deployment.yaml"), "w") as f:
-    f.write(todo2_yaml)
+with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
+    f.write(todo2_code)
 
 
 # ============================================================
-# TODO 3: Observability Design
+# TODO 3: Dashboard + Alert Design
 # ============================================================
 
-print("\n\n--- TODO 3: Observability Design ---\n")
+print("\n\n--- TODO 3: Dashboard & Alert Design ---\n")
 
-print("  For each component, define what metrics, logs, and traces to collect.\n")
+print("  Design dashboard panels and alert rules.\n")
 
-design = [
+panels = [
     {
-        "component": "Agent API /chat endpoint",
-        "metrics": "___",
-        "logs": "___",
-        "traces": "___",
-        "correct_metrics": "request count, latency histogram, error rate",
-        "correct_logs": "request received, response sent, errors with trace_id",
-        "correct_traces": "chat_request span with child spans for each step",
+        "title": "___",
+        "panel_type": "___",
+        "promql": "___",
+        "purpose": "Cost per hour by model",
+        "correct_type": "bar chart",
+        "check_terms": ["increase", "cost", "1h"],
     },
     {
-        "component": "LLM calls (Groq/OpenAI)",
-        "metrics": "___",
-        "logs": "___",
-        "traces": "___",
-        "correct_metrics": "tokens consumed, call duration, cost, calls by model",
-        "correct_logs": "model used, token counts, errors",
-        "correct_traces": "llm_call span with model, tokens, cost attributes",
+        "title": "___",
+        "panel_type": "___",
+        "promql": "___",
+        "purpose": "LLM latency trend (p99)",
+        "correct_type": "time series",
+        "check_terms": ["histogram_quantile", "0.99"],
     },
     {
-        "component": "RAG retrieval (ChromaDB)",
-        "metrics": "___",
-        "logs": "___",
-        "traces": "___",
-        "correct_metrics": "retrieval latency, docs count, cache hit rate",
-        "correct_logs": "collection queried, docs found, relevance scores",
-        "correct_traces": "rag_retrieval span with collection, doc count attributes",
+        "title": "___",
+        "panel_type": "___",
+        "promql": "___",
+        "purpose": "Token consumption rate",
+        "correct_type": "stat",
+        "check_terms": ["rate", "token"],
     },
     {
-        "component": "Agent tool execution",
-        "metrics": "___",
-        "logs": "___",
-        "traces": "___",
-        "correct_metrics": "tool call count, tool duration, tool errors",
-        "correct_logs": "tool name, input, output, errors",
-        "correct_traces": "tool_call span with tool name, duration attributes",
+        "title": "___",
+        "panel_type": "___",
+        "promql": "___",
+        "purpose": "Average user feedback score",
+        "correct_type": "stat",
+        "check_terms": ["feedback"],
     },
 ]
 
-# YOUR CODE HERE: Fill in the observability design
-# design[0]["metrics"] = "request count, latency histogram, error rate"
-# design[0]["logs"] = "request received, response sent, errors with trace_id"
-# design[0]["traces"] = "chat_request span with child spans for each step"
+# YOUR CODE HERE: Design dashboard panels
+# panels[0]["title"] = "Cost per Hour"
+# panels[0]["panel_type"] = "bar chart"
+# panels[0]["promql"] = "sum by (model) (increase(langfuse_llm_cost_usd_total[1h]))"
 # ...
+
+alerts_yaml = textwrap.dedent("""\
+    # TODO: Alert rules for LangFuse monitoring
+    # Include: CostSpike, HighLLMLatency, LowFeedbackScore
+
+""")
+
+with open(os.path.join(WORKDIR, "langfuse-alerts.yaml"), "w") as f:
+    f.write(alerts_yaml)
 
 
 # ============================================================
@@ -155,39 +155,47 @@ print("\n\n--- Challenge Validation ---\n")
 
 results = []
 
-# TODO 1: ConfigMap
-results.append(("ConfigMap: kind",              "kind: ConfigMap" in todo1_yaml))
-results.append(("ConfigMap: namespace",          "monitoring" in todo1_yaml))
-results.append(("ConfigMap: receivers",          "receivers:" in todo1_yaml))
-results.append(("ConfigMap: OTLP receiver",      "otlp:" in todo1_yaml))
-results.append(("ConfigMap: port 4317",          "4317" in todo1_yaml))
-results.append(("ConfigMap: port 4318",          "4318" in todo1_yaml))
-results.append(("ConfigMap: batch processor",    "batch:" in todo1_yaml))
-results.append(("ConfigMap: memory_limiter",     "memory_limiter:" in todo1_yaml))
-results.append(("ConfigMap: jaeger exporter",    "jaeger" in todo1_yaml))
-results.append(("ConfigMap: prometheus exporter", "prometheus:" in todo1_yaml))
-results.append(("ConfigMap: pipelines",          "pipelines:" in todo1_yaml))
+# TODO 1: Instrumentation code
+results.append(("Code: CallbackHandler import",  "CallbackHandler" in todo1_code))
+results.append(("Code: langfuse import",          "langfuse" in todo1_code))
+results.append(("Code: handler creation",         "CallbackHandler(" in todo1_code))
+results.append(("Code: user_id",                  "user_id" in todo1_code))
+results.append(("Code: session_id",               "session_id" in todo1_code))
+results.append(("Code: tags",                     "tags" in todo1_code))
+results.append(("Code: get_prompt",               "get_prompt" in todo1_code))
+results.append(("Code: score() call",             ".score(" in todo1_code))
+results.append(("Code: user_feedback score",      "user_feedback" in todo1_code))
+results.append(("Code: relevance score",          "relevance" in todo1_code))
+results.append(("Code: get_trace_id",             "get_trace_id" in todo1_code or "trace_id" in todo1_code))
 
-# TODO 2: Deployment
-results.append(("Deploy: kind Deployment",       "kind: Deployment" in todo2_yaml))
-results.append(("Deploy: replicas 3",            "replicas: 3" in todo2_yaml))
-results.append(("Deploy: agent-api image",       "agent-api:2.0" in todo2_yaml))
-results.append(("Deploy: OTEL_SERVICE_NAME",     "OTEL_SERVICE_NAME" in todo2_yaml))
-results.append(("Deploy: OTLP endpoint",         "OTEL_EXPORTER_OTLP_ENDPOINT" in todo2_yaml))
-results.append(("Deploy: resource attributes",   "OTEL_RESOURCE_ATTRIBUTES" in todo2_yaml))
-results.append(("Deploy: sampler config",        "OTEL_TRACES_SAMPLER" in todo2_yaml))
-results.append(("Deploy: prometheus.io/scrape",  "prometheus.io/scrape" in todo2_yaml))
-results.append(("Deploy: readinessProbe",        "readinessProbe:" in todo2_yaml))
-results.append(("Deploy: resources",             "resources:" in todo2_yaml))
+# TODO 2: Prometheus bridge
+results.append(("Bridge: Counter import",         "Counter" in todo2_code))
+results.append(("Bridge: Histogram import",       "Histogram" in todo2_code))
+results.append(("Bridge: cost counter",           "cost" in todo2_code.lower()))
+results.append(("Bridge: token counter",          "token" in todo2_code.lower()))
+results.append(("Bridge: duration histogram",     "duration" in todo2_code.lower()))
+results.append(("Bridge: feedback counter",       "feedback" in todo2_code.lower()))
+results.append(("Bridge: PRICING dict",           "PRICING" in todo2_code))
+results.append(("Bridge: record function",        "def record" in todo2_code))
+results.append(("Bridge: generate_latest",        "generate_latest" in todo2_code or "/metrics" in todo2_code))
 
-# TODO 3: Design
-for d in design:
-    filled_metrics = d["metrics"] != "___" and len(d["metrics"].strip()) > 5
-    filled_logs = d["logs"] != "___" and len(d["logs"].strip()) > 5
-    filled_traces = d["traces"] != "___" and len(d["traces"].strip()) > 5
-    results.append((f"Design {d['component'][:25]}: metrics", filled_metrics))
-    results.append((f"Design {d['component'][:25]}: logs",    filled_logs))
-    results.append((f"Design {d['component'][:25]}: traces",  filled_traces))
+# TODO 3: Dashboard panels
+for p in panels:
+    type_ok = p["panel_type"].strip().lower() == p["correct_type"]
+    if p["promql"] == "___":
+        promql_ok = False
+    else:
+        promql_ok = all(t.lower() in p["promql"].lower() for t in p["check_terms"])
+    results.append((f"Panel '{p['purpose'][:30]}': type",  type_ok))
+    results.append((f"Panel '{p['purpose'][:30]}': query", promql_ok))
+
+# TODO 3: Alert rules
+results.append(("Alert: groups section",          "groups:" in alerts_yaml))
+results.append(("Alert: CostSpike",               "CostSpike" in alerts_yaml or "cost" in alerts_yaml.lower()))
+results.append(("Alert: HighLLMLatency",           "Latency" in alerts_yaml or "latency" in alerts_yaml))
+results.append(("Alert: LowFeedbackScore",         "Feedback" in alerts_yaml or "feedback" in alerts_yaml))
+results.append(("Alert: severity labels",          "severity" in alerts_yaml))
+results.append(("Alert: for duration",             "for:" in alerts_yaml))
 
 passed = sum(1 for _, ok in results if ok)
 total = len(results)
@@ -210,15 +218,16 @@ for root, dirs, files in os.walk(WORKDIR):
         size = os.path.getsize(os.path.join(root, f))
         print(f"    {rel:<45} ({size} bytes)")
 
-print(f"\n  Deploy order on a real cluster:")
-print(f"    1. kubectl apply -f otel-collector-configmap.yaml")
-print(f"    2. kubectl apply -f otel-collector-deployment.yaml")
-print(f"    3. kubectl apply -f agent-deployment.yaml")
-print(f"    4. kubectl port-forward -n monitoring svc/jaeger 16686:16686")
+print(f"\n  Complete LangFuse pipeline:")
+print(f"    1. langfuse_instrumentation.py — CallbackHandler + scores + prompts")
+print(f"    2. prometheus_bridge.py — Cost/token/latency Prometheus metrics")
+print(f"    3. Dashboard — 4 panels with PromQL")
+print(f"    4. langfuse-alerts.yaml — Cost, latency, feedback alerts")
 
 print("\n" + "=" * 60)
 print("Challenge complete!")
-print(f"- OTel Collector: ConfigMap with receivers/processors/exporters")
-print(f"- Agent: Deployment with OTEL_* env vars + Prometheus annotations")
-print(f"- Design: Metrics/logs/traces for 4 AI components")
+print(f"- Instrumentation: CallbackHandler + feedback + prompt management")
+print(f"- Prometheus bridge: Cost, tokens, latency, feedback counters")
+print(f"- Dashboard: 4 panels (cost, latency, tokens, feedback)")
+print(f"- Alerts: Cost spike, high latency, low feedback")
 print(f"- {passed}/{total} validation checks passing")

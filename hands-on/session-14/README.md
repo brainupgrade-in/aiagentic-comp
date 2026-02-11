@@ -1,4 +1,4 @@
-# Session 14: Observability Fundamentals — Hands-on Labs
+# Session 14: AI-Specific Observability with LangFuse — Hands-on Labs
 
 ## Prerequisites
 
@@ -14,14 +14,14 @@ python --version  # 3.10+
 
 | Lab | Topic | What You'll Learn | Needs K8s? |
 |-----|-------|-------------------|------------|
-| 01 | Three Pillars | Metrics, Logs, Traces — when to use which | No |
-| 02 | Metric Types | Counter, Gauge, Histogram, Summary | No |
-| 03 | Structured Logging | JSON logs, trace_id correlation, AI log fields | No |
-| 04 | Distributed Traces | Trace/span hierarchy, AI trace patterns | No |
-| 05 | OpenTelemetry Setup | TracerProvider, exporters, OTel Collector config | No |
-| 06 | Instrumentation | Auto vs manual instrumentation, custom spans | No |
-| 07 | OTel Collector | Collector deployment, K8s integration | No |
-| 08 | **Challenge** | Complete observability stack: Collector + Agent + design | No |
+| 01 | LangFuse Fundamentals | Architecture, trace hierarchy, tool comparison | No |
+| 02 | LangFuse Setup | Docker Compose deployment, environment variables | No |
+| 03 | LangChain Integration | CallbackHandler, RAG tracing, handler config | No |
+| 04 | Tracing Agents | Multi-step traces, bottleneck analysis, debugging | No |
+| 05 | Feedback & Evaluation | User scores, automated eval, quality tracking | No |
+| 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
+| 07 | Cost & Token Analysis | Cost tracking, Prometheus bridge, dashboard PromQL | No |
+| 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
 
 ## How to Run
 
@@ -29,18 +29,19 @@ python --version  # 3.10+
 cd hands-on/session-14
 
 # Run a lab
-python lab01_three_pillars.py
+python lab01_langfuse_fundamentals.py
 
 # Check the solution
-python solutions/lab01_three_pillars.py
+python solutions/lab01_langfuse_fundamentals.py
 ```
 
 ## Tips
 
 - All 8 labs work WITHOUT a Kubernetes cluster
 - Look for `# TODO` markers — that's where you write code or YAML
-- Labs 01-04 cover observability concepts
-- Labs 05-07 cover OpenTelemetry implementation
+- Labs 01-03 cover LangFuse setup and LangChain integration
+- Labs 04-06 cover tracing, feedback, and prompt management
+- Lab 07 covers cost analysis with Prometheus bridge
 - Lab 08 is the challenge combining all concepts
 - Generated files appear in `/tmp/k8s-lab-14-XX/` directories
 - Compare your work with `solutions/` when done

@@ -34,5 +34,8 @@ beautifulsoup4>=4.12
 # HTTP client
 httpx>=0.27
 
+# MCP (Model Context Protocol)
+mcp>=1.0
+
 # Utilities
 requests>=2.32

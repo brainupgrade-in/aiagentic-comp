@@ -11,7 +11,7 @@
 - Basic Python programming knowledge
 - Basic understanding of APIs and REST concepts
 - Familiarity with command line / terminal
-- Basic Docker knowledge (helpful but not required)
+- Familiarity with AI coding assistants (helpful but not required)
 
 ### Required Accounts & Tools
 
@@ -27,14 +27,16 @@
 
 ## Course Overview
 
-A comprehensive program covering the full spectrum of Agentic AI development -- from foundational concepts to production deployment with enterprise-grade observability. This course focuses on practical implementation using LangChain ecosystem, containerization with Docker/Kubernetes, and monitoring with OpenTelemetry.
+A comprehensive program covering the full spectrum of Agentic AI development -- from foundational concepts to production deployment with enterprise-grade observability. This course focuses on practical implementation using LangChain ecosystem, AI coding agents, Model Context Protocol (MCP), and monitoring with OpenTelemetry.
 
 ### Learning Outcomes
 
 - Understand agentic AI fundamentals and architectural patterns
 - Build AI agents using LangChain and its ecosystem
 - Develop production-ready agentic applications
-- Deploy agents using Docker and Kubernetes
+- Build and use AI coding agents and vibe coding workflows
+- Implement Model Context Protocol (MCP) servers and clients
+- Build custom AI developer tools (code review, tool registries, sandboxing)
 - Implement observability with OpenTelemetry, Prometheus, and Grafana
 - Monitor and debug agents with LangFuse
 - Leverage agentic IDEs for AI-assisted development
@@ -57,10 +59,14 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 - **ChromaDB** - Vector database (Apache 2.0)
 - **FastAPI** - API framework (MIT)
 
+### AI Developer Tools
+
+- **MCP Python SDK** - Model Context Protocol (MIT)
+- **OpenCode** - AI-assisted coding in terminal
+
 ### Infrastructure
 
-- **Docker** - Containerization (Apache 2.0)
-- **Kubernetes** - Container orchestration (Apache 2.0)
+- **Docker** - Containerization for observability stack (Apache 2.0)
 
 ### Observability
 
@@ -78,7 +84,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 Each participant will be provided with a dedicated lab environment:
 
 - **Browser-Based IDE** - No local setup required; develop directly in browser
-- **Pre-configured Environment** - Python, Docker, Kubernetes, and all tools pre-installed
+- **Pre-configured Environment** - Python, Docker, and all tools pre-installed
 - **Personal Sandbox** - Isolated environment for each participant
 - **Public URL** - Each deployed app gets an internet-accessible URL for testing
 - **Persistent Storage** - Work is saved across sessions
@@ -86,8 +92,8 @@ Each participant will be provided with a dedicated lab environment:
 ### What You Can Do
 
 - Develop LangChain/LangGraph applications
-- Build and run Docker containers
-- Deploy to Kubernetes cluster
+- Build and use AI coding agents and MCP servers
+- Build and run Docker containers for observability stack
 - Configure Prometheus, Grafana, LangFuse
 - Test and troubleshoot AI applications end-to-end
 
@@ -319,94 +325,77 @@ Each participant will be provided with a dedicated lab environment:
 
 ---
 
-## Day 4: Docker & Kubernetes Deployment
+## Day 4: AI Coding Agents & Developer Tools
 
-### Session 1: Docker for AI Applications
+### Session 1: AI Coding Agents & Vibe Coding
 
-**Docker Fundamentals**
-- Containers vs Virtual Machines
-- Docker architecture (daemon, client, registry)
-- Images, containers, and layers
+**The Agent Loop Model**
+- Five phases: Plan, Code, Test, Reflect, Iterate
+- Context management and token budgeting
+- Tool registries for file operations, search, and testing
 
-**Dockerfile for LangChain**
-- FROM, RUN, COPY, WORKDIR, CMD, ENTRYPOINT
-- Multi-stage builds for smaller images
-- Base images for ML (python:3.11-slim)
-- Layer optimization for pip packages
+**Vibe Coding & Prompt Engineering**
+- Natural language to code workflows
+- Structured prompt templates for code generation
+- Iterative refinement patterns
 
-**AI-Specific Patterns**
-- Managing large dependencies
-- Model caching strategies
-- Non-root user for security
-- Health checks
+**AI Coding Agent Comparison**
+- OpenCode, Claude Code, GitHub Copilot, Cursor
+- Feature scoring: context window, tool use, autonomy
+- Choosing the right tool for the task
 
-**Lab 9: Containerize AI Application**
-- Write production Dockerfile
-- Build and test container
-- Security scanning with Trivy
+**Lab 9: Coding Agent Simulation**
+- Build a coding agent loop simulator
+- Implement tool calling patterns
+- Practice vibe coding workflows
 
-### Session 2: Kubernetes Fundamentals
+### Session 2: Model Context Protocol (MCP)
 
-**Kubernetes Overview**
-- Why Kubernetes for AI workloads
-- Architecture: Control plane, nodes, pods
-- kubectl CLI basics
+**MCP Architecture**
+- JSON-RPC 2.0 message format
+- Host, Client, Server roles
+- Request/Response lifecycle
 
-**Core Objects**
-- Pods - Smallest deployable unit
-- Deployments - Declarative updates
-- Services - Network abstraction
-- ConfigMaps & Secrets - Configuration management
+**MCP Primitives**
+- Tools: Functions the AI can invoke
+- Resources: Data the AI can read (static + dynamic)
+- Prompts: Pre-built prompt templates
 
-**AI Workload Considerations**
-- Memory requirements for LLMs
-- Resource requests and limits
-- Model loading time and readiness probes
+**Transport Layers**
+- stdio transport: encoding and decoding
+- SSE (Server-Sent Events): streaming responses
+- Client discovery and multi-step workflows
 
-### Session 3: Deploying AI Stack on Kubernetes
+**Lab 10: Build an MCP Server**
+- Implement MCP server skeleton with FastMCP
+- Add tools, resources, and prompts
+- Connect client to server
 
-**Deployment Strategies**
-- Rolling updates
-- Horizontal Pod Autoscaler (HPA)
-- Service types (ClusterIP, NodePort, LoadBalancer)
-- Ingress for HTTP routing
+### Session 3: Building Custom AI Dev Tools
 
-**Configuration & Storage**
-- ConfigMaps for app configuration
-- Secrets for API keys
-- PersistentVolumes and PersistentVolumeClaims
-- StatefulSets for databases
+**Code Quality & Review Servers**
+- AST-based code analysis (lint, complexity, security)
+- Test runner simulation and pytest output parsing
+- Documentation generation from source code
 
-**Deploying ChromaDB on Kubernetes**
-- StatefulSet configuration
-- Persistent storage for embeddings
-- Service for internal access
+**Review Agent Workflows**
+- TypedDict state design for review pipelines
+- Multi-step workflow: analyze, test, review, report
+- Tool registries: register, discover, route
 
-**Lab 10: Deploy Complete AI Stack**
-- Deploy LangChain API with Deployment
-- Deploy ChromaDB with persistence
-- Configure Ingress and secrets
+**Sandboxed Execution**
+- Restricted subprocess with timeouts
+- Input validation and safety checks
+- Combining MCP servers with review agents
 
-### Session 4: Kubernetes Operations
-
-**Debugging & Troubleshooting**
-- kubectl logs, describe, exec
-- Pod events and status
-- Common issues and fixes
-
-**Scaling & High Availability**
-- Horizontal Pod Autoscaler configuration
-- Pod Disruption Budgets
-- Multi-replica deployments
-
-**Lab 11: Scaling & Operations**
-- Configure HPA for API service
-- Test auto-scaling under load
-- Practice debugging scenarios
+**Lab 11: AI Dev Tool Suite**
+- Build code quality MCP server
+- Implement review agent workflow
+- Create tool registry with sandboxed execution
 
 ---
 
-## Day 5: Observability & Production Operations
+## Day 5: Observability & Capstone
 
 ### Session 1: Observability Fundamentals
 
@@ -421,36 +410,23 @@ Each participant will be provided with a dedicated lab environment:
 - Instrumentation: auto vs manual
 - OTLP (OpenTelemetry Protocol)
 
+**Metric Types & Structured Logging**
+- Counter, Gauge, Histogram, Summary
+- JSON structured logging with trace_id correlation
+- AI-specific log fields
+
 **Instrumenting Python Applications**
 - opentelemetry-python SDK
 - Auto-instrumentation for FastAPI
 - Custom spans and attributes
+- OTel Collector deployment and configuration
 
-### Session 2: Metrics with Prometheus & Grafana
+**Lab 12: Observability Stack**
+- Configure OTel TracerProvider and exporters
+- Implement structured logging
+- Set up OTel Collector pipeline
 
-**Prometheus Architecture**
-- Pull-based metrics collection
-- PromQL query language
-- Alert rules and Alertmanager
-
-**Key Metrics for AI Applications**
-- Request latency and throughput
-- Token usage and costs
-- Model inference time
-- Memory and CPU utilization
-- Queue depth and processing time
-
-**Grafana Dashboards**
-- Data sources and panels
-- Dashboard design principles
-- Alerts and notifications
-
-**Lab 12: Prometheus & Grafana Setup**
-- Deploy Prometheus on Kubernetes
-- Configure scrape targets
-- Create Grafana dashboard for AI metrics
-
-### Session 3: AI-Specific Observability with LangFuse
+### Session 2: AI-Specific Observability with LangFuse
 
 **LangFuse Overview**
 - Open-source LLM observability
@@ -468,31 +444,30 @@ Each participant will be provided with a dedicated lab environment:
 - Tracing agent reasoning steps
 - Tool call visibility
 - Token usage per step
-- Latency breakdown
+- Latency breakdown and cost analysis
 
 **Lab 13: LangFuse Integration**
-- Set up LangFuse (self-hosted)
+- Set up LangFuse (self-hosted via Docker Compose)
 - Instrument LangChain application
 - Analyze traces and costs
-- Debug agent execution
+- Configure Prometheus bridge for metrics
 
-### Session 4: Capstone & Production Readiness
+### Session 3: Capstone & Production Readiness
+
+**Production Checklist**
+- Health checks and readiness probes
+- Resource limits and autoscaling (HPA)
+- Secrets management (K8s Secrets, env vars)
+- Structured logging and monitoring
+- Alerting configuration and severity levels
+- Backup and recovery (PVC snapshots, pg_dump, GitOps)
 
 **Capstone Project: Production AI Agent**
 
 Deploy a complete, observable AI agent:
 1. LangChain agent with RAG
-2. Containerized with Docker
-3. Deployed on Kubernetes
-4. Full observability stack (OTel + Prometheus + Grafana + LangFuse)
-
-**Production Checklist**
-- Health checks and readiness probes
-- Resource limits and autoscaling
-- Secrets management
-- Logging and monitoring
-- Alerting configuration
-- Backup and recovery
+2. Full observability stack (OTel + Prometheus + Grafana + LangFuse)
+3. Production-ready configuration (health probes, autoscaling, alerts)
 
 **Lab Time & Presentations**
 - Complete capstone deployment

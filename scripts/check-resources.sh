@@ -42,13 +42,6 @@ if command -v ollama &>/dev/null; then
   echo ""
 fi
 
-# MicroK8s
-if command -v microk8s &>/dev/null; then
-  echo "--- MicroK8s ---"
-  sudo microk8s status 2>/dev/null | head -5 | while read line; do echo "  $line"; done
-  echo ""
-fi
-
 # Top processes by memory
 echo "--- Top 5 Processes (by memory) ---"
 ps aux --sort=-%mem | head -6 | awk 'NR==1{printf "  %-10s %s\n","MEM%","COMMAND"} NR>1{printf "  %-10s %s\n",$4,$11}'

@@ -77,44 +77,43 @@
 - The human-in-the-loop pattern in Session 7 often generates good discussion
 - Session 8 (Multi-Agent) is where concepts from Days 1-2 come together
 - Session 9 (Production) bridges AI concepts with DevOps -- key for the Oracle audience
-- Ensure ChromaDB containers are stopped before Day 4
+- Ensure ChromaDB containers are stopped before Day 5
 
-### Day 4: Docker & Kubernetes Deployment
+### Day 4: AI Coding Agents & MCP
 
 | Slot | Session | Slides | Labs | Setup Script |
 |------|---------|--------|------|-------------|
-| A | Session 10: Docker for AI Applications | `session10-docker-for-ai-applications.html` | `session-10/` (8 labs) | `day4-setup.sh` |
-| B | Session 11: Kubernetes Fundamentals | `session11-kubernetes-fundamentals.html` | `session-11/` (8 labs) | - |
-| C | Session 12: Deploying AI Stack on K8s | `session12-deploying-ai-stack-on-k8s.html` | `session-12/` (8 labs) | - |
-| D | Session 13: Kubernetes Operations | `session13-kubernetes-operations.html` | `session-13/` (8 labs) | - |
+| A | Session 10: AI Coding Agents & Vibe Coding | `session10-ai-coding-agents-vibe-coding.html` | `session-10/` (8 labs) | `day4-setup.sh` |
+| B | Session 11: Model Context Protocol | `session11-model-context-protocol.html` | `session-11/` (8 labs) | - |
+| C | Session 12: Building Custom AI Dev Tools | `session12-building-custom-ai-dev-tools.html` | `session-12/` (8 labs) | - |
+| D | Labs for Sessions 10-12 / Review | - | All above | - |
 
-**Day 4 Setup:** Run `bash scripts/day4-setup.sh` (installs MicroK8s).
-**Day 4 Cleanup:** Run `bash scripts/day4-cleanup.sh` at end (removes MicroK8s, frees ~2-3 GB).
+**Day 4 Setup:** Run `bash scripts/day4-setup.sh` (installs MCP SDK, verifies Python and GROQ_API_KEY). Lightweight, ~3-4 GB RAM.
+**Day 4 Cleanup:** Run `bash scripts/day4-cleanup.sh` at end (removes temp files, kills stale processes).
 
 **Teaching Notes:**
-- Day 4 is the most content-heavy day (4 sessions) -- keep slides focused
-- MicroK8s demo is brief; labs generate YAML and validate without a cluster
-- Session 10 (Docker) should be quick for experienced DevOps participants
-- Sessions 12-13 are where AI meets K8s -- emphasize StatefulSets for ChromaDB and resource limits for LLMs
-- Cleanup is critical -- MicroK8s must be removed before Day 5
+- Day 4 connects agent concepts from Days 1-3 with the latest AI developer tools. MCP is conceptually new -- give extra time for protocol architecture. The labs are Python-only (no K8s cluster needed).
+- Session 10 introduces AI coding agents and vibe coding workflows -- expect high engagement
+- Session 11 (MCP) is a significant conceptual addition -- walk through the protocol architecture carefully
+- Session 12 ties everything together by building custom tools -- encourage experimentation during Slot D
 
 ### Day 5: Observability & Production Operations
 
 | Slot | Session | Slides | Labs | Setup Script |
 |------|---------|--------|------|-------------|
-| A | Session 14: Observability Fundamentals | `session14-observability-fundamentals.html` | `session-14/` (8 labs) | `day5-setup.sh` |
-| B | Session 15: LangFuse Observability | `session15-langfuse-observability.html` | `session-15/` (8 labs) | - |
-| C | Session 16: Capstone & Production Readiness | `session16-capstone-production-readiness.html` | `session-16/` (8 labs) | - |
-| D | Labs for Sessions 14-16 | - | All above | - |
+| A | Session 13: Observability Fundamentals | `session13-observability-fundamentals.html` | `session-13/` (8 labs) | `day5-setup.sh` |
+| B | Session 14: LangFuse Observability | `session14-langfuse-observability.html` | `session-14/` (8 labs) | - |
+| C | Session 15: Capstone & Production Readiness | `session15-capstone-production-readiness.html` | `session-15/` (8 labs) | - |
+| D | Labs for Sessions 13-15 | - | All above | - |
 
 **Day 5 Setup:** Run `bash scripts/day5-setup.sh` (starts Prometheus + Grafana + LangFuse via Docker Compose).
 **Day 5 Cleanup:** Run `bash scripts/day5-cleanup.sh` at end.
 
 **Teaching Notes:**
 - Start the observability stack early -- it takes ~2 min to stabilize
-- Session 14 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
-- Session 15 (LangFuse) is AI-specific and usually generates high engagement
-- Session 16 (Capstone) is the culmination -- lab08 is the comprehensive challenge
+- Session 13 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
+- Session 14 (LangFuse) is AI-specific and usually generates high engagement
+- Session 15 (Capstone) is the culmination -- lab08 is the comprehensive challenge
 - Day 5 has 3 content sessions + dedicated lab time (Slot D), allowing deeper hands-on practice
 - End with course wrap-up, Q&A, and feedback collection
 
@@ -131,7 +130,7 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 | 1 | Ollama + Python | ~5-6 GB | Remove Ollama at end of day |
 | 2 | Python + Groq API | ~3-4 GB | Lightest day |
 | 3 | Python + ChromaDB + FastAPI | ~4-5 GB | Stop containers at end |
-| 4 | Docker + MicroK8s | ~5-7 GB | Remove MicroK8s at end |
+| 4 | Python + MCP SDK | ~3-4 GB | Remove temp files at end |
 | 5 | Docker Compose (4 containers) | ~5-7 GB | All containers mem-limited |
 
 ### If Resources Run Low
@@ -148,7 +147,7 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 
 ### Lab Format
 
-All 125 labs follow this pattern:
+All 117 labs follow this pattern:
 - Student runs `python hands-on/session-NN/labXX_topic.py`
 - Lab prints instructions and has `# TODO` sections with `"___"` placeholders
 - Student fills in answers/code in the TODO sections
@@ -175,7 +174,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 ## Pre-Course Checklist
 
 - [ ] Verify GitHub Codespace template builds successfully
-- [ ] Test all 16 session slides load in browser
+- [ ] Test all 15 session slides load in browser
 - [ ] Run at least lab01 + lab08 from each session to verify
 - [ ] Confirm Groq API free tier is working (test with a simple call)
 - [ ] Verify Docker images pull correctly in Codespace
@@ -210,7 +209,6 @@ Participants can use OpenCode (pre-installed) to help with labs:
 | Codespace won't start | Check GitHub free tier hours remaining (need ~40 hrs) |
 | Ollama out of memory | Ensure using llama3.2:1b (not larger models) |
 | Groq API rate limit | Wait 1 min; each participant needs own API key |
-| MicroK8s not starting | Check `sudo microk8s status`; may need more RAM |
 | Docker Compose fails | Run `docker system prune -f` then retry |
 | Lab validation fails | Compare with solution file; check for trailing spaces |
 | Port already in use | Find and kill: `lsof -i :PORT` then `kill PID` |

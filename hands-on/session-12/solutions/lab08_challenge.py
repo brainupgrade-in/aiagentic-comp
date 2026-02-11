@@ -1,360 +1,624 @@
 """
-Lab 08 Challenge Solution: Production AI Stack
-=================================================
+Lab 08 Solution (Challenge): Complete AI Dev Tool Suite
+
+Combine code quality analysis, tool registry, sandboxed execution, and
+review workflow into a unified AI development tool suite.
+
+This is the comprehensive challenge lab that ties together all concepts
+from Session 12.
+
+Uses only Python standard library (ast, json, os, re, subprocess, textwrap).
 """
 
+import ast
+import json
 import os
+import re
 import shutil
+import subprocess
 import textwrap
 
-WORKDIR = "/tmp/k8s-lab-12-08"
+WORKDIR = "/tmp/aidev-lab-12-08"
 
-print("=" * 60)
-print("  Challenge Solution: Production AI Stack Deployment")
-print("=" * 60)
-
+# ── Cleanup and Setup ──────────────────────────────────────────────
 if os.path.exists(WORKDIR):
     shutil.rmtree(WORKDIR)
 os.makedirs(WORKDIR, exist_ok=True)
 
+score = 0
+total = 0
 
-# ============================================================
-# TODO 1 Solution: ChromaDB StatefulSet + Services
-# ============================================================
+print("=" * 70)
+print("CHALLENGE: Complete AI Dev Tool Suite")
+print("=" * 70)
 
-print("\n--- TODO 1 Solution: ChromaDB (StatefulSet + Services) ---\n")
+print("""
+In this challenge you will build a complete AI dev tool suite that:
 
-todo1_headless = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: chromadb-headless
-    spec:
-      clusterIP: None
-      selector:
-        app: chromadb
-      ports:
-      - port: 8000
-        targetPort: 8000
+  1. Has a tool registry with 4 tools
+  2. Wraps each tool in sandboxed execution
+  3. Runs a full review workflow on sample code
+  4. Generates a comprehensive report
+
+  Architecture:
+  ┌──────────────────────────────────────────────────────────────────┐
+  │                        DevToolSuite                             │
+  │  ┌──────────────┐  ┌──────────────┐  ┌────────────────────┐   │
+  │  │ ToolRegistry │  │ Sandbox      │  │ ReviewWorkflow     │   │
+  │  │  - register  │  │  - is_safe   │  │  - analyze_code    │   │
+  │  │  - discover  │  │  - exec      │  │  - run_tests       │   │
+  │  │  - route     │  │  - validate  │  │  - generate_review │   │
+  │  └──────────────┘  └──────────────┘  └────────────────────┘   │
+  └──────────────────────────────────────────────────────────────────┘
 """)
 
-todo1_svc = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: chromadb-svc
-    spec:
-      type: ClusterIP
-      selector:
-        app: chromadb
-      ports:
-      - port: 8000
-        targetPort: 8000
+# ── Sample code to analyze ────────────────────────────────────────
+
+SAMPLE_PROJECT_CODE = textwrap.dedent("""\
+    import os
+    import json
+    import pickle
+
+    API_KEY = "sk-prod-abc123xyz789"
+
+    def load_user_data(filepath):
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)
+
+    def process_query(query):
+        result = eval(query)
+        return {"result": result}
+
+    def search_items(items, query, limit=100):
+        matches = []
+        for item in items:
+            for field in item.values():
+                if query.lower() in str(field).lower():
+                    matches.append(item)
+        return matches[:limit]
+
+    def save_report(data, path):
+        with open(path, 'w') as f:
+            json.dump(data, f)
+
+    def get_config():
+        return {
+            "db_host": os.environ.get("DB_HOST", "localhost"),
+            "db_password": "admin123",
+            "debug": True
+        }
 """)
 
-todo1_sts = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: StatefulSet
-    metadata:
-      name: chromadb
-      labels:
-        app: chromadb
-    spec:
-      serviceName: chromadb-headless
-      replicas: 1
-      selector:
-        matchLabels:
-          app: chromadb
-      template:
-        metadata:
-          labels:
-            app: chromadb
-        spec:
-          containers:
-          - name: chromadb
-            image: chromadb/chroma:latest
-            ports:
-            - containerPort: 8000
-            resources:
-              requests:
-                memory: "512Mi"
-                cpu: "500m"
-              limits:
-                memory: "2Gi"
-                cpu: "1000m"
-            readinessProbe:
-              httpGet:
-                path: /api/v1/heartbeat
-                port: 8000
-              initialDelaySeconds: 10
-              periodSeconds: 15
-            livenessProbe:
-              httpGet:
-                path: /api/v1/heartbeat
-                port: 8000
-              initialDelaySeconds: 30
-              periodSeconds: 30
-            volumeMounts:
-            - name: data
-              mountPath: /chroma/chroma
-      volumeClaimTemplates:
-      - metadata:
-          name: data
-        spec:
-          accessModes:
-          - ReadWriteOnce
-          resources:
-            requests:
-              storage: 10Gi
+
+# ── TODO 1: Create Tool Registry with 4 Tools ────────────────────
+print()
+print("=" * 70)
+print("TODO 1: Create a ToolRegistry with 4 tools")
+print("=" * 70)
+
+print("""
+Build a ToolRegistry class (or reuse your Lab 06 design) and register
+4 tools:
+
+  1. "analyze_code" — Analyze Python source for issues using ast
+     Tags: ["analysis", "code_quality"]
+     Handler: Takes source(str), returns dict with "issues" list and "stats" dict
+
+  2. "run_tests" — Simulate running tests on code
+     Tags: ["testing", "validation"]
+     Handler: Takes source(str), returns dict with "total", "passed", "failed"
+
+  3. "generate_docs" — Extract documentation from source
+     Tags: ["docs", "code_quality"]
+     Handler: Takes source(str), returns dict with "functions" list and "undocumented" list
+
+  4. "search_files" — Search for patterns in source code
+     Tags: ["search", "analysis"]
+     Handler: Takes source(str), pattern(str), returns dict with "matches" list
+
+Each handler should be a real function that does actual work (not a stub).
+
+Store the registry in a variable called `registry`.
 """)
 
-with open(os.path.join(WORKDIR, "chromadb-headless-svc.yaml"), "w") as f:
-    f.write(todo1_headless)
-with open(os.path.join(WORKDIR, "chromadb-svc.yaml"), "w") as f:
-    f.write(todo1_svc)
-with open(os.path.join(WORKDIR, "chromadb-statefulset.yaml"), "w") as f:
-    f.write(todo1_sts)
 
-print("  Headless Service: chromadb-headless (clusterIP: None)")
-print("  ClusterIP Service: chromadb-svc (port 8000)")
-print("  StatefulSet: chromadb (probes, resources, volumeClaimTemplates)")
+class ToolRegistry:
+    """Tool registry for the dev suite."""
+
+    def __init__(self):
+        self._tools = {}
+
+    def register(self, name, handler, description="", tags=None):
+        self._tools[name] = {
+            "name": name,
+            "handler": handler,
+            "description": description,
+            "tags": tags or [],
+        }
+        return self
+
+    def discover(self, query=None, tags=None):
+        results = []
+        for tool in self._tools.values():
+            if query and query.lower() not in tool["description"].lower():
+                continue
+            if tags and not all(t in tool["tags"] for t in tags):
+                continue
+            results.append({"name": tool["name"], "description": tool["description"], "tags": tool["tags"]})
+        return results
+
+    def route(self, tool_name, **kwargs):
+        if tool_name not in self._tools:
+            return {"error": f"Tool '{tool_name}' not found"}
+        return self._tools[tool_name]["handler"](**kwargs)
+
+    def list_all(self):
+        return sorted(self._tools.keys())
 
 
-# ============================================================
-# TODO 2 Solution: Agent Deployment + Service + HPA
-# ============================================================
+def analyze_code_tool(source: str) -> dict:
+    """Analyze Python source code for issues."""
+    issues = []
 
-print("\n\n--- TODO 2 Solution: Agent API (Deployment + Service + HPA) ---\n")
+    # Security checks
+    if "eval(" in source or "exec(" in source:
+        issues.append({"category": "security", "issue": "dangerous_eval_exec", "detail": "Use of eval/exec"})
+    if "pickle.load" in source:
+        issues.append({"category": "security", "issue": "unsafe_deserialization", "detail": "Pickle load detected"})
+    if "sk-" in source:
+        issues.append({"category": "security", "issue": "hardcoded_api_key", "detail": "API key in source"})
+    if "password" in source.lower() and ("=" in source):
+        issues.append({"category": "security", "issue": "hardcoded_password", "detail": "Password in source"})
 
-todo2_deploy = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: agent-api
-      labels:
-        app: agent
-        component: api
-    spec:
-      replicas: 3
-      strategy:
-        type: RollingUpdate
-        rollingUpdate:
-          maxSurge: 1
-          maxUnavailable: 0
-      selector:
-        matchLabels:
-          app: agent
-      template:
-        metadata:
-          labels:
-            app: agent
-            component: api
-        spec:
-          containers:
-          - name: agent
-            image: agent-api:2.0
-            ports:
-            - containerPort: 8000
-            envFrom:
-            - configMapRef:
-                name: agent-config
-            - secretRef:
-                name: agent-secrets
-            resources:
-              requests:
-                memory: "256Mi"
-                cpu: "250m"
-              limits:
-                memory: "1Gi"
-                cpu: "1000m"
-            readinessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 5
-              periodSeconds: 10
-            livenessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 15
-              periodSeconds: 20
+    # AST-based checks
+    try:
+        tree = ast.parse(source)
+        func_count = 0
+        class_count = 0
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                func_count += 1
+                # Nested loop check
+                for child in ast.walk(node):
+                    if isinstance(child, ast.For):
+                        for gc in ast.walk(child):
+                            if isinstance(gc, ast.For) and gc is not child:
+                                issues.append({
+                                    "category": "performance",
+                                    "issue": "nested_loop",
+                                    "detail": f"Nested loop in {node.name}",
+                                })
+                                break
+                        break
+                # Missing docstring
+                if ast.get_docstring(node) is None:
+                    issues.append({
+                        "category": "style",
+                        "issue": "missing_docstring",
+                        "detail": f"Function {node.name} has no docstring",
+                    })
+            elif isinstance(node, ast.ClassDef):
+                class_count += 1
+    except SyntaxError:
+        func_count = 0
+        class_count = 0
+
+    stats = {"functions": func_count, "classes": class_count, "lines": source.count("\n") + 1}
+    return {"issues": issues, "stats": stats}
+
+
+def run_tests_tool(source: str) -> dict:
+    """Simulate test execution on source code."""
+    try:
+        tree = ast.parse(source)
+        functions = []
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                has_issue = False
+                # Check for eval/exec usage in function
+                for child in ast.walk(node):
+                    if isinstance(child, ast.Call):
+                        if isinstance(child.func, ast.Name) and child.func.id in ("eval", "exec"):
+                            has_issue = True
+                            break
+                # Check for missing docstring
+                if ast.get_docstring(node) is None:
+                    has_issue = True
+                functions.append({"name": node.name, "would_fail": has_issue})
+    except SyntaxError:
+        functions = []
+
+    total_count = len(functions)
+    failed_count = sum(1 for f in functions if f["would_fail"])
+    passed_count = total_count - failed_count
+
+    details = [
+        {"test": f"test_{f['name']}", "status": "failed" if f["would_fail"] else "passed"}
+        for f in functions
+    ]
+
+    return {"total": total_count, "passed": passed_count, "failed": failed_count, "details": details}
+
+
+def generate_docs_tool(source: str) -> dict:
+    """Extract documentation from source code."""
+    try:
+        tree = ast.parse(source)
+        functions = []
+        undocumented = []
+
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                doc = ast.get_docstring(node)
+                functions.append({"name": node.name, "docstring": doc})
+                if doc is None:
+                    undocumented.append(node.name)
+    except SyntaxError:
+        functions = []
+        undocumented = []
+
+    return {"functions": functions, "undocumented": undocumented}
+
+
+def search_files_tool(source: str, pattern: str = "") -> dict:
+    """Search for a pattern in source code."""
+    matches = []
+    if pattern:
+        for i, line in enumerate(source.splitlines(), 1):
+            if pattern.lower() in line.lower():
+                matches.append({"line_num": i, "line": line.strip()})
+    return {"pattern": pattern, "matches": matches}
+
+
+# Create and populate registry
+registry = ToolRegistry()
+registry.register("analyze_code", analyze_code_tool, "Analyze Python source for security, performance, and style issues", ["analysis", "code_quality"])
+registry.register("run_tests", run_tests_tool, "Simulate running tests on Python source code", ["testing", "validation"])
+registry.register("generate_docs", generate_docs_tool, "Extract documentation and find undocumented functions", ["docs", "code_quality"])
+registry.register("search_files", search_files_tool, "Search for patterns in source code", ["search", "analysis"])
+
+
+# Validate TODO 1
+total += 1
+try:
+    if isinstance(registry, ToolRegistry) and len(registry.list_all()) == 4:
+        print(f"  [PASS] Registry has 4 tools: {registry.list_all()}")
+        score += 1
+    else:
+        tools = registry.list_all() if isinstance(registry, ToolRegistry) else "not a registry"
+        print(f"  [FAIL] Expected 4 tools, got: {tools}")
+except Exception as e:
+    print(f"  [FAIL] Registry check raised: {e}")
+
+total += 1
+try:
+    result = registry.route("analyze_code", source=SAMPLE_PROJECT_CODE)
+    if isinstance(result, dict) and "issues" in result and len(result["issues"]) >= 3:
+        print(f"  [PASS] analyze_code found {len(result['issues'])} issues")
+        score += 1
+    else:
+        print(f"  [FAIL] analyze_code result: {result}")
+except Exception as e:
+    print(f"  [FAIL] analyze_code raised: {e}")
+
+total += 1
+try:
+    result = registry.route("generate_docs", source=SAMPLE_PROJECT_CODE)
+    if isinstance(result, dict) and "undocumented" in result and len(result["undocumented"]) >= 3:
+        print(f"  [PASS] generate_docs found {len(result['undocumented'])} undocumented functions")
+        score += 1
+    else:
+        print(f"  [FAIL] generate_docs result: {result}")
+except Exception as e:
+    print(f"  [FAIL] generate_docs raised: {e}")
+
+total += 1
+try:
+    result = registry.route("search_files", source=SAMPLE_PROJECT_CODE, pattern="eval")
+    if isinstance(result, dict) and len(result.get("matches", [])) >= 1:
+        print(f"  [PASS] search_files found 'eval' in source")
+        score += 1
+    else:
+        print(f"  [FAIL] search_files result: {result}")
+except Exception as e:
+    print(f"  [FAIL] search_files raised: {e}")
+
+
+# ── TODO 2: Sandboxed Execution Wrapper ──────────────────────────
+print()
+print("=" * 70)
+print("TODO 2: Implement sandboxed execution wrapper")
+print("=" * 70)
+
+print("""
+Create a sandboxed_tool_call function that wraps registry.route calls:
+
+  sandboxed_tool_call(registry, tool_name, **kwargs):
+    1. Check that tool_name exists in registry (list_all)
+       → If not: return {"status": "error", "reason": "Unknown tool"}
+    2. Try to call registry.route(tool_name, **kwargs)
+    3. If successful, return {"status": "success", "tool": tool_name, "result": <result>}
+    4. If exception, return {"status": "error", "tool": tool_name, "reason": str(e)}
+    5. Wrap in a try/except to catch ALL exceptions
 """)
 
-todo2_svc = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: agent-svc
-    spec:
-      type: LoadBalancer
-      selector:
-        app: agent
-      ports:
-      - port: 80
-        targetPort: 8000
+
+def sandboxed_tool_call(reg: ToolRegistry, tool_name: str, **kwargs) -> dict:
+    """Execute a tool call with error handling."""
+    if tool_name not in reg.list_all():
+        return {"status": "error", "reason": "Unknown tool"}
+
+    try:
+        result = reg.route(tool_name, **kwargs)
+        return {"status": "success", "tool": tool_name, "result": result}
+    except Exception as e:
+        return {"status": "error", "tool": tool_name, "reason": str(e)}
+
+
+# Validate TODO 2
+total += 1
+try:
+    result = sandboxed_tool_call(registry, "analyze_code", source="print('hello')")
+    if isinstance(result, dict) and result.get("status") == "success":
+        print(f"  [PASS] sandboxed_tool_call succeeds for valid tool")
+        score += 1
+    else:
+        print(f"  [FAIL] Expected success: {result}")
+except Exception as e:
+    print(f"  [FAIL] sandboxed_tool_call raised: {e}")
+
+total += 1
+try:
+    result = sandboxed_tool_call(registry, "nonexistent_tool")
+    if isinstance(result, dict) and result.get("status") == "error":
+        print(f"  [PASS] sandboxed_tool_call handles unknown tool")
+        score += 1
+    else:
+        print(f"  [FAIL] Expected error for unknown tool: {result}")
+except Exception as e:
+    print(f"  [FAIL] sandboxed_tool_call raised: {e}")
+
+
+# ── TODO 3: Complete Review Workflow ──────────────────────────────
+print()
+print("=" * 70)
+print("TODO 3: Run complete review workflow on sample code")
+print("=" * 70)
+
+print("""
+Execute a full review workflow using the registered tools:
+
+  1. Run analyze_code on SAMPLE_PROJECT_CODE via sandboxed_tool_call
+  2. Run run_tests on SAMPLE_PROJECT_CODE via sandboxed_tool_call
+  3. Run generate_docs on SAMPLE_PROJECT_CODE via sandboxed_tool_call
+  4. Run search_files for pattern "eval" via sandboxed_tool_call
+
+  5. Determine severity:
+     - If any security issues in analysis → "request_changes"
+     - Else if any issues at all → "comment"
+     - Else → "approve"
+
+  6. Build a review dict:
+     {
+         "code_analysis": <result from step 1>,
+         "test_results": <result from step 2>,
+         "documentation": <result from step 3>,
+         "security_scan": <result from step 4>,
+         "severity": <from step 5>,
+         "summary": <multi-line string summarizing all findings>
+     }
+
+  Store in variable `review_result`.
 """)
 
-todo2_hpa = textwrap.dedent("""\
-    apiVersion: autoscaling/v2
-    kind: HorizontalPodAutoscaler
-    metadata:
-      name: agent-api-hpa
-    spec:
-      scaleTargetRef:
-        apiVersion: apps/v1
-        kind: Deployment
-        name: agent-api
-      minReplicas: 2
-      maxReplicas: 8
-      metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          target:
-            type: Utilization
-            averageUtilization: 70
-      behavior:
-        scaleDown:
-          stabilizationWindowSeconds: 300
+# Run the 4 tool calls
+analysis = sandboxed_tool_call(registry, "analyze_code", source=SAMPLE_PROJECT_CODE)
+tests = sandboxed_tool_call(registry, "run_tests", source=SAMPLE_PROJECT_CODE)
+docs = sandboxed_tool_call(registry, "generate_docs", source=SAMPLE_PROJECT_CODE)
+search = sandboxed_tool_call(registry, "search_files", source=SAMPLE_PROJECT_CODE, pattern="eval")
+
+# Determine severity
+issues = analysis.get("result", {}).get("issues", []) if analysis.get("status") == "success" else []
+security_issues = [i for i in issues if i.get("category") == "security"]
+if security_issues:
+    severity = "request_changes"
+elif issues:
+    severity = "comment"
+else:
+    severity = "approve"
+
+# Build summary
+summary_lines = [
+    "Code Review Summary",
+    "=" * 40,
+    f"Total issues found: {len(issues)}",
+    f"Security issues: {len(security_issues)}",
+    f"Test results: {tests.get('result', {}).get('passed', 0)} passed, {tests.get('result', {}).get('failed', 0)} failed",
+    f"Undocumented functions: {len(docs.get('result', {}).get('undocumented', []))}",
+    f"Eval/exec occurrences: {len(search.get('result', {}).get('matches', []))}",
+    f"Severity: {severity}",
+    "",
+    "Issues:",
+]
+for issue in issues:
+    summary_lines.append(f"  - [{issue.get('category')}] {issue.get('issue')}: {issue.get('detail', '')}")
+
+review_result = {
+    "code_analysis": analysis,
+    "test_results": tests,
+    "documentation": docs,
+    "security_scan": search,
+    "severity": severity,
+    "summary": "\n".join(summary_lines),
+}
+
+
+# Validate TODO 3
+total += 1
+try:
+    if isinstance(review_result, dict) and "code_analysis" in review_result:
+        print(f"  [PASS] review_result has code_analysis")
+        score += 1
+    else:
+        print(f"  [FAIL] Missing code_analysis: {type(review_result)}")
+except Exception as e:
+    print(f"  [FAIL] review_result check raised: {e}")
+
+total += 1
+try:
+    if isinstance(review_result, dict) and review_result.get("severity") == "request_changes":
+        print(f"  [PASS] review_result severity='request_changes' (correct for sample code)")
+        score += 1
+    else:
+        sev = review_result.get("severity") if isinstance(review_result, dict) else "N/A"
+        print(f"  [FAIL] Expected severity='request_changes', got: {sev}")
+except Exception as e:
+    print(f"  [FAIL] severity check raised: {e}")
+
+total += 1
+try:
+    if isinstance(review_result, dict) and "summary" in review_result and len(review_result["summary"]) > 50:
+        print(f"  [PASS] review_result has detailed summary ({len(review_result['summary'])} chars)")
+        score += 1
+    else:
+        print(f"  [FAIL] Missing or short summary")
+except Exception as e:
+    print(f"  [FAIL] summary check raised: {e}")
+
+
+# ── TODO 4: Generate Comprehensive Report ─────────────────────────
+print()
+print("=" * 70)
+print("TODO 4: Generate comprehensive report")
+print("=" * 70)
+
+print("""
+Create a comprehensive JSON report and save it to WORKDIR/dev_tool_report.json.
+
+The report should contain:
+  {
+      "tool_suite": {
+          "registered_tools": <list from registry.list_all()>,
+          "discoverable_by_analysis": <list of names from discover(tags=["analysis"])>,
+      },
+      "review": <review_result from TODO 3>,
+      "execution_log": [
+          {"tool": <name>, "status": <success/error>}
+          for each of the 4 tool calls
+      ],
+      "recommendations": [
+          <list of 1-line string recommendations based on findings>
+          e.g., "Remove eval() usage in process_query function"
+          e.g., "Remove hardcoded API key from source code"
+          e.g., "Add docstrings to all functions"
+      ]
+  }
+
+Store in `final_report` and write to WORKDIR/dev_tool_report.json.
 """)
 
-with open(os.path.join(WORKDIR, "agent-deployment.yaml"), "w") as f:
-    f.write(todo2_deploy)
-with open(os.path.join(WORKDIR, "agent-service.yaml"), "w") as f:
-    f.write(todo2_svc)
-with open(os.path.join(WORKDIR, "agent-hpa.yaml"), "w") as f:
-    f.write(todo2_hpa)
+# Build recommendations based on findings
+recommendations = []
+for issue in issues:
+    if issue.get("issue") == "dangerous_eval_exec":
+        recommendations.append("Remove eval() usage in process_query function — use ast.literal_eval or a safe parser")
+    elif issue.get("issue") == "unsafe_deserialization":
+        recommendations.append("Replace pickle.load with json.load or a safe deserialization library")
+    elif issue.get("issue") == "hardcoded_api_key":
+        recommendations.append("Remove hardcoded API key from source code — use environment variables")
+    elif issue.get("issue") == "hardcoded_password":
+        recommendations.append("Remove hardcoded password from get_config — use secrets management")
+    elif issue.get("issue") == "nested_loop":
+        recommendations.append(f"Optimize {issue.get('detail', 'nested loop')} — consider indexing or caching")
+    elif issue.get("issue") == "missing_docstring":
+        recommendations.append(f"Add docstring to {issue.get('detail', 'function')}")
 
-print("  Deployment: agent-api (3 replicas, rolling update, envFrom, probes)")
-print("  Service: agent-svc (LoadBalancer, port 80 -> 8000)")
-print("  HPA: agent-api-hpa (min=2, max=8, CPU=70%, stabilization=300)")
+# Build execution log
+execution_log = [
+    {"tool": "analyze_code", "status": analysis.get("status", "unknown")},
+    {"tool": "run_tests", "status": tests.get("status", "unknown")},
+    {"tool": "generate_docs", "status": docs.get("status", "unknown")},
+    {"tool": "search_files", "status": search.get("status", "unknown")},
+]
 
+# Discoverable by analysis tag
+analysis_tools = registry.discover(tags=["analysis"])
+analysis_tool_names = [t["name"] for t in analysis_tools]
 
-# ============================================================
-# TODO 3 Solution: Ingress with TLS
-# ============================================================
-
-print("\n\n--- TODO 3 Solution: Ingress with TLS ---\n")
-
-todo3_ingress = textwrap.dedent("""\
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: ai-stack-ingress
-      annotations:
-        nginx.ingress.kubernetes.io/rewrite-target: /
-    spec:
-      ingressClassName: nginx
-      tls:
-      - hosts:
-        - ai.example.com
-        secretName: ai-tls-secret
-      rules:
-      - host: ai.example.com
-        http:
-          paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: agent-svc
-                port:
-                  number: 80
-          - path: /docs
-            pathType: Prefix
-            backend:
-              service:
-                name: chromadb-svc
-                port:
-                  number: 8000
-""")
-
-with open(os.path.join(WORKDIR, "ingress.yaml"), "w") as f:
-    f.write(todo3_ingress)
-
-print("  Ingress: ai-stack-ingress (nginx, TLS)")
-print("    /api  -> agent-svc:80")
-print("    /docs -> chromadb-svc:8000")
-print("    TLS: ai-tls-secret for ai.example.com")
+final_report = {
+    "tool_suite": {
+        "registered_tools": registry.list_all(),
+        "discoverable_by_analysis": analysis_tool_names,
+    },
+    "review": review_result,
+    "execution_log": execution_log,
+    "recommendations": recommendations,
+}
 
 
-# ============================================================
-# Validation (30 checks matching student lab)
-# ============================================================
-
-print("\n\n--- Challenge Validation ---\n")
-
-results = []
-
-# TODO 1: ChromaDB
-results.append(("Headless: kind Service", "kind: Service" in todo1_headless))
-results.append(("Headless: clusterIP None", "None" in todo1_headless))
-results.append(("Headless: port 8000", "8000" in todo1_headless))
-results.append(("ClusterIP: kind Service", "kind: Service" in todo1_svc))
-results.append(("ClusterIP: chromadb-svc", "chromadb-svc" in todo1_svc))
-results.append(("StatefulSet: kind", "StatefulSet" in todo1_sts))
-results.append(("StatefulSet: serviceName", "chromadb-headless" in todo1_sts))
-results.append(("StatefulSet: probes", "readinessProbe:" in todo1_sts or "livenessProbe:" in todo1_sts))
-results.append(("StatefulSet: resources", "resources:" in todo1_sts))
-results.append(("StatefulSet: volumeClaimTemplates", "volumeClaimTemplates" in todo1_sts))
-results.append(("StatefulSet: heartbeat", "/api/v1/heartbeat" in todo1_sts))
-
-# TODO 2: Agent
-results.append(("Agent Deploy: kind Deployment", "kind: Deployment" in todo2_deploy))
-results.append(("Agent Deploy: replicas 3", "replicas: 3" in todo2_deploy))
-results.append(("Agent Deploy: RollingUpdate", "RollingUpdate" in todo2_deploy))
-results.append(("Agent Deploy: envFrom", "envFrom:" in todo2_deploy))
-results.append(("Agent Deploy: readinessProbe", "readinessProbe:" in todo2_deploy))
-results.append(("Agent Deploy: resources", "resources:" in todo2_deploy))
-results.append(("Agent Service: LoadBalancer", "LoadBalancer" in todo2_svc))
-results.append(("Agent Service: port 80", "port: 80" in todo2_svc))
-results.append(("HPA: autoscaling/v2", "autoscaling/v2" in todo2_hpa))
-results.append(("HPA: minReplicas 2", "minReplicas: 2" in todo2_hpa))
-results.append(("HPA: maxReplicas 8", "maxReplicas: 8" in todo2_hpa))
-results.append(("HPA: stabilization 300", "300" in todo2_hpa))
-
-# TODO 3: Ingress
-results.append(("Ingress: kind", "kind: Ingress" in todo3_ingress))
-results.append(("Ingress: nginx class", "nginx" in todo3_ingress))
-results.append(("Ingress: TLS secret", "ai-tls-secret" in todo3_ingress))
-results.append(("Ingress: path /api", "/api" in todo3_ingress))
-results.append(("Ingress: path /docs", "/docs" in todo3_ingress))
-results.append(("Ingress: agent-svc", "agent-svc" in todo3_ingress))
-results.append(("Ingress: chromadb-svc", "chromadb-svc" in todo3_ingress))
-
-passed = sum(1 for _, ok in results if ok)
-total = len(results)
-
-print(f"  Results: {passed}/{total} checks passed\n")
-for name, ok in results:
-    print(f"    [{'PASS' if ok else 'FAIL'}] {name}")
+# Write the report
+report_path = os.path.join(WORKDIR, "dev_tool_report.json")
+try:
+    with open(report_path, "w") as f:
+        json.dump(final_report if isinstance(final_report, dict) else {"error": str(final_report)}, f, indent=2, default=str)
+    print(f"  Report written to: {report_path}")
+except Exception as e:
+    print(f"  Failed to write report: {e}")
 
 
-# ============================================================
-# Summary
-# ============================================================
+# Validate TODO 4
+total += 1
+try:
+    if os.path.exists(report_path):
+        with open(report_path) as f:
+            data = json.load(f)
+        if "tool_suite" in data and "review" in data:
+            print(f"  [PASS] dev_tool_report.json has tool_suite and review sections")
+            score += 1
+        else:
+            print(f"  [FAIL] Report missing sections: {list(data.keys())}")
+    else:
+        print(f"  [FAIL] Report file not found")
+except Exception as e:
+    print(f"  [FAIL] Report validation raised: {e}")
 
-print(f"\n\n--- Challenge Complete ---\n")
-print(f"  Score: {passed}/{total} ({passed/total*100:.0f}%)")
-print(f"\n  Files created in {WORKDIR}/:")
-for root, dirs, files in os.walk(WORKDIR):
-    for f in sorted(files):
-        rel = os.path.relpath(os.path.join(root, f), WORKDIR)
-        size = os.path.getsize(os.path.join(root, f))
-        print(f"    {rel:<40} ({size} bytes)")
+total += 1
+try:
+    with open(report_path) as f:
+        data = json.load(f)
+    recs = data.get("recommendations", [])
+    if isinstance(recs, list) and len(recs) >= 2:
+        print(f"  [PASS] Report has {len(recs)} recommendations")
+        score += 1
+    else:
+        print(f"  [FAIL] Expected >= 2 recommendations: {recs}")
+except Exception as e:
+    print(f"  [FAIL] Recommendations check raised: {e}")
 
-print(f"\n  Deploy order on a real cluster:")
-print(f"    1. kubectl apply -f chromadb-headless-svc.yaml -f chromadb-svc.yaml")
-print(f"    2. kubectl apply -f chromadb-statefulset.yaml")
-print(f"    3. kubectl apply -f agent-deployment.yaml -f agent-service.yaml")
-print(f"    4. kubectl apply -f agent-hpa.yaml")
-print(f"    5. kubectl apply -f ingress.yaml")
-print(f"    6. kubectl get all && kubectl get ingress")
+total += 1
+try:
+    with open(report_path) as f:
+        data = json.load(f)
+    log = data.get("execution_log", [])
+    if isinstance(log, list) and len(log) == 4:
+        print(f"  [PASS] Execution log has 4 entries")
+        score += 1
+    else:
+        print(f"  [FAIL] Expected 4 log entries: {log}")
+except Exception as e:
+    print(f"  [FAIL] Execution log check raised: {e}")
 
-print("\n" + "=" * 60)
-print("Challenge Solution complete!")
-print("- ChromaDB: StatefulSet + headless + ClusterIP + PVC")
-print("- Agent: Deployment + LB Service + HPA")
-print("- Ingress: TLS + path-based routing")
-print(f"- {passed}/{total} validation checks passing")
+
+# ── Summary ───────────────────────────────────────────────────────
+print()
+print("=" * 70)
+print(f"Challenge Lab 08 Score: {score}/{total}")
+print("=" * 70)
+
+if score == total:
+    print("\nCongratulations! You completed the full AI Dev Tool Suite challenge!")
+elif score >= total * 0.7:
+    print("\nGreat progress! Review the failing checks and refine your implementation.")
+else:
+    print("\nKeep going! Work through each TODO step by step.")
