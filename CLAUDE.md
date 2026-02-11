@@ -171,10 +171,11 @@ All containers are memory-capped to prevent OOM on 8 GB:
 ## Course Outline Review Notes
 
 Strengths identified:
-- Strong logical 5-day progression (foundations → ecosystem → advanced → deploy → observe)
-- 13 labs + capstone project
-- Production-focused with real deployment and observability
+- Strong logical 5-day progression (foundations → ecosystem → advanced → AI dev tools → observe)
+- 117 labs + 15 challenge labs across 15 sessions
+- Production-focused with observability and capstone
 - All open-source/free tooling — no vendor lock-in
+- Day 4 (AI Coding Agents, MCP, Dev Tools) is highly current and practical
 
 Gaps to consider addressing:
 - **Guardrails/safety** — no coverage of prompt injection defense or output validation
@@ -199,7 +200,7 @@ python hands-on/session-NN/solutions/labXX_topic.py
 - Educational Steps (tables, code examples, architecture diagrams)
 - TODO sections with `"___"` placeholders for answers
 - Validation with `[PASS]/[FAIL]` string matching and scoring
-- Generated YAML/config files saved to `/tmp/k8s-lab-NN-XX/`
+- Generated files saved to `/tmp/k8s-lab-NN-XX/` (sessions 1-9, 13-15) or `/tmp/aidev-lab-NN-XX/` (sessions 10-12)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
 **Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session)
