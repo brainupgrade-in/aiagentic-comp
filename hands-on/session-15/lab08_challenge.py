@@ -1,18 +1,18 @@
 """
-Lab 08 Challenge: Complete Monitoring Stack
-=============================================
-Build a complete Prometheus monitoring setup:
-metrics code, scrape config, alerts, and dashboard design.
+Lab 08 Challenge: Complete LangFuse Observability Pipeline
+============================================================
+Build end-to-end LangFuse integration with LangChain,
+Prometheus bridge, dashboard design, and alert rules.
 """
 
 import os
 import shutil
 import textwrap
 
-WORKDIR = "/tmp/k8s-lab-15-08"
+WORKDIR = "/tmp/k8s-lab-16-08"
 
 print("=" * 60)
-print("  Challenge: Complete Monitoring Stack")
+print("  Challenge: Complete LangFuse Observability Pipeline")
 print("=" * 60)
 
 if os.path.exists(WORKDIR):
@@ -24,136 +24,127 @@ os.makedirs(WORKDIR, exist_ok=True)
 # Challenge Overview
 # ============================================================
 
-print("\n  Build a complete monitoring setup for an AI agent:\n")
-print("    1. Python metrics code (prometheus_client)")
-print("    2. Prometheus scrape + alert rules")
-print("    3. Dashboard panel design with PromQL")
+print("\n  Build a complete LangFuse observability pipeline:\n")
+print("    1. LangChain instrumentation with CallbackHandler")
+print("    2. Feedback collection and evaluation")
+print("    3. Cost tracking with Prometheus bridge")
+print("    4. Dashboard design + alert rules")
 print()
 print("    Architecture:")
-print("      agent-api:8000/metrics ──scrape──> Prometheus ──> Grafana")
-print("                                            │")
-print("                                       Alert Rules")
-print("                                            │")
-print("                                       Alertmanager")
-print("                                            │")
-print("                                    Slack / PagerDuty")
+print("      LangChain Agent ──callback──> LangFuse Server ──> PostgreSQL")
+print("                                        │")
+print("                                   Cost/Token data")
+print("                                        │")
+print("                                   Prometheus ──> Grafana")
+print("                                        │")
+print("                                   Alertmanager ──> Slack")
 
 
 # ============================================================
-# TODO 1: Metrics Code
+# TODO 1: Complete Instrumentation Code
 # ============================================================
 
-print("\n\n--- TODO 1: Python Metrics Code ---\n")
+print("\n\n--- TODO 1: Complete Instrumentation Code ---\n")
 
-print("  Create a complete metrics module with:")
-print("    - Counter: agent_requests_total (labels: endpoint, status)")
-print("    - Counter: agent_tokens_total (labels: model, direction)")
-print("    - Counter: agent_estimated_cost_usd (labels: model)")
-print("    - Histogram: agent_request_duration_seconds (labels: endpoint)")
-print("    - Histogram: agent_llm_duration_seconds (labels: model)")
-print("    - Gauge: agent_active_requests")
-print("    - /metrics endpoint")
-print("    - PRICING dict for cost calculation")
-print("    - record_llm_call() function")
+print("  Write a complete LangFuse instrumentation module with:")
+print("    - CallbackHandler from langfuse.callback")
+print("    - Langfuse client for scores and prompts")
+print("    - Handler with user_id, session_id, tags")
+print("    - get_prompt() for runtime prompt fetching")
+print("    - score() for user feedback (user_feedback)")
+print("    - score() for automated eval (relevance)")
+print("    - get_trace_id() for linking feedback")
 
 todo1_code = textwrap.dedent("""\
-    # TODO: Complete metrics module for AI agent
-    # Include all metrics, /metrics endpoint, and cost tracking
+    # TODO: Complete LangFuse instrumentation module
 
 """)
 
-with open(os.path.join(WORKDIR, "metrics.py"), "w") as f:
+with open(os.path.join(WORKDIR, "langfuse_instrumentation.py"), "w") as f:
     f.write(todo1_code)
 
 
 # ============================================================
-# TODO 2: Alert Rules
+# TODO 2: Prometheus Bridge
 # ============================================================
 
-print("\n\n--- TODO 2: Prometheus Alert Rules ---\n")
+print("\n\n--- TODO 2: Prometheus Cost Bridge ---\n")
 
-print("  Create alert rules with:")
-print("    1. HighErrorRate: error rate > 5% for 5m (critical)")
-print("    2. HighLatency: p99 > 5s for 10m (warning)")
-print("    3. AgentDown: up{job='agent-api'} == 0 for 1m (critical)")
-print("    4. HighCostRate: cost > $5/hour for 30m (warning)")
-print("    5. ChromaDBDown: up{job='chromadb'} == 0 for 1m (critical)")
+print("  Write code that bridges LangFuse data to Prometheus:")
+print("    - Counter: langfuse_llm_cost_usd_total (labels: model, user_id)")
+print("    - Counter: langfuse_tokens_total (labels: model, direction)")
+print("    - Histogram: langfuse_generation_duration_seconds (labels: model)")
+print("    - Counter: langfuse_feedback_total (labels: score_name, value)")
+print("    - PRICING dict with at least 3 models")
+print("    - record_generation() function")
+print("    - generate_latest for /metrics endpoint")
 
-todo2_yaml = textwrap.dedent("""\
-    # TODO: Alert rules for AI monitoring
-    # groups with 5 alerts, each having expr, for, labels, annotations
+todo2_code = textwrap.dedent("""\
+    # TODO: Prometheus bridge for LangFuse metrics
 
 """)
 
-with open(os.path.join(WORKDIR, "alerting-rules.yaml"), "w") as f:
-    f.write(todo2_yaml)
+with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
+    f.write(todo2_code)
 
 
 # ============================================================
-# TODO 3: Dashboard Design
+# TODO 3: Dashboard + Alert Design
 # ============================================================
 
-print("\n\n--- TODO 3: Dashboard Panel Design ---\n")
+print("\n\n--- TODO 3: Dashboard & Alert Design ---\n")
 
-print("  Design an AI monitoring dashboard.")
-print("  For each panel, specify: title, panel_type, PromQL query.\n")
+print("  Design dashboard panels and alert rules.\n")
 
 panels = [
     {
         "title": "___",
         "panel_type": "___",
         "promql": "___",
-        "purpose": "Current request rate (requests/sec)",
-        "correct_type": "stat",
-        "check_terms": ["rate", "agent_requests_total"],
+        "purpose": "Cost per hour by model",
+        "correct_type": "bar chart",
+        "check_terms": ["increase", "cost", "1h"],
     },
     {
         "title": "___",
         "panel_type": "___",
         "promql": "___",
-        "purpose": "p99 latency (current value with threshold)",
-        "correct_type": "stat",
+        "purpose": "LLM latency trend (p99)",
+        "correct_type": "time series",
         "check_terms": ["histogram_quantile", "0.99"],
     },
     {
         "title": "___",
         "panel_type": "___",
         "promql": "___",
-        "purpose": "Error rate percentage",
+        "purpose": "Token consumption rate",
         "correct_type": "stat",
-        "check_terms": ["rate", "status", "100"],
+        "check_terms": ["rate", "token"],
     },
     {
         "title": "___",
         "panel_type": "___",
         "promql": "___",
-        "purpose": "Request rate trend over time",
-        "correct_type": "time series",
-        "check_terms": ["rate", "agent_requests_total"],
-    },
-    {
-        "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Daily cost by model (comparison)",
-        "correct_type": "bar chart",
-        "check_terms": ["increase", "cost", "24h"],
-    },
-    {
-        "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Token usage per hour",
+        "purpose": "Average user feedback score",
         "correct_type": "stat",
-        "check_terms": ["increase", "tokens", "1h"],
+        "check_terms": ["feedback"],
     },
 ]
 
 # YOUR CODE HERE: Design dashboard panels
-# panels[0]["title"] = "Request Rate"
-# panels[0]["panel_type"] = "stat"
-# panels[0]["promql"] = "sum(rate(agent_requests_total[5m]))"
+# panels[0]["title"] = "Cost per Hour"
+# panels[0]["panel_type"] = "bar chart"
+# panels[0]["promql"] = "sum by (model) (increase(langfuse_llm_cost_usd_total[1h]))"
 # ...
+
+alerts_yaml = textwrap.dedent("""\
+    # TODO: Alert rules for LangFuse monitoring
+    # Include: CostSpike, HighLLMLatency, LowFeedbackScore
+
+""")
+
+with open(os.path.join(WORKDIR, "langfuse-alerts.yaml"), "w") as f:
+    f.write(alerts_yaml)
 
 
 # ============================================================
@@ -164,31 +155,29 @@ print("\n\n--- Challenge Validation ---\n")
 
 results = []
 
-# TODO 1: Metrics code
-results.append(("Code: Counter import",            "Counter" in todo1_code))
-results.append(("Code: Histogram import",           "Histogram" in todo1_code))
-results.append(("Code: Gauge import",               "Gauge" in todo1_code))
-results.append(("Code: generate_latest",            "generate_latest" in todo1_code))
-results.append(("Code: agent_requests_total",       "agent_requests_total" in todo1_code))
-results.append(("Code: agent_tokens_total",         "agent_tokens_total" in todo1_code))
-results.append(("Code: agent_estimated_cost_usd",   "agent_estimated_cost_usd" in todo1_code))
-results.append(("Code: duration_seconds",           "duration_seconds" in todo1_code))
-results.append(("Code: agent_active_requests",      "agent_active_requests" in todo1_code))
-results.append(("Code: PRICING dict",               "PRICING" in todo1_code or "pricing" in todo1_code))
-results.append(("Code: record function",            "def record" in todo1_code or "def track" in todo1_code))
-results.append(("Code: /metrics endpoint",          "/metrics" in todo1_code))
+# TODO 1: Instrumentation code
+results.append(("Code: CallbackHandler import",  "CallbackHandler" in todo1_code))
+results.append(("Code: langfuse import",          "langfuse" in todo1_code))
+results.append(("Code: handler creation",         "CallbackHandler(" in todo1_code))
+results.append(("Code: user_id",                  "user_id" in todo1_code))
+results.append(("Code: session_id",               "session_id" in todo1_code))
+results.append(("Code: tags",                     "tags" in todo1_code))
+results.append(("Code: get_prompt",               "get_prompt" in todo1_code))
+results.append(("Code: score() call",             ".score(" in todo1_code))
+results.append(("Code: user_feedback score",      "user_feedback" in todo1_code))
+results.append(("Code: relevance score",          "relevance" in todo1_code))
+results.append(("Code: get_trace_id",             "get_trace_id" in todo1_code or "trace_id" in todo1_code))
 
-# TODO 2: Alert rules
-results.append(("Alert: groups section",            "groups:" in todo2_yaml))
-results.append(("Alert: HighErrorRate",             "HighErrorRate" in todo2_yaml))
-results.append(("Alert: HighLatency",               "HighLatency" in todo2_yaml))
-results.append(("Alert: AgentDown",                 "AgentDown" in todo2_yaml))
-results.append(("Alert: HighCostRate",              "HighCostRate" in todo2_yaml))
-results.append(("Alert: ChromaDBDown",              "ChromaDBDown" in todo2_yaml))
-results.append(("Alert: severity critical",         "critical" in todo2_yaml))
-results.append(("Alert: severity warning",          "warning" in todo2_yaml))
-results.append(("Alert: has for duration",          "for:" in todo2_yaml))
-results.append(("Alert: has annotations",           "annotations:" in todo2_yaml))
+# TODO 2: Prometheus bridge
+results.append(("Bridge: Counter import",         "Counter" in todo2_code))
+results.append(("Bridge: Histogram import",       "Histogram" in todo2_code))
+results.append(("Bridge: cost counter",           "cost" in todo2_code.lower()))
+results.append(("Bridge: token counter",          "token" in todo2_code.lower()))
+results.append(("Bridge: duration histogram",     "duration" in todo2_code.lower()))
+results.append(("Bridge: feedback counter",       "feedback" in todo2_code.lower()))
+results.append(("Bridge: PRICING dict",           "PRICING" in todo2_code))
+results.append(("Bridge: record function",        "def record" in todo2_code))
+results.append(("Bridge: generate_latest",        "generate_latest" in todo2_code or "/metrics" in todo2_code))
 
 # TODO 3: Dashboard panels
 for p in panels:
@@ -197,8 +186,16 @@ for p in panels:
         promql_ok = False
     else:
         promql_ok = all(t.lower() in p["promql"].lower() for t in p["check_terms"])
-    results.append((f"Panel '{p['purpose'][:30]}': type", type_ok))
+    results.append((f"Panel '{p['purpose'][:30]}': type",  type_ok))
     results.append((f"Panel '{p['purpose'][:30]}': query", promql_ok))
+
+# TODO 3: Alert rules
+results.append(("Alert: groups section",          "groups:" in alerts_yaml))
+results.append(("Alert: CostSpike",               "CostSpike" in alerts_yaml or "cost" in alerts_yaml.lower()))
+results.append(("Alert: HighLLMLatency",           "Latency" in alerts_yaml or "latency" in alerts_yaml))
+results.append(("Alert: LowFeedbackScore",         "Feedback" in alerts_yaml or "feedback" in alerts_yaml))
+results.append(("Alert: severity labels",          "severity" in alerts_yaml))
+results.append(("Alert: for duration",             "for:" in alerts_yaml))
 
 passed = sum(1 for _, ok in results if ok)
 total = len(results)
@@ -221,14 +218,16 @@ for root, dirs, files in os.walk(WORKDIR):
         size = os.path.getsize(os.path.join(root, f))
         print(f"    {rel:<45} ({size} bytes)")
 
-print(f"\n  Complete monitoring stack:")
-print(f"    1. metrics.py — Counter, Histogram, Gauge, cost tracking")
-print(f"    2. alerting-rules.yaml — 5 alert rules (errors, latency, cost, down)")
-print(f"    3. Dashboard design — 6 panels (RED + AI metrics)")
+print(f"\n  Complete LangFuse pipeline:")
+print(f"    1. langfuse_instrumentation.py — CallbackHandler + scores + prompts")
+print(f"    2. prometheus_bridge.py — Cost/token/latency Prometheus metrics")
+print(f"    3. Dashboard — 4 panels with PromQL")
+print(f"    4. langfuse-alerts.yaml — Cost, latency, feedback alerts")
 
 print("\n" + "=" * 60)
 print("Challenge complete!")
-print(f"- Metrics: 6 metric definitions + cost tracking")
-print(f"- Alerts: 5 rules (HighErrorRate, HighLatency, Down, Cost)")
-print(f"- Dashboard: 6 panels with panel types + PromQL")
+print(f"- Instrumentation: CallbackHandler + feedback + prompt management")
+print(f"- Prometheus bridge: Cost, tokens, latency, feedback counters")
+print(f"- Dashboard: 4 panels (cost, latency, tokens, feedback)")
+print(f"- Alerts: Cost spike, high latency, low feedback")
 print(f"- {passed}/{total} validation checks passing")

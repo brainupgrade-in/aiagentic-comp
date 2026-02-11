@@ -2,7 +2,7 @@
 
 A 5-day hands-on training covering the full spectrum of Agentic AI development -- from LangChain fundamentals to production deployment with enterprise-grade observability.
 
-**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 133 hands-on exercises
+**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 125 hands-on exercises
 
 ---
 
@@ -78,11 +78,10 @@ cp .env.example .env
 | Session | Topic | Labs |
 |---------|-------|------|
 | 14 | Observability Fundamentals | 8 |
-| 15 | Prometheus & Grafana | 8 |
-| 16 | AI-Specific Observability with LangFuse | 8 |
-| 17 | Capstone & Production Readiness | 8 |
+| 15 | AI-Specific Observability with LangFuse | 8 |
+| 16 | Capstone & Production Readiness | 8 |
 
-**Total: 17 sessions, 133 labs, 133 solutions**
+**Total: 16 sessions, 125 labs, 125 solutions**
 
 ---
 
@@ -90,17 +89,17 @@ cp .env.example .env
 
 ```
 .
-├── presentation/              17 HTML slide decks
+├── presentation/              16 HTML slide decks
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── ...
-│   └── session17-capstone-production-readiness.html
+│   └── session16-capstone-production-readiness.html
 │
-├── hands-on/                  17 session directories
+├── hands-on/                  16 session directories
 │   ├── session-1/             6 labs + solutions + README
 │   ├── session-2/             7 labs + solutions + README
 │   ├── session-3/             8 labs + solutions + README
 │   ├── ...
-│   └── session-17/            8 labs + solutions + README
+│   └── session-16/            8 labs + solutions + README
 │
 ├── scripts/                   Day-specific automation
 │   ├── day1-setup.sh          Install Ollama + llama3.2:1b

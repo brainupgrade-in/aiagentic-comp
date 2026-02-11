@@ -1,4 +1,4 @@
-# Session 15: Prometheus & Grafana — Hands-on Labs
+# Session 15: AI-Specific Observability with LangFuse — Hands-on Labs
 
 ## Prerequisites
 
@@ -14,14 +14,14 @@ python --version  # 3.10+
 
 | Lab | Topic | What You'll Learn | Needs K8s? |
 |-----|-------|-------------------|------------|
-| 01 | Prometheus Basics | Pull-based architecture, text format, scrape config | No |
-| 02 | Exposing Metrics | prometheus_client: Counter, Histogram, Gauge in Python | No |
-| 03 | PromQL Queries | rate, sum, histogram_quantile, absent, error rate | No |
-| 04 | AI-Specific Metrics | Token tracking, cost estimation, LLM metrics | No |
-| 05 | Alert Rules | Alert expressions, Alertmanager routing, severity | No |
-| 06 | Dashboard Design | RED/USE methods, Grafana panel types, layout | No |
-| 07 | K8s Monitoring | kube-prometheus-stack, pod annotations, architecture | No |
-| 08 | **Challenge** | Complete monitoring: metrics + alerts + dashboard design | No |
+| 01 | LangFuse Fundamentals | Architecture, trace hierarchy, tool comparison | No |
+| 02 | LangFuse Setup | Docker Compose deployment, environment variables | No |
+| 03 | LangChain Integration | CallbackHandler, RAG tracing, handler config | No |
+| 04 | Tracing Agents | Multi-step traces, bottleneck analysis, debugging | No |
+| 05 | Feedback & Evaluation | User scores, automated eval, quality tracking | No |
+| 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
+| 07 | Cost & Token Analysis | Cost tracking, Prometheus bridge, dashboard PromQL | No |
+| 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
 
 ## How to Run
 
@@ -29,19 +29,19 @@ python --version  # 3.10+
 cd hands-on/session-15
 
 # Run a lab
-python lab01_prometheus_basics.py
+python lab01_langfuse_fundamentals.py
 
 # Check the solution
-python solutions/lab01_prometheus_basics.py
+python solutions/lab01_langfuse_fundamentals.py
 ```
 
 ## Tips
 
 - All 8 labs work WITHOUT a Kubernetes cluster
 - Look for `# TODO` markers — that's where you write code or YAML
-- Labs 01-03 cover Prometheus fundamentals
-- Labs 04-06 cover AI metrics and dashboarding
-- Lab 07 covers K8s deployment
+- Labs 01-03 cover LangFuse setup and LangChain integration
+- Labs 04-06 cover tracing, feedback, and prompt management
+- Lab 07 covers cost analysis with Prometheus bridge
 - Lab 08 is the challenge combining all concepts
 - Generated files appear in `/tmp/k8s-lab-15-XX/` directories
 - Compare your work with `solutions/` when done

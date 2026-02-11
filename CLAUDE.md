@@ -5,10 +5,10 @@
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
 **Client:** Oracle
-**Duration:** 5 days (17 sessions, ~4 sessions/day + hands-on labs)
+**Duration:** 5 days (16 sessions, ~3-4 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
-**Slides:** 17 HTML presentations in `presentation/`
-**Hands-on:** 133 labs + 133 solutions in `hands-on/session-1/` through `session-17/`
+**Slides:** 16 HTML presentations in `presentation/`
+**Hands-on:** 125 labs + 125 solutions in `hands-on/session-1/` through `session-16/`
 
 ## Lab Environment
 
@@ -71,15 +71,15 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
-├── presentation/                        17 HTML slide decks (one per session)
+├── presentation/                        16 HTML slide decks (one per session)
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── ...
-│   └── session17-capstone-production-readiness.html
-├── hands-on/                            17 session directories with labs + solutions
+│   └── session16-capstone-production-readiness.html
+├── hands-on/                            16 session directories with labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README
 │   ├── session-2/                       7 labs + 7 solutions + README
-│   ├── session-3/ through session-17/   8 labs + 8 solutions + README each
-│   └── (session-1 has lab01-lab06, session-2 has lab01-lab07, sessions 3-17 have lab01-lab08)
+│   ├── session-3/ through session-16/   8 labs + 8 solutions + README each
+│   └── (session-1 has lab01-lab06, session-2 has lab01-lab07, sessions 3-16 have lab01-lab08)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
     ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
@@ -104,7 +104,7 @@ Oracle/
 | 2 | RAG, Agents & LangGraph | 4-6 | RAG, ChromaDB, Agents, Memory, LangGraph |
 | 3 | Advanced Patterns & Production | 7-9 | Advanced LangGraph, Multi-Agent, FastAPI |
 | 4 | Containerization & Kubernetes | 10-13 | Docker, Kubernetes, Deployments, Operations |
-| 5 | Observability & Capstone | 14-17 | OpenTelemetry, Prometheus, Grafana, LangFuse, Production Readiness |
+| 5 | Observability & Capstone | 14-16 | OpenTelemetry, LangFuse, Production Readiness |
 
 ## Session-by-Session Details
 
@@ -124,9 +124,8 @@ Oracle/
 | 12 | Deploying AI Stack on K8s | 8 | StatefulSets, PVCs, Ingress, Helm, production manifests |
 | 13 | Kubernetes Operations | 8 | Debugging, resource management, scaling, troubleshooting |
 | 14 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
-| 15 | Prometheus & Grafana | 8 | PromQL, alerting, dashboard design (RED/USE), kube-prometheus |
-| 16 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
-| 17 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
+| 15 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
+| 16 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
 
 ## Key Ports
 
@@ -201,7 +200,7 @@ python hands-on/session-NN/solutions/labXX_topic.py
 - Generated YAML/config files saved to `/tmp/k8s-lab-NN-XX/`
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 133 labs + 133 solutions across 17 sessions (~60-75 min per session)
+**Totals:** 125 labs + 125 solutions across 16 sessions (~60-75 min per session)
 
 ## Error Recovery (Constrained Environment)
 

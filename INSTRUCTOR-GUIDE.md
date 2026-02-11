@@ -103,9 +103,9 @@
 | Slot | Session | Slides | Labs | Setup Script |
 |------|---------|--------|------|-------------|
 | A | Session 14: Observability Fundamentals | `session14-observability-fundamentals.html` | `session-14/` (8 labs) | `day5-setup.sh` |
-| B | Session 15: Prometheus & Grafana | `session15-prometheus-grafana.html` | `session-15/` (8 labs) | - |
-| C | Session 16: LangFuse Observability | `session16-langfuse-observability.html` | `session-16/` (8 labs) | - |
-| D | Session 17: Capstone & Production Readiness | `session17-capstone-production-readiness.html` | `session-17/` (8 labs) | - |
+| B | Session 15: LangFuse Observability | `session15-langfuse-observability.html` | `session-15/` (8 labs) | - |
+| C | Session 16: Capstone & Production Readiness | `session16-capstone-production-readiness.html` | `session-16/` (8 labs) | - |
+| D | Labs for Sessions 14-16 | - | All above | - |
 
 **Day 5 Setup:** Run `bash scripts/day5-setup.sh` (starts Prometheus + Grafana + LangFuse via Docker Compose).
 **Day 5 Cleanup:** Run `bash scripts/day5-cleanup.sh` at end.
@@ -113,9 +113,9 @@
 **Teaching Notes:**
 - Start the observability stack early -- it takes ~2 min to stabilize
 - Session 14 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
-- Session 15 (Prometheus/Grafana) is hands-on heavy -- live demo PromQL queries
-- Session 16 (LangFuse) is AI-specific and usually generates high engagement
-- Session 17 (Capstone) is the culmination -- lab08 is the comprehensive challenge
+- Session 15 (LangFuse) is AI-specific and usually generates high engagement
+- Session 16 (Capstone) is the culmination -- lab08 is the comprehensive challenge
+- Day 5 has 3 content sessions + dedicated lab time (Slot D), allowing deeper hands-on practice
 - End with course wrap-up, Q&A, and feedback collection
 
 ---
@@ -148,7 +148,7 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 
 ### Lab Format
 
-All 133 labs follow this pattern:
+All 125 labs follow this pattern:
 - Student runs `python hands-on/session-NN/labXX_topic.py`
 - Lab prints instructions and has `# TODO` sections with `"___"` placeholders
 - Student fills in answers/code in the TODO sections
@@ -175,7 +175,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 ## Pre-Course Checklist
 
 - [ ] Verify GitHub Codespace template builds successfully
-- [ ] Test all 17 session slides load in browser
+- [ ] Test all 16 session slides load in browser
 - [ ] Run at least lab01 + lab08 from each session to verify
 - [ ] Confirm Groq API free tier is working (test with a simple call)
 - [ ] Verify Docker images pull correctly in Codespace

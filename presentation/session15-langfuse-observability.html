@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Session 16: AI-Specific Observability with LangFuse</title>
+  <title>Session 15: AI-Specific Observability with LangFuse</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
   <style>
@@ -303,7 +303,7 @@
       <section>
         <h1>AI-Specific Observability<br>with LangFuse</h1>
         <p style="font-size:0.9em; color:#ccc;">LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
-        <p class="subtitle">Session 16 &middot; Day 5, Session 3</p>
+        <p class="subtitle">Session 15 &middot; Day 5, Session 2</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
@@ -314,21 +314,17 @@
       <!-- ==================== DAY 5 CONTEXT ==================== -->
       <section>
         <h2>Day 5: Observability &amp; Production Operations</h2>
-        <div class="card-grid">
+        <div class="card-grid-3">
           <div class="card card-accent" style="opacity:0.5;">
             <h4>Session 1 (Done)</h4>
             <p>Observability Fundamentals &mdash; three pillars, OpenTelemetry, Python instrumentation</p>
           </div>
-          <div class="card card-green" style="opacity:0.5;">
-            <h4>Session 2 (Done)</h4>
-            <p>Metrics with Prometheus &amp; Grafana &mdash; pull-based collection, PromQL, dashboards</p>
-          </div>
-          <div class="card card-orange">
-            <h4>Session 3 (Now)</h4>
+          <div class="card card-green">
+            <h4>Session 2 (Now)</h4>
             <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
           </div>
-          <div class="card card-red" style="opacity:0.5;">
-            <h4>Session 4</h4>
+          <div class="card card-orange" style="opacity:0.5;">
+            <h4>Session 3</h4>
             <p>Capstone &amp; Production Readiness &mdash; complete deployment, production checklist</p>
           </div>
         </div>
@@ -336,28 +332,28 @@
 
       <!-- ==================== RECAP ==================== -->
       <section>
-        <h2>Session 15 Recap</h2>
-        <p class="subtitle">Metrics with Prometheus &amp; Grafana</p>
+        <h2>Session 14 Recap</h2>
+        <p class="subtitle">Observability Fundamentals</p>
         <div class="card-grid" style="margin-top:20px;">
           <div class="card card-accent">
-            <h4>Prometheus</h4>
+            <h4>Three Pillars</h4>
             <ul>
-              <li>Pull-based metrics collection via /metrics</li>
-              <li>PromQL: rate(), histogram_quantile(), sum()</li>
-              <li>Alert rules + Alertmanager routing</li>
+              <li>Metrics: numeric measurements over time</li>
+              <li>Logs: structured event records</li>
+              <li>Traces: request flow across services</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Grafana</h4>
+            <h4>OpenTelemetry</h4>
             <ul>
-              <li>Unified dashboards for metrics, logs, traces</li>
-              <li>RED method: Rate, Errors, Duration</li>
-              <li>kube-prometheus-stack Helm chart</li>
+              <li>Vendor-neutral instrumentation standard</li>
+              <li>Python SDK for traces, metrics, logs</li>
+              <li>Exporters to Prometheus, Jaeger, etc.</li>
             </ul>
           </div>
         </div>
         <div class="takeaway" style="margin-top:16px;">
-          Prometheus + Grafana give us <span class="highlight">infrastructure and request metrics</span>. But AI applications need <span class="highlight-orange">deeper visibility</span> into LLM calls, prompt versions, token costs, and agent reasoning. That&rsquo;s where LangFuse comes in.
+          OpenTelemetry gives us <span class="highlight">infrastructure and request metrics</span>. But AI applications need <span class="highlight-orange">deeper visibility</span> into LLM calls, prompt versions, token costs, and agent reasoning. That&rsquo;s where LangFuse comes in.
         </div>
       </section>
 
@@ -1049,7 +1045,7 @@ template = ChatPromptTemplate.from_messages([
       <!-- ==================== WHAT'S NEXT ==================== -->
       <section>
         <h2>What&rsquo;s Next</h2>
-        <h3>Session 17: Capstone &amp; Production Readiness</h3>
+        <h3>Session 16: Capstone &amp; Production Readiness</h3>
         <div class="card-grid" style="margin-top:20px;">
           <div class="card card-accent">
             <h4>Capstone Project</h4>
@@ -1079,7 +1075,7 @@ template = ChatPromptTemplate.from_messages([
         <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss LangFuse, LLM tracing,<br>and AI observability before the capstone</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
-          <h4>Session 16 Complete</h4>
+          <h4>Session 15 Complete</h4>
           <p>LangFuse &middot; LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
         </div>
       </section>
