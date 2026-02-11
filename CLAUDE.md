@@ -100,10 +100,10 @@ Oracle/
 
 | Day | Theme | Sessions | Key Technologies |
 |-----|-------|----------|-----------------|
-| 1 | Agentic AI Foundations | 1-4 | Ollama, LangChain, LCEL, RAG, ChromaDB |
-| 2 | Advanced Patterns | 5-7 | Agents, Memory, LangGraph, Stateful Workflows |
-| 3 | Production Development | 8-9 | Multi-agent systems, FastAPI, Production patterns |
-| 4 | Containerization & K8s | 10-13 | Docker, Kubernetes, Deployments, Operations |
+| 1 | Agentic AI Foundations & LangChain | 1-3 | Ollama, LangChain, LCEL, ReAct, Chain-of-Thought |
+| 2 | RAG, Agents & LangGraph | 4-6 | RAG, ChromaDB, Agents, Memory, LangGraph |
+| 3 | Advanced Patterns & Production | 7-9 | Advanced LangGraph, Multi-Agent, FastAPI |
+| 4 | Containerization & Kubernetes | 10-13 | Docker, Kubernetes, Deployments, Operations |
 | 5 | Observability & Capstone | 14-17 | OpenTelemetry, Prometheus, Grafana, LangFuse, Production Readiness |
 
 ## Session-by-Session Details

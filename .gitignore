@@ -3,6 +3,7 @@ course-outline-agentic-ai.pdf
 .env
 .env.*
 !.env.template
+!.env.example
 
 # Python
 __pycache__/

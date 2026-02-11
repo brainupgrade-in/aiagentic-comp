@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic AI Course — Session Index</title>
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg: #1a1a2e;
+      --bg-card: rgba(255,255,255,0.07);
+      --bg-day: rgba(255,255,255,0.03);
+      --text: #e0e0e0;
+      --text-muted: #999;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: 2.4em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 1.1em;
+    }
+
+    .day-group {
+      margin-bottom: 40px;
+    }
+
+    .day-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .day-badge {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .day-1 .day-badge { background: rgba(79,195,247,0.2); color: var(--accent); }
+    .day-2 .day-badge { background: rgba(129,199,132,0.2); color: var(--accent2); }
+    .day-3 .day-badge { background: rgba(255,183,77,0.2); color: var(--accent3); }
+    .day-4 .day-badge { background: rgba(229,115,115,0.2); color: var(--accent4); }
+    .day-5 .day-badge { background: rgba(186,104,200,0.2); color: #ba68c8; }
+
+    .day-theme {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sessions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .session-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.15s, background 0.2s;
+      display: block;
+    }
+
+    .session-card:hover {
+      border-color: rgba(79,195,247,0.4);
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .session-card .session-num {
+      font-size: 0.8em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .session-card h3 {
+      font-size: 1.1em;
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .session-card .topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .topic-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 2px 10px;
+      font-size: 0.75em;
+      color: var(--text-muted);
+    }
+
+    .session-card .labs {
+      margin-top: 10px;
+      font-size: 0.8em;
+      color: var(--text-muted);
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-muted);
+      font-size: 0.85em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Agentic AI Course</h1>
+      <p>5 Days &middot; 17 Sessions &middot; 133 Hands-on Labs</p>
+    </header>
+
+    <!-- Day 1 -->
+    <div class="day-group day-1">
+      <div class="day-header">
+        <span class="day-badge">Day 1</span>
+        <span class="day-theme">Agentic AI Foundations & LangChain</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session1-introduction-to-agentic-ai.html">
+          <div class="session-num">Session 1</div>
+          <h3>Introduction to Agentic AI</h3>
+          <div class="topics">
+            <span class="topic-tag">AI Agents</span>
+            <span class="topic-tag">Reasoning</span>
+            <span class="topic-tag">Tool Use</span>
+            <span class="topic-tag">Architectures</span>
+          </div>
+          <div class="labs">6 labs</div>
+        </a>
+        <a class="session-card" href="session2-reasoning-planning-tool-use.html">
+          <div class="session-num">Session 2</div>
+          <h3>Reasoning, Planning & Tool Use</h3>
+          <div class="topics">
+            <span class="topic-tag">ReAct</span>
+            <span class="topic-tag">Chain-of-Thought</span>
+            <span class="topic-tag">Tool Calling</span>
+          </div>
+          <div class="labs">7 labs</div>
+        </a>
+        <a class="session-card" href="session3-langchain-fundamentals.html">
+          <div class="session-num">Session 3</div>
+          <h3>LangChain Fundamentals</h3>
+          <div class="topics">
+            <span class="topic-tag">LCEL</span>
+            <span class="topic-tag">Chains</span>
+            <span class="topic-tag">Prompts</span>
+            <span class="topic-tag">Output Parsers</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="day-group day-2">
+      <div class="day-header">
+        <span class="day-badge">Day 2</span>
+        <span class="day-theme">RAG, Agents & LangGraph</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session4-building-rag-applications.html">
+          <div class="session-num">Session 4</div>
+          <h3>Building RAG Applications</h3>
+          <div class="topics">
+            <span class="topic-tag">Document Loaders</span>
+            <span class="topic-tag">Embeddings</span>
+            <span class="topic-tag">Vector Stores</span>
+            <span class="topic-tag">Retrieval</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session5-langchain-agents-memory.html">
+          <div class="session-num">Session 5</div>
+          <h3>LangChain Agents & Memory</h3>
+          <div class="topics">
+            <span class="topic-tag">Agent Types</span>
+            <span class="topic-tag">Memory Patterns</span>
+            <span class="topic-tag">Conversations</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session6-langgraph-stateful-workflows.html">
+          <div class="session-num">Session 6</div>
+          <h3>LangGraph Stateful Workflows</h3>
+          <div class="topics">
+            <span class="topic-tag">StateGraph</span>
+            <span class="topic-tag">Nodes</span>
+            <span class="topic-tag">Edges</span>
+            <span class="topic-tag">Conditional Routing</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Day 3 -->
+    <div class="day-group day-3">
+      <div class="day-header">
+        <span class="day-badge">Day 3</span>
+        <span class="day-theme">Advanced Patterns & Production</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session7-advanced-langgraph-workflows.html">
+          <div class="session-num">Session 7</div>
+          <h3>Advanced LangGraph Workflows</h3>
+          <div class="topics">
+            <span class="topic-tag">Human-in-the-Loop</span>
+            <span class="topic-tag">Subgraphs</span>
+            <span class="topic-tag">Parallel Execution</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session8-multi-agent-systems.html">
+          <div class="session-num">Session 8</div>
+          <h3>Multi-Agent Systems</h3>
+          <div class="topics">
+            <span class="topic-tag">Supervisor Pattern</span>
+            <span class="topic-tag">Collaboration</span>
+            <span class="topic-tag">Orchestration</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session9-production-application-development.html">
+          <div class="session-num">Session 9</div>
+          <h3>Production Application Development</h3>
+          <div class="topics">
+            <span class="topic-tag">FastAPI</span>
+            <span class="topic-tag">Error Handling</span>
+            <span class="topic-tag">Testing</span>
+            <span class="topic-tag">Deployment</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Day 4 -->
+    <div class="day-group day-4">
+      <div class="day-header">
+        <span class="day-badge">Day 4</span>
+        <span class="day-theme">Containerization & Kubernetes</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session10-docker-for-ai-applications.html">
+          <div class="session-num">Session 10</div>
+          <h3>Docker for AI Applications</h3>
+          <div class="topics">
+            <span class="topic-tag">Dockerfiles</span>
+            <span class="topic-tag">Multi-stage Builds</span>
+            <span class="topic-tag">Compose</span>
+            <span class="topic-tag">Optimization</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session11-kubernetes-fundamentals.html">
+          <div class="session-num">Session 11</div>
+          <h3>Kubernetes Fundamentals</h3>
+          <div class="topics">
+            <span class="topic-tag">Pods</span>
+            <span class="topic-tag">Deployments</span>
+            <span class="topic-tag">Services</span>
+            <span class="topic-tag">ConfigMaps</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session12-deploying-ai-stack-on-k8s.html">
+          <div class="session-num">Session 12</div>
+          <h3>Deploying AI Stack on K8s</h3>
+          <div class="topics">
+            <span class="topic-tag">StatefulSets</span>
+            <span class="topic-tag">PVCs</span>
+            <span class="topic-tag">Ingress</span>
+            <span class="topic-tag">Helm</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session13-kubernetes-operations.html">
+          <div class="session-num">Session 13</div>
+          <h3>Kubernetes Operations</h3>
+          <div class="topics">
+            <span class="topic-tag">Debugging</span>
+            <span class="topic-tag">Resources</span>
+            <span class="topic-tag">Scaling</span>
+            <span class="topic-tag">Troubleshooting</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Day 5 -->
+    <div class="day-group day-5">
+      <div class="day-header">
+        <span class="day-badge">Day 5</span>
+        <span class="day-theme">Observability & Capstone</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session14-observability-fundamentals.html">
+          <div class="session-num">Session 14</div>
+          <h3>Observability Fundamentals</h3>
+          <div class="topics">
+            <span class="topic-tag">Three Pillars</span>
+            <span class="topic-tag">Metric Types</span>
+            <span class="topic-tag">Structured Logging</span>
+            <span class="topic-tag">OTel</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session15-prometheus-grafana.html">
+          <div class="session-num">Session 15</div>
+          <h3>Prometheus & Grafana</h3>
+          <div class="topics">
+            <span class="topic-tag">PromQL</span>
+            <span class="topic-tag">Alerting</span>
+            <span class="topic-tag">Dashboards</span>
+            <span class="topic-tag">RED/USE</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session16-langfuse-observability.html">
+          <div class="session-num">Session 16</div>
+          <h3>LangFuse Observability</h3>
+          <div class="topics">
+            <span class="topic-tag">Trace Hierarchy</span>
+            <span class="topic-tag">Callbacks</span>
+            <span class="topic-tag">Feedback</span>
+            <span class="topic-tag">Cost Tracking</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session17-capstone-production-readiness.html">
+          <div class="session-num">Session 17</div>
+          <h3>Capstone & Production Readiness</h3>
+          <div class="topics">
+            <span class="topic-tag">Health Probes</span>
+            <span class="topic-tag">HPA</span>
+            <span class="topic-tag">Secrets</span>
+            <span class="topic-tag">Alerting</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      Agentic AI Training &middot; Delivered by Rajesh Gheware &middot; Gheware UniGPS Solutions LLP
+    </footer>
+  </div>
+</body>
+</html>
