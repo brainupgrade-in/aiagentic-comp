@@ -13,7 +13,7 @@ import json
 import shutil
 from typing import Dict, List, Any
 
-WORKDIR = "/tmp/capstone-lab-14-04"
+WORKDIR = "/tmp/capstone-lab-15-04"
 
 # -- Cleanup & Setup ---------------------------------------------------------
 if os.path.exists(WORKDIR):

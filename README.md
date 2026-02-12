@@ -2,7 +2,7 @@
 
 A 5-day hands-on training covering the full spectrum of Agentic AI development -- from LangChain fundamentals to production deployment with enterprise-grade observability.
 
-**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 109 hands-on exercises
+**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 117 hands-on exercises
 
 ---
 
@@ -72,14 +72,15 @@ cp .env.example .env
 | 11 | LangFuse Observability | 8 |
 | 12 | Production Development & Deployment | 8 |
 
-### Day 5: MCP & Capstone
+### Day 5: MCP, Safety & Capstone
 
 | Session | Topic | Labs |
 |---------|-------|------|
 | 13 | Model Context Protocol (MCP) | 8 |
-| 14 | Capstone Project (2 time slots) | 8 |
+| 14 | AI Safety & Guardrails | 8 |
+| 15 | Capstone Project (2 time slots) | 8 |
 
-**Total: 14 sessions, 109 labs, 109 solutions**
+**Total: 15 sessions, 117 labs, 117 solutions**
 
 ---
 
@@ -87,18 +88,19 @@ cp .env.example .env
 
 ```
 .
-├── presentation/              14 HTML slide decks
+├── presentation/              15 HTML slide decks
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── session2-ai-coding-assistants-vibe-coding.html
 │   ├── ...
-│   └── session14-capstone-project.html
+│   ├── session14-ai-safety-guardrails.html
+│   └── session15-capstone-project.html
 │
-├── hands-on/                  14 session directories
+├── hands-on/                  15 session directories
 │   ├── session-1/             6 labs + solutions + README
 │   ├── session-2/             8 labs + solutions + README
 │   ├── session-3/             7 labs + solutions + README
-│   ├── session-4/ ... session-14/  8 labs + solutions + README each
-│   └── (109 total labs + 109 solutions)
+│   ├── session-4/ ... session-15/  8 labs + solutions + README each
+│   └── (117 total labs + 117 solutions)
 │
 ├── scripts/                   Day-specific automation
 │   ├── day1-setup.sh          Install Ollama + llama3.2:1b
@@ -168,7 +170,7 @@ bash scripts/day3-cleanup.sh    # End of day
 bash scripts/day4-setup.sh
 bash scripts/day4-cleanup.sh    # End of day
 
-# Day 5: MCP + Capstone
+# Day 5: MCP + Safety + Capstone
 bash scripts/day5-setup.sh
 bash scripts/day5-cleanup.sh    # End of day
 

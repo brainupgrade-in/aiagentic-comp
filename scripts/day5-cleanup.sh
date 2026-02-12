@@ -8,8 +8,8 @@ echo ""
 
 # Clean up lab temp files
 echo "[1/2] Removing lab temp files..."
-rm -rf /tmp/aidev-lab-13-* /tmp/capstone-lab-14-*
-echo "  Removed MCP and capstone temp directories"
+rm -rf /tmp/aidev-lab-13-* /tmp/safety-lab-14-* /tmp/capstone-lab-15-*
+echo "  Removed MCP, safety, and capstone temp directories"
 
 # Kill any stale processes
 echo "[2/2] Stopping stale processes..."

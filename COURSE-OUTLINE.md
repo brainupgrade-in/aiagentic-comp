@@ -39,6 +39,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 - Monitor and debug agents with LangFuse
 - Build production-grade FastAPI endpoints with health probes, secrets, and structured logging
 - Implement Model Context Protocol (MCP) servers and clients
+- Implement AI safety guardrails: prompt injection defense, output validation, and red team testing
 - Complete a capstone project integrating all course concepts
 - Leverage agentic IDEs for AI-assisted development
 
@@ -400,7 +401,7 @@ Each participant will be provided with a dedicated lab environment:
 
 ---
 
-## Day 5: MCP & Capstone
+## Day 5: MCP, Safety & Capstone
 
 ### Session 13: Model Context Protocol (MCP)
 
@@ -419,19 +420,47 @@ Each participant will be provided with a dedicated lab environment:
 - SSE (Server-Sent Events): streaming responses
 - Client discovery and multi-step workflows
 
-### Session 14: Capstone Project (2 Time Slots)
+### Session 14: AI Safety & Guardrails
+
+**Prompt Injection Defense**
+- Direct vs indirect prompt injection
+- Detection patterns and classification
+- Keyword scanning and structural analysis
+
+**Output Validation & PII Protection**
+- Schema validation for LLM outputs
+- PII detection (email, phone, SSN, credit card)
+- Content filtering and toxicity checks
+
+**Jailbreak Resistance**
+- Common jailbreak techniques (DAN, roleplay, encoding)
+- Defense layers and system prompt hardening
+- Multi-signal scoring for jailbreak detection
+
+**Input Sanitization & Guardrails**
+- Sanitization pipeline: length, encoding, content policy
+- Pre-guard and post-guard architecture
+- Topic restriction and format enforcement
+
+**Safety Monitoring & Red Teaming**
+- Safety metrics (counters, gauges, thresholds)
+- Red team methodology and test matrices
+- Defense scoring and production readiness
+
+### Session 15: Capstone Project (2 Time Slots)
 
 **Capstone: Production AI Agent System**
 
 Build a complete, observable AI agent integrating all course concepts:
 1. Architecture design (component mapping, data flows)
 2. MCP server with tools (from Session 13)
-3. FastAPI endpoint (from Session 12)
-4. LangFuse instrumentation (from Session 11)
-5. Health probes and monitoring (from Session 12)
-6. Production deployment configuration
-7. Testing and validation
-8. Final integration challenge
+3. AI safety guardrails (from Session 14)
+4. FastAPI endpoint (from Session 12)
+5. LangFuse instrumentation (from Session 11)
+6. Health probes and monitoring (from Session 12)
+7. Production deployment configuration
+8. Testing and validation
+9. Final integration challenge
 
 **Demo & Presentations**
 - Present capstone to the group

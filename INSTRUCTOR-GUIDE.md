@@ -101,19 +101,21 @@
 - Session 12 (Production) bridges AI concepts with DevOps -- key for the Oracle audience
 - This is the heaviest day for Docker resources (~5-7 GB RAM)
 
-### Day 5: MCP & Capstone
+### Day 5: MCP, Safety & Capstone
 
 | Slot | Session | Slides | Labs | Setup Script |
 |------|---------|--------|------|-------------|
 | A | Session 13: Model Context Protocol | `session13-model-context-protocol.html` | `session-13/` (8 labs) | `day5-setup.sh` |
-| B+C+D | Session 14: Capstone Project | `session14-capstone-project.html` | `session-14/` (8 labs) | - |
+| B | Session 14: AI Safety & Guardrails | `session14-ai-safety-guardrails.html` | `session-14/` (8 labs) | - |
+| C+D | Session 15: Capstone Project | `session15-capstone-project.html` | `session-15/` (8 labs) | - |
 
 **Day 5 Setup:** Run `bash scripts/day5-setup.sh` (installs MCP SDK, verifies environment).
 **Day 5 Cleanup:** Run `bash scripts/day5-cleanup.sh` at end.
 
 **Teaching Notes:**
 - Session 13 (MCP) is a significant conceptual addition -- walk through the protocol architecture carefully
-- Session 14 (Capstone) uses 2 time slots (Slots B+C+D) for extended hands-on work
+- Session 14 (AI Safety) is critical for enterprise audience -- emphasize OWASP Top 10 for LLMs and production guardrails
+- Session 15 (Capstone) uses 2 time slots (Slots C+D) for extended hands-on work
 - The capstone integrates all 5 days -- encourage participants to reference previous session labs
 - Lab 08 is the comprehensive final challenge -- allow extra time
 - End with course wrap-up, Q&A, and feedback collection
@@ -149,7 +151,7 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 
 ### Lab Format
 
-All 109 labs follow this pattern:
+All 117 labs follow this pattern:
 - Student runs `python hands-on/session-NN/labXX_topic.py`
 - Lab prints instructions and has `# TODO` sections with `"___"` placeholders
 - Student fills in answers/code in the TODO sections
@@ -176,7 +178,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 ## Pre-Course Checklist
 
 - [ ] Verify GitHub Codespace template builds successfully
-- [ ] Test all 14 session slides load in browser
+- [ ] Test all 15 session slides load in browser
 - [ ] Run at least lab01 + lab08 from each session to verify
 - [ ] Confirm Groq API free tier is working (test with a simple call)
 - [ ] Verify Docker images pull correctly in Codespace

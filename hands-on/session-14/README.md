@@ -1,4 +1,4 @@
-# Session 14: Capstone Project -- Hands-on Labs
+# Session 14: AI Safety & Guardrails -- Hands-on Labs
 
 ## Prerequisites
 
@@ -14,14 +14,14 @@ python --version  # 3.10+
 
 | Lab | Topic | What You'll Learn |
 |-----|-------|-------------------|
-| 01 | Capstone Architecture Design | System components, data flows, startup order, monitoring points |
-| 02 | Build MCP Server with Tools | Tool schemas, resource URIs, server specification |
-| 03 | Create FastAPI Endpoint | Health checks, API endpoints, response models, error handling |
-| 04 | Add LangFuse Instrumentation | Callback handler, trace hierarchy, cost tracking |
-| 05 | Health Probes & Monitoring | K8s probes, Prometheus scrape config, metric definitions |
-| 06 | Production Deployment Config | Deployment, Service, HPA, Secret YAML specs |
-| 07 | Testing & Validation | Unit/integration/load tests, SLA targets, test coverage |
-| 08 | **Final Integration Challenge** | Complete production readiness report (scored across all categories) |
+| 01 | Prompt Injection Detection | Direct/indirect injection, detection patterns, classification |
+| 02 | Output Validation | Schema validation, PII detection (email/phone/SSN/CC), content filtering |
+| 03 | Jailbreak Resistance | DAN/roleplay/encoding jailbreaks, defense layers, system prompt hardening |
+| 04 | Input Sanitization | Length checks, encoding normalization, content policy, sanitization pipeline |
+| 05 | Safety Monitoring | Safety metrics (counters/gauges), alert thresholds, dashboard config |
+| 06 | Guardrails Integration | Pre-guard/post-guard pipeline, topic restriction, format guards |
+| 07 | Red Team Testing | Attack categories, test matrix, defense scoring, red team reports |
+| 08 | **Comprehensive Safety Challenge** | Full safety layer combining all patterns (scored across all categories) |
 
 ## How to Run
 
@@ -29,25 +29,22 @@ python --version  # 3.10+
 cd hands-on/session-14
 
 # Run a lab (fill in the TODO sections)
-python lab01_capstone_architecture.py
+python lab01_prompt_injection_detection.py
 
 # Check the solution (all checks pass)
-python solutions/lab01_capstone_architecture.py
+python solutions/lab01_prompt_injection_detection.py
 ```
 
 ## Tips
 
-- This is a comprehensive capstone integrating all 5 days of the course
-- Labs build on each other -- complete them in order
-- Labs 01-02 cover architecture and MCP design
-- Labs 03-04 cover API and observability code
-- Labs 05-06 cover Kubernetes deployment configuration
-- Lab 07 covers testing strategy and SLA targets
-- Lab 08 is the final integration challenge (scored across all categories)
-- Generated files appear in `/tmp/capstone-lab-14-XX/` directories
+- Look for `# TODO` markers -- that's where you write code
+- Labs 01-03 cover attack detection (injection, validation, jailbreaks)
+- Labs 04-06 cover defense mechanisms (sanitization, monitoring, guardrails)
+- Lab 07 covers red team testing methodology
+- Lab 08 is the comprehensive challenge integrating all safety patterns
+- Generated files appear in `/tmp/safety-lab-14-XX/` directories
 - Compare your work with `solutions/` when done
-- Use 2 time slots for this session (Slots B+C+D on Day 5)
 
 ## Estimated Time
 
-~90-120 minutes for all labs (2 time slots)
+~60-75 minutes for all labs (including the challenge)

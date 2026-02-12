@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lab 02: Build MCP Server with Tools
+Lab 02 Solution: Build MCP Server with Tools
 
 Design an MCP server specification with tools for the capstone project.
 Define tool schemas (JSON), map tool names to descriptions, and specify
@@ -14,7 +14,7 @@ import json
 import shutil
 from typing import Dict, List, Any
 
-WORKDIR = "/tmp/capstone-lab-14-02"
+WORKDIR = "/tmp/capstone-lab-15-02"
 
 # -- Cleanup & Setup ---------------------------------------------------------
 if os.path.exists(WORKDIR):
@@ -105,17 +105,18 @@ print("TODO 1: Define the search_knowledge tool schema")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct tool schema dict.
-# The search_knowledge tool:
-#   name: "search_knowledge"
-#   description: "Search the knowledge base for relevant support articles"
-#   inputSchema:
-#     properties:
-#       query: type "string", description "The search query text"
-#       max_results: type "integer", description "Maximum number of results to return"
-#     required: ["query"]
-
-search_knowledge_tool = "___"
+search_knowledge_tool = {
+    "name": "search_knowledge",
+    "description": "Search the knowledge base for relevant support articles",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "The search query text"},
+            "max_results": {"type": "integer", "description": "Maximum number of results to return"},
+        },
+        "required": ["query"],
+    },
+}
 
 # -- Validate TODO 1 --------------------------------------------------------
 total += 1
@@ -148,19 +149,20 @@ print("TODO 2: Define the create_ticket tool schema")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct tool schema dict.
-# The create_ticket tool:
-#   name: "create_ticket"
-#   description: "Create a new support ticket for the customer"
-#   inputSchema:
-#     properties:
-#       subject: type "string", description "Ticket subject line"
-#       description: type "string", description "Detailed description of the issue"
-#       priority: type "string", description "Ticket priority: low, medium, high, critical"
-#       customer_email: type "string", description "Customer email address"
-#     required: ["subject", "description", "priority"]
-
-create_ticket_tool = "___"
+create_ticket_tool = {
+    "name": "create_ticket",
+    "description": "Create a new support ticket for the customer",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "subject": {"type": "string", "description": "Ticket subject line"},
+            "description": {"type": "string", "description": "Detailed description of the issue"},
+            "priority": {"type": "string", "description": "Ticket priority: low, medium, high, critical"},
+            "customer_email": {"type": "string", "description": "Customer email address"},
+        },
+        "required": ["subject", "description", "priority"],
+    },
+}
 
 # -- Validate TODO 2 --------------------------------------------------------
 total += 1
@@ -195,28 +197,30 @@ print("TODO 3: Define get_ticket_status and escalate_ticket tool schemas")
 print("=" * 70)
 print()
 
-# TODO: Replace each "___" with the correct tool schema dict.
-#
-# get_ticket_status:
-#   name: "get_ticket_status"
-#   description: "Retrieve the current status of a support ticket"
-#   inputSchema:
-#     properties:
-#       ticket_id: type "string", description "The unique ticket identifier"
-#     required: ["ticket_id"]
-#
-# escalate_ticket:
-#   name: "escalate_ticket"
-#   description: "Escalate a ticket to a human support agent"
-#   inputSchema:
-#     properties:
-#       ticket_id: type "string", description "The unique ticket identifier"
-#       reason: type "string", description "Reason for escalation"
-#     required: ["ticket_id", "reason"]
+get_ticket_status_tool = {
+    "name": "get_ticket_status",
+    "description": "Retrieve the current status of a support ticket",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "ticket_id": {"type": "string", "description": "The unique ticket identifier"},
+        },
+        "required": ["ticket_id"],
+    },
+}
 
-get_ticket_status_tool = "___"
-
-escalate_ticket_tool = "___"
+escalate_ticket_tool = {
+    "name": "escalate_ticket",
+    "description": "Escalate a ticket to a human support agent",
+    "inputSchema": {
+        "type": "object",
+        "properties": {
+            "ticket_id": {"type": "string", "description": "The unique ticket identifier"},
+            "reason": {"type": "string", "description": "Reason for escalation"},
+        },
+        "required": ["ticket_id", "reason"],
+    },
+}
 
 # -- Validate TODO 3 --------------------------------------------------------
 total += 1
@@ -264,24 +268,19 @@ print("TODO 4: Define the MCP resource URIs for the support agent")
 print("=" * 70)
 print()
 
-# TODO: Replace each "___" with the correct resource definition dict.
-#
-# Two resources:
-#   1. Knowledge base:
-#      uri: "file://knowledge-base/articles"
-#      name: "knowledge_base"
-#      description: "Support knowledge base articles"
-#      mimeType: "application/json"
-#
-#   2. Ticket database:
-#      uri: "db://tickets"
-#      name: "ticket_store"
-#      description: "Customer support ticket database"
-#      mimeType: "application/json"
-
 resources = [
-    "___",
-    "___",
+    {
+        "uri": "file://knowledge-base/articles",
+        "name": "knowledge_base",
+        "description": "Support knowledge base articles",
+        "mimeType": "application/json",
+    },
+    {
+        "uri": "db://tickets",
+        "name": "ticket_store",
+        "description": "Customer support ticket database",
+        "mimeType": "application/json",
+    },
 ]
 
 # -- Validate TODO 4 --------------------------------------------------------
@@ -319,19 +318,14 @@ print("TODO 5: Assemble the complete MCP server specification")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the complete server specification dict.
-# Combine all tools and resources into a single server spec:
-#
-# server_spec = {
-#     "name": "support-agent-mcp",
-#     "version": "1.0.0",
-#     "description": "MCP server for AI support agent capstone project",
-#     "tools": [search_knowledge_tool, create_ticket_tool,
-#               get_ticket_status_tool, escalate_ticket_tool],
-#     "resources": resources,
-# }
-
-server_spec = "___"
+server_spec = {
+    "name": "support-agent-mcp",
+    "version": "1.0.0",
+    "description": "MCP server for AI support agent capstone project",
+    "tools": [search_knowledge_tool, create_ticket_tool,
+              get_ticket_status_tool, escalate_ticket_tool],
+    "resources": resources,
+}
 
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1

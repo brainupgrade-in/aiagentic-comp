@@ -5,10 +5,10 @@
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
 **Client:** Oracle
-**Duration:** 5 days (14 sessions, ~3 sessions/day + hands-on labs)
+**Duration:** 5 days (15 sessions, ~3 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
-**Slides:** 14 HTML presentations in `presentation/`
-**Hands-on:** 109 labs + 109 solutions in `hands-on/session-1/` through `session-14/`
+**Slides:** 15 HTML presentations in `presentation/`
+**Hands-on:** 117 labs + 117 solutions in `hands-on/session-1/` through `session-15/`
 
 ## Lab Environment
 
@@ -55,7 +55,7 @@ Day 4: Docker Compose observability stack + FastAPI (~5-7 GB RAM)
        → all containers have mem_limit set
        → cleanup: docker compose down + prune
 
-Day 5: MCP SDK + Capstone (~3-4 GB RAM)
+Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
        → lightweight, no Docker needed
        → cleanup: remove temp files
 ```
@@ -75,17 +75,18 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
-├── presentation/                        14 HTML slide decks (one per session)
+├── presentation/                        15 HTML slide decks (one per session)
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── session2-ai-coding-assistants-vibe-coding.html
 │   ├── ...
 │   ├── session13-model-context-protocol.html
-│   └── session14-capstone-project.html
-├── hands-on/                            14 session directories with labs + solutions
+│   ├── session14-ai-safety-guardrails.html
+│   └── session15-capstone-project.html
+├── hands-on/                            15 session directories with labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README
 │   ├── session-2/                       8 labs + 8 solutions + README (AI Coding / Vibe Coding)
 │   ├── session-3/                       7 labs + 7 solutions + README
-│   ├── session-4/ through session-14/   8 labs + 8 solutions + README each
+│   ├── session-4/ through session-15/   8 labs + 8 solutions + README each
 │   └── (session-1 has 6, session-3 has 7, all others have 8)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
@@ -111,7 +112,7 @@ Oracle/
 | 2 | LangChain, RAG & Agents | 4-6 | LangChain, LCEL, ChromaDB, RAG, Agents, Memory |
 | 3 | LangGraph & Multi-Agent | 7-9 | LangGraph, StateGraph, Multi-Agent, Orchestration |
 | 4 | Observability & Production | 10-12 | OTel, LangFuse, FastAPI, Health Probes, Secrets |
-| 5 | MCP & Capstone | 13-14 | MCP, JSON-RPC 2.0, Capstone Integration |
+| 5 | MCP, Safety & Capstone | 13-15 | MCP, JSON-RPC 2.0, AI Safety, Capstone Integration |
 
 ## Session-by-Session Details
 
@@ -130,7 +131,8 @@ Oracle/
 | 11 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
 | 12 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
 | 13 | Model Context Protocol (MCP) | 8 | MCP architecture, JSON-RPC 2.0, FastMCP, tools/resources/prompts |
-| 14 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
+| 14 | AI Safety & Guardrails | 8 | Prompt injection, output validation, jailbreak defense, guardrails, red teaming |
+| 15 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
 
 ## Key Ports
 
@@ -175,7 +177,7 @@ All containers are memory-capped to prevent OOM on 8 GB:
 
 Strengths identified:
 - Strong logical 5-day progression (foundations → LangChain → LangGraph → observability+production → MCP+capstone)
-- 109 labs + 14 challenge labs across 14 sessions
+- 117 labs + 15 challenge labs across 15 sessions
 - Production-focused with observability and capstone
 - All open-source/free tooling — no vendor lock-in
 - Vibe coding on Day 1 means students use AI assistants for 4 more days
@@ -183,7 +185,6 @@ Strengths identified:
 - Extended capstone (2 time slots) on Day 5 for comprehensive integration
 
 Gaps to consider addressing:
-- **Guardrails/safety** — no coverage of prompt injection defense or output validation
 - **Agent evaluation** — no systematic eval/testing methodology
 - **Legacy memory APIs** — ConversationBufferMemory/ConversationSummaryMemory are deprecated; LangGraph state is the modern approach
 - **Cost management** — token budgeting, model selection trade-offs
@@ -209,10 +210,11 @@ python hands-on/session-NN/solutions/labXX_topic.py
   - `/tmp/k8s-lab-NN-XX/` (sessions 1, 3-11)
   - `/tmp/aidev-lab-NN-XX/` (sessions 2, 13)
   - `/tmp/prod-lab-12-XX/` (session 12)
-  - `/tmp/capstone-lab-14-XX/` (session 14)
+  - `/tmp/safety-lab-14-XX/` (session 14)
+  - `/tmp/capstone-lab-15-XX/` (session 15)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 109 labs + 109 solutions across 14 sessions (~60-75 min per session, ~90-120 min for session 14)
+**Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15)
 
 ## Error Recovery (Constrained Environment)
 

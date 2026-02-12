@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lab 03 Solution: Create FastAPI Endpoint
+Lab 03: Create FastAPI Endpoint
 
 Write FastAPI endpoint code for the capstone support agent application:
 health check, POST /api/support, and GET /api/tickets. Code is written
@@ -14,7 +14,7 @@ import json
 import shutil
 from typing import Dict, List, Any
 
-WORKDIR = "/tmp/capstone-lab-14-03"
+WORKDIR = "/tmp/capstone-lab-15-03"
 
 # -- Cleanup & Setup ---------------------------------------------------------
 if os.path.exists(WORKDIR):
@@ -90,15 +90,26 @@ print("TODO 1: Write the health check endpoint code")
 print("=" * 70)
 print()
 
-health_check_code = '''
-@app.get("/healthz")
-async def healthz():
-    return {"status": "healthy"}
+# TODO: Replace "___" with a string containing the FastAPI health check code.
+# The code should define two endpoints:
+#   GET /healthz - returns {"status": "healthy"}
+#   GET /readyz  - returns {"status": "ready", "checks": {"chromadb": "ok", "llm_api": "ok"}}
+#
+# Required keywords in your code string:
+#   @app.get, /healthz, /readyz, status, healthy, ready, chromadb, llm_api
+#
+# Example:
+# health_check_code = '''
+# @app.get("/healthz")
+# async def healthz():
+#     return {"status": "healthy"}
+#
+# @app.get("/readyz")
+# async def readyz():
+#     return {"status": "ready", "checks": {"chromadb": "ok", "llm_api": "ok"}}
+# '''
 
-@app.get("/readyz")
-async def readyz():
-    return {"status": "ready", "checks": {"chromadb": "ok", "llm_api": "ok"}}
-'''
+health_check_code = "___"
 
 # -- Validate TODO 1 --------------------------------------------------------
 total += 1
@@ -126,20 +137,35 @@ print("TODO 2: Write the POST /api/support endpoint code")
 print("=" * 70)
 print()
 
-support_endpoint_code = '''
-@app.post("/api/support", response_model=SupportResponse)
-async def handle_support(request: SupportRequest):
-    try:
-        answer = await agent.invoke(request.question)
-        return SupportResponse(
-            answer=answer.content,
-            ticket_id=answer.ticket_id,
-            confidence=answer.confidence,
-            sources=answer.sources,
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-'''
+# TODO: Replace "___" with a string containing the POST /api/support endpoint.
+# The code should:
+#   - Define a POST endpoint at /api/support
+#   - Accept a SupportRequest body
+#   - Return a SupportResponse
+#   - Include try/except for error handling
+#   - Raise HTTPException with status_code 500 on failure
+#
+# Required keywords:
+#   @app.post, /api/support, SupportRequest, SupportResponse,
+#   async def, try, except, HTTPException, status_code
+#
+# Example:
+# support_endpoint_code = '''
+# @app.post("/api/support", response_model=SupportResponse)
+# async def handle_support(request: SupportRequest):
+#     try:
+#         answer = await agent.invoke(request.question)
+#         return SupportResponse(
+#             answer=answer.content,
+#             ticket_id=answer.ticket_id,
+#             confidence=answer.confidence,
+#             sources=answer.sources,
+#         )
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+# '''
+
+support_endpoint_code = "___"
 
 # -- Validate TODO 2 --------------------------------------------------------
 total += 1
@@ -168,19 +194,34 @@ print("TODO 3: Write the GET /api/tickets endpoint code")
 print("=" * 70)
 print()
 
-tickets_endpoint_code = '''
-@app.get("/api/tickets")
-async def list_tickets(status: str = None, limit: int = 50):
-    tickets = await ticket_store.list(status=status, limit=limit)
-    return tickets
+# TODO: Replace "___" with a string containing the GET /api/tickets endpoint.
+# The code should:
+#   - Define a GET endpoint at /api/tickets
+#   - Accept optional query params: status (str), limit (int, default 50)
+#   - Return a list of ticket dicts
+#   - Include a GET /api/tickets/{ticket_id} endpoint for single ticket
+#   - Raise HTTPException 404 if ticket not found
+#
+# Required keywords:
+#   @app.get, /api/tickets, ticket_id, status, limit, 404,
+#   HTTPException, async def, return
+#
+# Example:
+# tickets_endpoint_code = '''
+# @app.get("/api/tickets")
+# async def list_tickets(status: str = None, limit: int = 50):
+#     tickets = await ticket_store.list(status=status, limit=limit)
+#     return tickets
+#
+# @app.get("/api/tickets/{ticket_id}")
+# async def get_ticket(ticket_id: str):
+#     ticket = await ticket_store.get(ticket_id)
+#     if not ticket:
+#         raise HTTPException(status_code=404, detail="Ticket not found")
+#     return ticket
+# '''
 
-@app.get("/api/tickets/{ticket_id}")
-async def get_ticket(ticket_id: str):
-    ticket = await ticket_store.get(ticket_id)
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket not found")
-    return ticket
-'''
+tickets_endpoint_code = "___"
 
 # -- Validate TODO 3 --------------------------------------------------------
 total += 1
@@ -208,25 +249,38 @@ print("TODO 4: Write the Pydantic response model definitions")
 print("=" * 70)
 print()
 
-response_models_code = '''
-class SupportRequest(BaseModel):
-    question: str
-    customer_email: str | None = None
-    session_id: str | None = None
+# TODO: Replace "___" with a string defining the Pydantic models.
+# Define three models:
+#   SupportRequest: question (str), customer_email (str, optional), session_id (str, optional)
+#   SupportResponse: answer (str), ticket_id (str, optional), confidence (float), sources (list)
+#   TicketModel: id (str), subject (str), status (str), priority (str), created_at (str)
+#
+# Required keywords:
+#   BaseModel, SupportRequest, SupportResponse, TicketModel,
+#   question, answer, confidence, sources, priority, created_at
+#
+# Example:
+# response_models_code = '''
+# class SupportRequest(BaseModel):
+#     question: str
+#     customer_email: str | None = None
+#     session_id: str | None = None
+#
+# class SupportResponse(BaseModel):
+#     answer: str
+#     ticket_id: str | None = None
+#     confidence: float
+#     sources: list[str]
+#
+# class TicketModel(BaseModel):
+#     id: str
+#     subject: str
+#     status: str
+#     priority: str
+#     created_at: str
+# '''
 
-class SupportResponse(BaseModel):
-    answer: str
-    ticket_id: str | None = None
-    confidence: float
-    sources: list[str]
-
-class TicketModel(BaseModel):
-    id: str
-    subject: str
-    status: str
-    priority: str
-    created_at: str
-'''
+response_models_code = "___"
 
 # -- Validate TODO 4 --------------------------------------------------------
 total += 1
@@ -255,13 +309,30 @@ print("TODO 5: Assemble the complete FastAPI application code")
 print("=" * 70)
 print()
 
-full_app_code = '''from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Optional
+# TODO: Replace "___" with the complete application code string.
+# Combine all pieces into a full app.py file:
+#   - Import section (FastAPI, HTTPException, BaseModel)
+#   - App initialization: app = FastAPI(title="AI Support Agent", version="1.0.0")
+#   - Response models (from TODO 4)
+#   - Health endpoints (from TODO 1)
+#   - Support endpoint (from TODO 2)
+#   - Tickets endpoints (from TODO 3)
+#
+# Required keywords:
+#   from fastapi import, FastAPI, HTTPException, BaseModel,
+#   AI Support Agent, 1.0.0, /healthz, /api/support, /api/tickets
+#
+# Example:
+# full_app_code = '''
+# from fastapi import FastAPI, HTTPException
+# from pydantic import BaseModel
+# from typing import Optional
+#
+# app = FastAPI(title="AI Support Agent", version="1.0.0")
+#
+# ''' + response_models_code + health_check_code + support_endpoint_code + tickets_endpoint_code
 
-app = FastAPI(title="AI Support Agent", version="1.0.0")
-
-''' + response_models_code + health_check_code + support_endpoint_code + tickets_endpoint_code
+full_app_code = "___"
 
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1

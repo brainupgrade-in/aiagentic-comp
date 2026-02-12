@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lab 01 Solution: Capstone Architecture Design
+Lab 01: Capstone Architecture Design
 
 Design the architecture for a production AI agent system. Identify the
 components (FastAPI, LangGraph, ChromaDB, Prometheus, Grafana, LangFuse),
@@ -14,7 +14,7 @@ import json
 import shutil
 from typing import Dict, List
 
-WORKDIR = "/tmp/capstone-lab-14-01"
+WORKDIR = "/tmp/capstone-lab-15-01"
 
 # -- Cleanup & Setup ---------------------------------------------------------
 if os.path.exists(WORKDIR):
@@ -119,13 +119,21 @@ print("TODO 1: Map each component to its primary role")
 print("=" * 70)
 print()
 
+# TODO: Replace each "___" with the correct role string.
+#   "fastapi"    -> "api_gateway"
+#   "langgraph"  -> "workflow_engine"
+#   "chromadb"   -> "vector_store"
+#   "prometheus" -> "metrics_collector"
+#   "grafana"    -> "dashboard"
+#   "langfuse"   -> "llm_observability"
+
 component_roles = {
-    "fastapi":    "api_gateway",
-    "langgraph":  "workflow_engine",
-    "chromadb":   "vector_store",
-    "prometheus": "metrics_collector",
-    "grafana":    "dashboard",
-    "langfuse":   "llm_observability",
+    "fastapi":    "___",
+    "langgraph":  "___",
+    "chromadb":   "___",
+    "prometheus": "___",
+    "grafana":    "___",
+    "langfuse":   "___",
 }
 
 # -- Validate TODO 1 --------------------------------------------------------
@@ -155,11 +163,23 @@ print("TODO 2: Define the correct startup order levels")
 print("=" * 70)
 print()
 
+# TODO: Replace each "___" with a list of component names at that level.
+#   Level 0 starts first (no dependencies).
+#   Level 1 depends on Level 0.
+#   Level 2 depends on Level 0.
+#   Level 3 depends on Level 2.
+#
+# Correct answers:
+#   level_0 = ["chromadb", "prometheus", "langfuse"]
+#   level_1 = ["grafana"]
+#   level_2 = ["langgraph"]
+#   level_3 = ["fastapi"]
+
 startup_order = {
-    "level_0": ["chromadb", "prometheus", "langfuse"],
-    "level_1": ["grafana"],
-    "level_2": ["langgraph"],
-    "level_3": ["fastapi"],
+    "level_0": "___",
+    "level_1": "___",
+    "level_2": "___",
+    "level_3": "___",
 }
 
 # -- Validate TODO 2 --------------------------------------------------------
@@ -170,6 +190,7 @@ expected_order = {
     "level_2": ["langgraph"],
     "level_3": ["fastapi"],
 }
+# Compare as sorted lists for order-independent matching within each level
 order_ok = True
 for level in expected_order:
     got = startup_order.get(level, [])
@@ -196,12 +217,19 @@ print("TODO 3: Identify the five primary data flows")
 print("=" * 70)
 print()
 
+# TODO: Replace each "___" with the correct [source, destination] pair.
+#   Flow 1: User request path       -> ["user", "fastapi"]
+#   Flow 2: Agent to LLM            -> ["langgraph", "llm_api"]
+#   Flow 3: RAG retrieval           -> ["langgraph", "chromadb"]
+#   Flow 4: Metrics scraping        -> ["prometheus", "fastapi"]
+#   Flow 5: Trace collection        -> ["langgraph", "langfuse"]
+
 data_flows = {
-    "request_path":    ["user", "fastapi"],
-    "agent_to_llm":    ["langgraph", "llm_api"],
-    "rag_retrieval":   ["langgraph", "chromadb"],
-    "metrics_scrape":  ["prometheus", "fastapi"],
-    "trace_collection": ["langgraph", "langfuse"],
+    "request_path":    "___",
+    "agent_to_llm":    "___",
+    "rag_retrieval":   "___",
+    "metrics_scrape":  "___",
+    "trace_collection": "___",
 }
 
 # -- Validate TODO 3 --------------------------------------------------------
@@ -232,11 +260,17 @@ print("TODO 4: Identify monitoring points for each component")
 print("=" * 70)
 print()
 
+# TODO: Replace each "___" with the correct list of monitoring points.
+#   "fastapi"    -> ["request_latency", "error_rate", "request_count"]
+#   "langgraph"  -> ["step_duration", "tool_call_count", "agent_errors"]
+#   "chromadb"   -> ["query_latency", "collection_size", "retrieval_count"]
+#   "llm_api"    -> ["token_usage", "response_time", "cost_per_request"]
+
 monitoring_points = {
-    "fastapi":    ["request_latency", "error_rate", "request_count"],
-    "langgraph":  ["step_duration", "tool_call_count", "agent_errors"],
-    "chromadb":   ["query_latency", "collection_size", "retrieval_count"],
-    "llm_api":    ["token_usage", "response_time", "cost_per_request"],
+    "fastapi":    "___",
+    "langgraph":  "___",
+    "chromadb":   "___",
+    "llm_api":    "___",
 }
 
 # -- Validate TODO 4 --------------------------------------------------------
@@ -266,13 +300,18 @@ print("TODO 5: Build the complete architecture document")
 print("=" * 70)
 print()
 
-architecture_doc = {
-    "project_name": "ai-support-agent",
-    "components": component_roles,
-    "startup_order": startup_order,
-    "data_flows": data_flows,
-    "monitoring_points": monitoring_points,
-}
+# TODO: Assemble the full architecture document from your previous answers.
+# Replace "___" with the correct dictionary containing all four sections.
+#
+# architecture_doc = {
+#     "project_name": "ai-support-agent",
+#     "components": component_roles,        (from TODO 1)
+#     "startup_order": startup_order,        (from TODO 2)
+#     "data_flows": data_flows,              (from TODO 3)
+#     "monitoring_points": monitoring_points, (from TODO 4)
+# }
+
+architecture_doc = "___"
 
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1

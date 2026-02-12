@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lab 06: Production Deployment Config
+Lab 06 Solution: Production Deployment Config
 
 Write complete Kubernetes deployment configuration as structured data:
 Deployment, Service, HPA, and Secret. Fill in resource limits,
@@ -14,7 +14,7 @@ import json
 import shutil
 from typing import Dict, List, Any
 
-WORKDIR = "/tmp/capstone-lab-14-06"
+WORKDIR = "/tmp/capstone-lab-15-06"
 
 # -- Cleanup & Setup ---------------------------------------------------------
 if os.path.exists(WORKDIR):
@@ -102,24 +102,28 @@ print("TODO 1: Define the Kubernetes Deployment spec")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct Deployment spec dict.
-#   apiVersion: "apps/v1"
-#   kind: "Deployment"
-#   metadata:
-#     name: "support-agent"
-#     namespace: "production"
-#     labels:
-#       app: "support-agent"
-#       version: "1.0.0"
-#   spec:
-#     replicas: 2
-#     strategy:
-#       type: "RollingUpdate"
-#       rollingUpdate:
-#         maxSurge: 1
-#         maxUnavailable: 0
-
-deployment_spec = "___"
+deployment_spec = {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+        "name": "support-agent",
+        "namespace": "production",
+        "labels": {
+            "app": "support-agent",
+            "version": "1.0.0",
+        },
+    },
+    "spec": {
+        "replicas": 2,
+        "strategy": {
+            "type": "RollingUpdate",
+            "rollingUpdate": {
+                "maxSurge": 1,
+                "maxUnavailable": 0,
+            },
+        },
+    },
+}
 
 # -- Validate TODO 1 --------------------------------------------------------
 total += 1
@@ -162,22 +166,27 @@ print("TODO 2: Define container resource requests and limits")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct container spec dict.
-#   name: "support-agent"
-#   image: "support-agent:1.0.0"
-#   ports:
-#     - containerPort: 8000
-#       name: "http"
-#       protocol: "TCP"
-#   resources:
-#     requests:
-#       memory: "256Mi"
-#       cpu: "250m"
-#     limits:
-#       memory: "512Mi"
-#       cpu: "500m"
-
-container_spec = "___"
+container_spec = {
+    "name": "support-agent",
+    "image": "support-agent:1.0.0",
+    "ports": [
+        {
+            "containerPort": 8000,
+            "name": "http",
+            "protocol": "TCP",
+        }
+    ],
+    "resources": {
+        "requests": {
+            "memory": "256Mi",
+            "cpu": "250m",
+        },
+        "limits": {
+            "memory": "512Mi",
+            "cpu": "500m",
+        },
+    },
+}
 
 # -- Validate TODO 2 --------------------------------------------------------
 total += 1
@@ -219,23 +228,28 @@ print("TODO 3: Define the Kubernetes Service spec")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct Service spec dict.
-#   apiVersion: "v1"
-#   kind: "Service"
-#   metadata:
-#     name: "support-agent"
-#     namespace: "production"
-#   spec:
-#     type: "ClusterIP"
-#     selector:
-#       app: "support-agent"
-#     ports:
-#       - port: 80
-#         targetPort: 8000
-#         protocol: "TCP"
-#         name: "http"
-
-service_spec = "___"
+service_spec = {
+    "apiVersion": "v1",
+    "kind": "Service",
+    "metadata": {
+        "name": "support-agent",
+        "namespace": "production",
+    },
+    "spec": {
+        "type": "ClusterIP",
+        "selector": {
+            "app": "support-agent",
+        },
+        "ports": [
+            {
+                "port": 80,
+                "targetPort": 8000,
+                "protocol": "TCP",
+                "name": "http",
+            }
+        ],
+    },
+}
 
 # -- Validate TODO 3 --------------------------------------------------------
 total += 1
@@ -278,34 +292,45 @@ print("TODO 4: Define the Horizontal Pod Autoscaler spec")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct HPA spec dict.
-#   apiVersion: "autoscaling/v2"
-#   kind: "HorizontalPodAutoscaler"
-#   metadata:
-#     name: "support-agent-hpa"
-#     namespace: "production"
-#   spec:
-#     scaleTargetRef:
-#       apiVersion: "apps/v1"
-#       kind: "Deployment"
-#       name: "support-agent"
-#     minReplicas: 2
-#     maxReplicas: 10
-#     metrics:
-#       - type: "Resource"
-#         resource:
-#           name: "cpu"
-#           target:
-#             type: "Utilization"
-#             averageUtilization: 70
-#       - type: "Resource"
-#         resource:
-#           name: "memory"
-#           target:
-#             type: "Utilization"
-#             averageUtilization: 80
-
-hpa_spec = "___"
+hpa_spec = {
+    "apiVersion": "autoscaling/v2",
+    "kind": "HorizontalPodAutoscaler",
+    "metadata": {
+        "name": "support-agent-hpa",
+        "namespace": "production",
+    },
+    "spec": {
+        "scaleTargetRef": {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "name": "support-agent",
+        },
+        "minReplicas": 2,
+        "maxReplicas": 10,
+        "metrics": [
+            {
+                "type": "Resource",
+                "resource": {
+                    "name": "cpu",
+                    "target": {
+                        "type": "Utilization",
+                        "averageUtilization": 70,
+                    },
+                },
+            },
+            {
+                "type": "Resource",
+                "resource": {
+                    "name": "memory",
+                    "target": {
+                        "type": "Utilization",
+                        "averageUtilization": 80,
+                    },
+                },
+            },
+        ],
+    },
+}
 
 # -- Validate TODO 4 --------------------------------------------------------
 total += 1
@@ -365,20 +390,21 @@ print("TODO 5: Define the Kubernetes Secret spec")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct Secret spec dict.
-#   apiVersion: "v1"
-#   kind: "Secret"
-#   metadata:
-#     name: "support-agent-secrets"
-#     namespace: "production"
-#   type: "Opaque"
-#   stringData:
-#     GROQ_API_KEY: "<groq-api-key>"
-#     LANGFUSE_PUBLIC_KEY: "<langfuse-public-key>"
-#     LANGFUSE_SECRET_KEY: "<langfuse-secret-key>"
-#     CHROMADB_AUTH_TOKEN: "<chromadb-auth-token>"
-
-secret_spec = "___"
+secret_spec = {
+    "apiVersion": "v1",
+    "kind": "Secret",
+    "metadata": {
+        "name": "support-agent-secrets",
+        "namespace": "production",
+    },
+    "type": "Opaque",
+    "stringData": {
+        "GROQ_API_KEY": "<groq-api-key>",
+        "LANGFUSE_PUBLIC_KEY": "<langfuse-public-key>",
+        "LANGFUSE_SECRET_KEY": "<langfuse-secret-key>",
+        "CHROMADB_AUTH_TOKEN": "<chromadb-auth-token>",
+    },
+}
 
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1
