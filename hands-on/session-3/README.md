@@ -15,7 +15,7 @@ ollama list
 source ~/.venv/bin/activate
 
 # Quick test
-python -c "from langchain_ollama import ChatOllama; print('Ready!')"
+python -c "from langchain_ollama import ChatOllama; print('Ready')"
 ```
 
 ## Labs Overview
