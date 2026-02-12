@@ -57,7 +57,7 @@ TECH_STACK = {
     "frontend": "React + TypeScript (new projects). Angular (existing: Dashboard, Admin portal).",
     "database": "PostgreSQL (primary relational). MongoDB (document storage). Redis (caching + sessions).",
     "cloud": "AWS (EKS/Kubernetes). Docker for containers. Terraform for IaC. GitHub Actions for CI/CD.",
-    "monitoring": "Prometheus (metrics). Grafana (dashboards). LangFuse (LLM tracing). PagerDuty (alerts).",
+    "monitoring": "LangFuse (LLM tracing & metrics). PagerDuty (alerts).",
 }
 
 EXPENSE_LIMITS = {

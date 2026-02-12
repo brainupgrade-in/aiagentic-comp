@@ -35,9 +35,9 @@ print()
 print("  Scoring categories:")
 print("    1. Architecture & API Design")
 print("    2. MCP Tool Integration")
-print("    3. Observability & Instrumentation")
-print("    4. Security & Secrets")
-print("    5. Reliability & Scaling")
+print("    3. Observability (LangFuse)")
+print("    4. Security & Secrets (.env)")
+print("    5. Reliability & Health Checks")
 print("    6. Testing & Validation")
 print()
 
@@ -64,7 +64,6 @@ print()
 #         {"method": "POST", "path": "/api/support",          "purpose": "submit_question"},
 #         {"method": "GET",  "path": "/api/tickets",          "purpose": "list_tickets"},
 #         {"method": "GET",  "path": "/api/tickets/{id}",     "purpose": "get_ticket"},
-#         {"method": "GET",  "path": "/metrics",              "purpose": "prometheus_metrics"},
 #     ],
 #     "components": {
 #         "api_gateway": "fastapi",
@@ -89,7 +88,6 @@ expected_api = {
         {"method": "POST", "path": "/api/support",          "purpose": "submit_question"},
         {"method": "GET",  "path": "/api/tickets",          "purpose": "list_tickets"},
         {"method": "GET",  "path": "/api/tickets/{id}",     "purpose": "get_ticket"},
-        {"method": "GET",  "path": "/metrics",              "purpose": "prometheus_metrics"},
     ],
     "components": {
         "api_gateway": "fastapi",
@@ -159,11 +157,11 @@ else:
 print()
 
 # ============================================================================
-# TODO 3 -- Observability & Instrumentation
+# TODO 3 -- Observability (LangFuse)
 # ============================================================================
 
 print("=" * 70)
-print("TODO 3: Observability & Instrumentation (from Labs 04, 05)")
+print("TODO 3: Observability via LangFuse (from Labs 04, 05)")
 print("=" * 70)
 print()
 
@@ -174,16 +172,13 @@ print()
 #         "trace_name": "support-agent",
 #         "hierarchy": ["trace", "span", "generation"],
 #         "cost_tracking": True,
+#         "callback_handler": "CallbackHandler",
+#         "tracked_metrics": ["latency", "token_usage", "cost", "error_rate"],
 #     },
-#     "prometheus": {
-#         "scrape_interval": "15s",
-#         "metrics_path": "/metrics",
-#         "key_metrics": ["request_duration_seconds", "requests_total",
-#                         "llm_tokens_total", "active_requests"],
-#     },
-#     "grafana": {
-#         "dashboards": ["api_overview", "agent_performance", "cost_tracking"],
-#         "alert_rules": ["high_error_rate", "high_latency", "token_budget_exceeded"],
+#     "healthchecks": {
+#         "fastapi": "/healthz",
+#         "chromadb": "/api/v1/heartbeat",
+#         "langfuse": "/api/public/health",
 #     },
 # }
 
@@ -196,24 +191,21 @@ expected_obs = {
         "trace_name": "support-agent",
         "hierarchy": ["trace", "span", "generation"],
         "cost_tracking": True,
+        "callback_handler": "CallbackHandler",
+        "tracked_metrics": ["latency", "token_usage", "cost", "error_rate"],
     },
-    "prometheus": {
-        "scrape_interval": "15s",
-        "metrics_path": "/metrics",
-        "key_metrics": ["request_duration_seconds", "requests_total",
-                        "llm_tokens_total", "active_requests"],
-    },
-    "grafana": {
-        "dashboards": ["api_overview", "agent_performance", "cost_tracking"],
-        "alert_rules": ["high_error_rate", "high_latency", "token_budget_exceeded"],
+    "healthchecks": {
+        "fastapi": "/healthz",
+        "chromadb": "/api/v1/heartbeat",
+        "langfuse": "/api/public/health",
     },
 }
 if observability == expected_obs:
     score += 1
     print("[PASS] Observability configuration is correct")
     print(f"       LangFuse: {observability['langfuse']['hierarchy']}")
-    print(f"       Prometheus: {len(observability['prometheus']['key_metrics'])} metrics")
-    print(f"       Grafana: {len(observability['grafana']['dashboards'])} dashboards")
+    print(f"       Tracked: {len(observability['langfuse']['tracked_metrics'])} metrics")
+    print(f"       Health endpoints: {len(observability['healthchecks'])} services")
 else:
     print("[FAIL] Observability mismatch")
     print("       Expected:", json.dumps(expected_obs, indent=2))
@@ -232,20 +224,22 @@ print()
 #
 # security = {
 #     "secrets": {
-#         "method": "kubernetes_secret",
-#         "secret_name": "support-agent-secrets",
+#         "method": "dotenv",
+#         "file_name": ".env",
+#         "gitignored": True,
 #         "keys": ["GROQ_API_KEY", "LANGFUSE_PUBLIC_KEY",
-#                  "LANGFUSE_SECRET_KEY", "CHROMADB_AUTH_TOKEN"],
+#                  "LANGFUSE_SECRET_KEY", "LANGFUSE_HOST"],
 #     },
-#     "network_policies": {
-#         "ingress_allowed": ["api-gateway"],
-#         "egress_allowed": ["groq-api", "chromadb", "langfuse", "prometheus"],
+#     "process_isolation": {
+#         "method": "separate_processes",
+#         "port_binding": "localhost_only",
+#         "internal_only": ["langfuse-db"],
 #     },
 #     "best_practices": [
-#         "Never hardcode secrets in source code",
-#         "Use envFrom with secretRef in pod spec",
+#         "Never commit .env to version control",
+#         "Use .env.example as a template with placeholder values",
 #         "Rotate API keys every 90 days",
-#         "Enable RBAC for Kubernetes namespace access",
+#         "Use different keys per environment (dev/staging/prod)",
 #     ],
 # }
 
@@ -255,20 +249,22 @@ security = "___"
 total += 1
 expected_security = {
     "secrets": {
-        "method": "kubernetes_secret",
-        "secret_name": "support-agent-secrets",
+        "method": "dotenv",
+        "file_name": ".env",
+        "gitignored": True,
         "keys": ["GROQ_API_KEY", "LANGFUSE_PUBLIC_KEY",
-                 "LANGFUSE_SECRET_KEY", "CHROMADB_AUTH_TOKEN"],
+                 "LANGFUSE_SECRET_KEY", "LANGFUSE_HOST"],
     },
-    "network_policies": {
-        "ingress_allowed": ["api-gateway"],
-        "egress_allowed": ["groq-api", "chromadb", "langfuse", "prometheus"],
+    "process_isolation": {
+        "method": "separate_processes",
+        "port_binding": "localhost_only",
+        "internal_only": ["langfuse-db"],
     },
     "best_practices": [
-        "Never hardcode secrets in source code",
-        "Use envFrom with secretRef in pod spec",
+        "Never commit .env to version control",
+        "Use .env.example as a template with placeholder values",
         "Rotate API keys every 90 days",
-        "Enable RBAC for Kubernetes namespace access",
+        "Use different keys per environment (dev/staging/prod)",
     ],
 }
 if security == expected_security:
@@ -282,35 +278,34 @@ else:
 print()
 
 # ============================================================================
-# TODO 5 -- Reliability & Scaling
+# TODO 5 -- Reliability & Health Checks
 # ============================================================================
 
 print("=" * 70)
-print("TODO 5: Reliability & Scaling (from Labs 05, 06)")
+print("TODO 5: Reliability & Health Checks (from Labs 05, 06)")
 print("=" * 70)
 print()
 
 # TODO: Replace "___" with the reliability configuration.
 #
 # reliability = {
-#     "replicas": {"min": 2, "max": 10},
-#     "hpa_targets": {
-#         "cpu_utilization_percent": 70,
-#         "memory_utilization_percent": 80,
-#     },
-#     "probes": {
-#         "liveness":  {"path": "/healthz", "period_seconds": 15},
-#         "readiness": {"path": "/readyz",  "period_seconds": 10},
-#         "startup":   {"path": "/healthz", "period_seconds": 5, "failure_threshold": 30},
+#     "restart_policy": "unless_stopped",
+#     "health_config": {
+#         "url": "http://localhost:8000/healthz",
+#         "interval_seconds": 30,
+#         "timeout_seconds": 10,
+#         "retries": 3,
+#         "start_delay_seconds": 15,
 #     },
 #     "resource_limits": {
-#         "requests": {"memory": "256Mi", "cpu": "250m"},
-#         "limits":   {"memory": "512Mi", "cpu": "500m"},
+#         "support_agent": 512,
+#         "langfuse": 512,
+#         "langfuse_db": 256,
+#         "chromadb": 256,
 #     },
-#     "update_strategy": {
-#         "type": "RollingUpdate",
-#         "max_surge": 1,
-#         "max_unavailable": 0,
+#     "wait_for": {
+#         "support_agent": ["chromadb", "langfuse"],
+#         "langfuse": ["langfuse-db"],
 #     },
 # }
 
@@ -319,32 +314,31 @@ reliability = "___"
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1
 expected_reliability = {
-    "replicas": {"min": 2, "max": 10},
-    "hpa_targets": {
-        "cpu_utilization_percent": 70,
-        "memory_utilization_percent": 80,
-    },
-    "probes": {
-        "liveness":  {"path": "/healthz", "period_seconds": 15},
-        "readiness": {"path": "/readyz",  "period_seconds": 10},
-        "startup":   {"path": "/healthz", "period_seconds": 5, "failure_threshold": 30},
+    "restart_policy": "unless_stopped",
+    "health_config": {
+        "url": "http://localhost:8000/healthz",
+        "interval_seconds": 30,
+        "timeout_seconds": 10,
+        "retries": 3,
+        "start_delay_seconds": 15,
     },
     "resource_limits": {
-        "requests": {"memory": "256Mi", "cpu": "250m"},
-        "limits":   {"memory": "512Mi", "cpu": "500m"},
+        "support_agent": 512,
+        "langfuse": 512,
+        "langfuse_db": 256,
+        "chromadb": 256,
     },
-    "update_strategy": {
-        "type": "RollingUpdate",
-        "max_surge": 1,
-        "max_unavailable": 0,
+    "wait_for": {
+        "support_agent": ["chromadb", "langfuse"],
+        "langfuse": ["langfuse-db"],
     },
 }
 if reliability == expected_reliability:
     score += 1
     print("[PASS] Reliability configuration is correct")
-    print(f"       Replicas: {reliability['replicas']['min']}-{reliability['replicas']['max']}")
-    print(f"       CPU target: {reliability['hpa_targets']['cpu_utilization_percent']}%")
-    print(f"       Strategy: {reliability['update_strategy']['type']}")
+    print(f"       Restart: {reliability['restart_policy']}")
+    print(f"       Memory limits: {len(reliability['resource_limits'])} services capped")
+    print(f"       Health: interval={reliability['health_config']['interval_seconds']}s")
 else:
     print("[FAIL] Reliability mismatch")
     print("       Expected:", json.dumps(expected_reliability, indent=2))
@@ -483,12 +477,12 @@ print()
 
 # Category breakdown
 categories = {
-    "Architecture & API Design":       1 if api_design == expected_api else 0,
-    "MCP Tool Integration":            1 if mcp_tools == expected_tools else 0,
-    "Observability & Instrumentation": 1 if observability == expected_obs else 0,
-    "Security & Secrets":              1 if security == expected_security else 0,
-    "Reliability & Scaling":           1 if reliability == expected_reliability else 0,
-    "Testing & Validation":            1 if testing == expected_testing else 0,
+    "Architecture & API Design":     1 if api_design == expected_api else 0,
+    "MCP Tool Integration":          1 if mcp_tools == expected_tools else 0,
+    "Observability (LangFuse)":      1 if observability == expected_obs else 0,
+    "Security & Secrets (.env)":     1 if security == expected_security else 0,
+    "Reliability & Health Checks":   1 if reliability == expected_reliability else 0,
+    "Testing & Validation":          1 if testing == expected_testing else 0,
 }
 
 print("Category Breakdown:")

@@ -1,8 +1,9 @@
 """
-Lab 07: OTel Collector & K8s Integration
-==========================================
-Deploy the OpenTelemetry Collector on Kubernetes and
-connect it to backends (Jaeger, Prometheus).
+Lab 07: Python In-Process OTel Pipeline
+=========================================
+Configure an OpenTelemetry pipeline entirely in Python —
+TracerProvider, ConsoleSpanExporter, BatchSpanProcessor,
+and Resource configuration — no Docker required.
 """
 
 import os
@@ -12,7 +13,7 @@ import textwrap
 WORKDIR = "/tmp/k8s-lab-10-07"
 
 print("=" * 50)
-print("  Lab 07: OTel Collector & K8s Integration")
+print("  Lab 07: Python In-Process OTel Pipeline")
 print("=" * 50)
 
 if os.path.exists(WORKDIR):
@@ -21,199 +22,181 @@ os.makedirs(WORKDIR, exist_ok=True)
 
 
 # ============================================================
-# Step 1: Collector Architecture
+# Step 1: OTel Pipeline Architecture (In-Process)
 # ============================================================
 
-print("\n--- Step 1: Collector Architecture ---\n")
+print("\n--- Step 1: OTel Pipeline Architecture (In-Process) ---\n")
 
-print("  The OTel Collector has 3 components:\n")
+print("  The OTel SDK pipeline mirrors the Collector's 3 components:\n")
 
 components = [
-    ("Receivers",   "Ingest data from apps (OTLP, Prometheus, Jaeger format)"),
-    ("Processors",  "Transform data (batch, filter, add attributes, memory limit)"),
-    ("Exporters",   "Send data to backends (Jaeger, Prometheus, Loki, cloud)"),
+    ("TracerProvider", "Creates and manages tracers (like Collector receivers)"),
+    ("SpanProcessor",  "Batches/filters spans before export (like Collector processors)"),
+    ("SpanExporter",   "Sends spans to backends or console (like Collector exporters)"),
 ]
 
 for name, desc in components:
-    print(f"    {name:<14} {desc}")
+    print(f"    {name:<18} {desc}")
 
-print("\n  Data flow:")
-print("    Receivers → Processors → Exporters")
-print("    (ingest)    (transform)  (output)")
+print("\n  In-process pipeline (no external Collector needed):")
+print("    TracerProvider → BatchSpanProcessor → ConsoleSpanExporter")
+print("    (create spans)   (batch & queue)      (print to stdout)")
 print()
-print("  Collector modes:")
-print("    Agent mode:    DaemonSet — one per node (collect node logs/metrics)")
-print("    Gateway mode:  Deployment — central aggregation point")
+print("  Deployment modes:")
+print("    In-process:  SDK exports directly (simpler, good for dev/testing)")
+print("    With Collector: SDK → OTLP → Collector → Backend (production)")
 
 
 # ============================================================
-# Step 2: Collector K8s Deployment
+# Step 2: Python OTel SDK Components
 # ============================================================
 
-print("\n\n--- Step 2: K8s Deployment Pattern ---\n")
+print("\n\n--- Step 2: Python OTel SDK Components ---\n")
 
-print("  Monitoring namespace layout:\n")
-print("    monitoring/")
-print("    ├── otel-collector (Deployment, port 4317/4318)")
-print("    ├── otel-collector-svc (ClusterIP)")
-print("    ├── jaeger (Deployment, port 16686)")
-print("    ├── prometheus (StatefulSet, port 9090)")
-print("    └── grafana (Deployment, port 3000)")
-print()
-print("  Apps connect to: otel-collector.monitoring:4317")
+print("  Key classes for in-process tracing:\n")
+
+sdk_components = [
+    ("TracerProvider",       "opentelemetry.sdk.trace",        "Root of the tracing pipeline"),
+    ("ConsoleSpanExporter",  "opentelemetry.sdk.trace.export", "Prints spans to stdout (dev)"),
+    ("BatchSpanProcessor",   "opentelemetry.sdk.trace.export", "Batches spans for efficiency"),
+    ("SimpleSpanProcessor",  "opentelemetry.sdk.trace.export", "Exports spans immediately (debug)"),
+    ("Resource",             "opentelemetry.sdk.resources",    "Identifies the service"),
+]
+
+print(f"  {'Class':<25} {'Module':<38} {'Purpose'}")
+print(f"  {'-'*100}")
+for cls, mod, purpose in sdk_components:
+    print(f"  {cls:<25} {mod:<38} {purpose}")
 
 
 # ============================================================
-# Step 3: ConfigMap for Collector
+# Step 3: Complete In-Process Setup Example
 # ============================================================
 
-print("\n\n--- Step 3: Collector ConfigMap ---\n")
+print("\n\n--- Step 3: Complete In-Process OTel Setup ---\n")
 
-print("  The collector config is mounted as a ConfigMap:\n")
+print("  A full Python OTel tracing setup (no Docker):\n")
 
-example_cm = textwrap.dedent("""\
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: otel-collector-config
-      namespace: monitoring
-    data:
-      config.yaml: |
-        receivers:
-          otlp:
-            protocols:
-              grpc:
-                endpoint: 0.0.0.0:4317
-              http:
-                endpoint: 0.0.0.0:4318
-        processors:
-          batch:
-            timeout: 5s
-          memory_limiter:
-            limit_mib: 512
-        exporters:
-          otlp/jaeger:
-            endpoint: jaeger:4317
-            tls:
-              insecure: true
-          prometheus:
-            endpoint: 0.0.0.0:8889
-        service:
-          pipelines:
-            traces:
-              receivers: [otlp]
-              processors: [memory_limiter, batch]
-              exporters: [otlp/jaeger]
-            metrics:
-              receivers: [otlp]
-              processors: [memory_limiter, batch]
-              exporters: [prometheus]
+setup_code = textwrap.dedent("""\
+    from opentelemetry import trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import (
+        BatchSpanProcessor,
+        ConsoleSpanExporter,
+    )
+    from opentelemetry.sdk.resources import Resource
+
+    # 1. Resource: identifies this service
+    resource = Resource.create({
+        "service.name": "agent-api",
+        "service.version": "2.0.0",
+        "deployment.environment": "production",
+    })
+
+    # 2. Exporter: where spans go (console for dev)
+    exporter = ConsoleSpanExporter()
+
+    # 3. Processor: batches spans before exporting
+    processor = BatchSpanProcessor(exporter)
+
+    # 4. Provider: ties it all together
+    provider = TracerProvider(resource=resource)
+    provider.add_span_processor(processor)
+    trace.set_tracer_provider(provider)
+
+    # 5. Get a tracer and create spans
+    tracer = trace.get_tracer("agent.api")
+    with tracer.start_as_current_span("handle_request") as span:
+        span.set_attribute("http.method", "POST")
+        span.set_attribute("http.route", "/chat")
 """)
 
-for line in example_cm.strip().split("\n"):
+for line in setup_code.strip().split("\n"):
     print(f"    {line}")
 
-with open(os.path.join(WORKDIR, "otel-collector-configmap-example.yaml"), "w") as f:
-    f.write(example_cm)
+with open(os.path.join(WORKDIR, "otel-setup-example.py"), "w") as f:
+    f.write(setup_code)
 
 
 # ============================================================
-# TODO 1: Create Collector Deployment + Service
+# TODO 1: Create Python OTel Pipeline Configuration
 # ============================================================
 
-print("\n\n--- TODO 1: Collector Deployment + Service ---\n")
+print("\n\n--- TODO 1: Python OTel Pipeline Configuration ---\n")
 
-print("  Create K8s manifests for the OTel Collector:")
-print("  1. Deployment:")
-print("     - name: otel-collector, namespace: monitoring")
-print("     - image: otel/opentelemetry-collector:latest")
-print("     - args: [\"--config=/conf/config.yaml\"]")
-print("     - ports: 4317 (grpc), 4318 (http), 8889 (prometheus)")
-print("     - volumeMount: config → /conf")
-print("     - volume: configMap otel-collector-config")
-print("     - resources: requests 256Mi/250m, limits 512Mi/500m")
-print("  2. Service:")
-print("     - name: otel-collector, namespace: monitoring")
-print("     - type: ClusterIP")
-print("     - ports: 4317, 4318, 8889")
+print("  Create a Python script that configures an OTel tracing pipeline:")
+print("  1. Import: trace, TracerProvider, BatchSpanProcessor, ConsoleSpanExporter, Resource")
+print("  2. Create Resource with service.name='agent-api' and service.version='2.0.0'")
+print("  3. Create ConsoleSpanExporter instance")
+print("  4. Create BatchSpanProcessor wrapping the exporter")
+print("  5. Create TracerProvider with the resource")
+print("  6. Add the processor to the provider")
+print("  7. Set as global tracer provider with trace.set_tracer_provider()")
+print("  8. Get a tracer with trace.get_tracer('agent.api')")
 
-todo1_deploy = textwrap.dedent("""\
-    # TODO: OTel Collector Deployment
-    # Include: image, args, ports, volume, resources
+todo1_code = textwrap.dedent("""\
+    # TODO: Python OTel Pipeline Configuration
+    # Import the required classes and configure the pipeline
+    # Include: Resource, ConsoleSpanExporter, BatchSpanProcessor, TracerProvider
 
 """)
 
-todo1_svc = textwrap.dedent("""\
-    # TODO: OTel Collector Service (ClusterIP, ports 4317/4318/8889)
+with open(os.path.join(WORKDIR, "otel_pipeline.py"), "w") as f:
+    f.write(todo1_code)
 
-""")
-
-with open(os.path.join(WORKDIR, "otel-collector-deployment.yaml"), "w") as f:
-    f.write(todo1_deploy)
-with open(os.path.join(WORKDIR, "otel-collector-service.yaml"), "w") as f:
-    f.write(todo1_svc)
-
-deploy_checks = [
-    ("Deployment: kind",            "kind: Deployment" in todo1_deploy),
-    ("Deployment: namespace",       "monitoring" in todo1_deploy),
-    ("Deployment: image",           "opentelemetry-collector" in todo1_deploy),
-    ("Deployment: args config",     "--config" in todo1_deploy),
-    ("Deployment: port 4317",       "4317" in todo1_deploy),
-    ("Deployment: port 4318",       "4318" in todo1_deploy),
-    ("Deployment: volumeMount",     "volumeMount" in todo1_deploy or "volumeMounts" in todo1_deploy),
-    ("Deployment: resources",       "resources:" in todo1_deploy),
+pipeline_checks = [
+    ("Has Resource import/usage",       "Resource" in todo1_code),
+    ("Has ConsoleSpanExporter",         "ConsoleSpanExporter" in todo1_code),
+    ("Has BatchSpanProcessor",          "BatchSpanProcessor" in todo1_code),
+    ("Has TracerProvider",              "TracerProvider" in todo1_code),
+    ("Has service.name",               "service.name" in todo1_code),
+    ("Has service.version",            "service.version" in todo1_code),
+    ("Has set_tracer_provider",        "set_tracer_provider" in todo1_code),
+    ("Has get_tracer",                 "get_tracer" in todo1_code),
+    ("Has agent.api tracer name",      "agent.api" in todo1_code),
+    ("Has resource in provider",       "resource" in todo1_code.lower()),
+    ("Has add_span_processor",         "add_span_processor" in todo1_code),
+    ("Has exporter instance",          "exporter" in todo1_code.lower()),
 ]
 
-svc_checks = [
-    ("Service: kind",               "kind: Service" in todo1_svc),
-    ("Service: otel-collector",     "otel-collector" in todo1_svc),
-    ("Service: port 4317",          "4317" in todo1_svc),
-    ("Service: port 4318",          "4318" in todo1_svc),
-    ("Service: port 8889",          "8889" in todo1_svc),
-]
+score1 = sum(1 for _, ok in pipeline_checks if ok)
 
-all_checks = deploy_checks + svc_checks
-score1 = sum(1 for _, ok in all_checks if ok)
-
-print(f"\n  Validating Deployment ({sum(1 for _, ok in deploy_checks if ok)}/{len(deploy_checks)}):")
-for name, ok in deploy_checks:
-    print(f"    [{'PASS' if ok else 'FAIL'}] {name}")
-print(f"\n  Validating Service ({sum(1 for _, ok in svc_checks if ok)}/{len(svc_checks)}):")
-for name, ok in svc_checks:
+print(f"\n  Validating OTel Pipeline ({score1}/{len(pipeline_checks)}):")
+for name, ok in pipeline_checks:
     print(f"    [{'PASS' if ok else 'FAIL'}] {name}")
 
 
 # ============================================================
-# TODO 2: Observability architecture quiz
+# TODO 2: Architecture Quiz
 # ============================================================
 
 print("\n\n--- TODO 2: Architecture Quiz ---\n")
 
 quiz = [
     {
-        "question": "What port does the OTel Collector use for gRPC OTLP?",
+        "question": "What OTel SDK class prints spans to stdout for development?",
         "answer": "___",
-        "correct": "4317",
+        "correct": "ConsoleSpanExporter",
     },
     {
-        "question": "What Collector component ingests data from apps?",
+        "question": "What OTel SDK class batches spans before exporting?",
         "answer": "___",
-        "correct": "receivers",
+        "correct": "BatchSpanProcessor",
     },
     {
-        "question": "What K8s namespace should monitoring tools be in?",
+        "question": "What method registers a TracerProvider as the global default?",
         "answer": "___",
-        "correct": "monitoring",
+        "correct": "set_tracer_provider",
     },
     {
-        "question": "DaemonSet collector mode: agent or gateway?",
+        "question": "What Resource attribute identifies your service by name?",
         "answer": "___",
-        "correct": "agent",
+        "correct": "service.name",
     },
     {
-        "question": "What K8s object stores the collector config?",
+        "question": "What OTel SDK class creates and manages tracers?",
         "answer": "___",
-        "correct": "configmap",
+        "correct": "TracerProvider",
     },
 ]
 
@@ -240,10 +223,10 @@ print(f"\n  Score: {score2}/{len(quiz)}")
 
 print(f"\n\n--- Lab 07 Summary ---\n")
 print("  Key concepts:")
-print("    1. Collector: Receivers → Processors → Exporters")
-print("    2. Deploy as Deployment (gateway) or DaemonSet (agent)")
-print("    3. Config via ConfigMap, mounted at /conf/config.yaml")
-print("    4. Apps connect to otel-collector.monitoring:4317")
-print(f"\n  TODO 1: {score1}/{len(all_checks)} deployment checks passed")
+print("    1. Pipeline: TracerProvider → BatchSpanProcessor → Exporter")
+print("    2. ConsoleSpanExporter for dev, OTLPSpanExporter for production")
+print("    3. Resource identifies service (name, version, environment)")
+print("    4. In-process pipeline needs no Docker or external Collector")
+print(f"\n  TODO 1: {score1}/{len(pipeline_checks)} pipeline config checks passed")
 print(f"  TODO 2: {score2}/{len(quiz)} quiz answers correct")
 print(f"\n  Files generated in {WORKDIR}/")

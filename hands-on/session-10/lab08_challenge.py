@@ -25,72 +25,75 @@ os.makedirs(WORKDIR, exist_ok=True)
 # ============================================================
 
 print("\n  Design a complete observability setup for an AI agent:\n")
-print("    AI Stack:")
-print("      agent-api (3 replicas) → ChromaDB + Redis")
+print("    Python In-Process OTel Pipeline:")
+print("      TracerProvider → BatchSpanProcessor → ConsoleSpanExporter")
 print()
-print("    Observability Stack (monitoring namespace):")
-print("      OTel Collector → Jaeger (traces)")
-print("                     → Prometheus (metrics)")
-print("                     → Loki (logs)")
-print("      Grafana ← all three backends")
+print("    Application Launch:")
+print("      OTEL_* env vars → uvicorn + structured logging")
 print()
 print("    Deliverables:")
-print("      1. OTel Collector ConfigMap")
-print("      2. Agent Deployment with OTel env vars")
+print("      1. Python OTel pipeline setup (TracerProvider + exporter)")
+print("      2. Python launch script with OTel env vars + structured logging")
 print("      3. Observability design (what to instrument)")
 
 
 # ============================================================
-# TODO 1: OTel Collector ConfigMap
+# TODO 1: Python OTel Pipeline Setup
 # ============================================================
 
-print("\n\n--- TODO 1: OTel Collector ConfigMap ---\n")
+print("\n\n--- TODO 1: Python OTel Pipeline Setup ---\n")
 
-print("  Create a complete OTel Collector ConfigMap:")
-print("    - Receiver: OTLP (gRPC 4317, HTTP 4318)")
-print("    - Processors: batch (timeout 5s), memory_limiter (512 MiB)")
-print("    - Exporter traces: otlp/jaeger (endpoint jaeger:4317)")
-print("    - Exporter metrics: prometheus (endpoint 0.0.0.0:8889)")
-print("    - Pipeline traces: otlp → memory_limiter,batch → otlp/jaeger")
-print("    - Pipeline metrics: otlp → memory_limiter,batch → prometheus")
+print("  Create a Python script that configures a complete OTel tracing pipeline:")
+print("    - Import: trace, TracerProvider, BatchSpanProcessor, ConsoleSpanExporter, Resource")
+print("    - Create Resource with service.name='agent-api', service.version='2.0.0',")
+print("      deployment.environment='production'")
+print("    - Create ConsoleSpanExporter instance")
+print("    - Create BatchSpanProcessor wrapping the exporter")
+print("    - Create TracerProvider with the resource")
+print("    - Add the processor to the provider via add_span_processor()")
+print("    - Set as global with trace.set_tracer_provider()")
+print("    - Get a tracer with trace.get_tracer('agent.api')")
 
-todo1_yaml = textwrap.dedent("""\
-    # TODO: Complete OTel Collector ConfigMap
-    # apiVersion: v1, kind: ConfigMap
-    # name: otel-collector-config, namespace: monitoring
-    # data.config.yaml with full collector config
+todo1_code = textwrap.dedent("""\
+    # TODO: Complete Python OTel pipeline setup
+    # Include: Resource, ConsoleSpanExporter, BatchSpanProcessor, TracerProvider
+    # Configure: service.name, service.version, deployment.environment
+    # Wire: provider → processor → exporter
+    # Register: trace.set_tracer_provider() and trace.get_tracer()
 
 """)
 
-with open(os.path.join(WORKDIR, "otel-collector-configmap.yaml"), "w") as f:
-    f.write(todo1_yaml)
+with open(os.path.join(WORKDIR, "otel_setup.py"), "w") as f:
+    f.write(todo1_code)
 
 
 # ============================================================
-# TODO 2: Agent Deployment with OTel
+# TODO 2: Agent Launch Script with OTel + Structured Logging
 # ============================================================
 
-print("\n\n--- TODO 2: Agent Deployment with OTel ---\n")
+print("\n\n--- TODO 2: Agent Launch Script with OTel + Structured Logging ---\n")
 
-print("  Create a K8s Deployment for agent-api with full OTel config:")
-print("    - name: agent-api, replicas: 3, image: agent-api:2.0")
-print("    - containerPort: 8000")
-print("    - env OTEL_SERVICE_NAME: agent-api")
-print("    - env OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.monitoring:4317")
-print("    - env OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production,service.version=2.0")
-print("    - env OTEL_TRACES_SAMPLER: parentbased_traceidratio")
-print("    - env OTEL_TRACES_SAMPLER_ARG: 0.1")
-print("    - Prometheus annotations: scrape=true, port=8000, path=/metrics")
-print("    - readinessProbe: /health port 8000 (delay=5, period=10)")
-print("    - resources: requests 256Mi/250m, limits 1Gi/1000m")
+print("  Create a Python launch script for agent-api with OTel env vars")
+print("  and structured logging (no Docker required):")
+print("    - import os, logging, uvicorn")
+print("    - Set OTEL_SERVICE_NAME: agent-api")
+print("    - Set OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317")
+print("    - Set OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production,service.version=2.0")
+print("    - Set OTEL_TRACES_SAMPLER: parentbased_traceidratio")
+print("    - Set OTEL_TRACES_SAMPLER_ARG: 0.1")
+print("    - Configure structured logging with JSON-like format")
+print("    - Launch uvicorn on host 0.0.0.0, port 8000, log_level info")
 
-todo2_yaml = textwrap.dedent("""\
-    # TODO: Agent Deployment with OTel env vars and Prometheus annotations
+todo2_code = textwrap.dedent("""\
+    # TODO: Python launch script with OTel env vars + structured logging
+    # Set os.environ for OTEL_* variables
+    # Configure logging with structured format
+    # Launch uvicorn
 
 """)
 
-with open(os.path.join(WORKDIR, "agent-deployment.yaml"), "w") as f:
-    f.write(todo2_yaml)
+with open(os.path.join(WORKDIR, "launch_agent.py"), "w") as f:
+    f.write(todo2_code)
 
 
 # ============================================================
@@ -155,30 +158,28 @@ print("\n\n--- Challenge Validation ---\n")
 
 results = []
 
-# TODO 1: ConfigMap
-results.append(("ConfigMap: kind",              "kind: ConfigMap" in todo1_yaml))
-results.append(("ConfigMap: namespace",          "monitoring" in todo1_yaml))
-results.append(("ConfigMap: receivers",          "receivers:" in todo1_yaml))
-results.append(("ConfigMap: OTLP receiver",      "otlp:" in todo1_yaml))
-results.append(("ConfigMap: port 4317",          "4317" in todo1_yaml))
-results.append(("ConfigMap: port 4318",          "4318" in todo1_yaml))
-results.append(("ConfigMap: batch processor",    "batch:" in todo1_yaml))
-results.append(("ConfigMap: memory_limiter",     "memory_limiter:" in todo1_yaml))
-results.append(("ConfigMap: jaeger exporter",    "jaeger" in todo1_yaml))
-results.append(("ConfigMap: prometheus exporter", "prometheus:" in todo1_yaml))
-results.append(("ConfigMap: pipelines",          "pipelines:" in todo1_yaml))
+# TODO 1: OTel Pipeline Setup
+results.append(("OTel: has Resource",               "Resource" in todo1_code))
+results.append(("OTel: has ConsoleSpanExporter",     "ConsoleSpanExporter" in todo1_code))
+results.append(("OTel: has BatchSpanProcessor",      "BatchSpanProcessor" in todo1_code))
+results.append(("OTel: has TracerProvider",          "TracerProvider" in todo1_code))
+results.append(("OTel: has service.name",            "service.name" in todo1_code))
+results.append(("OTel: has service.version",         "service.version" in todo1_code))
+results.append(("OTel: has deployment.environment",  "deployment.environment" in todo1_code))
+results.append(("OTel: has set_tracer_provider",     "set_tracer_provider" in todo1_code))
+results.append(("OTel: has get_tracer",              "get_tracer" in todo1_code))
+results.append(("OTel: has add_span_processor",      "add_span_processor" in todo1_code))
+results.append(("OTel: has agent.api tracer",        "agent.api" in todo1_code))
 
-# TODO 2: Deployment
-results.append(("Deploy: kind Deployment",       "kind: Deployment" in todo2_yaml))
-results.append(("Deploy: replicas 3",            "replicas: 3" in todo2_yaml))
-results.append(("Deploy: agent-api image",       "agent-api:2.0" in todo2_yaml))
-results.append(("Deploy: OTEL_SERVICE_NAME",     "OTEL_SERVICE_NAME" in todo2_yaml))
-results.append(("Deploy: OTLP endpoint",         "OTEL_EXPORTER_OTLP_ENDPOINT" in todo2_yaml))
-results.append(("Deploy: resource attributes",   "OTEL_RESOURCE_ATTRIBUTES" in todo2_yaml))
-results.append(("Deploy: sampler config",        "OTEL_TRACES_SAMPLER" in todo2_yaml))
-results.append(("Deploy: prometheus.io/scrape",  "prometheus.io/scrape" in todo2_yaml))
-results.append(("Deploy: readinessProbe",        "readinessProbe:" in todo2_yaml))
-results.append(("Deploy: resources",             "resources:" in todo2_yaml))
+# TODO 2: Launch Script
+results.append(("Launch: has os.environ",            "os.environ" in todo2_code))
+results.append(("Launch: has OTEL_SERVICE_NAME",     "OTEL_SERVICE_NAME" in todo2_code))
+results.append(("Launch: has OTLP endpoint",         "OTEL_EXPORTER_OTLP_ENDPOINT" in todo2_code))
+results.append(("Launch: has resource attributes",   "OTEL_RESOURCE_ATTRIBUTES" in todo2_code))
+results.append(("Launch: has sampler config",        "OTEL_TRACES_SAMPLER" in todo2_code))
+results.append(("Launch: has sampling ratio 0.1",    "0.1" in todo2_code))
+results.append(("Launch: has logging config",        "logging" in todo2_code))
+results.append(("Launch: has uvicorn",               "uvicorn" in todo2_code))
 
 # TODO 3: Design
 for d in design:
@@ -210,15 +211,14 @@ for root, dirs, files in os.walk(WORKDIR):
         size = os.path.getsize(os.path.join(root, f))
         print(f"    {rel:<45} ({size} bytes)")
 
-print(f"\n  Deploy order on a real cluster:")
-print(f"    1. kubectl apply -f otel-collector-configmap.yaml")
-print(f"    2. kubectl apply -f otel-collector-deployment.yaml")
-print(f"    3. kubectl apply -f agent-deployment.yaml")
-print(f"    4. kubectl port-forward -n monitoring svc/jaeger 16686:16686")
+print(f"\n  Run order (pure Python, no Docker):")
+print(f"    1. python otel_setup.py          # Configure OTel pipeline")
+print(f"    2. python launch_agent.py         # Start agent with OTel env vars")
+print(f"    3. Spans appear on console (dev) or in LangFuse (production)")
 
 print("\n" + "=" * 60)
 print("Challenge complete!")
-print(f"- OTel Collector: ConfigMap with receivers/processors/exporters")
-print(f"- Agent: Deployment with OTEL_* env vars + Prometheus annotations")
+print(f"- OTel Pipeline: TracerProvider + BatchSpanProcessor + ConsoleSpanExporter")
+print(f"- Launch Script: OTEL_* env vars + structured logging + uvicorn")
 print(f"- Design: Metrics/logs/traces for 4 AI components")
 print(f"- {passed}/{total} validation checks passing")

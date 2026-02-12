@@ -550,7 +550,7 @@
         <p style="font-size:0.75em; color:#ccc;">Rich, unstructured or structured text capturing discrete events</p>
         <div class="code-block">
 <span class="comment"># Unstructured log (hard to parse)</span>
-2025-01-15 14:32:01 ERROR Failed to connect to ChromaDB at chromadb-svc:8000
+2025-01-15 14:32:01 ERROR Failed to connect to ChromaDB at localhost:8000
 
 <span class="comment"># Structured log (machine-parseable, preferred)</span>
 {
@@ -558,7 +558,7 @@
   <span class="string">"level"</span>: <span class="string">"ERROR"</span>,
   <span class="string">"service"</span>: <span class="string">"agent-api"</span>,
   <span class="string">"message"</span>: <span class="string">"Failed to connect to ChromaDB"</span>,
-  <span class="string">"target_host"</span>: <span class="string">"chromadb-svc:8000"</span>,
+  <span class="string">"target_host"</span>: <span class="string">"localhost:8000"</span>,
   <span class="string">"trace_id"</span>: <span class="string">"abc123def456"</span>,
   <span class="string">"retry_count"</span>: 3
 }
@@ -752,7 +752,7 @@
             <h4>Why OTel Matters</h4>
             <ul>
               <li>Instrument once, export to <em>any</em> backend</li>
-              <li>Switch from Jaeger to Grafana Tempo? Change one config</li>
+              <li>Switch from Jaeger to LangFuse? Change one config</li>
               <li>No vendor lock-in on your instrumentation code</li>
               <li>Community-maintained auto-instrumentation libraries</li>
               <li>Consistent API across all languages</li>
@@ -786,7 +786,7 @@
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
               <div class="box box-red" style="min-width:130px;"><strong>Backend</strong><br><span style="font-size:0.8em; color:#aaa;">Any vendor</span></div>
-              <div style="font-size:0.5em; color:#aaa;">Jaeger, Prometheus, etc.</div>
+              <div style="font-size:0.5em; color:#aaa;">Jaeger, LangFuse, etc.</div>
             </div>
           </div>
         </div>
@@ -814,7 +814,7 @@
           <tr>
             <td><span class="highlight-red">Backend</span></td>
             <td>Storage &amp; UI</td>
-            <td>Jaeger (traces), Prometheus (metrics), Loki (logs), Grafana (dashboards)</td>
+            <td>Jaeger (traces), LangFuse (AI traces &amp; metrics), Loki (logs)</td>
           </tr>
         </table>
       </section>
@@ -921,13 +921,13 @@ opentelemetry-instrument \
         <div style="text-align:center; font-size:1.2em; color:#888;">&darr; &darr; &darr;</div>
         <div class="diagram">
           <div class="box box-green" style="min-width:90px;">Jaeger<br><span style="font-size:0.8em;">Traces</span></div>
-          <div class="box box-green" style="min-width:90px;">Prometheus<br><span style="font-size:0.8em;">Metrics</span></div>
+          <div class="box box-green" style="min-width:90px;">LangFuse<br><span style="font-size:0.8em;">Traces &amp; Metrics</span></div>
           <div class="box box-green" style="min-width:90px;">Loki<br><span style="font-size:0.8em;">Logs</span></div>
         </div>
         <div class="card-grid-3" style="margin-top:14px;">
           <div class="card card-accent">
             <h4>Receivers</h4>
-            <p>Accept data: OTLP, Prometheus, Jaeger, Zipkin formats</p>
+            <p>Accept data: OTLP, Jaeger, Zipkin formats</p>
           </div>
           <div class="card card-orange">
             <h4>Processors</h4>
@@ -935,7 +935,7 @@ opentelemetry-instrument \
           </div>
           <div class="card card-green">
             <h4>Exporters</h4>
-            <p>Send to backends: OTLP, Prometheus, Jaeger, file, console</p>
+            <p>Send to backends: OTLP, Jaeger, LangFuse, file, console</p>
           </div>
         </div>
       </section>
@@ -965,19 +965,21 @@ opentelemetry-instrument \
     endpoint: <span class="string">jaeger:4317</span>
     tls:
       insecure: <span class="string">true</span>
-  <span class="func">prometheus</span>:
-    endpoint: <span class="string">0.0.0.0:8889</span>
+  <span class="func">otlp/langfuse</span>:
+    endpoint: <span class="string">langfuse:4318</span>
+    tls:
+      insecure: <span class="string">true</span>
 
 <span class="keyword">service</span>:
   pipelines:
     <span class="func">traces</span>:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/jaeger]
+      exporters: [otlp/jaeger, otlp/langfuse]
     <span class="func">metrics</span>:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [prometheus]
+      exporters: [otlp/langfuse]
         </div>
       </section>
 
@@ -994,19 +996,19 @@ opentelemetry-instrument \
           <tr>
             <td><span class="signal-traces">Traces</span></td>
             <td>Jaeger, Tempo</td>
-            <td>Jaeger UI, Grafana</td>
+            <td>Jaeger UI, LangFuse</td>
             <td>Datadog, New Relic, Honeycomb</td>
           </tr>
           <tr>
             <td><span class="signal-metrics">Metrics</span></td>
-            <td>Prometheus, Mimir</td>
-            <td>Grafana</td>
+            <td>LangFuse, OTel Collector</td>
+            <td>LangFuse Dashboard</td>
             <td>Datadog, CloudWatch, Dynatrace</td>
           </tr>
           <tr>
             <td><span class="signal-logs">Logs</span></td>
             <td>Loki, Elasticsearch</td>
-            <td>Grafana, Kibana</td>
+            <td>LangFuse, Kibana</td>
             <td>Datadog, Splunk, CloudWatch</td>
           </tr>
         </table>
@@ -1023,7 +1025,7 @@ opentelemetry-instrument \
           <div class="card card-accent">
             <h4>Why Open Source?</h4>
             <ul>
-              <li>Deploy in your own K8s cluster</li>
+              <li>Deploy with Python + uvicorn</li>
               <li>No data leaving your network</li>
               <li>Full control over retention</li>
               <li>No per-host or per-GB pricing</li>
@@ -1373,7 +1375,7 @@ logger.info(<span class="string">"Processing query"</span>)
 <span class="comment"># [trace_id=abc123def456 span_id=789xyz] Processing query</span>
         </div>
         <div class="diagram" style="margin-top:16px;">
-          <div class="box" style="font-size:0.6em;">See error in<br><strong>Grafana/Loki</strong><br>(logs)</div>
+          <div class="box" style="font-size:0.6em;">See error in<br><strong>LangFuse/Loki</strong><br>(logs)</div>
           <div class="arrow">&rarr;</div>
           <div class="box box-orange" style="font-size:0.6em;">Click<br><strong>trace_id</strong><br>link</div>
           <div class="arrow">&rarr;</div>
@@ -1417,33 +1419,35 @@ RedisInstrumentor().instrument()
         </div>
       </section>
 
-      <!-- K8S DEPLOYMENT WITH OTEL -->
+      <!-- PYTHON OTEL CONFIGURATION -->
       <section>
-        <h2>Deploying with OTel on Kubernetes</h2>
+        <h2>Configuring OTel in Python</h2>
         <div class="code-block">
-<span class="comment"># agent-deployment.yaml (relevant sections)</span>
-<span class="keyword">apiVersion</span>: apps/v1
-<span class="keyword">kind</span>: Deployment
-<span class="keyword">metadata</span>:
-  name: agent-api
-<span class="keyword">spec</span>:
-  template:
-    spec:
-      containers:
-      - name: agent
-        image: agent-api:2.0
-        <span class="keyword">env</span>:
-        <span class="comment"># OTel configuration via environment variables</span>
-        - name: <span class="func">OTEL_SERVICE_NAME</span>
-          value: <span class="string">"agent-api"</span>
-        - name: <span class="func">OTEL_EXPORTER_OTLP_ENDPOINT</span>
-          value: <span class="string">"http://otel-collector.monitoring:4317"</span>
-        - name: <span class="func">OTEL_RESOURCE_ATTRIBUTES</span>
-          value: <span class="string">"deployment.environment=production,service.version=2.0"</span>
-        - name: <span class="func">OTEL_TRACES_SAMPLER</span>
-          value: <span class="string">"parentbased_traceidratio"</span>
-        - name: <span class="func">OTEL_TRACES_SAMPLER_ARG</span>
-          value: <span class="string">"0.1"</span>    <span class="comment"># Sample 10% of traces in production</span>
+<span class="comment"># otel_config.py &mdash; Python OTel setup with ConsoleSpanExporter</span>
+<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
+<span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
+<span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> (
+    BatchSpanProcessor, ConsoleSpanExporter
+)
+<span class="keyword">from</span> opentelemetry.sdk.resources <span class="keyword">import</span> Resource
+<span class="keyword">import</span> os
+
+<span class="comment"># Configure via environment variables or Python</span>
+resource = Resource.create({
+    <span class="string">"service.name"</span>: os.getenv(<span class="string">"OTEL_SERVICE_NAME"</span>, <span class="string">"agent-api"</span>),
+    <span class="string">"service.version"</span>: <span class="string">"2.0.0"</span>,
+    <span class="string">"deployment.environment"</span>: <span class="string">"production"</span>,
+})
+
+provider = TracerProvider(resource=resource)
+
+<span class="comment"># ConsoleSpanExporter for local dev (no collector needed)</span>
+provider.add_span_processor(
+    BatchSpanProcessor(ConsoleSpanExporter())
+)
+trace.set_tracer_provider(provider)
+
+<span class="comment"># Run with: uvicorn app:app --host 0.0.0.0 --port 8000</span>
         </div>
         <div class="warning">
           In production, use <strong>sampling</strong> (e.g., 10%) to avoid overwhelming your trace backend. Always sample 100% of errors regardless of the ratio.

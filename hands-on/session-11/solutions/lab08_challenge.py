@@ -2,7 +2,7 @@
 Lab 08 Challenge: Complete LangFuse Observability Pipeline
 ============================================================
 Build end-to-end LangFuse integration with LangChain,
-Prometheus bridge, dashboard design, and alert rules.
+dashboard configuration, score definitions, and alert rules.
 """
 
 import os
@@ -27,17 +27,17 @@ os.makedirs(WORKDIR, exist_ok=True)
 print("\n  Build a complete LangFuse observability pipeline:\n")
 print("    1. LangChain instrumentation with CallbackHandler")
 print("    2. Feedback collection and evaluation")
-print("    3. Cost tracking with Prometheus bridge")
-print("    4. Dashboard design + alert rules")
+print("    3. Cost tracking with LangFuse native API")
+print("    4. LangFuse dashboard config + score-based alerts")
 print()
 print("    Architecture:")
-print("      LangChain Agent ──callback──> LangFuse Server ──> PostgreSQL")
-print("                                        │")
-print("                                   Cost/Token data")
-print("                                        │")
-print("                                   Prometheus ──> Grafana")
-print("                                        │")
-print("                                   Alertmanager ──> Slack")
+print("      LangChain Agent --callback--> LangFuse Server --> PostgreSQL")
+print("                                        |")
+print("                                   Traces / Scores / Cost")
+print("                                        |")
+print("                                   LangFuse Dashboard")
+print("                                        |")
+print("                                   Score Alerts --> Webhook/Slack")
 
 
 # ============================================================
@@ -113,23 +113,25 @@ with open(os.path.join(WORKDIR, "langfuse_instrumentation.py"), "w") as f:
 
 
 # ============================================================
-# TODO 2: Prometheus Bridge
+# TODO 2: Cost Tracking Module
 # ============================================================
 
-print("\n\n--- TODO 2: Prometheus Cost Bridge ---\n")
+print("\n\n--- TODO 2: LangFuse Cost Tracking Module ---\n")
 
-print("  Write code that bridges LangFuse data to Prometheus:")
-print("    - Counter: langfuse_llm_cost_usd_total (labels: model, user_id)")
-print("    - Counter: langfuse_tokens_total (labels: model, direction)")
-print("    - Histogram: langfuse_generation_duration_seconds (labels: model)")
-print("    - Counter: langfuse_feedback_total (labels: score_name, value)")
+print("  Write code that tracks costs using LangFuse native API:")
 print("    - PRICING dict with at least 3 models")
-print("    - record_generation() function")
-print("    - generate_latest for /metrics endpoint")
+print("    - calculate_cost(model, tokens_in, tokens_out) function")
+print("    - Log generation with usage and cost to LangFuse")
+print("    - fetch_traces() to retrieve cost data")
+print("    - Aggregate cost by model and by user")
+print("    - Identify expensive traces (threshold detection)")
 
-# SOLUTION: Prometheus bridge for LangFuse metrics
+# SOLUTION: LangFuse cost tracking module
 todo2_code = textwrap.dedent("""\
-    from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+    from langfuse import Langfuse
+
+    # Initialize LangFuse client
+    langfuse = Langfuse()
 
     # Pricing dictionary: model -> (input_cost_per_1M, output_cost_per_1M)
     PRICING = {
@@ -139,57 +141,50 @@ todo2_code = textwrap.dedent("""\
         "groq/llama3-8b":    (0.05, 0.08),
     }
 
-    # Counter: total LLM cost in USD
-    llm_cost_counter = Counter(
-        "langfuse_llm_cost_usd_total",
-        "Total LLM cost in USD",
-        ["model", "user_id"],
-    )
-
-    # Counter: total tokens consumed
-    llm_token_counter = Counter(
-        "langfuse_tokens_total",
-        "Total tokens consumed",
-        ["model", "direction"],
-    )
-
-    # Histogram: LLM generation duration in seconds
-    llm_duration_histogram = Histogram(
-        "langfuse_generation_duration_seconds",
-        "LLM generation latency in seconds",
-        ["model"],
-    )
-
-    # Counter: feedback scores
-    feedback_counter = Counter(
-        "langfuse_feedback_total",
-        "Total feedback scores received",
-        ["score_name", "value"],
-    )
-
     def calculate_cost(model, tokens_in, tokens_out):
         if model not in PRICING:
             return 0.0
         input_price, output_price = PRICING[model]
         return (tokens_in / 1_000_000) * input_price + (tokens_out / 1_000_000) * output_price
 
-    def record_generation(model, user_id, tokens_in, tokens_out, latency):
-        cost = calculate_cost(model, tokens_in, tokens_out)
-        llm_cost_counter.labels(model=model, user_id=user_id).inc(cost)
-        llm_token_counter.labels(model=model, direction="input").inc(tokens_in)
-        llm_token_counter.labels(model=model, direction="output").inc(tokens_out)
-        llm_duration_histogram.labels(model=model).observe(latency)
-        return cost
+    # Create a trace and log generation with usage and cost
+    trace = langfuse.trace(name="cost_tracked_request", user_id="alice")
 
-    def record_feedback(score_name, value):
-        feedback_counter.labels(score_name=score_name, value=str(value)).inc()
+    tokens_in, tokens_out = 500, 200
+    model_name = "groq/llama3-70b"
+    cost = calculate_cost(model_name, tokens_in, tokens_out)
 
-    # Export metrics via /metrics endpoint
-    def metrics_endpoint():
-        return generate_latest()
+    generation = trace.generation(
+        name="llm_call",
+        model=model_name,
+        input=[{"role": "user", "content": "Explain RAG"}],
+        output={"role": "assistant", "content": "RAG stands for..."},
+        usage={"input": tokens_in, "output": tokens_out, "total_cost": cost},
+    )
+
+    # Fetch traces and aggregate cost by model
+    traces = langfuse.fetch_traces()
+    cost_by_model = {}
+    for t in traces.data:
+        if t.total_cost:
+            for obs in (t.observations or []):
+                model = getattr(obs, "model", "unknown")
+                cost_by_model[model] = cost_by_model.get(model, 0) + (t.total_cost or 0)
+
+    # Aggregate cost by user
+    cost_by_user = {}
+    for t in traces.data:
+        user = t.user_id or "anonymous"
+        cost_by_user[user] = cost_by_user.get(user, 0) + (t.total_cost or 0)
+
+    # Identify expensive traces (threshold detection)
+    threshold = 0.01
+    expensive_traces = [t for t in traces.data if (t.total_cost or 0) > threshold]
+    for t in expensive_traces:
+        print(f"Expensive trace: {t.name} total_cost=${t.total_cost:.6f}")
 """)
 
-with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
+with open(os.path.join(WORKDIR, "cost_tracking.py"), "w") as f:
     f.write(todo2_code)
 
 
@@ -199,95 +194,154 @@ with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
 
 print("\n\n--- TODO 3: Dashboard & Alert Design ---\n")
 
-print("  Design dashboard panels and alert rules.\n")
+print("  Design LangFuse dashboard views and alert configurations.\n")
 
-panels = [
+dashboard_views = [
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Cost per hour by model",
-        "correct_type": "bar chart",
-        "check_terms": ["increase", "cost", "1h"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Cost breakdown by model over time",
+        "correct_type": "trace list",
+        "check_terms": ["model", "cost", "time"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "LLM latency trend (p99)",
-        "correct_type": "time series",
-        "check_terms": ["histogram_quantile", "0.99"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Generation latency distribution",
+        "correct_type": "generation list",
+        "check_terms": ["latency", "generation", "model"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Token consumption rate",
-        "correct_type": "stat",
-        "check_terms": ["rate", "token"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Token usage by user",
+        "correct_type": "trace list",
+        "check_terms": ["user", "token", "usage"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Average user feedback score",
-        "correct_type": "stat",
-        "check_terms": ["feedback"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "User feedback score trends",
+        "correct_type": "score list",
+        "check_terms": ["feedback", "score", "time"],
     },
 ]
 
-# SOLUTION: Design dashboard panels
-panels[0]["title"] = "LLM Cost per Hour by Model"
-panels[0]["panel_type"] = "bar chart"
-panels[0]["promql"] = "sum by (model) (increase(langfuse_llm_cost_usd_total[1h]))"
+# SOLUTION: Design LangFuse dashboard views
+dashboard_views[0]["title"] = "Model Cost Breakdown"
+dashboard_views[0]["view_type"] = "trace list"
+dashboard_views[0]["filter_config"] = "group_by=model, sort_by=cost, time_range=24h"
 
-panels[1]["title"] = "LLM Latency P99 Trend"
-panels[1]["panel_type"] = "time series"
-panels[1]["promql"] = "histogram_quantile(0.99, rate(langfuse_generation_duration_seconds_bucket[5m]))"
+dashboard_views[1]["title"] = "Generation Latency Distribution"
+dashboard_views[1]["view_type"] = "generation list"
+dashboard_views[1]["filter_config"] = "sort_by=latency, group_by=generation model, time_range=1h"
 
-panels[2]["title"] = "Token Consumption Rate"
-panels[2]["panel_type"] = "stat"
-panels[2]["promql"] = "sum(rate(langfuse_tokens_total[5m]))"
+dashboard_views[2]["title"] = "Token Usage by User"
+dashboard_views[2]["view_type"] = "trace list"
+dashboard_views[2]["filter_config"] = "group_by=user, sort_by=token usage, time_range=24h"
 
-panels[3]["title"] = "Average User Feedback Score"
-panels[3]["panel_type"] = "stat"
-panels[3]["promql"] = "avg(langfuse_feedback_total)"
+dashboard_views[3]["title"] = "Feedback Score Trends"
+dashboard_views[3]["view_type"] = "score list"
+dashboard_views[3]["filter_config"] = "filter=user_feedback score, sort_by=time, group_by=name"
 
-# SOLUTION: Alert rules for LangFuse monitoring
-alerts_yaml = textwrap.dedent("""\
-    groups:
-      - name: langfuse-alerts
-        rules:
-          - alert: CostSpike
-            expr: sum(increase(langfuse_llm_cost_usd_total[1h])) > 5
-            for: 10m
-            labels:
-              severity: warning
-            annotations:
-              summary: "LLM cost spike detected"
-              description: "Total LLM cost exceeded $5 in the last hour"
+# SOLUTION: Define LangFuse scores for quality monitoring
+score_definitions = textwrap.dedent("""\
+    from langfuse import Langfuse
 
-          - alert: HighLLMLatency
-            expr: histogram_quantile(0.99, rate(langfuse_generation_duration_seconds_bucket[5m])) > 10
-            for: 5m
-            labels:
-              severity: warning
-            annotations:
-              summary: "High LLM latency detected"
-              description: "P99 LLM latency exceeds 10 seconds"
+    langfuse = Langfuse()
 
-          - alert: LowFeedbackScore
-            expr: avg(langfuse_feedback_total) < 0.5
-            for: 30m
-            labels:
-              severity: critical
-            annotations:
-              summary: "Low user feedback scores"
-              description: "Average user feedback has dropped below 0.5"
+    # Score definition: user_feedback
+    # data_type: numeric (0 or 1 for thumbs down/up)
+    # Used to track user satisfaction per response
+    langfuse.score(
+        trace_id=trace_id,
+        name="user_feedback",
+        value=1,
+        data_type="NUMERIC",
+        comment="User rated response as helpful",
+    )
+
+    # Score definition: relevance
+    # data_type: numeric (0.0 to 1.0 continuous)
+    # Automated eval measuring answer relevance to question
+    langfuse.score(
+        trace_id=trace_id,
+        name="relevance",
+        value=0.92,
+        data_type="NUMERIC",
+        comment="Cosine similarity between question and answer",
+    )
+
+    # Score definition: cost_efficiency
+    # data_type: numeric (cost in USD per quality point)
+    # Tracks cost relative to quality — lower is better
+    langfuse.score(
+        trace_id=trace_id,
+        name="cost_efficiency",
+        value=0.005,
+        data_type="NUMERIC",
+        comment="Cost per quality point: $0.005",
+    )
+
+    # Score definition: response_category
+    # data_type: categorical
+    # Classifies response type for analysis
+    langfuse.score(
+        trace_id=trace_id,
+        name="response_category",
+        value="factual",
+        data_type="CATEGORICAL",
+        comment="Response classified as factual answer",
+    )
 """)
 
-with open(os.path.join(WORKDIR, "langfuse-alerts.yaml"), "w") as f:
-    f.write(alerts_yaml)
+# SOLUTION: LangFuse alert configuration
+alert_config = textwrap.dedent("""\
+    {
+        "alerts": [
+            {
+                "name": "CostSpike",
+                "description": "Alert when hourly LLM cost exceeds threshold",
+                "condition": "total_cost per hour > threshold",
+                "threshold": 5.00,
+                "window": "1h",
+                "channel": "slack",
+                "webhook": "https://hooks.slack.com/services/T.../B.../xxx",
+                "severity": "warning"
+            },
+            {
+                "name": "LowFeedback",
+                "description": "Alert when average user feedback drops below threshold",
+                "condition": "avg(user_feedback) < threshold over window",
+                "threshold": 0.5,
+                "window": "30m",
+                "channel": "slack",
+                "webhook": "https://hooks.slack.com/services/T.../B.../xxx",
+                "severity": "critical"
+            },
+            {
+                "name": "HighLatency",
+                "description": "Alert when p95 generation latency exceeds threshold",
+                "condition": "p95(generation_duration) > threshold",
+                "threshold": 10.0,
+                "window": "5m",
+                "channel": "slack",
+                "webhook": "https://hooks.slack.com/services/T.../B.../xxx",
+                "severity": "warning"
+            }
+        ]
+    }
+""")
+
+with open(os.path.join(WORKDIR, "score_definitions.py"), "w") as f:
+    f.write(score_definitions)
+
+with open(os.path.join(WORKDIR, "langfuse_alerts.json"), "w") as f:
+    f.write(alert_config)
 
 
 # ============================================================
@@ -311,34 +365,39 @@ results.append(("Code: user_feedback score",      "user_feedback" in todo1_code)
 results.append(("Code: relevance score",          "relevance" in todo1_code))
 results.append(("Code: get_trace_id",             "get_trace_id" in todo1_code or "trace_id" in todo1_code))
 
-# TODO 2: Prometheus bridge
-results.append(("Bridge: Counter import",         "Counter" in todo2_code))
-results.append(("Bridge: Histogram import",       "Histogram" in todo2_code))
-results.append(("Bridge: cost counter",           "cost" in todo2_code.lower()))
-results.append(("Bridge: token counter",          "token" in todo2_code.lower()))
-results.append(("Bridge: duration histogram",     "duration" in todo2_code.lower()))
-results.append(("Bridge: feedback counter",       "feedback" in todo2_code.lower()))
-results.append(("Bridge: PRICING dict",           "PRICING" in todo2_code))
-results.append(("Bridge: record function",        "def record" in todo2_code))
-results.append(("Bridge: generate_latest",        "generate_latest" in todo2_code or "/metrics" in todo2_code))
+# TODO 2: Cost tracking
+results.append(("Cost: Langfuse import",          "Langfuse" in todo2_code or "langfuse" in todo2_code))
+results.append(("Cost: PRICING dict",             "PRICING" in todo2_code))
+results.append(("Cost: calculate_cost function",  "def calculate" in todo2_code or "def calc" in todo2_code))
+results.append(("Cost: trace creation",           ".trace(" in todo2_code or "trace(" in todo2_code))
+results.append(("Cost: generation logging",       ".generation(" in todo2_code or "generation(" in todo2_code))
+results.append(("Cost: usage tracking",           "usage" in todo2_code))
+results.append(("Cost: fetch_traces",             "fetch_traces" in todo2_code))
+results.append(("Cost: total_cost",               "total_cost" in todo2_code))
+results.append(("Cost: model aggregation",        "model" in todo2_code.lower()))
 
-# TODO 3: Dashboard panels
-for p in panels:
-    type_ok = p["panel_type"].strip().lower() == p["correct_type"]
-    if p["promql"] == "___":
-        promql_ok = False
+# TODO 3: Dashboard views
+for dv in dashboard_views:
+    type_ok = dv["view_type"].strip().lower() == dv["correct_type"]
+    if dv["filter_config"] == "___":
+        config_ok = False
     else:
-        promql_ok = all(t.lower() in p["promql"].lower() for t in p["check_terms"])
-    results.append((f"Panel '{p['purpose'][:30]}': type",  type_ok))
-    results.append((f"Panel '{p['purpose'][:30]}': query", promql_ok))
+        config_ok = all(t.lower() in dv["filter_config"].lower() for t in dv["check_terms"])
+    results.append((f"View '{dv['purpose'][:30]}': type",    type_ok))
+    results.append((f"View '{dv['purpose'][:30]}': config",  config_ok))
 
-# TODO 3: Alert rules
-results.append(("Alert: groups section",          "groups:" in alerts_yaml))
-results.append(("Alert: CostSpike",               "CostSpike" in alerts_yaml or "cost" in alerts_yaml.lower()))
-results.append(("Alert: HighLLMLatency",           "Latency" in alerts_yaml or "latency" in alerts_yaml))
-results.append(("Alert: LowFeedbackScore",         "Feedback" in alerts_yaml or "feedback" in alerts_yaml))
-results.append(("Alert: severity labels",          "severity" in alerts_yaml))
-results.append(("Alert: for duration",             "for:" in alerts_yaml))
+# TODO 3: Score definitions
+results.append(("Scores: user_feedback defined",   "user_feedback" in score_definitions))
+results.append(("Scores: relevance defined",       "relevance" in score_definitions))
+results.append(("Scores: cost_efficiency defined", "cost_efficiency" in score_definitions or "cost" in score_definitions))
+results.append(("Scores: data_type specified",     "data_type" in score_definitions or "numeric" in score_definitions or "categorical" in score_definitions))
+
+# TODO 3: Alert config
+results.append(("Alert: CostSpike rule",           "cost" in alert_config.lower()))
+results.append(("Alert: LowFeedback rule",         "feedback" in alert_config.lower()))
+results.append(("Alert: HighLatency rule",         "latency" in alert_config.lower()))
+results.append(("Alert: threshold value",          "threshold" in alert_config.lower()))
+results.append(("Alert: webhook or channel",       "webhook" in alert_config.lower() or "channel" in alert_config.lower()))
 
 passed = sum(1 for _, ok in results if ok)
 total = len(results)
@@ -362,15 +421,15 @@ for root, dirs, files in os.walk(WORKDIR):
         print(f"    {rel:<45} ({size} bytes)")
 
 print(f"\n  Complete LangFuse pipeline:")
-print(f"    1. langfuse_instrumentation.py — CallbackHandler + scores + prompts")
-print(f"    2. prometheus_bridge.py — Cost/token/latency Prometheus metrics")
-print(f"    3. Dashboard — 4 panels with PromQL")
-print(f"    4. langfuse-alerts.yaml — Cost, latency, feedback alerts")
+print(f"    1. langfuse_instrumentation.py -- CallbackHandler + scores + prompts")
+print(f"    2. cost_tracking.py -- LangFuse-native cost/token tracking")
+print(f"    3. Dashboard -- 4 views with filters and grouping")
+print(f"    4. langfuse_alerts.json -- Cost, latency, feedback alerts")
 
 print("\n" + "=" * 60)
 print("Challenge complete!")
 print(f"- Instrumentation: CallbackHandler + feedback + prompt management")
-print(f"- Prometheus bridge: Cost, tokens, latency, feedback counters")
-print(f"- Dashboard: 4 panels (cost, latency, tokens, feedback)")
-print(f"- Alerts: Cost spike, high latency, low feedback")
+print(f"- Cost tracking: PRICING dict, generation logging, fetch_traces analysis")
+print(f"- Dashboard: 4 LangFuse views (cost, latency, tokens, feedback)")
+print(f"- Alerts: Cost spike, low feedback, high latency via LangFuse")
 print(f"- {passed}/{total} validation checks passing")

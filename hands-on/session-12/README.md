@@ -12,9 +12,9 @@
 |-----|-------|-------------------|----------------|
 | 01 | FastAPI Basics | Pydantic models, REST endpoints, error handling, TestClient | No |
 | 02 | FastAPI + LangGraph Agent | Exposing LangGraph via REST, async handling | Yes |
-| 03 | Health Checks & Probes | /health endpoint, K8s readiness/liveness/startup probes | No |
+| 03 | Health Checks & Probes | /health endpoint, Python async HealthChecker, signal handlers | No |
 | 04 | Streaming Responses | SSE streaming, progress events, real-time agent output | Yes |
-| 05 | Secrets Management | K8s Secrets, base64 encoding, secretKeyRef injection | No |
+| 05 | Secrets Management | .env files, python-dotenv load_dotenv(), environment variables | No |
 | 06 | Structured Logging | JSON logging, trace_id correlation, AI-specific fields | No |
 | 07 | Production Checklist | Readiness categories, deployment order, resource sizing | No |
 | 08 | **Challenge** | Complete production-ready API: FastAPI + health + logging + secrets | No |

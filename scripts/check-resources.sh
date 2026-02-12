@@ -18,21 +18,16 @@ echo "--- Storage ---"
 df -h / | tail -1 | awk '{printf "  Total: %s | Used: %s (%s) | Available: %s\n", $2, $3, $5, $4}'
 echo ""
 
-# Docker
-if command -v docker &>/dev/null; then
-  echo "--- Docker ---"
-  CONTAINERS=$(docker ps --format '{{.Names}} ({{.Status}})' 2>/dev/null)
-  if [ -n "$CONTAINERS" ]; then
-    echo "  Running containers:"
-    echo "$CONTAINERS" | while read line; do echo "    - $line"; done
-  else
-    echo "  No running containers"
-  fi
-  DOCKER_DISK=$(docker system df --format 'table {{.Type}}\t{{.Size}}' 2>/dev/null)
-  echo "  Disk usage:"
-  echo "$DOCKER_DISK" | while read line; do echo "    $line"; done
-  echo ""
+# Python processes
+echo "--- Python Processes ---"
+PROCS=$(pgrep -fa 'python\|uvicorn' 2>/dev/null)
+if [ -n "$PROCS" ]; then
+  echo "  Running processes:"
+  echo "$PROCS" | while read line; do echo "    - $line"; done
+else
+  echo "  No running Python/uvicorn processes"
 fi
+echo ""
 
 # Ollama
 if command -v ollama &>/dev/null; then

@@ -83,7 +83,7 @@ Database: PostgreSQL is the primary relational database. MongoDB for document st
 
 Cloud & Infrastructure: AWS is our primary cloud provider. All services run on EKS (Kubernetes). Docker is used for containerization. Terraform for infrastructure as code. CI/CD through GitHub Actions.
 
-Monitoring: Prometheus for metrics collection. Grafana for dashboards. LangFuse for LLM application tracing. PagerDuty for alerts.""",
+Monitoring: LangFuse for LLM tracing and metrics. PagerDuty for alerts.""",
         "source": "tech-guide.pdf",
         "category": "tech"
     },

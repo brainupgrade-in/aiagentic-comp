@@ -35,7 +35,7 @@ print("                     │  receivers → processors →    │")
 print("                     │              exporters       │")
 print("                     └──────────────────────────────┘")
 print("                          │         │         │")
-print("                       Jaeger   Prometheus  Loki")
+print("                      LangFuse  LangFuse   LangFuse")
 print("                      (traces)  (metrics)  (logs)")
 print()
 print("  OTLP Protocols:")
@@ -114,10 +114,9 @@ print("  Create an OTel Collector configuration with:")
 print("    - Receiver: OTLP (gRPC on 4317, HTTP on 4318)")
 print("    - Processor: batch (timeout 5s, batch_size 1000)")
 print("    - Processor: memory_limiter (limit_mib 512)")
-print("    - Exporter: otlp/jaeger (endpoint jaeger:4317, insecure)")
-print("    - Exporter: prometheus (endpoint 0.0.0.0:8889)")
-print("    - Pipeline traces: otlp → memory_limiter,batch → otlp/jaeger")
-print("    - Pipeline metrics: otlp → memory_limiter,batch → prometheus")
+print("    - Exporter: otlp/langfuse (endpoint langfuse:4317, insecure)")
+print("    - Pipeline traces: otlp → memory_limiter,batch → otlp/langfuse")
+print("    - Pipeline metrics: otlp → memory_limiter,batch → otlp/langfuse")
 
 todo1_yaml = textwrap.dedent("""\
     # TODO: OTel Collector Configuration
@@ -137,8 +136,7 @@ collector_checks = [
     ("Has batch processor",         "batch:" in todo1_yaml),
     ("Has memory_limiter",          "memory_limiter:" in todo1_yaml),
     ("Has exporters section",       "exporters:" in todo1_yaml),
-    ("Has jaeger exporter",         "jaeger" in todo1_yaml),
-    ("Has prometheus exporter",     "prometheus:" in todo1_yaml),
+    ("Has langfuse exporter",       "langfuse" in todo1_yaml),
     ("Has service.pipelines",       "pipelines:" in todo1_yaml),
     ("Has traces pipeline",         "traces:" in todo1_yaml),
     ("Has metrics pipeline",        "metrics:" in todo1_yaml),
@@ -151,40 +149,42 @@ for name, ok in collector_checks:
 
 
 # ============================================================
-# TODO 2: K8s Deployment with OTel env vars
+# TODO 2: Python Launch Script with OTel env vars
 # ============================================================
 
-print("\n\n--- TODO 2: K8s Deployment with OTel ---\n")
+print("\n\n--- TODO 2: Python Launch Script with OTel Environment ---\n")
 
-print("  Create a K8s Deployment for agent-api with OTel env vars:")
-print("    - name: agent-api, image: agent-api:2.0, port 8000")
-print("    - env OTEL_SERVICE_NAME: agent-api")
-print("    - env OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.monitoring:4317")
-print("    - env OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production")
-print("    - env OTEL_TRACES_SAMPLER: parentbased_traceidratio")
-print("    - env OTEL_TRACES_SAMPLER_ARG: 0.1")
+print("  Create a Python launch script that configures OTel env vars")
+print("  and starts a uvicorn server (no Docker required):")
+print("    - Set OTEL_SERVICE_NAME: agent-api")
+print("    - Set OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317")
+print("    - Set OTEL_RESOURCE_ATTRIBUTES: deployment.environment=production")
+print("    - Set OTEL_TRACES_SAMPLER: parentbased_traceidratio")
+print("    - Set OTEL_TRACES_SAMPLER_ARG: 0.1")
+print("    - Launch uvicorn on host 0.0.0.0, port 8000")
 
-todo2_yaml = textwrap.dedent("""\
-    # TODO: K8s Deployment with OTel environment variables
+todo2_code = textwrap.dedent("""\
+    # TODO: Python launch script with OTel environment variables
+    # Set os.environ for each OTEL_* variable, then configure uvicorn
 
 """)
 
-with open(os.path.join(WORKDIR, "agent-deployment-otel.yaml"), "w") as f:
-    f.write(todo2_yaml)
+with open(os.path.join(WORKDIR, "launch_agent_otel.py"), "w") as f:
+    f.write(todo2_code)
 
 deploy_checks = [
-    ("Has kind: Deployment",        "kind: Deployment" in todo2_yaml),
-    ("Has agent-api image",         "agent-api" in todo2_yaml),
-    ("Has OTEL_SERVICE_NAME",       "OTEL_SERVICE_NAME" in todo2_yaml),
-    ("Has OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_ENDPOINT" in todo2_yaml),
-    ("Has otel-collector endpoint", "otel-collector" in todo2_yaml),
-    ("Has OTEL_RESOURCE_ATTRIBUTES", "OTEL_RESOURCE_ATTRIBUTES" in todo2_yaml),
-    ("Has OTEL_TRACES_SAMPLER",     "OTEL_TRACES_SAMPLER" in todo2_yaml),
-    ("Has sampling ratio 0.1",      "0.1" in todo2_yaml),
+    ("Has os.environ usage",        "os.environ" in todo2_code),
+    ("Has OTEL_SERVICE_NAME",       "OTEL_SERVICE_NAME" in todo2_code),
+    ("Has OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_ENDPOINT" in todo2_code),
+    ("Has localhost endpoint",      "localhost" in todo2_code),
+    ("Has OTEL_RESOURCE_ATTRIBUTES", "OTEL_RESOURCE_ATTRIBUTES" in todo2_code),
+    ("Has OTEL_TRACES_SAMPLER",     "OTEL_TRACES_SAMPLER" in todo2_code),
+    ("Has sampling ratio 0.1",      "0.1" in todo2_code),
+    ("Has uvicorn config",          "uvicorn" in todo2_code),
 ]
 
 score2 = sum(1 for _, ok in deploy_checks if ok)
-print(f"\n  Validating Deployment ({score2}/{len(deploy_checks)}):\n")
+print(f"\n  Validating Launch Script ({score2}/{len(deploy_checks)}):\n")
 for name, ok in deploy_checks:
     print(f"    [{'PASS' if ok else 'FAIL'}] {name}")
 
@@ -195,10 +195,10 @@ for name, ok in deploy_checks:
 
 print(f"\n\n--- Lab 05 Summary ---\n")
 print("  Key concepts:")
-print("    1. OTel SDK → OTLP → Collector → Backends (Jaeger, Prometheus, Loki)")
+print("    1. OTel SDK → OTLP → Collector → Backends (LangFuse)")
 print("    2. TracerProvider + BatchSpanProcessor + OTLPSpanExporter")
 print("    3. Resource identifies service (name, version, environment)")
 print("    4. OTEL_* env vars configure SDK without code changes")
 print(f"\n  TODO 1: {score1}/{len(collector_checks)} collector config checks passed")
-print(f"  TODO 2: {score2}/{len(deploy_checks)} deployment checks passed")
+print(f"  TODO 2: {score2}/{len(deploy_checks)} launch script checks passed")
 print(f"\n  Files generated in {WORKDIR}/")

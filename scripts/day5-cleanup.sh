@@ -16,9 +16,6 @@ echo "[2/2] Stopping stale processes..."
 pkill -f "uvicorn" 2>/dev/null || true
 pkill -f "mcp.*server" 2>/dev/null || true
 
-# Final Docker cleanup (in case anything is still running)
-docker system prune -f 2>/dev/null || true
-
 echo ""
 echo "Cleanup complete."
 df -h / | tail -1 | awk '{print "  Storage: "$3" used / "$2" total ("$5" used)"}'

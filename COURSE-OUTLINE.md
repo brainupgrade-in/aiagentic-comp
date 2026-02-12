@@ -35,7 +35,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 - Use AI coding assistants and vibe coding workflows from Day 1
 - Build AI agents using LangChain and its ecosystem
 - Develop production-ready agentic applications
-- Implement observability with OpenTelemetry, Prometheus, and Grafana
+- Implement observability with OpenTelemetry and LangFuse
 - Monitor and debug agents with LangFuse
 - Build production-grade FastAPI endpoints with health probes, secrets, and structured logging
 - Implement Model Context Protocol (MCP) servers and clients
@@ -66,16 +66,10 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 - **MCP Python SDK** - Model Context Protocol (MIT)
 - **OpenCode** - AI-assisted coding in terminal
 
-### Infrastructure
-
-- **Docker** - Containerization for observability stack (Apache 2.0)
-
 ### Observability
 
-- **Prometheus** - Metrics collection (Apache 2.0)
-- **Grafana** - Visualization (AGPL-3.0, Free tier)
 - **OpenTelemetry** - Observability framework (Apache 2.0)
-- **LangFuse** - AI tracing (MIT, Self-hosted free)
+- **LangFuse** - AI tracing and observability (MIT, Self-hosted free)
 
 ---
 
@@ -86,7 +80,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 Each participant will be provided with a dedicated lab environment:
 
 - **Browser-Based IDE** - No local setup required; develop directly in browser
-- **Pre-configured Environment** - Python, Docker, and all tools pre-installed
+- **Pre-configured Environment** - Python and all tools pre-installed
 - **Personal Sandbox** - Isolated environment for each participant
 - **Public URL** - Each deployed app gets an internet-accessible URL for testing
 - **Persistent Storage** - Work is saved across sessions
@@ -95,8 +89,8 @@ Each participant will be provided with a dedicated lab environment:
 
 - Develop LangChain/LangGraph applications
 - Build and use AI coding agents and MCP servers
-- Build and run Docker containers for observability stack
-- Configure Prometheus, Grafana, LangFuse
+- Configure LangFuse SDK for AI observability
+- Build and test FastAPI applications
 - Test and troubleshoot AI applications end-to-end
 
 ### Lab Access
@@ -372,8 +366,8 @@ Each participant will be provided with a dedicated lab environment:
 
 **Production Readiness**
 - Health checks and readiness probes
-- Kubernetes probe configuration (readiness, liveness, startup)
-- Secrets management (K8s Secrets, env vars)
+- Python async HealthChecker (readiness, liveness, startup)
+- Secrets management (python-dotenv, environment variables)
 - Structured JSON logging with AI-specific fields
 - Production checklist (health, resources, secrets, observability, alerting, backup)
 - Deployment order and resource recommendations

@@ -1,8 +1,8 @@
 """
-Lab 04: Secrets & Configuration Management
+Lab 05: Secrets & Configuration Management
 =============================================
-Secure API key handling with Kubernetes Secrets
-and environment variable injection.
+Secure API key handling with .env files
+and python-dotenv load_dotenv() for application config.
 """
 
 import os
@@ -12,7 +12,7 @@ import textwrap
 WORKDIR = "/tmp/prod-lab-12-05"
 
 print("=" * 50)
-print("  Lab 04: Secrets & Configuration Management")
+print("  Lab 05: Secrets & Configuration Management")
 print("=" * 50)
 
 if os.path.exists(WORKDIR):
@@ -24,123 +24,140 @@ os.makedirs(WORKDIR, exist_ok=True)
 # Step 1: Wrong vs Right
 # ============================================================
 
-print("\n--- Step 1: Secrets — Wrong vs Right ---\n")
+print("\n--- Step 1: Secrets -- Wrong vs Right ---\n")
 
 print("  WRONG (hardcoded in code):")
 print('    GROQ_API_KEY = "gsk_abc123..."  # Anyone with code access can see')
 print()
-print("  WRONG (ConfigMap — not encrypted):")
-print("    kind: ConfigMap")
-print("    data:")
-print('      API_KEY: "gsk_abc123..."  # Visible to all with kubectl access')
+print("  WRONG (committed to git):")
+print("    # .env checked into version control")
+print('    GROQ_API_KEY=gsk_abc123...  # Visible in git history forever')
 print()
-print("  RIGHT (Kubernetes Secret):")
-print("    kind: Secret")
-print("    type: Opaque")
-print("    data:")
-print("      GROQ_API_KEY: Z3NrX2FiYzEyMy4uLg==  # base64 encoded")
+print("  RIGHT (.env file + .gitignore + load_dotenv()):")
+print("    # .env (never committed)")
+print("    GROQ_API_KEY=gsk_abc123...")
+print("    LANGFUSE_SECRET_KEY=sk-lf-...")
+print("    LANGFUSE_PUBLIC_KEY=pk-lf-...")
 print()
-print("  RIGHT (injected via envFrom):")
-print("    envFrom:")
-print("    - secretRef:")
-print("        name: api-keys")
+print("  RIGHT (Python load_dotenv):")
+print("    from dotenv import load_dotenv")
+print("    load_dotenv()  # reads .env into os.environ")
+print("    api_key = os.getenv('GROQ_API_KEY')")
 
 
 # ============================================================
-# Step 2: Secret Creation and Injection
+# Step 2: .env File and Python load_dotenv() Pattern
 # ============================================================
 
-print("\n\n--- Step 2: Secret YAML Reference ---\n")
+print("\n\n--- Step 2: .env File and Python load_dotenv() ---\n")
 
-secret_yaml = textwrap.dedent("""\
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: api-keys
-      namespace: ai-stack
-    type: Opaque
-    data:
-      GROQ_API_KEY: Z3NrX2FiYzEyMy4uLg==
-      LANGFUSE_SECRET_KEY: c2stbGYtLi4u
-      LANGFUSE_PUBLIC_KEY: cGstbGYtLi4u
+env_file_content = textwrap.dedent("""\
+    # .env - NEVER commit this file to git
+    # Add .env to .gitignore
+
+    # LLM API
+    GROQ_API_KEY=gsk_abc123...
+
+    # Observability
+    LANGFUSE_SECRET_KEY=sk-lf-...
+    LANGFUSE_PUBLIC_KEY=pk-lf-...
+    LANGFUSE_HOST=http://localhost:8080
+
+    # Application
+    APP_ENV=production
+    LOG_LEVEL=INFO
 """)
 
-print("  Secret manifest:\n")
-for line in secret_yaml.strip().split("\n"):
+print("  .env file:\n")
+for line in env_file_content.strip().split("\n"):
     print(f"    {line}")
 
-print("\n  Injection in Deployment:")
+print("\n  Python load_dotenv() pattern:")
 
-inject_yaml = textwrap.dedent("""\
-    containers:
-    - name: agent
-      env:
-      - name: GROQ_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: api-keys
-            key: GROQ_API_KEY
-      # Or inject ALL keys from the secret:
-      envFrom:
-      - secretRef:
-          name: api-keys
+dotenv_code = textwrap.dedent("""\
+    import os
+    from dotenv import load_dotenv
+
+    # Load .env file into os.environ
+    load_dotenv()  # looks for .env in current dir (or specify path)
+
+    # Access variables
+    groq_key = os.getenv("GROQ_API_KEY")
+    langfuse_secret = os.getenv("LANGFUSE_SECRET_KEY")
+    langfuse_public = os.getenv("LANGFUSE_PUBLIC_KEY")
+    app_env = os.getenv("APP_ENV", "development")  # default value
+    log_level = os.getenv("LOG_LEVEL", "INFO")
+
+    # Validate required keys at startup
+    required_keys = ["GROQ_API_KEY", "LANGFUSE_SECRET_KEY", "LANGFUSE_PUBLIC_KEY"]
+    missing = [k for k in required_keys if not os.getenv(k)]
+    if missing:
+        raise RuntimeError(f"Missing required env vars: {missing}")
 """)
 
-for line in inject_yaml.strip().split("\n"):
+for line in dotenv_code.strip().split("\n"):
     print(f"    {line}")
 
-with open(os.path.join(WORKDIR, "secret-reference.yaml"), "w") as f:
-    f.write(secret_yaml)
+with open(os.path.join(WORKDIR, "env-reference.txt"), "w") as f:
+    f.write(env_file_content)
 
 
 # ============================================================
-# Step 3: Base64 Encoding
+# Step 3: .gitignore and .env.example Pattern
 # ============================================================
 
-print("\n\n--- Step 3: Base64 Encoding ---\n")
+print("\n\n--- Step 3: .gitignore and .env.example Pattern ---\n")
 
-print("  Kubernetes Secrets store values as base64:\n")
-print("    echo -n 'gsk_abc123' | base64")
-print("    \u2192 Z3NrX2FiYzEyMw==")
+print("  The standard pattern for secrets in any project:\n")
+print("    1. Create .env with real values (local only)")
+print("    2. Create .env.example with placeholder values (committed)")
+print("    3. Add .env to .gitignore (never committed)")
 print()
-print("    echo 'Z3NrX2FiYzEyMw==' | base64 -d")
-print("    \u2192 gsk_abc123")
+print("  .gitignore entry:")
+print("    .env")
+print("    .env.local")
+print("    .env.*.local")
 print()
-print("  Note: base64 is NOT encryption \u2014 it's just encoding.")
-print("  Secrets are stored encrypted at rest in etcd (if configured).")
+print("  .env.example (committed to git):")
+print("    GROQ_API_KEY=your_groq_api_key_here")
+print("    LANGFUSE_SECRET_KEY=your_langfuse_secret_here")
+print("    LANGFUSE_PUBLIC_KEY=your_langfuse_public_here")
+print()
+print("  Note: .env files store values in plain text.")
+print("  They rely on file permissions and .gitignore for protection.")
+print("  For production, consider a vault service (HashiCorp Vault, AWS Secrets Manager).")
 
 
 # ============================================================
-# TODO 1: Create Secret manifest
+# TODO 1: Create .env file and Python dotenv config
 # ============================================================
 
-print("\n\n--- TODO 1: Create Secret Manifest ---\n")
+print("\n\n--- TODO 1: Create .env File and Python dotenv Config ---\n")
 
-print("  Create a K8s Secret with:")
-print("    - name: api-keys, namespace: ai-stack")
-print("    - type: Opaque")
-print("    - Keys: GROQ_API_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY")
-print("    - All values base64 encoded")
-print("    - Deployment snippet showing secretKeyRef injection\n")
+print("  Create:")
+print("    - A .env file with: GROQ_API_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY")
+print("    - A .env.example with placeholder values")
+print("    - A .gitignore entry for .env")
+print("    - A Python code snippet showing load_dotenv() usage\n")
 
-todo1_yaml = textwrap.dedent("""\
-    # TODO: Secret manifest for API keys + Deployment injection
+todo1_env = textwrap.dedent("""\
+    # TODO: .env file for API keys + Python load_dotenv() config
 
 """)
 
-with open(os.path.join(WORKDIR, "secret.yaml"), "w") as f:
-    f.write(todo1_yaml)
+with open(os.path.join(WORKDIR, "env-config.txt"), "w") as f:
+    f.write(todo1_env)
 
 checks1 = [
-    ("Has kind: Secret",           "kind: Secret" in todo1_yaml),
-    ("Has type: Opaque",           "Opaque" in todo1_yaml),
-    ("Has namespace: ai-stack",    "ai-stack" in todo1_yaml),
-    ("Has GROQ_API_KEY",           "GROQ_API_KEY" in todo1_yaml),
-    ("Has LANGFUSE_SECRET_KEY",    "LANGFUSE_SECRET_KEY" in todo1_yaml),
-    ("Has LANGFUSE_PUBLIC_KEY",    "LANGFUSE_PUBLIC_KEY" in todo1_yaml),
-    ("Has data section",           "data:" in todo1_yaml),
-    ("Has secretKeyRef",           "secretKeyRef" in todo1_yaml or "secretRef" in todo1_yaml),
-    ("Has valueFrom",              "valueFrom" in todo1_yaml or "envFrom" in todo1_yaml),
+    ("Has .env content",           ".env" in todo1_env),
+    ("Has GROQ_API_KEY",           "GROQ_API_KEY" in todo1_env),
+    ("Has LANGFUSE_SECRET_KEY",    "LANGFUSE_SECRET_KEY" in todo1_env),
+    ("Has LANGFUSE_PUBLIC_KEY",    "LANGFUSE_PUBLIC_KEY" in todo1_env),
+    ("Has .gitignore mention",     "gitignore" in todo1_env or ".env" in todo1_env),
+    ("Has load_dotenv",            "load_dotenv" in todo1_env),
+    ("Has .env.example",           "example" in todo1_env or "placeholder" in todo1_env),
+    ("Has os.getenv",              "getenv" in todo1_env or "os.environ" in todo1_env),
+    ("Has validation",             "required" in todo1_env.lower() or "missing" in todo1_env.lower() or "validate" in todo1_env.lower()),
 ]
 
 score1 = sum(1 for _, ok in checks1 if ok)
@@ -157,31 +174,34 @@ print("\n\n--- TODO 2: Secrets Management Quiz ---\n")
 
 quiz = [
     {
-        "question": "What K8s object type should API keys be stored in?",
+        "question": "Where should API keys be stored for Python applications?",
         "answer": "___",
-        "correct": "secret",
+        "correct": "env",
+        "check": "env",
     },
     {
-        "question": "What encoding does K8s use for Secret data values?",
+        "question": "What file should NEVER be committed to git?",
         "answer": "___",
-        "correct": "base64",
+        "correct": ".env",
+        "check": ".env",
     },
     {
-        "question": "What field in a container spec references a Secret key?",
+        "question": "What python-dotenv function loads .env variables into os.environ?",
         "answer": "___",
-        "correct": "secretkeyref",
-        "check": "secretkeyref",
+        "correct": "load_dotenv",
+        "check": "load_dotenv",
     },
     {
-        "question": "Is base64 encryption or encoding?",
+        "question": "What file with placeholder values IS committed to git?",
         "answer": "___",
-        "correct": "encoding",
+        "correct": ".env.example",
+        "check": "example",
     },
     {
-        "question": "What K8s field injects ALL keys from a Secret?",
+        "question": "What file prevents .env from being tracked by git?",
         "answer": "___",
-        "correct": "envfrom",
-        "check": "envfrom",
+        "correct": ".gitignore",
+        "check": "gitignore",
     },
 ]
 
@@ -191,7 +211,7 @@ score2 = 0
 for i, q in enumerate(quiz, 1):
     answer = q["answer"].strip().lower().replace(" ", "").replace("-", "").replace("_", "")
     check = q.get("check", q["correct"].lower().replace(" ", "").replace("-", "").replace("_", ""))
-    is_correct = check in answer
+    is_correct = check.replace("-", "").replace("_", "").replace(".", "") in answer.replace(".", "") or check in q["answer"].lower()
 
     if q["answer"] == "___":
         status = "TODO"
@@ -209,12 +229,13 @@ print(f"\n  Score: {score2}/{len(quiz)}")
 # Summary
 # ============================================================
 
-print(f"\n\n--- Lab 04 Summary ---\n")
+print(f"\n\n--- Lab 05 Summary ---\n")
 print("  Key concepts:")
-print("    1. Never hardcode API keys \u2014 use K8s Secrets")
-print("    2. Secrets store base64-encoded values (not encrypted)")
-print("    3. Inject via secretKeyRef (single key) or envFrom (all keys)")
-print("    4. ConfigMap for non-sensitive config, Secret for credentials")
-print(f"\n  TODO 1: {score1}/{len(checks1)} secret manifest checks")
+print("    1. Never hardcode API keys -- use .env files")
+print("    2. Add .env to .gitignore (never commit secrets)")
+print("    3. Provide .env.example with placeholders (committed)")
+print("    4. Use python-dotenv load_dotenv() to inject variables")
+print("    5. Validate required env vars at startup with os.getenv()")
+print(f"\n  TODO 1: {score1}/{len(checks1)} env config checks")
 print(f"  TODO 2: {score2}/{len(quiz)} quiz answers correct")
 print(f"\n  Files generated in {WORKDIR}/")

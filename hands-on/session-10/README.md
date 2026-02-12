@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Python 3.10+ installed
-- No Kubernetes cluster needed — labs generate config files and validate YAML
+- No infrastructure needed — labs generate config files and validate YAML
 
 ```bash
 # No pip packages needed — these labs generate configs and validate answers
@@ -12,16 +12,16 @@ python --version  # 3.10+
 
 ## Labs Overview
 
-| Lab | Topic | What You'll Learn | Needs K8s? |
-|-----|-------|-------------------|------------|
+| Lab | Topic | What You'll Learn | Needs Infra? |
+|-----|-------|-------------------|--------------|
 | 01 | Three Pillars | Metrics, Logs, Traces — when to use which | No |
 | 02 | Metric Types | Counter, Gauge, Histogram, Summary | No |
 | 03 | Structured Logging | JSON logs, trace_id correlation, AI log fields | No |
 | 04 | Distributed Traces | Trace/span hierarchy, AI trace patterns | No |
 | 05 | OpenTelemetry Setup | TracerProvider, exporters, OTel Collector config | No |
 | 06 | Instrumentation | Auto vs manual instrumentation, custom spans | No |
-| 07 | OTel Collector | Collector deployment, K8s integration | No |
-| 08 | **Challenge** | Complete observability stack: Collector + Agent + design | No |
+| 07 | OTel Collector | Collector config, Python OTel pipeline, LangFuse Integration | No |
+| 08 | **Challenge** | Complete observability stack: Python OTel + Agent + design | No |
 
 ## How to Run
 
@@ -37,7 +37,7 @@ python solutions/lab01_three_pillars.py
 
 ## Tips
 
-- All 8 labs work WITHOUT a Kubernetes cluster
+- All 8 labs work WITHOUT any running services
 - Look for `# TODO` markers — that's where you write code or YAML
 - Labs 01-04 cover observability concepts
 - Labs 05-07 cover OpenTelemetry implementation

@@ -348,7 +348,7 @@
             <ul>
               <li>Vendor-neutral instrumentation standard</li>
               <li>Python SDK for traces, metrics, logs</li>
-              <li>Exporters to Prometheus, Jaeger, etc.</li>
+              <li>Exporters to Jaeger, LangFuse, etc.</li>
             </ul>
           </div>
         </div>
@@ -388,10 +388,10 @@
       <!-- WHY LANGFUSE -->
       <section>
         <h2>Why LangFuse?</h2>
-        <p style="font-size:0.8em; color:#ccc;">Prometheus tells you &ldquo;latency is high&rdquo;. LangFuse tells you <em>which prompt caused it</em>.</p>
+        <p style="font-size:0.8em; color:#ccc;">Traditional observability tells you &ldquo;latency is high&rdquo;. LangFuse tells you <em>which prompt caused it</em>.</p>
         <div class="card-grid">
           <div class="card card-accent">
-            <h4>What Prometheus + OTel Can&rsquo;t Do</h4>
+            <h4>What Traditional Observability Can&rsquo;t Do</h4>
             <ul>
               <li>Show the exact prompt sent to the LLM</li>
               <li>Display the LLM&rsquo;s response text</li>
@@ -534,38 +534,40 @@
         </div>
       </section>
 
-      <!-- SELF-HOSTED DEPLOYMENT -->
+      <!-- LANGFUSE SDK SETUP (MOCK MODE) -->
       <section>
-        <h2>Self-Hosted LangFuse on K8s</h2>
+        <h2>LangFuse SDK Setup (Mock Mode)</h2>
+        <p style="font-size:0.75em; color:#ccc;">Learn real SDK patterns &mdash; data logged to local JSON files</p>
         <div class="code-block">
-<span class="comment"># docker-compose.yml (development)</span>
-<span class="keyword">services</span>:
-  <span class="func">langfuse</span>:
-    image: <span class="string">langfuse/langfuse:latest</span>
-    ports:
-      - <span class="string">"3001:3000"</span>
-    environment:
-      DATABASE_URL: <span class="string">"postgresql://langfuse:langfuse@db:5432/langfuse"</span>
-      NEXTAUTH_SECRET: <span class="string">"your-secret-key"</span>
-      NEXTAUTH_URL: <span class="string">"http://localhost:3001"</span>
-      SALT: <span class="string">"your-salt-value"</span>
-    depends_on:
-      - db
+<span class="comment"># mock_langfuse.py &mdash; Mock LangFuse for local development</span>
+<span class="keyword">import</span> json, time, uuid
+<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
 
-  <span class="func">db</span>:
-    image: <span class="string">postgres:16-alpine</span>
-    environment:
-      POSTGRES_USER: <span class="string">langfuse</span>
-      POSTGRES_PASSWORD: <span class="string">langfuse</span>
-      POSTGRES_DB: <span class="string">langfuse</span>
-    volumes:
-      - langfuse-data:/var/lib/postgresql/data
+<span class="keyword">class</span> <span class="func">MockLangfuse</span>:
+    <span class="string">"""Mock LangFuse client &mdash; same API, logs to local JSON."""</span>
 
-<span class="keyword">volumes</span>:
-  langfuse-data:
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, output_dir=<span class="string">"/tmp/langfuse-traces"</span>):
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=<span class="keyword">True</span>, exist_ok=<span class="keyword">True</span>)
+        self.traces = []
+
+    <span class="keyword">def</span> <span class="func">trace</span>(self, name, user_id=<span class="keyword">None</span>, session_id=<span class="keyword">None</span>, **kwargs):
+        trace_data = {
+            <span class="string">"id"</span>: str(uuid.uuid4()),
+            <span class="string">"name"</span>: name,
+            <span class="string">"user_id"</span>: user_id,
+            <span class="string">"session_id"</span>: session_id,
+            <span class="string">"timestamp"</span>: time.time(),
+        }
+        self.traces.append(trace_data)
+        <span class="keyword">return</span> trace_data
+
+    <span class="keyword">def</span> <span class="func">flush</span>(self):
+        path = self.output_dir / <span class="string">"traces.json"</span>
+        path.write_text(json.dumps(self.traces, indent=2))
         </div>
         <div style="font-size:0.6em; color:#aaa; margin-top:8px;">
-          Postgres + LangFuse deployed via Docker Compose
+          SDK patterns are real &mdash; mock mode logs data to local JSON files for inspection
         </div>
       </section>
 
@@ -691,7 +693,7 @@ handler = CallbackHandler(
 
 <span class="comment"># Invoke with tracing</span>
 result = chain.invoke(
-    {<span class="string">"query"</span>: <span class="string">"How do Kubernetes probes work?"</span>},
+    {<span class="string">"query"</span>: <span class="string">"How do Python health checks work?"</span>},
     config={<span class="string">"callbacks"</span>: [handler]}
 )
         </div>
@@ -704,7 +706,7 @@ result = chain.invoke(
           <span class="trace-root">TRACE</span> <span class="trace-meta">session_123 &mdash; user: alice &mdash; pipeline: rag_v2</span><br>
           &nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">RetrievalQA</span> <span class="trace-time">[0ms &rarr; 2340ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">Retriever</span> <span class="trace-time">[5ms &rarr; 120ms]</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">query: "How do Kubernetes probes work?"</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">query: "How do Python health checks work?"</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">documents: 5 retrieved (doc1, doc2, ...)</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">StuffDocumentsChain</span> <span class="trace-time">[125ms &rarr; 2300ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-gen">GENERATION</span> <span class="trace-meta">ChatGroq</span> <span class="trace-time">[130ms &rarr; 2280ms]</span><br>
@@ -712,7 +714,7 @@ result = chain.invoke(
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">input: 1,240 tokens &mdash; output: 380 tokens</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">cost: $0.0010 &mdash; latency: 2,150ms</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">prompt: "Use the following context to answer..."</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">completion: "Kubernetes probes are health checks..."</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">completion: "Python health checks monitor application status..."</span><br>
         </div>
         <div class="takeaway">
           Every LLM call is a <span class="highlight-orange">Generation</span> with full input/output text, token counts, cost, and model info. You can search, filter, and analyze these in the LangFuse UI.
@@ -990,8 +992,8 @@ template = ChatPromptTemplate.from_messages([
           </tr>
           <tr>
             <td><span class="highlight">Infrastructure</span></td>
-            <td>Prometheus + Grafana</td>
-            <td>CPU, memory, pod health, request rate, error rate</td>
+            <td>Python + psutil + Structured Logs</td>
+            <td>CPU, memory, process health, request rate, error rate</td>
           </tr>
           <tr>
             <td><span class="highlight-green">Distributed Tracing</span></td>
@@ -1005,17 +1007,17 @@ template = ChatPromptTemplate.from_messages([
           </tr>
           <tr>
             <td><span class="highlight-red">Log Aggregation</span></td>
-            <td>Loki + Grafana</td>
+            <td>Loki + LangFuse</td>
             <td>Structured logs with trace_id correlation</td>
           </tr>
           <tr>
             <td><span class="highlight">Alerting</span></td>
-            <td>Alertmanager + Grafana</td>
+            <td>LangFuse Scores + Webhooks</td>
             <td>Error rate, latency, cost thresholds &rarr; Slack/PagerDuty</td>
           </tr>
         </table>
         <div class="takeaway">
-          This stack gives you <span class="highlight-green">full visibility</span> from user request to LLM response: infrastructure health (Prometheus), request flow (OTel), AI-specific traces (LangFuse), and logs (Loki).
+          This stack gives you <span class="highlight-green">full visibility</span> from user request to LLM response: infrastructure health (Python + psutil + logs), request flow (OTel), AI-specific traces (LangFuse), and structured logging.
         </div>
       </section>
 

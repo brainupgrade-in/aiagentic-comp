@@ -16,7 +16,7 @@
 - Each participant uses their own GitHub account
 - **Machine spec:** 2-core / 8 GB RAM / 32 GB storage
 - **Free tier budget:** 120 core-hours/month → 60 hours on 2-core → 40 hours needed for 5-day course
-- Default codespace image includes Docker, Python, and common utilities
+- Default codespace image includes Python and common utilities
 
 **Key constraint:** 8 GB RAM and 32 GB storage require careful resource management — never run all services simultaneously. Day-specific setup/cleanup scripts handle this.
 
@@ -27,7 +27,7 @@
 | LLM (Day 1) | Ollama + llama3.2:1b | Smallest model (~1.3 GB), sufficient for demos, removed after Day 1 |
 | LLM (Days 2-5) | Groq free API | Offloads inference to cloud, saves ~2 GB RAM/storage. Each participant creates own Groq API key |
 | MCP SDK | MCP Python SDK (`mcp>=1.0`) | Standard protocol for AI tool integration. Lightweight, no infrastructure overhead |
-| Observability | Docker Compose (not K8s) | Lower overhead on 2-core. Prometheus, Grafana, LangFuse run as containers on Day 4 |
+| Observability | Python in-process (no containers) | Lowest overhead on 2-core. Mock LangFuse logs to local JSON, OTel ConsoleSpanExporter |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
 | Base image | python:3.13-bookworm devcontainer | Pre-built, includes common dev tools |
@@ -49,14 +49,14 @@ Day 2: LangChain + Groq API + ChromaDB (~3.5-4.5 GB RAM)
        → no cleanup needed
 
 Day 3: LangGraph + Multi-Agent (~4-5 GB RAM)
-       → cleanup: stop ChromaDB containers
+       → cleanup: stop servers + clean temp files
 
-Day 4: Docker Compose observability stack + FastAPI (~5-7 GB RAM)
-       → all containers have mem_limit set
-       → cleanup: docker compose down + prune
+Day 4: Python OTel + mock LangFuse + FastAPI (~3-4 GB RAM)
+       → all Python in-process, no containers
+       → cleanup: remove temp files
 
 Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
-       → lightweight, no Docker needed
+       → lightweight, no containers needed
        → cleanup: remove temp files
 ```
 
@@ -74,7 +74,7 @@ Oracle/
 ├── CLAUDE.md                            This file
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
-│   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
+│   └── post-create.sh                   Auto-setup: venv, pip install
 ├── presentation/                        15 HTML slide decks (one per session)
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── session2-ai-coding-assistants-vibe-coding.html
@@ -92,16 +92,14 @@ Oracle/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
     ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
     ├── day2-setup.sh                    Verify Groq API key + LangChain packages
-    ├── day2-cleanup.sh                  Clean ChromaDB containers + temp files
+    ├── day2-cleanup.sh                  Clean temp files
     ├── day3-setup.sh                    Verify LangGraph packages
     ├── day3-cleanup.sh                  Stop servers + clean up for Day 4
-    ├── day4-setup.sh                    Start observability stack + verify FastAPI
-    ├── day4-cleanup.sh                  Stop observability stack + clean temp files
+    ├── day4-setup.sh                    Verify OTel + LangFuse + FastAPI packages
+    ├── day4-cleanup.sh                  Clean temp files
     ├── day5-setup.sh                    Install MCP SDK, verify env
     ├── day5-cleanup.sh                  Final cleanup
-    ├── day5-docker-compose.yml          Prometheus + Grafana + LangFuse + PostgreSQL (note: in scripts/, not project root)
-    ├── prometheus.yml                   Scrape config for FastAPI app
-    └── check-resources.sh              Memory/storage/container status monitor
+    └── check-resources.sh              Memory/storage/process status monitor
 ```
 
 ## Course Day Breakdown
@@ -138,22 +136,8 @@ Oracle/
 
 | Port | Service | Days Active |
 |------|---------|-------------|
-| 8000 | FastAPI application | 3-4 |
-| 9090 | Prometheus | 4 |
-| 3000 | Grafana | 4 |
+| 8000 | FastAPI application | 4 |
 | 11434 | Ollama | 1 only |
-| 8001 | ChromaDB (if containerized) | 2-3 |
-| 8080 | LangFuse | 4 |
-
-**Port conflict note:** ChromaDB defaults to port 8000, which conflicts with FastAPI. When both are needed, run ChromaDB on port 8001 or use it as an in-process library (no port needed).
-
-## Docker Compose Memory Limits (Day 4)
-
-All containers are memory-capped to prevent OOM on 8 GB:
-- Prometheus: 256 MB (1-day retention, 256 MB storage cap)
-- Grafana: 256 MB
-- PostgreSQL (alpine): 256 MB
-- LangFuse: 512 MB
 
 ## OpenCode — AI Coding Assistant
 
@@ -220,10 +204,9 @@ python hands-on/session-NN/solutions/labXX_topic.py
 
 Common failure modes on the 8 GB Codespace and how to fix them:
 
-- **OOM (container or process killed):** Run `bash scripts/check-resources.sh` to see what's consuming memory. Stop unused containers with `docker stop $(docker ps -q)`. If Ollama is still running on Day 2+, run `bash scripts/day1-cleanup.sh`.
-- **Disk full (32 GB limit):** Run `docker system prune -af` to reclaim image/layer space. Check for leftover models: `rm -rf ~/.ollama/models` if Day 1 cleanup was incomplete.
-- **Docker daemon unresponsive:** Restart with `sudo systemctl restart docker` (Codespace) or rebuild the Codespace from the GitHub UI.
-- **ChromaDB connection refused:** Verify it's running (`docker ps | grep chroma`) or switch to in-process mode (no server needed for small datasets).
+- **OOM (process killed):** Run `bash scripts/check-resources.sh` to see what's consuming memory. Stop unused Python processes. If Ollama is still running on Day 2+, run `bash scripts/day1-cleanup.sh`.
+- **Disk full (32 GB limit):** Check for leftover models: `rm -rf ~/.ollama/models` if Day 1 cleanup was incomplete. Remove temp files in `/tmp/`.
+- **ChromaDB issues:** ChromaDB runs in-process (no server needed for small datasets). Check for file lock issues.
 - **Groq rate limit (429):** Wait 60 seconds and retry. If the entire class hits limits simultaneously, stagger lab start times by a few minutes.
 
 ## Commands
@@ -236,14 +219,14 @@ bash scripts/check-resources.sh
 bash scripts/day1-setup.sh      # Ollama + model
 bash scripts/day2-setup.sh      # Verify Groq API + LangChain packages
 bash scripts/day3-setup.sh      # Verify LangGraph packages
-bash scripts/day4-setup.sh      # Observability stack + FastAPI packages
+bash scripts/day4-setup.sh      # OTel + LangFuse + FastAPI packages
 bash scripts/day5-setup.sh      # MCP SDK + verify env
 
 # Day-specific cleanup
 bash scripts/day1-cleanup.sh    # Remove Ollama
 bash scripts/day2-cleanup.sh    # Clean temp files
 bash scripts/day3-cleanup.sh    # Stop servers
-bash scripts/day4-cleanup.sh    # Stop observability stack + clean temp
+bash scripts/day4-cleanup.sh    # Clean temp files
 bash scripts/day5-cleanup.sh    # Final cleanup
 ```
 

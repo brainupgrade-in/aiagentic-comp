@@ -1,7 +1,7 @@
 """
 Lab 02: LangFuse Setup & Deployment
 ======================================
-Deploy LangFuse self-hosted with Docker Compose
+Set up LangFuse SDK in mock mode (local JSON logging)
 and configure environment variables.
 """
 
@@ -21,66 +21,88 @@ os.makedirs(WORKDIR, exist_ok=True)
 
 
 # ============================================================
-# Step 1: Self-Hosted Architecture
+# Step 1: LangFuse Architecture (Mock Mode)
 # ============================================================
 
-print("\n--- Step 1: Self-Hosted Architecture ---\n")
+print("\n--- Step 1: LangFuse Architecture (Mock Mode) ---\n")
 
-print("  LangFuse self-hosted components:\n")
+print("  LangFuse mock mode components:\n")
 print("    LangChain App")
 print("        │")
 print("        ▼")
 print("    LangFuse SDK / CallbackHandler")
 print("        │")
 print("        ▼")
-print("    LangFuse Server (API + Web UI)")
+print("    MockLangfuse (local JSON logging)")
 print("        │")
 print("        ▼")
-print("    PostgreSQL (trace storage)")
+print("    JSON files (trace storage)")
 print()
-print("  Access: http://localhost:3000 (LangFuse UI)")
+print("  Mock mode: Same SDK patterns, data saved to local JSON files")
+print("  In production: Point LANGFUSE_HOST to a real LangFuse server")
 
 
 # ============================================================
-# Step 2: Docker Compose Reference
+# Step 2: MockLangfuse Reference
 # ============================================================
 
-print("\n\n--- Step 2: Docker Compose Reference ---\n")
+print("\n\n--- Step 2: MockLangfuse Reference ---\n")
 
-compose_ref = textwrap.dedent("""\
-    version: "3.8"
-    services:
-      langfuse:
-        image: langfuse/langfuse:latest
-        ports:
-          - "3000:3000"
-        environment:
-          DATABASE_URL: postgresql://langfuse:langfuse@db:5432/langfuse
-          NEXTAUTH_SECRET: mysecret
-          NEXTAUTH_URL: http://localhost:3000
-          SALT: mysalt
-        depends_on:
-          - db
+mock_ref = textwrap.dedent("""\
+    import json
+    import os
+    from datetime import datetime
 
-      db:
-        image: postgres:16-alpine
-        environment:
-          POSTGRES_USER: langfuse
-          POSTGRES_PASSWORD: langfuse
-          POSTGRES_DB: langfuse
-        volumes:
-          - langfuse-data:/var/lib/postgresql/data
+    class MockLangfuse:
+        \"\"\"Mock LangFuse client that logs traces to local JSON files.\"\"\"
 
-    volumes:
-      langfuse-data:
+        def __init__(self, public_key, secret_key, host, output_dir="/tmp/langfuse-traces"):
+            self.public_key = public_key
+            self.secret_key = secret_key
+            self.host = host
+            self.output_dir = output_dir
+            os.makedirs(output_dir, exist_ok=True)
+            self._traces = []
+
+        def trace(self, name, metadata=None):
+            trace_data = {
+                "name": name,
+                "timestamp": datetime.now().isoformat(),
+                "metadata": metadata or {},
+                "generations": [],
+            }
+            self._traces.append(trace_data)
+            return MockTrace(trace_data)
+
+        def flush(self):
+            output_file = os.path.join(self.output_dir, "traces.json")
+            with open(output_file, "w") as f:
+                json.dump(self._traces, f, indent=2)
+            return len(self._traces)
+
+        def get_traces(self):
+            output_file = os.path.join(self.output_dir, "traces.json")
+            if os.path.exists(output_file):
+                with open(output_file) as f:
+                    return json.load(f)
+            return []
+
+    class MockTrace:
+        def __init__(self, trace_data):
+            self._data = trace_data
+
+        def generation(self, name, model=None, input=None, output=None):
+            gen = {"name": name, "model": model, "input": input, "output": output}
+            self._data["generations"].append(gen)
+            return gen
 """)
 
-print("  Reference docker-compose.yml:\n")
-for line in compose_ref.strip().split("\n"):
+print("  Reference MockLangfuse class:\n")
+for line in mock_ref.strip().split("\n"):
     print(f"    {line}")
 
-with open(os.path.join(WORKDIR, "docker-compose-reference.yaml"), "w") as f:
-    f.write(compose_ref)
+with open(os.path.join(WORKDIR, "mock_langfuse_reference.py"), "w") as f:
+    f.write(mock_ref)
 
 
 # ============================================================
@@ -91,58 +113,57 @@ print("\n\n--- Step 3: Environment Variables ---\n")
 
 print("  Client-side (your Python app):\n")
 env_vars = [
-    ("LANGFUSE_PUBLIC_KEY",  "pk-lf-...",              "API public key"),
-    ("LANGFUSE_SECRET_KEY",  "sk-lf-...",              "API secret key"),
-    ("LANGFUSE_HOST",        "http://localhost:3000",   "LangFuse server URL"),
+    ("LANGFUSE_PUBLIC_KEY",  "pk-lf-mock-...",            "API public key"),
+    ("LANGFUSE_SECRET_KEY",  "sk-lf-mock-...",            "API secret key"),
+    ("LANGFUSE_HOST",        "http://localhost:8000",      "LangFuse server URL (or mock)"),
 ]
 for name, example, desc in env_vars:
     print(f"    {name:<25} {example:<30} # {desc}")
 
-print("\n  Server-side (docker-compose):\n")
-server_vars = [
-    ("DATABASE_URL",     "postgresql://user:pass@db:5432/langfuse"),
-    ("NEXTAUTH_SECRET",  "random-secret-for-auth"),
-    ("NEXTAUTH_URL",     "http://localhost:3000"),
-    ("SALT",             "random-salt-for-hashing"),
+print("\n  Mock mode configuration:\n")
+mock_vars = [
+    ("output_dir",           "/tmp/langfuse-traces"),
+    ("flush()",              "Writes traces to JSON file"),
+    ("get_traces()",         "Reads back traces from JSON"),
 ]
-for name, example in server_vars:
-    print(f"    {name:<20} {example}")
+for name, desc in mock_vars:
+    print(f"    {name:<20} {desc}")
 
 
 # ============================================================
-# TODO 1: Create Docker Compose for LangFuse
+# TODO 1: Create MockLangfuse Setup
 # ============================================================
 
-print("\n\n--- TODO 1: Docker Compose Configuration ---\n")
+print("\n\n--- TODO 1: MockLangfuse Configuration ---\n")
 
-print("  Create a docker-compose.yml with:")
-print("    - langfuse service: image langfuse/langfuse:latest, port 3000")
-print("    - db service: postgres:16-alpine with volume")
-print("    - DATABASE_URL connecting langfuse to db")
-print("    - NEXTAUTH_SECRET, NEXTAUTH_URL, SALT")
-print("    - Named volume for PostgreSQL data")
+print("  Create a MockLangfuse setup with:")
+print("    - MockLangfuse class with __init__, trace, flush, get_traces")
+print("    - trace() creates a trace dict with name, timestamp, metadata, generations")
+print("    - generation() adds to the trace's generations list")
+print("    - flush() writes all traces to a JSON file")
+print("    - get_traces() reads traces back from the JSON file")
 
-todo1_yaml = textwrap.dedent("""\
-    # TODO: Docker Compose for self-hosted LangFuse
-    # Include langfuse + postgres services
+todo1_code = textwrap.dedent("""\
+    # TODO: MockLangfuse setup for local trace logging
+    # Include MockLangfuse class with trace/flush/get_traces
 
 """)
 
-with open(os.path.join(WORKDIR, "docker-compose.yaml"), "w") as f:
-    f.write(todo1_yaml)
+with open(os.path.join(WORKDIR, "mock_langfuse.py"), "w") as f:
+    f.write(todo1_code)
 
 checks1 = [
-    ("Has services section",       "services:" in todo1_yaml),
-    ("Has langfuse service",       "langfuse:" in todo1_yaml),
-    ("Has langfuse image",         "langfuse/langfuse" in todo1_yaml),
-    ("Has port 3000",              "3000" in todo1_yaml),
-    ("Has db service",             "db:" in todo1_yaml or "postgres:" in todo1_yaml),
-    ("Has postgres image",         "postgres:" in todo1_yaml),
-    ("Has DATABASE_URL",           "DATABASE_URL" in todo1_yaml),
-    ("Has NEXTAUTH_SECRET",        "NEXTAUTH_SECRET" in todo1_yaml),
-    ("Has NEXTAUTH_URL",           "NEXTAUTH_URL" in todo1_yaml),
-    ("Has SALT",                   "SALT" in todo1_yaml),
-    ("Has volumes section",        "volumes:" in todo1_yaml),
+    ("Has class MockLangfuse",     "class MockLangfuse" in todo1_code),
+    ("Has __init__ method",        "__init__" in todo1_code),
+    ("Has output_dir param",       "output_dir" in todo1_code),
+    ("Has trace method",           "def trace" in todo1_code),
+    ("Has timestamp",              "timestamp" in todo1_code or "datetime" in todo1_code),
+    ("Has generations list",       "generations" in todo1_code),
+    ("Has flush method",           "def flush" in todo1_code),
+    ("Has json.dump",              "json.dump" in todo1_code),
+    ("Has get_traces method",      "def get_traces" in todo1_code),
+    ("Has json.load",              "json.load" in todo1_code),
+    ("Has MockTrace class",        "class MockTrace" in todo1_code or "MockTrace" in todo1_code),
 ]
 
 score1 = sum(1 for _, ok in checks1 if ok)
@@ -190,10 +211,10 @@ for name, ok in checks2:
 
 print(f"\n\n--- Lab 02 Summary ---\n")
 print("  Key concepts:")
-print("    1. Self-hosted LangFuse: Docker Compose with PostgreSQL backend")
-print("    2. Server env vars: DATABASE_URL, NEXTAUTH_SECRET, SALT")
+print("    1. Mock LangFuse: Same SDK patterns, traces saved to local JSON")
+print("    2. MockLangfuse: trace(), generation(), flush(), get_traces()")
 print("    3. Client env vars: LANGFUSE_PUBLIC_KEY, SECRET_KEY, HOST")
-print("    4. Access LangFuse UI at http://localhost:3000")
-print(f"\n  TODO 1: {score1}/{len(checks1)} compose checks passed")
+print("    4. In production: Point LANGFUSE_HOST to a real LangFuse server")
+print(f"\n  TODO 1: {score1}/{len(checks1)} MockLangfuse checks passed")
 print(f"  TODO 2: {score2}/{len(checks2)} client setup checks passed")
 print(f"\n  Files generated in {WORKDIR}/")

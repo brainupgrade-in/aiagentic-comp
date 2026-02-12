@@ -91,15 +91,14 @@
 | C | Session 12: Production Development & Deployment | `session12-production-development-deployment.html` | `session-12/` (8 labs) | - |
 | D | Labs for Sessions 10-12 | - | All above | - |
 
-**Day 4 Setup:** Run `bash scripts/day4-setup.sh` (starts observability stack via Docker Compose, verifies FastAPI packages).
-**Day 4 Cleanup:** Run `bash scripts/day4-cleanup.sh` at end (stops observability stack, cleans temp files).
+**Day 4 Setup:** Run `bash scripts/day4-setup.sh` (verifies OTel, LangFuse SDK, and FastAPI packages).
+**Day 4 Cleanup:** Run `bash scripts/day4-cleanup.sh` at end (cleans temp files).
 
 **Teaching Notes:**
-- Start the observability stack early -- it takes ~2 min to stabilize
 - Session 10 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
-- Session 11 (LangFuse) is AI-specific and usually generates high engagement
+- Session 11 (LangFuse) uses mock mode with SDK patterns -- data logs to local JSON files
 - Session 12 (Production) bridges AI concepts with DevOps -- key for the Oracle audience
-- This is the heaviest day for Docker resources (~5-7 GB RAM)
+- Day 4 is lightweight on infrastructure -- all Python in-process (~3-4 GB RAM)
 
 ### Day 5: MCP, Safety & Capstone
 
@@ -134,16 +133,16 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 | 1 | Ollama + Python | ~5-6 GB | Remove Ollama at end of day |
 | 2 | Python + Groq API | ~3-4 GB | Lightest day |
 | 3 | Python + ChromaDB | ~4-5 GB | Stop containers at end |
-| 4 | Docker Compose (4 containers) + Python | ~5-7 GB | All containers mem-limited |
+| 4 | Python + OTel + mock LangFuse | ~3-4 GB | All in-process, lightweight |
 | 5 | Python + MCP SDK | ~3-4 GB | Lightweight |
 
 ### If Resources Run Low
 
 1. Run `bash scripts/check-resources.sh` to diagnose
-2. Stop unnecessary containers: `docker stop $(docker ps -q)`
-3. Prune Docker: `docker system prune -f && docker volume prune -f`
-4. Clear Python cache: `find ~ -name __pycache__ -exec rm -rf {} +`
-5. Check for leftover services from previous days
+2. Stop unnecessary Python processes
+3. Clear Python cache: `find ~ -name __pycache__ -exec rm -rf {} +`
+4. Remove temp files: `rm -rf /tmp/k8s-lab-* /tmp/prod-lab-* /tmp/capstone-lab-*`
+5. Check for leftover services from previous days (e.g., Ollama on Day 2+)
 
 ---
 
@@ -181,7 +180,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 - [ ] Test all 15 session slides load in browser
 - [ ] Run at least lab01 + lab08 from each session to verify
 - [ ] Confirm Groq API free tier is working (test with a simple call)
-- [ ] Verify Docker images pull correctly in Codespace
+- [ ] Verify all Python packages install correctly in Codespace
 - [ ] Prepare Google Classroom with session links
 - [ ] Share participant prerequisites 1 week before course
 
@@ -198,10 +197,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 
 | Port | Service | Available |
 |------|---------|-----------|
-| 8000 | FastAPI App | Days 3-4 |
-| 3000 | Grafana | Day 4 |
-| 9090 | Prometheus | Day 4 |
-| 8080 | LangFuse | Day 4 |
+| 8000 | FastAPI App | Day 4 |
 | 11434 | Ollama | Day 1 only |
 
 ---
@@ -213,7 +209,7 @@ Participants can use OpenCode (pre-installed) to help with labs:
 | Codespace won't start | Check GitHub free tier hours remaining (need ~40 hrs) |
 | Ollama out of memory | Ensure using llama3.2:1b (not larger models) |
 | Groq API rate limit | Wait 1 min; each participant needs own API key |
-| Docker Compose fails | Run `docker system prune -f` then retry |
+| Python process crash | Check logs, restart with `uvicorn app:app --host 0.0.0.0 --port 8000` |
 | Lab validation fails | Compare with solution file; check for trailing spaces |
 | Port already in use | Find and kill: `lsof -i :PORT` then `kill PID` |
 

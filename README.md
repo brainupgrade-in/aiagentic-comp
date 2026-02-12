@@ -12,7 +12,7 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development -
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=brainupgrade-in/aiagentic-comp)
 
-The Codespace auto-configures Python 3.13, Docker, and all dependencies. After launch:
+The Codespace auto-configures Python 3.13 and all dependencies. After launch:
 
 ```bash
 # 1. Copy environment template
@@ -109,13 +109,11 @@ cp .env.example .env
 │   ├── day2-cleanup.sh        Clean temp files
 │   ├── day3-setup.sh          Verify LangGraph packages
 │   ├── day3-cleanup.sh        Stop servers + clean up
-│   ├── day4-setup.sh          Start observability stack + verify FastAPI
-│   ├── day4-cleanup.sh        Stop observability stack + clean temp
+│   ├── day4-setup.sh          Verify OTel + LangFuse + FastAPI packages
+│   ├── day4-cleanup.sh        Clean temp files
 │   ├── day5-setup.sh          MCP SDK + capstone setup
 │   ├── day5-cleanup.sh        Final cleanup
-│   ├── day5-docker-compose.yml
-│   ├── prometheus.yml
-│   └── check-resources.sh     Monitor memory/storage/containers
+│   └── check-resources.sh     Monitor memory/storage/processes
 │
 ├── .devcontainer/             GitHub Codespaces config
 │   ├── devcontainer.json      2-core, 8 GB RAM, Python 3.13
@@ -202,7 +200,7 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 | **Vector DB** | ChromaDB |
 | **API** | FastAPI, Uvicorn |
 | **AI Dev Tools** | MCP Python SDK, AI Coding Agents |
-| **Observability** | OpenTelemetry, Prometheus, Grafana, LangFuse |
+| **Observability** | OpenTelemetry, LangFuse |
 
 ---
 
@@ -221,9 +219,6 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 | Port | Service |
 |------|---------|
 | 8000 | FastAPI App |
-| 3000 | Grafana |
-| 9090 | Prometheus |
-| 8080 | LangFuse |
 
 ---
 

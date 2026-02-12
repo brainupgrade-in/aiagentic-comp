@@ -6,40 +6,32 @@ echo "  Agentic AI Course - Environment Setup"
 echo "============================================"
 
 # Create and activate virtual environment
-echo "[1/5] Creating Python virtual environment..."
+echo "[1/4] Creating Python virtual environment..."
 python -m venv /home/vscode/.venv
 source /home/vscode/.venv/bin/activate
 
 # Install Python dependencies
-echo "[2/5] Installing Python packages..."
+echo "[2/4] Installing Python packages..."
 pip install --quiet --upgrade pip
 pip install --quiet -r requirements.txt
 
 # Install OpenCode — AI coding agent for the terminal
-echo "[3/5] Installing OpenCode (AI coding assistant)..."
+echo "[3/4] Installing OpenCode (AI coding assistant)..."
 curl -fsSL https://opencode.ai/install | bash
 
-# Pre-pull Docker images (lightweight ones only, others pulled on-demand)
-echo "[4/5] Pre-pulling Docker images..."
-docker pull chromadb/chroma:latest &
-docker pull prom/prometheus:latest &
-docker pull grafana/grafana:latest &
-wait
-
 # Create working directories
-echo "[5/5] Setting up workspace..."
+echo "[4/4] Setting up workspace..."
 mkdir -p ~/workspace/{day1,day2,day3,day4,day5}
-mkdir -p ~/workspace/day5/observability
 
 # Create .env template
 cat > ~/workspace/.env.template << 'EOF'
 # Groq API (https://console.groq.com - create free account)
 GROQ_API_KEY=gsk_your_key_here
 
-# LangFuse (populated by Day 5 setup script)
-LANGFUSE_SECRET_KEY=
-LANGFUSE_PUBLIC_KEY=
-LANGFUSE_HOST=http://localhost:8080
+# LangFuse (mock mode — SDK patterns logged to local JSON files)
+LANGFUSE_SECRET_KEY=sk-lf-mock-secret-key
+LANGFUSE_PUBLIC_KEY=pk-lf-mock-public-key
+LANGFUSE_HOST=http://localhost:8000
 EOF
 
 echo ""

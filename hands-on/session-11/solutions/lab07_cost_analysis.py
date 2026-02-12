@@ -2,7 +2,7 @@
 Lab 07: Cost & Token Analysis
 ================================
 Track token usage, calculate costs per model/user,
-and design cost monitoring dashboards.
+and design cost monitoring using LangFuse native features.
 """
 
 import os
@@ -57,7 +57,7 @@ views = [
     ("By user",        "Which users consume most tokens?",  "alice: $5.10, bob: $2.30"),
     ("By trace/conv",  "Which conversations are expensive?", "session_42: $0.85 (10 turns)"),
     ("By prompt ver",  "Does new prompt cost less?",        "v1: $0.008/req, v2: $0.006/req"),
-    ("Over time",      "Is cost trending up or down?",      "Daily: $15 → $12 after optimization"),
+    ("Over time",      "Is cost trending up or down?",      "Daily: $15 -> $12 after optimization"),
 ]
 print(f"    {'View':<16} {'Question':<40} {'Example'}")
 print(f"    {'-'*95}")
@@ -66,61 +66,65 @@ for view, question, example in views:
 
 
 # ============================================================
-# Step 3: Exporting to Prometheus
+# Step 3: LangFuse Cost Tracking API
 # ============================================================
 
-print("\n\n--- Step 3: Exporting Costs to Prometheus ---\n")
+print("\n\n--- Step 3: LangFuse Cost Tracking API ---\n")
 
-print("  Bridge LangFuse traces to Prometheus for alerting:\n")
+print("  LangFuse tracks cost natively through its Python SDK:\n")
 
-bridge_code = textwrap.dedent("""\
-    from prometheus_client import Counter, Histogram
+api_code = textwrap.dedent("""\
+    from langfuse import Langfuse
+    from langfuse.callback import CallbackHandler
 
-    # Prometheus metrics for LangFuse data
-    llm_cost = Counter(
-        "langfuse_llm_cost_usd_total",
-        "Total LLM cost in USD",
-        ["model", "user_id"],
+    langfuse = Langfuse()
+
+    # Option 1: Automatic cost tracking via CallbackHandler
+    # LangFuse auto-captures model, tokens, and cost from LangChain
+    handler = CallbackHandler(user_id="alice", session_id="sess_42")
+    result = chain.invoke(query, config={"callbacks": [handler]})
+
+    # Option 2: Manual generation logging with explicit cost
+    trace = langfuse.trace(name="chat_request", user_id="alice")
+    generation = trace.generation(
+        name="llm_call",
+        model="groq/llama3-70b",
+        input=[{"role": "user", "content": "What is RAG?"}],
+        output={"role": "assistant", "content": "RAG is..."},
+        usage={"input": 150, "output": 250},
+        # LangFuse auto-calculates cost, or set explicitly:
+        # usage={"input": 150, "output": 250, "total_cost": 0.00028}
     )
-    llm_tokens = Counter(
-        "langfuse_tokens_total",
-        "Total tokens consumed",
-        ["model", "direction"],  # direction: input/output
-    )
-    llm_latency = Histogram(
-        "langfuse_generation_duration_seconds",
-        "LLM generation latency",
-        ["model"],
-    )
 
-    # After each LLM call, update Prometheus
-    def record_generation(model, tokens_in, tokens_out, cost, latency):
-        llm_cost.labels(model=model, user_id=user_id).inc(cost)
-        llm_tokens.labels(model=model, direction="input").inc(tokens_in)
-        llm_tokens.labels(model=model, direction="output").inc(tokens_out)
-        llm_latency.labels(model=model).observe(latency)
+    # Option 3: Query cost data via API
+    traces = langfuse.fetch_traces(user_id="alice")
+    for t in traces.data:
+        print(f"  Trace: {t.name}  Cost: ${t.total_cost:.6f}")
 """)
 
-for line in bridge_code.strip().split("\n"):
+for line in api_code.strip().split("\n"):
     print(f"    {line}")
 
 
 # ============================================================
-# TODO 1: Cost tracking code
+# TODO 1: Cost Tracking Code
 # ============================================================
 
 print("\n\n--- TODO 1: Cost Tracking Code ---\n")
 
 print("  Write code that:")
-print("    - Defines a PRICING dict (model → input_per_1m, output_per_1m)")
+print("    - Defines a PRICING dict (model -> input_per_1m, output_per_1m)")
 print("    - Has a calculate_cost(model, tokens_in, tokens_out) function")
-print("    - Creates Prometheus Counter for cost tracking")
-print("    - Creates Prometheus Counter for token tracking")
-print("    - Exports metrics via /metrics endpoint\n")
+print("    - Creates a LangFuse trace with user_id")
+print("    - Logs a generation with model, usage, and cost")
+print("    - Fetches traces and prints total_cost per trace\n")
 
-# SOLUTION: Cost tracking with PRICING dict and Prometheus export
+# SOLUTION: Cost tracking with PRICING dict and LangFuse generation logging
 todo1_code = textwrap.dedent("""\
-    from prometheus_client import Counter, Histogram, generate_latest, CONTENT_TYPE_LATEST
+    from langfuse import Langfuse
+
+    # Initialize LangFuse client
+    langfuse = Langfuse()
 
     # Pricing dictionary: model -> (input_per_1M_tokens, output_per_1M_tokens)
     PRICING = {
@@ -138,53 +142,41 @@ todo1_code = textwrap.dedent("""\
         cost = (tokens_in / 1_000_000) * input_price + (tokens_out / 1_000_000) * output_price
         return cost
 
-    # Prometheus Counter for cost tracking
-    llm_cost_counter = Counter(
-        "langfuse_llm_cost_usd_total",
-        "Total LLM cost in USD",
-        ["model", "user_id"],
+    # Create a trace with user_id
+    trace = langfuse.trace(name="cost_demo", user_id="alice")
+
+    # Log a generation with model, usage, and calculated cost
+    tokens_in, tokens_out = 500, 200
+    model_name = "groq/llama3-70b"
+    cost = calculate_cost(model_name, tokens_in, tokens_out)
+
+    generation = trace.generation(
+        name="llm_call",
+        model=model_name,
+        input=[{"role": "user", "content": "Explain RAG"}],
+        output={"role": "assistant", "content": "RAG stands for..."},
+        usage={"input": tokens_in, "output": tokens_out, "total_cost": cost},
     )
 
-    # Prometheus Counter for token tracking
-    llm_token_counter = Counter(
-        "langfuse_tokens_total",
-        "Total tokens consumed",
-        ["model", "direction"],
-    )
-
-    # Prometheus Histogram for latency
-    llm_latency_histogram = Histogram(
-        "langfuse_generation_duration_seconds",
-        "LLM generation latency",
-        ["model"],
-    )
-
-    def record_generation(model, user_id, tokens_in, tokens_out, latency):
-        cost = calculate_cost(model, tokens_in, tokens_out)
-        llm_cost_counter.labels(model=model, user_id=user_id).inc(cost)
-        llm_token_counter.labels(model=model, direction="input").inc(tokens_in)
-        llm_token_counter.labels(model=model, direction="output").inc(tokens_out)
-        llm_latency_histogram.labels(model=model).observe(latency)
-        return cost
-
-    # Export via /metrics endpoint using generate_latest
-    def metrics_handler():
-        return generate_latest()
+    # Fetch traces and print total_cost per trace
+    traces = langfuse.fetch_traces(user_id="alice")
+    for t in traces.data:
+        print(f"Trace: {t.name}  total_cost: ${t.total_cost:.6f}")
 """)
 
 with open(os.path.join(WORKDIR, "cost_tracker.py"), "w") as f:
     f.write(todo1_code)
 
 checks1 = [
-    ("Has PRICING dict",           "PRICING" in todo1_code),
-    ("Has model pricing entry",    "gpt-4" in todo1_code.lower() or "llama" in todo1_code.lower()),
+    ("Has PRICING dict",            "PRICING" in todo1_code),
+    ("Has model pricing entry",     "gpt-4" in todo1_code.lower() or "llama" in todo1_code.lower()),
     ("Has calculate_cost function", "def calculate" in todo1_code or "def calc" in todo1_code),
-    ("Has 1_000_000 or 1000000",   "1_000_000" in todo1_code or "1000000" in todo1_code),
-    ("Has Counter import",         "Counter" in todo1_code),
-    ("Has cost counter",           "cost" in todo1_code.lower() and "Counter(" in todo1_code),
-    ("Has token counter",          "token" in todo1_code.lower() and "Counter(" in todo1_code),
-    ("Has model label",            "model" in todo1_code),
-    ("Has generate_latest",        "generate_latest" in todo1_code or "/metrics" in todo1_code),
+    ("Has 1_000_000 or 1000000",    "1_000_000" in todo1_code or "1000000" in todo1_code),
+    ("Has Langfuse import",         "Langfuse" in todo1_code or "langfuse" in todo1_code),
+    ("Has trace creation",          ".trace(" in todo1_code or "trace(" in todo1_code),
+    ("Has generation logging",      ".generation(" in todo1_code or "generation(" in todo1_code),
+    ("Has usage dict",              "usage" in todo1_code),
+    ("Has total_cost or fetch",     "total_cost" in todo1_code or "fetch_traces" in todo1_code),
 ]
 
 score1 = sum(1 for _, ok in checks1 if ok)
@@ -194,53 +186,53 @@ for name, ok in checks1:
 
 
 # ============================================================
-# TODO 2: Cost dashboard queries
+# TODO 2: Cost Analysis Queries
 # ============================================================
 
-print("\n\n--- TODO 2: Cost Dashboard PromQL ---\n")
+print("\n\n--- TODO 2: Cost Analysis Queries ---\n")
 
-print("  Write PromQL queries for cost monitoring panels:\n")
+print("  Write LangFuse SDK code snippets for cost monitoring:\n")
 
 queries = [
     {
-        "purpose": "Total cost per hour by model",
-        "promql": "___",
-        "check_terms": ["increase", "cost", "1h"],
+        "purpose": "Total cost per model over the last 24 hours",
+        "code": "___",
+        "check_terms": ["fetch_traces", "model", "total_cost"],
     },
     {
-        "purpose": "Token consumption rate (tokens/sec) by model",
-        "promql": "___",
-        "check_terms": ["rate", "token"],
+        "purpose": "Token consumption breakdown (input vs output) by model",
+        "code": "___",
+        "check_terms": ["usage", "input", "output"],
     },
     {
-        "purpose": "Average cost per request",
-        "promql": "___",
-        "check_terms": ["cost", "request"],
+        "purpose": "Average cost per user session",
+        "code": "___",
+        "check_terms": ["session", "cost", "len"],
     },
     {
-        "purpose": "Alert: cost exceeds $5/hour",
-        "promql": "___",
-        "check_terms": ["increase", "cost", "5"],
+        "purpose": "Identify traces exceeding a cost threshold ($0.01)",
+        "code": "___",
+        "check_terms": ["total_cost", "0.01", "trace"],
     },
 ]
 
-# SOLUTION: Fill in PromQL queries
-queries[0]["promql"] = 'sum by (model) (increase(langfuse_llm_cost_usd_total[1h]))'
-queries[1]["promql"] = 'sum by (model) (rate(langfuse_tokens_total[5m]))'
-queries[2]["promql"] = 'sum(increase(langfuse_llm_cost_usd_total[1h])) / sum(increase(http_requests_total[1h]))'
-queries[3]["promql"] = 'sum(increase(langfuse_llm_cost_usd_total[1h])) > 5'
+# SOLUTION: Fill in LangFuse SDK code snippets
+queries[0]["code"] = "traces = langfuse.fetch_traces(); cost_by_model = {}; [cost_by_model.update({g.model: cost_by_model.get(g.model, 0) + t.total_cost}) for t in traces.data for g in t.generations]"
+queries[1]["code"] = "for t in traces.data: [print(f'{g.model}: usage input={g.usage.input} output={g.usage.output}') for g in t.generations]"
+queries[2]["code"] = "session_costs = {}; [session_costs.update({t.session_id: session_costs.get(t.session_id, 0) + (t.total_cost or 0)}) for t in traces.data]; avg_cost = sum(session_costs.values()) / len(session_costs)"
+queries[3]["code"] = "expensive = [trace for trace in traces.data if (trace.total_cost or 0) > 0.01]; print(f'Found {len(expensive)} traces over $0.01')"
 
 score2 = 0
 for i, q in enumerate(queries, 1):
-    if q["promql"] == "___":
+    if q["code"] == "___":
         status = "TODO"
-    elif all(t.lower() in q["promql"].lower() for t in q["check_terms"]):
+    elif all(t.lower() in q["code"].lower() for t in q["check_terms"]):
         status = "PASS"
         score2 += 1
     else:
         status = "FAIL"
     print(f"    [{status}] {i}. {q['purpose']}")
-    print(f"           PromQL: {q['promql']}")
+    print(f"           Code: {q['code'][:80]}...")
 
 print(f"\n  Score: {score2}/{len(queries)}")
 
@@ -253,8 +245,8 @@ print(f"\n\n--- Lab 07 Summary ---\n")
 print("  Key concepts:")
 print("    1. LangFuse auto-calculates cost from model + tokens")
 print("    2. Cost views: by model, user, conversation, prompt version, time")
-print("    3. Bridge to Prometheus: Counter for cost/tokens, Histogram for latency")
-print("    4. Alert on cost spikes with PromQL (increase > threshold)")
+print("    3. LangFuse API: trace/generation logging with usage, fetch_traces for analysis")
+print("    4. Cost analysis: aggregate by model, user, session; alert on thresholds")
 print(f"\n  TODO 1: {score1}/{len(checks1)} cost tracking checks")
-print(f"  TODO 2: {score2}/{len(queries)} dashboard queries")
+print(f"  TODO 2: {score2}/{len(queries)} cost analysis queries")
 print(f"\n  Files generated in {WORKDIR}/")

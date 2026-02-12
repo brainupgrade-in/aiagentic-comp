@@ -1,8 +1,8 @@
 """
-Lab 02: Health Checks & Probes
-================================
+Lab 03: Health Checks & Python HealthChecker
+==============================================
 Implement production-grade /health endpoint
-and configure Kubernetes probes.
+and configure Python async health checking with signal handling.
 """
 
 import os
@@ -12,7 +12,7 @@ import textwrap
 WORKDIR = "/tmp/prod-lab-12-03"
 
 print("=" * 50)
-print("  Lab 02: Health Checks & Probes")
+print("  Lab 03: Health Checks & Python HealthChecker")
 print("=" * 50)
 
 if os.path.exists(WORKDIR):
@@ -53,70 +53,98 @@ print("  Degraded response (503): {\"status\": \"degraded\", \"checks\": {\"redi
 
 
 # ============================================================
-# Step 2: Kubernetes Probe Types
+# Step 2: Python Async HealthChecker Concepts
 # ============================================================
 
-print("\n\n--- Step 2: Kubernetes Probe Types ---\n")
+print("\n\n--- Step 2: Python Async HealthChecker Concepts ---\n")
 
-probes = [
-    ("readinessProbe",  "Is the pod ready to receive traffic?",
-                        "Fails -> removed from Service endpoints",
-                        "httpGet /health, delay=5s, period=10s"),
-    ("livenessProbe",   "Is the pod alive and functioning?",
-                        "Fails -> pod gets restarted",
-                        "httpGet /health, delay=15s, period=30s"),
-    ("startupProbe",    "Has the pod finished starting?",
-                        "Fails -> readiness/liveness disabled until pass",
-                        "httpGet /health, delay=0s, period=5s, failures=30"),
+concepts = [
+    ("HealthChecker",     "Is a service endpoint responding?",
+                          "Fails -> marks target 'unhealthy' after retries",
+                          "httpx.get(url), interval=30s, timeout=10s, retries=3"),
+    ("Signal handlers",   "What happens when the process receives SIGTERM?",
+                          "Graceful shutdown -> close connections, flush logs",
+                          "signal.signal(SIGTERM, handler) or asyncio shutdown"),
+    ("Health states",     "What are the possible application health states?",
+                          "starting -> healthy -> unhealthy",
+                          "Track via HealthChecker.status attribute"),
 ]
 
-print(f"    {'Probe':<18} {'Question':<40} {'On Failure'}")
-print(f"    {'-'*90}")
-for name, question, failure, config in probes:
-    print(f"    {name:<18} {question:<40} {failure}")
+print(f"    {'Concept':<18} {'Question':<48} {'Behavior'}")
+print(f"    {'-'*100}")
+for name, question, behavior, config in concepts:
+    print(f"    {name:<18} {question:<48} {behavior}")
     print(f"    {'':18} Config: {config}")
     print()
 
 
 # ============================================================
-# Step 3: Probe Configuration Reference
+# Step 3: Python Async HealthChecker Reference
 # ============================================================
 
-print("--- Step 3: Probe YAML Reference ---\n")
+print("--- Step 3: Python Async HealthChecker Reference ---\n")
 
-probe_yaml = textwrap.dedent("""\
-    containers:
-    - name: agent
-      image: agent-api:2.0
-      ports:
-      - containerPort: 8000
-      readinessProbe:
-        httpGet:
-          path: /health
-          port: 8000
-        initialDelaySeconds: 5
-        periodSeconds: 10
-        failureThreshold: 3
-      livenessProbe:
-        httpGet:
-          path: /health
-          port: 8000
-        initialDelaySeconds: 15
-        periodSeconds: 30
-        failureThreshold: 3
-      startupProbe:
-        httpGet:
-          path: /health
-          port: 8000
-        periodSeconds: 5
-        failureThreshold: 30
+healthchecker_code = textwrap.dedent("""\
+    import asyncio
+    import signal
+    import httpx
+
+    class HealthChecker:
+        def __init__(self, targets: list[dict]):
+            self.targets = targets  # [{url, interval_seconds, timeout_seconds, retries, start_delay_seconds}]
+            self.results = {}       # {name: "healthy" | "unhealthy" | "starting"}
+            self._running = True
+
+        async def check_one(self, name: str, url: str, timeout: float, retries: int) -> bool:
+            for attempt in range(retries):
+                try:
+                    async with httpx.AsyncClient() as client:
+                        resp = await client.get(url, timeout=timeout)
+                        if resp.status_code == 200:
+                            return True
+                except (httpx.RequestError, httpx.TimeoutException):
+                    pass
+                await asyncio.sleep(1)
+            return False
+
+        async def monitor(self, target: dict):
+            name = target["url"]
+            self.results[name] = "starting"
+            await asyncio.sleep(target.get("start_delay_seconds", 0))
+            while self._running:
+                healthy = await self.check_one(
+                    name, target["url"],
+                    target.get("timeout_seconds", 10),
+                    target.get("retries", 3),
+                )
+                self.results[name] = "healthy" if healthy else "unhealthy"
+                await asyncio.sleep(target.get("interval_seconds", 30))
+
+        async def run(self):
+            tasks = [asyncio.create_task(self.monitor(t)) for t in self.targets]
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+        def shutdown(self):
+            self._running = False
+
+    # --- Signal handler for graceful shutdown ---
+    checker = HealthChecker(targets=[
+        {"url": "http://localhost:8000/health", "interval_seconds": 30,
+         "timeout_seconds": 10, "retries": 3, "start_delay_seconds": 5},
+    ])
+
+    def handle_sigterm(signum, frame):
+        print("SIGTERM received, shutting down gracefully...")
+        checker.shutdown()
+
+    signal.signal(signal.SIGTERM, handle_sigterm)
 """)
 
-for line in probe_yaml.strip().split("\n"):
+for line in healthchecker_code.strip().split("\n"):
     print(f"    {line}")
 
-with open(os.path.join(WORKDIR, "probe-reference.yaml"), "w") as f:
-    f.write(probe_yaml)
+with open(os.path.join(WORKDIR, "healthchecker-reference.py"), "w") as f:
+    f.write(healthchecker_code)
 
 
 # ============================================================
@@ -176,74 +204,116 @@ for name, ok in checks1:
 
 
 # ============================================================
-# TODO 2: Deployment with probes
+# TODO 2: Python HealthChecker with signal handling
 # ============================================================
 
-print("\n\n--- TODO 2: Deployment with Probes ---\n")
+print("\n\n--- TODO 2: Python HealthChecker with Signal Handling ---\n")
 
-print("  Create a Deployment YAML with:")
-print("    - name: agent-api, replicas: 3, image: agent-api:2.0")
-print("    - readinessProbe: /health port 8000 (delay=5, period=10)")
-print("    - livenessProbe: /health port 8000 (delay=15, period=30)")
-print("    - startupProbe: /health port 8000 (period=5, failures=30)\n")
+print("  Create a Python HealthChecker config and signal handler:")
+print("    - HealthChecker target: url=http://localhost:8000/health")
+print("    - Config: interval_seconds=30, timeout_seconds=10, retries=3, start_delay_seconds=15")
+print("    - Signal handler: SIGTERM -> graceful shutdown")
+print("    - Startup sequencing: wait for dependencies before starting app\n")
 
-todo2_yaml = textwrap.dedent("""\
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: agent-api
-      namespace: ai-stack
-    spec:
-      replicas: 3
-      selector:
-        matchLabels:
-          app: agent-api
-      template:
-        metadata:
-          labels:
-            app: agent-api
-        spec:
-          containers:
-          - name: agent-api
-            image: agent-api:2.0
-            ports:
-            - containerPort: 8000
-            readinessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 5
-              periodSeconds: 10
-              failureThreshold: 3
-            livenessProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              initialDelaySeconds: 15
-              periodSeconds: 30
-              failureThreshold: 3
-            startupProbe:
-              httpGet:
-                path: /health
-                port: 8000
-              periodSeconds: 5
-              failureThreshold: 30
+todo2_code = textwrap.dedent("""\
+    import asyncio
+    import signal
+    import httpx
+
+    class HealthChecker:
+        def __init__(self, targets: list[dict]):
+            self.targets = targets
+            self.results = {}
+            self._running = True
+
+        async def check_one(self, name: str, url: str, timeout: float, retries: int) -> bool:
+            for attempt in range(retries):
+                try:
+                    async with httpx.AsyncClient() as client:
+                        resp = await client.get(url, timeout=timeout)
+                        if resp.status_code == 200:
+                            return True
+                except (httpx.RequestError, httpx.TimeoutException):
+                    pass
+                await asyncio.sleep(1)
+            return False
+
+        async def monitor(self, target: dict):
+            name = target["url"]
+            self.results[name] = "starting"
+            await asyncio.sleep(target.get("start_delay_seconds", 0))
+            while self._running:
+                healthy = await self.check_one(
+                    name, target["url"],
+                    target.get("timeout_seconds", 10),
+                    target.get("retries", 3),
+                )
+                self.results[name] = "healthy" if healthy else "unhealthy"
+                await asyncio.sleep(target.get("interval_seconds", 30))
+
+        async def run(self):
+            tasks = [asyncio.create_task(self.monitor(t)) for t in self.targets]
+            await asyncio.gather(*tasks, return_exceptions=True)
+
+        def shutdown(self):
+            self._running = False
+
+    # --- Startup sequencing: wait for dependencies ---
+    async def wait_for_ready(url: str, timeout: float = 60, interval: float = 2):
+        \"\"\"Wait for a dependency to become ready before starting the app.\"\"\"
+        import time
+        start = time.time()
+        while time.time() - start < timeout:
+            try:
+                async with httpx.AsyncClient() as client:
+                    resp = await client.get(url, timeout=5)
+                    if resp.status_code == 200:
+                        return True
+            except (httpx.RequestError, httpx.TimeoutException):
+                pass
+            await asyncio.sleep(interval)
+        raise RuntimeError(f"Dependency {url} not ready after {timeout}s")
+
+    # --- HealthChecker config ---
+    checker = HealthChecker(targets=[
+        {
+            "url": "http://localhost:8000/health",
+            "interval_seconds": 30,
+            "timeout_seconds": 10,
+            "retries": 3,
+            "start_delay_seconds": 15,
+        },
+    ])
+
+    # --- Signal handler for graceful shutdown ---
+    def handle_sigterm(signum, frame):
+        print("SIGTERM received, shutting down gracefully...")
+        checker.shutdown()
+
+    signal.signal(signal.SIGTERM, handle_sigterm)
+
+    # --- Main startup sequence ---
+    # async def main():
+    #     await wait_for_ready("http://localhost:6379")   # wait for Redis
+    #     await wait_for_ready("http://localhost:8001")   # wait for ChromaDB
+    #     asyncio.create_task(checker.run())              # start health monitoring
+    #     # Then start uvicorn or the FastAPI app
 """)
 
-with open(os.path.join(WORKDIR, "agent-deployment.yaml"), "w") as f:
-    f.write(todo2_yaml)
+with open(os.path.join(WORKDIR, "healthchecker_config.py"), "w") as f:
+    f.write(todo2_code)
 
 checks2 = [
-    ("Has kind: Deployment",       "kind: Deployment" in todo2_yaml),
-    ("Has replicas: 3",            "replicas: 3" in todo2_yaml),
-    ("Has agent-api image",        "agent-api" in todo2_yaml),
-    ("Has readinessProbe",         "readinessProbe:" in todo2_yaml),
-    ("Has livenessProbe",          "livenessProbe:" in todo2_yaml),
-    ("Has startupProbe",           "startupProbe:" in todo2_yaml),
-    ("Has /health path",           "/health" in todo2_yaml),
-    ("Has port 8000",              "8000" in todo2_yaml),
-    ("Has initialDelaySeconds",    "initialDelaySeconds" in todo2_yaml),
-    ("Has periodSeconds",          "periodSeconds" in todo2_yaml),
+    ("Has HealthChecker class",    "HealthChecker" in todo2_code),
+    ("Has target URL",             "localhost" in todo2_code or "/health" in todo2_code),
+    ("Has interval_seconds",       "interval_seconds" in todo2_code or "interval" in todo2_code),
+    ("Has timeout_seconds",        "timeout_seconds" in todo2_code or "timeout" in todo2_code),
+    ("Has retries",                "retries" in todo2_code or "retry" in todo2_code),
+    ("Has start_delay_seconds",    "start_delay" in todo2_code or "delay" in todo2_code),
+    ("Has signal handler",         "signal" in todo2_code or "SIGTERM" in todo2_code),
+    ("Has shutdown method",        "shutdown" in todo2_code or "graceful" in todo2_code),
+    ("Has async/await pattern",    "async" in todo2_code or "await" in todo2_code or "asyncio" in todo2_code),
+    ("Has dependency wait",        "wait" in todo2_code or "ready" in todo2_code or "startup" in todo2_code or "sequenc" in todo2_code),
 ]
 
 score2 = sum(1 for _, ok in checks2 if ok)
@@ -256,13 +326,13 @@ for name, ok in checks2:
 # Summary
 # ============================================================
 
-print(f"\n\n--- Lab 02 Summary ---\n")
+print(f"\n\n--- Lab 03 Summary ---\n")
 print("  Key concepts:")
 print("    1. /health checks all dependencies (redis, chromadb, model)")
 print("    2. Returns 200 (healthy) or 503 (degraded)")
-print("    3. readinessProbe: controls traffic routing")
-print("    4. livenessProbe: triggers pod restart if stuck")
-print("    5. startupProbe: gives slow-starting apps time")
+print("    3. Python async HealthChecker monitors application health")
+print("    4. Signal handlers (SIGTERM) enable graceful shutdown")
+print("    5. Startup sequencing with retry/wait ensures dependency order")
 print(f"\n  TODO 1: {score1}/{len(checks1)} health endpoint checks")
-print(f"  TODO 2: {score2}/{len(checks2)} deployment checks")
+print(f"  TODO 2: {score2}/{len(checks2)} healthchecker config checks")
 print(f"\n  Files generated in {WORKDIR}/")

@@ -25,7 +25,7 @@ os.makedirs(WORKDIR, exist_ok=True)
 
 print("\n--- Step 1: Why LangFuse? ---\n")
 
-print("  What Prometheus + OTel CAN'T do for AI:\n")
+print("  What traditional observability (OTel + metrics) CAN'T do for AI:\n")
 gaps = [
     ("Exact prompt text",       "Can't see what was sent to the LLM"),
     ("Full LLM response",       "Can't see what the model returned"),
@@ -89,11 +89,11 @@ print("  Full observability stack:\n")
 print("    Layer              Tool              What It Monitors")
 print("    " + "-" * 65)
 stack = [
-    ("Infrastructure",  "Prometheus",   "CPU, memory, pod health, HTTP rate/errors"),
-    ("Distributed Trace", "OpenTelemetry", "Request flow across services, spans"),
-    ("AI/LLM",          "LangFuse",     "Prompt text, LLM I/O, cost, feedback"),
-    ("Log Aggregation",  "Loki/ELK",    "Structured logs, error details"),
-    ("Alerting",         "Alertmanager", "Threshold-based notifications"),
+    ("Infrastructure",  "OTel Metrics",   "CPU, memory, container health, HTTP rate/errors"),
+    ("Distributed Trace", "OTel Traces",  "Request flow across services, spans"),
+    ("AI/LLM",          "LangFuse",       "Prompt text, LLM I/O, cost, feedback"),
+    ("Log Aggregation",  "OTel Logs/ELK", "Structured logs, error details"),
+    ("Alerting",         "LangFuse/OTel", "Score-based and threshold-based notifications"),
 ]
 for layer, tool, monitors in stack:
     print(f"    {layer:<18} {tool:<18} {monitors}")
@@ -106,13 +106,13 @@ for layer, tool, monitors in stack:
 print("\n\n--- TODO 1: Match Tools to Capabilities ---\n")
 
 print("  For each capability, specify which tool handles it.")
-print("  Options: prometheus, opentelemetry, langfuse\n")
+print("  Options: otel_metrics, opentelemetry, langfuse\n")
 
 capabilities = [
     {
         "capability": "Track request rate and error percentage",
         "answer": "___",
-        "correct": "prometheus",
+        "correct": "otel_metrics",
     },
     {
         "capability": "See the exact prompt sent to GPT-4",
@@ -130,9 +130,9 @@ capabilities = [
         "correct": "langfuse",
     },
     {
-        "capability": "Alert when CPU usage exceeds 80%",
+        "capability": "Alert when container memory exceeds 80%",
         "answer": "___",
-        "correct": "prometheus",
+        "correct": "otel_metrics",
     },
     {
         "capability": "Collect user thumbs-up/down on AI responses",
@@ -142,7 +142,7 @@ capabilities = [
     {
         "capability": "Measure HTTP latency with histogram buckets",
         "answer": "___",
-        "correct": "prometheus",
+        "correct": "otel_metrics",
     },
     {
         "capability": "Track cost per user per conversation",
@@ -152,7 +152,7 @@ capabilities = [
 ]
 
 # YOUR CODE HERE: Fill in the answers
-# capabilities[0]["answer"] = "prometheus"
+# capabilities[0]["answer"] = "otel_metrics"
 # capabilities[1]["answer"] = "langfuse"
 # ...
 
@@ -255,7 +255,7 @@ print(f"\n\n--- Lab 01 Summary ---\n")
 print("  Key concepts:")
 print("    1. LangFuse fills the AI observability gap (prompt text, cost, feedback)")
 print("    2. Trace hierarchy: Trace → Span → Generation")
-print("    3. Complementary stack: Prometheus + OTel + LangFuse = full coverage")
+print("    3. Complementary stack: OTel + LangFuse = full coverage")
 print("    4. Self-hosted with PostgreSQL backend")
 print(f"\n  TODO 1: {score1}/{len(capabilities)} tool matching")
 print(f"  TODO 2: {score2}/{total2} hierarchy design")

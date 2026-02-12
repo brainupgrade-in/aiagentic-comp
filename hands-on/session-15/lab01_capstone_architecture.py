@@ -3,7 +3,7 @@
 Lab 01: Capstone Architecture Design
 
 Design the architecture for a production AI agent system. Identify the
-components (FastAPI, LangGraph, ChromaDB, Prometheus, Grafana, LangFuse),
+components (FastAPI, LangGraph, ChromaDB, LangFuse + PostgreSQL),
 map data flows, and determine monitoring points.
 
 No external packages required -- standard library only.
@@ -32,13 +32,13 @@ print("=" * 70)
 print("STEP 1: Production AI Agent System -- Components")
 print("=" * 70)
 print()
-print("  A production AI agent system has six core components:")
+print("  A production AI agent system has four application components:")
 print()
 print("  +--------------------+----------------------------------------------+")
 print("  | Component          | Role                                         |")
 print("  +--------------------+----------------------------------------------+")
 print("  | FastAPI            | HTTP API gateway -- receives requests,       |")
-print("  |                    | returns responses, exposes health probes     |")
+print("  |                    | returns responses, exposes health endpoints  |")
 print("  +--------------------+----------------------------------------------+")
 print("  | LangGraph Agent    | Stateful workflow engine -- orchestrates     |")
 print("  |                    | reasoning, tool calls, and decision logic    |")
@@ -46,14 +46,9 @@ print("  +--------------------+----------------------------------------------+")
 print("  | ChromaDB           | Vector store -- stores and retrieves         |")
 print("  |                    | document embeddings for RAG                  |")
 print("  +--------------------+----------------------------------------------+")
-print("  | Prometheus         | Metrics collector -- scrapes /metrics,       |")
-print("  |                    | stores time-series data, fires alerts        |")
-print("  +--------------------+----------------------------------------------+")
-print("  | Grafana            | Dashboard -- visualizes Prometheus metrics,  |")
-print("  |                    | shows latency, throughput, error rates       |")
-print("  +--------------------+----------------------------------------------+")
-print("  | LangFuse           | LLM observability -- traces agent runs,     |")
-print("  |                    | tracks token usage, cost, and quality        |")
+print("  | LangFuse           | Observability platform -- traces agent runs, |")
+print("  |                    | tracks token usage, cost, quality, latency   |")
+print("  |  (+ PostgreSQL)    | (backed by PostgreSQL for persistence)       |")
 print("  +--------------------+----------------------------------------------+")
 print()
 
@@ -70,7 +65,7 @@ print()
 print("  User Request")
 print("       |")
 print("       v")
-print("  [FastAPI]  --metrics-->  [Prometheus]  --query-->  [Grafana]")
+print("  [FastAPI]  --traces-->  [LangFuse]  (via CallbackHandler)")
 print("       |")
 print("       v")
 print("  [LangGraph Agent]  --traces-->  [LangFuse]")
@@ -86,9 +81,8 @@ print()
 print("  Key data flows:")
 print("    1. User -> FastAPI -> LangGraph -> LLM -> FastAPI -> User")
 print("    2. LangGraph -> ChromaDB (RAG retrieval)")
-print("    3. FastAPI -> Prometheus (metrics scrape)")
-print("    4. LangGraph -> LangFuse (trace/span/generation)")
-print("    5. Prometheus -> Grafana (dashboard visualization)")
+print("    3. FastAPI -> LangFuse (request traces via callback)")
+print("    4. LangGraph -> LangFuse (agent traces/spans/generations)")
 print()
 
 # ============================================================================
@@ -101,13 +95,13 @@ print("=" * 70)
 print()
 print("  Components must start in dependency order:")
 print()
-print("  Level 0 (no deps):   ChromaDB, Prometheus, LangFuse (+ PostgreSQL)")
-print("  Level 1 (needs L0):  Grafana (needs Prometheus)")
-print("  Level 2 (needs L0):  LangGraph Agent (needs ChromaDB, LangFuse)")
-print("  Level 3 (needs L2):  FastAPI (needs LangGraph Agent)")
+print("  Level 0 (no deps):   ChromaDB, LangFuse (+ PostgreSQL)")
+print("  Level 1 (needs L0):  LangGraph Agent (needs ChromaDB, LangFuse)")
+print("  Level 2 (needs L1):  FastAPI (needs LangGraph Agent)")
 print()
-print("  Startup sequence: ChromaDB -> Prometheus -> LangFuse -> Grafana")
-print("                    ChromaDB -> LangGraph -> FastAPI")
+print("  Python startup sequencing controls this ordering:")
+print("    langfuse-db -> langfuse -> support-agent")
+print("    chromadb -> support-agent")
 print()
 
 # ============================================================================
@@ -123,16 +117,12 @@ print()
 #   "fastapi"    -> "api_gateway"
 #   "langgraph"  -> "workflow_engine"
 #   "chromadb"   -> "vector_store"
-#   "prometheus" -> "metrics_collector"
-#   "grafana"    -> "dashboard"
-#   "langfuse"   -> "llm_observability"
+#   "langfuse"   -> "observability_platform"
 
 component_roles = {
     "fastapi":    "___",
     "langgraph":  "___",
     "chromadb":   "___",
-    "prometheus": "___",
-    "grafana":    "___",
     "langfuse":   "___",
 }
 
@@ -142,9 +132,7 @@ expected_roles = {
     "fastapi":    "api_gateway",
     "langgraph":  "workflow_engine",
     "chromadb":   "vector_store",
-    "prometheus": "metrics_collector",
-    "grafana":    "dashboard",
-    "langfuse":   "llm_observability",
+    "langfuse":   "observability_platform",
 }
 if component_roles == expected_roles:
     score += 1
@@ -166,29 +154,25 @@ print()
 # TODO: Replace each "___" with a list of component names at that level.
 #   Level 0 starts first (no dependencies).
 #   Level 1 depends on Level 0.
-#   Level 2 depends on Level 0.
-#   Level 3 depends on Level 2.
+#   Level 2 depends on Level 1.
 #
 # Correct answers:
-#   level_0 = ["chromadb", "prometheus", "langfuse"]
-#   level_1 = ["grafana"]
-#   level_2 = ["langgraph"]
-#   level_3 = ["fastapi"]
+#   level_0 = ["chromadb", "langfuse"]
+#   level_1 = ["langgraph"]
+#   level_2 = ["fastapi"]
 
 startup_order = {
     "level_0": "___",
     "level_1": "___",
     "level_2": "___",
-    "level_3": "___",
 }
 
 # -- Validate TODO 2 --------------------------------------------------------
 total += 1
 expected_order = {
-    "level_0": ["chromadb", "prometheus", "langfuse"],
-    "level_1": ["grafana"],
-    "level_2": ["langgraph"],
-    "level_3": ["fastapi"],
+    "level_0": ["chromadb", "langfuse"],
+    "level_1": ["langgraph"],
+    "level_2": ["fastapi"],
 }
 # Compare as sorted lists for order-independent matching within each level
 order_ok = True
@@ -213,7 +197,7 @@ print()
 # ============================================================================
 
 print("=" * 70)
-print("TODO 3: Identify the five primary data flows")
+print("TODO 3: Identify the four primary data flows")
 print("=" * 70)
 print()
 
@@ -221,24 +205,21 @@ print()
 #   Flow 1: User request path       -> ["user", "fastapi"]
 #   Flow 2: Agent to LLM            -> ["langgraph", "llm_api"]
 #   Flow 3: RAG retrieval           -> ["langgraph", "chromadb"]
-#   Flow 4: Metrics scraping        -> ["prometheus", "fastapi"]
-#   Flow 5: Trace collection        -> ["langgraph", "langfuse"]
+#   Flow 4: Trace collection        -> ["langgraph", "langfuse"]
 
 data_flows = {
-    "request_path":    "___",
-    "agent_to_llm":    "___",
-    "rag_retrieval":   "___",
-    "metrics_scrape":  "___",
+    "request_path":     "___",
+    "agent_to_llm":     "___",
+    "rag_retrieval":    "___",
     "trace_collection": "___",
 }
 
 # -- Validate TODO 3 --------------------------------------------------------
 total += 1
 expected_flows = {
-    "request_path":    ["user", "fastapi"],
-    "agent_to_llm":    ["langgraph", "llm_api"],
-    "rag_retrieval":   ["langgraph", "chromadb"],
-    "metrics_scrape":  ["prometheus", "fastapi"],
+    "request_path":     ["user", "fastapi"],
+    "agent_to_llm":     ["langgraph", "llm_api"],
+    "rag_retrieval":    ["langgraph", "chromadb"],
     "trace_collection": ["langgraph", "langfuse"],
 }
 if data_flows == expected_flows:

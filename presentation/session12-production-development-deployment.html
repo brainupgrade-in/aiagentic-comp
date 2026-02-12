@@ -504,41 +504,51 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
           </div>
         </section>
 
-        <!-- K8S PROBE YAML -->
+        <!-- PYTHON HEALTH MONITORING -->
         <section>
-          <h2>Kubernetes Probe Configuration</h2>
+          <h2>Python Health Monitoring</h2>
           <div class="code-block">
-<span class="keyword">apiVersion:</span> apps/v1
-<span class="keyword">kind:</span> Deployment
-<span class="keyword">spec:</span>
-  <span class="keyword">template:</span>
-    <span class="keyword">spec:</span>
-      <span class="keyword">containers:</span>
-      - <span class="keyword">name:</span> ai-agent
-        <span class="keyword">image:</span> <span class="string">brainupgrade/ai-agent:1.2.0</span>
-        <span class="keyword">ports:</span>
-        - <span class="keyword">containerPort:</span> 8000
-        <span class="keyword">startupProbe:</span>              <span class="comment"># Wait for model loading</span>
-          <span class="keyword">httpGet:</span>
-            <span class="keyword">path:</span> <span class="string">/health</span>
-            <span class="keyword">port:</span> 8000
-          <span class="keyword">failureThreshold:</span> 30     <span class="comment"># 30 x 10s = 5 min max</span>
-          <span class="keyword">periodSeconds:</span> 10
-        <span class="keyword">livenessProbe:</span>             <span class="comment"># Restart if stuck</span>
-          <span class="keyword">httpGet:</span>
-            <span class="keyword">path:</span> <span class="string">/health</span>
-            <span class="keyword">port:</span> 8000
-          <span class="keyword">periodSeconds:</span> 30
-          <span class="keyword">timeoutSeconds:</span> 5
-        <span class="keyword">readinessProbe:</span>            <span class="comment"># Route traffic only when ready</span>
-          <span class="keyword">httpGet:</span>
-            <span class="keyword">path:</span> <span class="string">/ready</span>
-            <span class="keyword">port:</span> 8000
-          <span class="keyword">periodSeconds:</span> 10
+<span class="comment"># health_monitor.py &mdash; async HealthChecker class</span>
+<span class="keyword">import</span> asyncio, signal, httpx, psutil
+
+<span class="keyword">class</span> <span class="function">HealthChecker</span>:
+    <span class="string">"""Monitors /health endpoint and manages process lifecycle."""</span>
+
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, url=<span class="string">"http://localhost:8000/health"</span>,
+                 interval=30, timeout=5, retries=3, start_delay=120):
+        self.url = url
+        self.interval = interval
+        self.timeout = timeout
+        self.retries = retries
+        self.start_delay = start_delay
+        self.failures = 0
+
+    <span class="keyword">async def</span> <span class="function">check</span>(self):
+        <span class="keyword">try</span>:
+            <span class="keyword">async with</span> httpx.AsyncClient() <span class="keyword">as</span> client:
+                resp = <span class="keyword">await</span> client.get(self.url, timeout=self.timeout)
+                <span class="keyword">if</span> resp.status_code == 200:
+                    self.failures = 0
+                    <span class="keyword">return</span> <span class="keyword">True</span>
+        <span class="keyword">except</span> Exception:
+            <span class="keyword">pass</span>
+        self.failures += 1
+        <span class="keyword">return</span> self.failures &lt; self.retries
+
+    <span class="keyword">async def</span> <span class="function">run</span>(self):
+        <span class="keyword">await</span> asyncio.sleep(self.start_delay)
+        <span class="keyword">while True</span>:
+            <span class="keyword">if not await</span> self.check():
+                logger.error(<span class="string">"Health check failed, shutting down"</span>)
+                <span class="keyword">break</span>
+            <span class="keyword">await</span> asyncio.sleep(self.interval)
+
+<span class="comment"># Graceful shutdown via signal handlers</span>
+signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.get_event_loop().stop())
           </div>
           <div class="warning">
-            AI apps can take minutes to load models. Without a startup probe, Kubernetes will kill
-            and restart your pod in an infinite crash loop.
+            AI apps can take minutes to load models. Use <code>start_delay</code> to give the application
+            time to initialize before health checks begin counting failures.
           </div>
         </section>
       </section>
@@ -548,17 +558,17 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <section>
           <div class="section-number">05</div>
           <h2>Secrets Management</h2>
-          <p class="subtitle">ConfigMap vs Secret &middot; Base64 Encoding &middot; Environment Injection</p>
+          <p class="subtitle">.env Files &middot; python-dotenv &middot; Environment Variables</p>
         </section>
 
         <!-- CONFIGMAP VS SECRET -->
         <section>
-          <h2>ConfigMap vs Secret</h2>
+          <h2>Configuration vs Secrets</h2>
           <table class="compare-table">
             <tr>
               <th>Aspect</th>
-              <th>ConfigMap</th>
-              <th>Secret</th>
+              <th>.env File (config)</th>
+              <th>.env File (secrets)</th>
             </tr>
             <tr>
               <td><strong>Purpose</strong></td>
@@ -566,9 +576,9 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
               <td>Sensitive credentials</td>
             </tr>
             <tr>
-              <td><strong>Encoding</strong></td>
-              <td>Plain text</td>
-              <td>Base64 encoded</td>
+              <td><strong>Storage</strong></td>
+              <td>Checked into repo (.env.example)</td>
+              <td>Never checked in (.gitignore)</td>
             </tr>
             <tr>
               <td><strong>Examples</strong></td>
@@ -576,31 +586,36 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
               <td>GROQ_API_KEY, DB passwords</td>
             </tr>
             <tr>
-              <td><strong>RBAC</strong></td>
-              <td>Standard permissions</td>
-              <td>Restricted access, auditable</td>
+              <td><strong>Access</strong></td>
+              <td>Readable by team</td>
+              <td>Restricted, per-environment</td>
             </tr>
             <tr>
-              <td><strong>Encryption at rest</strong></td>
-              <td style="color:var(--accent4);">No</td>
-              <td style="color:var(--accent2);">Yes (when enabled)</td>
+              <td><strong>Python dotenv</strong></td>
+              <td><code>load_dotenv(".env")</code></td>
+              <td><code>load_dotenv(".env.secrets")</code></td>
             </tr>
           </table>
           <br>
           <div class="code-block">
-<span class="comment"># Create a Secret for your API key</span>
-kubectl create secret generic ai-agent-secrets \
-  --from-literal=GROQ_API_KEY=gsk_abc123... \
-  --from-literal=LANGFUSE_SECRET_KEY=sk-lf-xyz...
+<span class="comment"># .env.example (committed to repo &mdash; no real values)</span>
+GROQ_API_KEY=your-groq-api-key-here
+LANGFUSE_SECRET_KEY=your-langfuse-secret-here
+LANGFUSE_PUBLIC_KEY=your-langfuse-public-here
 
-<span class="comment"># Inject into pod as environment variables</span>
-<span class="keyword">envFrom:</span>
-  - <span class="keyword">secretRef:</span>
-      <span class="keyword">name:</span> ai-agent-secrets
+<span class="comment"># .env (local only &mdash; in .gitignore)</span>
+GROQ_API_KEY=gsk_abc123...
+LANGFUSE_SECRET_KEY=sk-lf-xyz...
+
+<span class="comment"># Python &mdash; inject via python-dotenv</span>
+<span class="keyword">from</span> dotenv <span class="keyword">import</span> load_dotenv
+load_dotenv(<span class="string">".env"</span>)     <span class="comment"># loads into os.environ</span>
+<span class="keyword">import</span> os
+api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)
           </div>
           <div class="warning">
-            Never hardcode API keys in source code or Docker images. Use Secrets with environment
-            variable injection. Rotate keys regularly.
+            Never hardcode API keys in source code. Use <code>.env</code> files with
+            <code>.gitignore</code> and <code>python-dotenv</code> for environment variable injection. Rotate keys regularly.
           </div>
         </section>
       </section>
@@ -645,7 +660,7 @@ print("Error: rate limit exceeded")
               </div>
               <ul style="margin-top:8px;">
                 <li>Machine-parseable</li>
-                <li>Searchable in Grafana/ELK</li>
+                <li>Searchable in LangFuse/ELK</li>
                 <li>Correlate with traces</li>
               </ul>
             </div>
@@ -734,7 +749,7 @@ print("Error: rate limit exceeded")
               <h4>Secrets</h4>
               <ul class="checklist">
                 <li>No hardcoded credentials</li>
-                <li>K8s Secrets for API keys</li>
+                <li>.env files for API keys</li>
                 <li>ConfigMaps for non-sensitive</li>
                 <li>Key rotation process</li>
               </ul>
@@ -743,9 +758,9 @@ print("Error: rate limit exceeded")
               <h4>Observability</h4>
               <ul class="checklist">
                 <li>Structured JSON logging</li>
-                <li>Prometheus metrics exported</li>
+                <li>LangFuse traces and scores</li>
                 <li>Trace correlation (OTel)</li>
-                <li>Grafana dashboards</li>
+                <li>LangFuse dashboards</li>
               </ul>
             </div>
             <div class="card" style="border-left:4px solid #ce93d8;">
@@ -789,22 +804,22 @@ print("Error: rate limit exceeded")
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-green" style="width:80%; padding:12px 18px;">
-              <strong>Step 2:</strong> Databases &amp; Vector Stores (PVC, StatefulSets)
+              <strong>Step 2:</strong> Databases &amp; Vector Stores (local storage)
               <span style="float:right; color:var(--accent2);">Data Layer</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-orange" style="width:80%; padding:12px 18px;">
-              <strong>Step 3:</strong> Prometheus, Grafana, LangFuse
+              <strong>Step 3:</strong> LangFuse + Observability Stack
               <span style="float:right; color:var(--accent3);">Observability</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-red" style="width:80%; padding:12px 18px;">
-              <strong>Step 4:</strong> AI Agent Application (Deployment + Service)
+              <strong>Step 4:</strong> AI Agent Application (uvicorn process)
               <span style="float:right; color:var(--accent4);">Application</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box" style="width:80%; padding:12px 18px;">
-              <strong>Step 5:</strong> Ingress / Load Balancer
+              <strong>Step 5:</strong> Port Mapping / Reverse Proxy
               <span style="float:right; color:var(--accent);">Routing</span>
             </div>
           </div>
@@ -842,14 +857,7 @@ print("Error: rate limit exceeded")
             <td>1Gi</td>
           </tr>
           <tr>
-            <td><strong>Prometheus</strong></td>
-            <td>100m</td>
-            <td>250m</td>
-            <td>128Mi</td>
-            <td>256Mi</td>
-          </tr>
-          <tr>
-            <td><strong>Grafana</strong></td>
+            <td><strong>PostgreSQL (LangFuse)</strong></td>
             <td>100m</td>
             <td>250m</td>
             <td>128Mi</td>

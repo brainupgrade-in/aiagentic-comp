@@ -7,12 +7,12 @@ Goal: Build a complete production-ready FastAPI application combining
       production checklist validation.
 
 Scenario:
-  UniGPS is deploying an AI support agent to production on Kubernetes.
+  UniGPS is deploying an AI support agent to production.
   You need to create:
   1. A FastAPI app with Pydantic request/response models
   2. A production-grade /health endpoint with dependency checks
   3. Structured JSON logging configuration
-  4. A Kubernetes Secret manifest for API keys
+  4. A .env file and Python deployment config (load_dotenv + uvicorn)
   5. A production readiness checklist score
 
 No API key needed - pure Python + FastAPI.
@@ -41,23 +41,23 @@ os.makedirs(WORKDIR, exist_ok=True)
 
 print("\n--- Architecture ---\n")
 
-print("  Production AI API Stack:")
-print("  ========================")
-print("    Client -> Ingress -> FastAPI (+ /health)")
+print("  Production AI API Stack (Python):")
+print("  ==================================")
+print("    Client -> uvicorn -> FastAPI (+ /health)")
 print("                           |")
 print("                     +-----+-----+")
 print("                     |           |")
 print("                  LangGraph   ChromaDB")
-print("                   Agent      (vector)")
+print("                   Agent    (in-process)")
 print("                     |")
 print("                  Groq API")
-print("                  (Secret)")
+print("                  (.env + load_dotenv)")
 print()
 print("  Production layers:")
 print("    1. API: FastAPI + Pydantic validation")
-print("    2. Health: /health with dependency checks")
+print("    2. Health: /health with dependency checks + HealthChecker")
 print("    3. Logging: Structured JSON with trace_id")
-print("    4. Secrets: K8s Secret for API keys")
+print("    4. Secrets: .env file + load_dotenv() + uvicorn launch")
 print("    5. Checklist: Readiness score")
 
 
@@ -206,35 +206,34 @@ for name, ok in checks3:
 
 
 # ============================================================
-# TODO 4: Kubernetes Secret Manifest (write to file)
+# TODO 4: .env File and Python Deployment Config
 # ============================================================
 
-print("\n\n--- TODO 4: Kubernetes Secret Manifest ---\n")
+print("\n\n--- TODO 4: .env File and Python Deployment Config ---\n")
 
-print("  Create a K8s Secret YAML with:")
-print("    - name: api-keys, namespace: ai-stack")
-print("    - type: Opaque")
-print("    - Keys: GROQ_API_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY")
-print("    - All values base64 encoded")
-print("    - Include a Deployment snippet with secretKeyRef injection\n")
+print("  Create:")
+print("    - A .env file with: GROQ_API_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY")
+print("    - Python code using load_dotenv() to load .env")
+print("    - A .gitignore entry for .env")
+print("    - A uvicorn launch command for the application\n")
 
-todo4_yaml = textwrap.dedent("""\
-    # TODO: K8s Secret manifest + Deployment injection snippet
+todo4_config = textwrap.dedent("""\
+    # TODO: .env file + Python deployment config (load_dotenv + uvicorn)
 
 """)
 
-with open(os.path.join(WORKDIR, "secret.yaml"), "w") as f:
-    f.write(todo4_yaml)
+with open(os.path.join(WORKDIR, "deploy_config.py"), "w") as f:
+    f.write(todo4_config)
 
 checks4 = [
-    ("Has kind: Secret",        "kind: Secret" in todo4_yaml),
-    ("Has type: Opaque",        "Opaque" in todo4_yaml),
-    ("Has namespace: ai-stack", "ai-stack" in todo4_yaml),
-    ("Has GROQ_API_KEY",        "GROQ_API_KEY" in todo4_yaml),
-    ("Has LANGFUSE_SECRET_KEY", "LANGFUSE_SECRET_KEY" in todo4_yaml),
-    ("Has LANGFUSE_PUBLIC_KEY", "LANGFUSE_PUBLIC_KEY" in todo4_yaml),
-    ("Has data section",        "data:" in todo4_yaml),
-    ("Has secretKeyRef",        "secretKeyRef" in todo4_yaml or "secretRef" in todo4_yaml),
+    ("Has .env content",        ".env" in todo4_config or "GROQ" in todo4_config),
+    ("Has GROQ_API_KEY",        "GROQ_API_KEY" in todo4_config),
+    ("Has LANGFUSE_SECRET_KEY", "LANGFUSE_SECRET_KEY" in todo4_config),
+    ("Has LANGFUSE_PUBLIC_KEY", "LANGFUSE_PUBLIC_KEY" in todo4_config),
+    ("Has load_dotenv",         "load_dotenv" in todo4_config),
+    ("Has uvicorn",             "uvicorn" in todo4_config),
+    ("Has signal handler",      "signal" in todo4_config or "SIGTERM" in todo4_config),
+    ("Has health check",        "health" in todo4_config.lower()),
 ]
 
 score4 = sum(1 for _, ok in checks4 if ok)
@@ -263,7 +262,7 @@ checklist = [
         "correct": "yes",
     },
     {
-        "item": "API keys stored in K8s Secret (not ConfigMap or hardcoded)",
+        "item": "API keys stored in .env file (not hardcoded or in git)",
         "answer": "___",
         "correct": "yes",
     },
@@ -273,12 +272,12 @@ checklist = [
         "correct": "yes",
     },
     {
-        "item": "Readiness and liveness probes configured in Deployment",
+        "item": "Signal handler (SIGTERM) configured for graceful shutdown",
         "answer": "___",
         "correct": "yes",
     },
     {
-        "item": "Resource requests and limits set for all containers",
+        "item": "psutil monitoring for memory/CPU to prevent OOM",
         "answer": "___",
         "correct": "yes",
     },
@@ -314,14 +313,14 @@ print(f"{'=' * 60}")
 print(f"\n  TODO 1 - FastAPI + Pydantic:       {score1}/{len(checks1)}")
 print(f"  TODO 2 - Health Endpoint:           {score2}/{len(checks2)}")
 print(f"  TODO 3 - Structured Logging:        {score3}/{len(checks3)}")
-print(f"  TODO 4 - K8s Secret Manifest:       {score4}/{len(checks4)}")
+print(f"  TODO 4 - .env + Python Deploy:      {score4}/{len(checks4)}")
 print(f"  TODO 5 - Production Checklist:      {score5}/{len(checklist)}")
 print(f"\n  TOTAL: {total_score}/{total_checks}")
 print(f"\n  Files generated in {WORKDIR}/")
 print(f"    - app.py              (FastAPI application)")
 print(f"    - health.py           (Health endpoint)")
 print(f"    - logging_config.py   (JSON logging setup)")
-print(f"    - secret.yaml         (K8s Secret manifest)")
+print(f"    - deploy_config.py    (Python deployment config)")
 
 if total_score == total_checks:
     print(f"\n  PRODUCTION READY! All checks passed.")

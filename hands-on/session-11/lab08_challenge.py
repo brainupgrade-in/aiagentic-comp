@@ -2,7 +2,7 @@
 Lab 08 Challenge: Complete LangFuse Observability Pipeline
 ============================================================
 Build end-to-end LangFuse integration with LangChain,
-Prometheus bridge, dashboard design, and alert rules.
+dashboard configuration, score definitions, and alert rules.
 """
 
 import os
@@ -27,17 +27,17 @@ os.makedirs(WORKDIR, exist_ok=True)
 print("\n  Build a complete LangFuse observability pipeline:\n")
 print("    1. LangChain instrumentation with CallbackHandler")
 print("    2. Feedback collection and evaluation")
-print("    3. Cost tracking with Prometheus bridge")
-print("    4. Dashboard design + alert rules")
+print("    3. Cost tracking with LangFuse native API")
+print("    4. LangFuse dashboard config + score-based alerts")
 print()
 print("    Architecture:")
-print("      LangChain Agent ──callback──> LangFuse Server ──> PostgreSQL")
-print("                                        │")
-print("                                   Cost/Token data")
-print("                                        │")
-print("                                   Prometheus ──> Grafana")
-print("                                        │")
-print("                                   Alertmanager ──> Slack")
+print("      LangChain Agent --callback--> LangFuse Server --> PostgreSQL")
+print("                                        |")
+print("                                   Traces / Scores / Cost")
+print("                                        |")
+print("                                   LangFuse Dashboard")
+print("                                        |")
+print("                                   Score Alerts --> Webhook/Slack")
 
 
 # ============================================================
@@ -65,26 +65,25 @@ with open(os.path.join(WORKDIR, "langfuse_instrumentation.py"), "w") as f:
 
 
 # ============================================================
-# TODO 2: Prometheus Bridge
+# TODO 2: Cost Tracking Module
 # ============================================================
 
-print("\n\n--- TODO 2: Prometheus Cost Bridge ---\n")
+print("\n\n--- TODO 2: LangFuse Cost Tracking Module ---\n")
 
-print("  Write code that bridges LangFuse data to Prometheus:")
-print("    - Counter: langfuse_llm_cost_usd_total (labels: model, user_id)")
-print("    - Counter: langfuse_tokens_total (labels: model, direction)")
-print("    - Histogram: langfuse_generation_duration_seconds (labels: model)")
-print("    - Counter: langfuse_feedback_total (labels: score_name, value)")
+print("  Write code that tracks costs using LangFuse native API:")
 print("    - PRICING dict with at least 3 models")
-print("    - record_generation() function")
-print("    - generate_latest for /metrics endpoint")
+print("    - calculate_cost(model, tokens_in, tokens_out) function")
+print("    - Log generation with usage and cost to LangFuse")
+print("    - fetch_traces() to retrieve cost data")
+print("    - Aggregate cost by model and by user")
+print("    - Identify expensive traces (threshold detection)")
 
 todo2_code = textwrap.dedent("""\
-    # TODO: Prometheus bridge for LangFuse metrics
+    # TODO: LangFuse cost tracking module
 
 """)
 
-with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
+with open(os.path.join(WORKDIR, "cost_tracking.py"), "w") as f:
     f.write(todo2_code)
 
 
@@ -94,57 +93,66 @@ with open(os.path.join(WORKDIR, "prometheus_bridge.py"), "w") as f:
 
 print("\n\n--- TODO 3: Dashboard & Alert Design ---\n")
 
-print("  Design dashboard panels and alert rules.\n")
+print("  Design LangFuse dashboard views and alert configurations.\n")
 
-panels = [
+dashboard_views = [
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Cost per hour by model",
-        "correct_type": "bar chart",
-        "check_terms": ["increase", "cost", "1h"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Cost breakdown by model over time",
+        "correct_type": "trace list",
+        "check_terms": ["model", "cost", "time"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "LLM latency trend (p99)",
-        "correct_type": "time series",
-        "check_terms": ["histogram_quantile", "0.99"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Generation latency distribution",
+        "correct_type": "generation list",
+        "check_terms": ["latency", "generation", "model"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Token consumption rate",
-        "correct_type": "stat",
-        "check_terms": ["rate", "token"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "Token usage by user",
+        "correct_type": "trace list",
+        "check_terms": ["user", "token", "usage"],
     },
     {
         "title": "___",
-        "panel_type": "___",
-        "promql": "___",
-        "purpose": "Average user feedback score",
-        "correct_type": "stat",
-        "check_terms": ["feedback"],
+        "view_type": "___",
+        "filter_config": "___",
+        "purpose": "User feedback score trends",
+        "correct_type": "score list",
+        "check_terms": ["feedback", "score", "time"],
     },
 ]
 
-# YOUR CODE HERE: Design dashboard panels
-# panels[0]["title"] = "Cost per Hour"
-# panels[0]["panel_type"] = "bar chart"
-# panels[0]["promql"] = "sum by (model) (increase(langfuse_llm_cost_usd_total[1h]))"
+# YOUR CODE HERE: Design LangFuse dashboard views
+# dashboard_views[0]["title"] = "Model Cost Breakdown"
+# dashboard_views[0]["view_type"] = "trace list"
+# dashboard_views[0]["filter_config"] = "group_by=model, sort_by=cost, time_range=24h"
 # ...
 
-alerts_yaml = textwrap.dedent("""\
-    # TODO: Alert rules for LangFuse monitoring
-    # Include: CostSpike, HighLLMLatency, LowFeedbackScore
+score_definitions = textwrap.dedent("""\
+    # TODO: Define LangFuse scores for quality monitoring
+    # Include: user_feedback, relevance, cost_efficiency
 
 """)
 
-with open(os.path.join(WORKDIR, "langfuse-alerts.yaml"), "w") as f:
-    f.write(alerts_yaml)
+alert_config = textwrap.dedent("""\
+    # TODO: LangFuse alert configuration (JSON format)
+    # Include: CostSpike, LowFeedback, HighLatency alerts
+
+""")
+
+with open(os.path.join(WORKDIR, "score_definitions.py"), "w") as f:
+    f.write(score_definitions)
+
+with open(os.path.join(WORKDIR, "langfuse_alerts.json"), "w") as f:
+    f.write(alert_config)
 
 
 # ============================================================
@@ -168,34 +176,39 @@ results.append(("Code: user_feedback score",      "user_feedback" in todo1_code)
 results.append(("Code: relevance score",          "relevance" in todo1_code))
 results.append(("Code: get_trace_id",             "get_trace_id" in todo1_code or "trace_id" in todo1_code))
 
-# TODO 2: Prometheus bridge
-results.append(("Bridge: Counter import",         "Counter" in todo2_code))
-results.append(("Bridge: Histogram import",       "Histogram" in todo2_code))
-results.append(("Bridge: cost counter",           "cost" in todo2_code.lower()))
-results.append(("Bridge: token counter",          "token" in todo2_code.lower()))
-results.append(("Bridge: duration histogram",     "duration" in todo2_code.lower()))
-results.append(("Bridge: feedback counter",       "feedback" in todo2_code.lower()))
-results.append(("Bridge: PRICING dict",           "PRICING" in todo2_code))
-results.append(("Bridge: record function",        "def record" in todo2_code))
-results.append(("Bridge: generate_latest",        "generate_latest" in todo2_code or "/metrics" in todo2_code))
+# TODO 2: Cost tracking
+results.append(("Cost: Langfuse import",          "Langfuse" in todo2_code or "langfuse" in todo2_code))
+results.append(("Cost: PRICING dict",             "PRICING" in todo2_code))
+results.append(("Cost: calculate_cost function",  "def calculate" in todo2_code or "def calc" in todo2_code))
+results.append(("Cost: trace creation",           ".trace(" in todo2_code or "trace(" in todo2_code))
+results.append(("Cost: generation logging",       ".generation(" in todo2_code or "generation(" in todo2_code))
+results.append(("Cost: usage tracking",           "usage" in todo2_code))
+results.append(("Cost: fetch_traces",             "fetch_traces" in todo2_code))
+results.append(("Cost: total_cost",               "total_cost" in todo2_code))
+results.append(("Cost: model aggregation",        "model" in todo2_code.lower()))
 
-# TODO 3: Dashboard panels
-for p in panels:
-    type_ok = p["panel_type"].strip().lower() == p["correct_type"]
-    if p["promql"] == "___":
-        promql_ok = False
+# TODO 3: Dashboard views
+for dv in dashboard_views:
+    type_ok = dv["view_type"].strip().lower() == dv["correct_type"]
+    if dv["filter_config"] == "___":
+        config_ok = False
     else:
-        promql_ok = all(t.lower() in p["promql"].lower() for t in p["check_terms"])
-    results.append((f"Panel '{p['purpose'][:30]}': type",  type_ok))
-    results.append((f"Panel '{p['purpose'][:30]}': query", promql_ok))
+        config_ok = all(t.lower() in dv["filter_config"].lower() for t in dv["check_terms"])
+    results.append((f"View '{dv['purpose'][:30]}': type",    type_ok))
+    results.append((f"View '{dv['purpose'][:30]}': config",  config_ok))
 
-# TODO 3: Alert rules
-results.append(("Alert: groups section",          "groups:" in alerts_yaml))
-results.append(("Alert: CostSpike",               "CostSpike" in alerts_yaml or "cost" in alerts_yaml.lower()))
-results.append(("Alert: HighLLMLatency",           "Latency" in alerts_yaml or "latency" in alerts_yaml))
-results.append(("Alert: LowFeedbackScore",         "Feedback" in alerts_yaml or "feedback" in alerts_yaml))
-results.append(("Alert: severity labels",          "severity" in alerts_yaml))
-results.append(("Alert: for duration",             "for:" in alerts_yaml))
+# TODO 3: Score definitions
+results.append(("Scores: user_feedback defined",   "user_feedback" in score_definitions))
+results.append(("Scores: relevance defined",       "relevance" in score_definitions))
+results.append(("Scores: cost_efficiency defined", "cost_efficiency" in score_definitions or "cost" in score_definitions))
+results.append(("Scores: data_type specified",     "data_type" in score_definitions or "numeric" in score_definitions or "categorical" in score_definitions))
+
+# TODO 3: Alert config
+results.append(("Alert: CostSpike rule",           "cost" in alert_config.lower()))
+results.append(("Alert: LowFeedback rule",         "feedback" in alert_config.lower()))
+results.append(("Alert: HighLatency rule",         "latency" in alert_config.lower()))
+results.append(("Alert: threshold value",          "threshold" in alert_config.lower()))
+results.append(("Alert: webhook or channel",       "webhook" in alert_config.lower() or "channel" in alert_config.lower()))
 
 passed = sum(1 for _, ok in results if ok)
 total = len(results)
@@ -219,15 +232,15 @@ for root, dirs, files in os.walk(WORKDIR):
         print(f"    {rel:<45} ({size} bytes)")
 
 print(f"\n  Complete LangFuse pipeline:")
-print(f"    1. langfuse_instrumentation.py — CallbackHandler + scores + prompts")
-print(f"    2. prometheus_bridge.py — Cost/token/latency Prometheus metrics")
-print(f"    3. Dashboard — 4 panels with PromQL")
-print(f"    4. langfuse-alerts.yaml — Cost, latency, feedback alerts")
+print(f"    1. langfuse_instrumentation.py -- CallbackHandler + scores + prompts")
+print(f"    2. cost_tracking.py -- LangFuse-native cost/token tracking")
+print(f"    3. Dashboard -- 4 views with filters and grouping")
+print(f"    4. langfuse_alerts.json -- Cost, latency, feedback alerts")
 
 print("\n" + "=" * 60)
 print("Challenge complete!")
 print(f"- Instrumentation: CallbackHandler + feedback + prompt management")
-print(f"- Prometheus bridge: Cost, tokens, latency, feedback counters")
-print(f"- Dashboard: 4 panels (cost, latency, tokens, feedback)")
-print(f"- Alerts: Cost spike, high latency, low feedback")
+print(f"- Cost tracking: PRICING dict, generation logging, fetch_traces analysis")
+print(f"- Dashboard: 4 LangFuse views (cost, latency, tokens, feedback)")
+print(f"- Alerts: Cost spike, low feedback, high latency via LangFuse")
 print(f"- {passed}/{total} validation checks passing")

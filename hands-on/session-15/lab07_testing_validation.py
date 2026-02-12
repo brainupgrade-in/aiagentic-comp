@@ -159,9 +159,9 @@ print()
 #      expected_result: "Response includes relevant source documents"
 #
 #   3. test_observability_pipeline
-#      components: ["fastapi", "langfuse", "prometheus"]
-#      description: "Request generates traces in LangFuse and metrics in Prometheus"
-#      steps: ["Send request", "Check LangFuse trace", "Check Prometheus metric"]
+#      components: ["fastapi", "langfuse"]
+#      description: "Request generates traces and metrics in LangFuse"
+#      steps: ["Send request", "Check LangFuse trace", "Check LangFuse metric"]
 #      expected_result: "Trace and metric both recorded"
 
 integration_tests = "___"
@@ -180,9 +180,9 @@ expected_integration = [
      "steps": ["Agent receives query", "Query ChromaDB", "Use context in prompt"],
      "expected_result": "Response includes relevant source documents"},
     {"name": "test_observability_pipeline",
-     "components": ["fastapi", "langfuse", "prometheus"],
-     "description": "Request generates traces in LangFuse and metrics in Prometheus",
-     "steps": ["Send request", "Check LangFuse trace", "Check Prometheus metric"],
+     "components": ["fastapi", "langfuse"],
+     "description": "Request generates traces and metrics in LangFuse",
+     "steps": ["Send request", "Check LangFuse trace", "Check LangFuse metric"],
      "expected_result": "Trace and metric both recorded"},
 ]
 if integration_tests == expected_integration:

@@ -18,8 +18,8 @@ python --version  # 3.10+
 | 02 | Build MCP Server with Tools | Tool schemas, resource URIs, server specification |
 | 03 | Create FastAPI Endpoint | Health checks, API endpoints, response models, error handling |
 | 04 | Add LangFuse Instrumentation | Callback handler, trace hierarchy, cost tracking |
-| 05 | Health Probes & Monitoring | K8s probes, Prometheus scrape config, metric definitions |
-| 06 | Production Deployment Config | Deployment, Service, HPA, Secret YAML specs |
+| 05 | Health Probes & Monitoring | Python async HealthChecker, LangFuse monitoring, metric definitions |
+| 06 | Production Deployment Config | Python process management, uvicorn config, psutil monitoring, dotenv |
 | 07 | Testing & Validation | Unit/integration/load tests, SLA targets, test coverage |
 | 08 | **Final Integration Challenge** | Complete production readiness report (scored across all categories) |
 
@@ -41,7 +41,7 @@ python solutions/lab01_capstone_architecture.py
 - Labs build on each other -- complete them in order
 - Labs 01-02 cover architecture and MCP design
 - Labs 03-04 cover API and observability code
-- Labs 05-06 cover Kubernetes deployment configuration
+- Labs 05-06 cover Python process management and deployment configuration
 - Lab 07 covers testing strategy and SLA targets
 - Lab 08 is the final integration challenge (scored across all categories)
 - Generated files appear in `/tmp/capstone-lab-15-XX/` directories

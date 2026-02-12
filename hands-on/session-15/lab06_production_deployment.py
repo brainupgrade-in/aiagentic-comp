@@ -2,9 +2,9 @@
 """
 Lab 06: Production Deployment Config
 
-Write complete Kubernetes deployment configuration as structured data:
-Deployment, Service, HPA, and Secret. Fill in resource limits,
-HPA thresholds, and secret references.
+Write Python process management deployment configuration as structured
+data: process specs, health checks, resource limits, environment
+management, and startup sequencing. Fill in process configs and secrets.
 
 No external packages required -- standard library only.
 """
@@ -25,61 +25,68 @@ score = 0
 total = 0
 
 # ============================================================================
-# STEP 1 -- Kubernetes Deployment Spec
+# STEP 1 -- Python Process Management for AI Agents
 # ============================================================================
 
 print("=" * 70)
-print("STEP 1: Kubernetes Deployment Spec for AI Agent")
+print("STEP 1: Python Process Management for AI Agent Deployment")
 print("=" * 70)
 print()
-print("  A production Deployment spec includes:")
+print("  A production Python process config includes:")
 print()
 print("  +------------------------+----------------------------------------+")
 print("  | Field                  | Purpose                                |")
 print("  +------------------------+----------------------------------------+")
-print("  | replicas               | Number of pod copies (2+ for HA)       |")
-print("  | resources.requests     | Minimum guaranteed CPU/memory          |")
-print("  | resources.limits       | Maximum allowed CPU/memory             |")
-print("  | env / envFrom          | Config and secrets injection           |")
-print("  | probes                 | liveness + readiness + startup         |")
-print("  | strategy               | RollingUpdate with maxSurge/maxUnavail |")
+print("  | module                 | Python module to run (e.g., app:app)   |")
+print("  | host                   | Bind address (e.g., 0.0.0.0)          |")
+print("  | port                   | Listen port (e.g., 8000)              |")
+print("  | max_memory_mb          | Memory limit via psutil (e.g., 512)   |")
+print("  | restart_policy         | Restart behavior (always, on_failure) |")
+print("  | dotenv_path            | Path to .env file for secrets          |")
+print("  | wait_for               | Services to wait for before starting   |")
+print("  | health_config          | HealthChecker configuration            |")
 print("  +------------------------+----------------------------------------+")
 print()
-print("  Resource guidelines for AI agent pods (2-core Codespace):")
-print("    requests: 256Mi memory, 250m CPU")
-print("    limits:   512Mi memory, 500m CPU")
+print("  Resource guidelines for 8 GB Codespace:")
+print("    FastAPI service:   512 MB max_memory_mb")
+print("    LangFuse:          512 MB max_memory_mb")
+print("    PostgreSQL:        256 MB max_memory_mb")
+print("    ChromaDB:          256 MB max_memory_mb")
 print()
 
 # ============================================================================
-# STEP 2 -- HPA (Horizontal Pod Autoscaler)
+# STEP 2 -- Restart Policies & Resource Monitoring
 # ============================================================================
 
 print("=" * 70)
-print("STEP 2: Horizontal Pod Autoscaler (HPA)")
+print("STEP 2: Restart Policies & Resource Monitoring")
 print("=" * 70)
 print()
-print("  HPA auto-scales pods based on metrics:")
+print("  Python process restart policies (via signal handlers):")
 print()
 print("  +------------------------+----------------------------------------+")
-print("  | Field                  | Typical Value                          |")
+print("  | Policy                 | Behavior                               |")
 print("  +------------------------+----------------------------------------+")
-print("  | minReplicas            | 2  (minimum for HA)                    |")
-print("  | maxReplicas            | 10 (cost ceiling)                      |")
-print("  | targetCPUPercent       | 70 (scale up at 70% CPU usage)         |")
-print("  | targetMemoryPercent    | 80 (scale up at 80% memory usage)      |")
-print("  | scaleDown.stabilize    | 300s (wait 5 min before scaling down)  |")
+print("  | none                   | Never restart (default)                |")
+print("  | always                 | Always restart on exit                 |")
+print("  | on_failure             | Restart only on non-zero exit code     |")
+print("  | unless_stopped         | Restart unless SIGTERM received        |")
 print("  +------------------------+----------------------------------------+")
+print()
+print("  Resource monitoring via psutil prevents OOM:")
+print("    max_memory_mb: 512    # Hard limit, process killed if exceeded")
+print("    Monitor with: psutil.Process().memory_info().rss")
 print()
 
 # ============================================================================
-# STEP 3 -- Secrets Management
+# STEP 3 -- Secrets Management with python-dotenv
 # ============================================================================
 
 print("=" * 70)
-print("STEP 3: Kubernetes Secrets for AI Agents")
+print("STEP 3: Secrets Management with python-dotenv")
 print("=" * 70)
 print()
-print("  Secrets store sensitive configuration:")
+print("  python-dotenv loads secrets from .env files via load_dotenv():")
 print()
 print("  +------------------------+----------------------------------------+")
 print("  | Secret Key             | What It Stores                         |")
@@ -87,322 +94,245 @@ print("  +------------------------+----------------------------------------+")
 print("  | GROQ_API_KEY           | LLM provider API key                   |")
 print("  | LANGFUSE_PUBLIC_KEY    | LangFuse observability public key      |")
 print("  | LANGFUSE_SECRET_KEY    | LangFuse observability secret key      |")
-print("  | CHROMADB_AUTH_TOKEN    | Vector database auth token             |")
+print("  | LANGFUSE_HOST          | LangFuse server URL                    |")
 print("  +------------------------+----------------------------------------+")
 print()
-print("  Best practice: Use envFrom + secretRef (not inline env values)")
+print("  Best practice: Use .env file (gitignored) + .env.example template")
 print()
 
 # ============================================================================
-# TODO 1 -- Define Deployment Spec
+# TODO 1 -- Define FastAPI Process Spec
 # ============================================================================
 
 print("=" * 70)
-print("TODO 1: Define the Kubernetes Deployment spec")
+print("TODO 1: Define the process config for support-agent")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct Deployment spec dict.
-#   apiVersion: "apps/v1"
-#   kind: "Deployment"
-#   metadata:
-#     name: "support-agent"
-#     namespace: "production"
-#     labels:
-#       app: "support-agent"
-#       version: "1.0.0"
-#   spec:
-#     replicas: 2
-#     strategy:
-#       type: "RollingUpdate"
-#       rollingUpdate:
-#         maxSurge: 1
-#         maxUnavailable: 0
-
-deployment_spec = "___"
-
-# -- Validate TODO 1 --------------------------------------------------------
-total += 1
-expected_deployment = {
-    "apiVersion": "apps/v1",
-    "kind": "Deployment",
-    "metadata": {
-        "name": "support-agent",
-        "namespace": "production",
-        "labels": {
-            "app": "support-agent",
-            "version": "1.0.0",
-        },
-    },
-    "spec": {
-        "replicas": 2,
-        "strategy": {
-            "type": "RollingUpdate",
-            "rollingUpdate": {
-                "maxSurge": 1,
-                "maxUnavailable": 0,
-            },
-        },
-    },
-}
-if deployment_spec == expected_deployment:
-    score += 1
-    print("[PASS] Deployment spec is correct")
-else:
-    print("[FAIL] Expected:", json.dumps(expected_deployment, indent=2))
-    print("       Got:     ", json.dumps(deployment_spec, indent=2) if isinstance(deployment_spec, dict) else deployment_spec)
-print()
-
-# ============================================================================
-# TODO 2 -- Define Container Resource Limits
-# ============================================================================
-
-print("=" * 70)
-print("TODO 2: Define container resource requests and limits")
-print("=" * 70)
-print()
-
-# TODO: Replace "___" with the correct container spec dict.
-#   name: "support-agent"
-#   image: "support-agent:1.0.0"
-#   ports:
-#     - containerPort: 8000
-#       name: "http"
-#       protocol: "TCP"
-#   resources:
-#     requests:
-#       memory: "256Mi"
-#       cpu: "250m"
-#     limits:
-#       memory: "512Mi"
-#       cpu: "500m"
-
-container_spec = "___"
-
-# -- Validate TODO 2 --------------------------------------------------------
-total += 1
-expected_container = {
-    "name": "support-agent",
-    "image": "support-agent:1.0.0",
-    "ports": [
-        {
-            "containerPort": 8000,
-            "name": "http",
-            "protocol": "TCP",
-        }
-    ],
-    "resources": {
-        "requests": {
-            "memory": "256Mi",
-            "cpu": "250m",
-        },
-        "limits": {
-            "memory": "512Mi",
-            "cpu": "500m",
-        },
-    },
-}
-if container_spec == expected_container:
-    score += 1
-    print("[PASS] Container resource spec is correct")
-else:
-    print("[FAIL] Expected:", json.dumps(expected_container, indent=2))
-    print("       Got:     ", json.dumps(container_spec, indent=2) if isinstance(container_spec, dict) else container_spec)
-print()
-
-# ============================================================================
-# TODO 3 -- Define Service Spec
-# ============================================================================
-
-print("=" * 70)
-print("TODO 3: Define the Kubernetes Service spec")
-print("=" * 70)
-print()
-
-# TODO: Replace "___" with the correct Service spec dict.
-#   apiVersion: "v1"
-#   kind: "Service"
-#   metadata:
-#     name: "support-agent"
-#     namespace: "production"
-#   spec:
-#     type: "ClusterIP"
-#     selector:
-#       app: "support-agent"
-#     ports:
-#       - port: 80
-#         targetPort: 8000
-#         protocol: "TCP"
-#         name: "http"
+# TODO: Replace "___" with the correct process spec dict.
+#   service_name: "support-agent"
+#   module: "app:app"
+#   host: "0.0.0.0"
+#   port: 8000
+#   max_memory_mb: 512
+#   restart_policy: "unless_stopped"
+#   dotenv_path: ".env"
+#   wait_for: ["chromadb", "langfuse"]
 
 service_spec = "___"
 
-# -- Validate TODO 3 --------------------------------------------------------
+# -- Validate TODO 1 --------------------------------------------------------
 total += 1
 expected_service = {
-    "apiVersion": "v1",
-    "kind": "Service",
-    "metadata": {
-        "name": "support-agent",
-        "namespace": "production",
-    },
-    "spec": {
-        "type": "ClusterIP",
-        "selector": {
-            "app": "support-agent",
-        },
-        "ports": [
-            {
-                "port": 80,
-                "targetPort": 8000,
-                "protocol": "TCP",
-                "name": "http",
-            }
-        ],
-    },
+    "service_name": "support-agent",
+    "module": "app:app",
+    "host": "0.0.0.0",
+    "port": 8000,
+    "max_memory_mb": 512,
+    "restart_policy": "unless_stopped",
+    "dotenv_path": ".env",
+    "wait_for": ["chromadb", "langfuse"],
 }
 if service_spec == expected_service:
     score += 1
-    print("[PASS] Service spec is correct")
+    print("[PASS] Support-agent process spec is correct")
 else:
     print("[FAIL] Expected:", json.dumps(expected_service, indent=2))
     print("       Got:     ", json.dumps(service_spec, indent=2) if isinstance(service_spec, dict) else service_spec)
 print()
 
 # ============================================================================
-# TODO 4 -- Define HPA Spec
+# TODO 2 -- Define Service Health Check
 # ============================================================================
 
 print("=" * 70)
-print("TODO 4: Define the Horizontal Pod Autoscaler spec")
+print("TODO 2: Define the health check config for support-agent")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct HPA spec dict.
-#   apiVersion: "autoscaling/v2"
-#   kind: "HorizontalPodAutoscaler"
-#   metadata:
-#     name: "support-agent-hpa"
-#     namespace: "production"
-#   spec:
-#     scaleTargetRef:
-#       apiVersion: "apps/v1"
-#       kind: "Deployment"
-#       name: "support-agent"
-#     minReplicas: 2
-#     maxReplicas: 10
-#     metrics:
-#       - type: "Resource"
-#         resource:
-#           name: "cpu"
-#           target:
-#             type: "Utilization"
-#             averageUtilization: 70
-#       - type: "Resource"
-#         resource:
-#           name: "memory"
-#           target:
-#             type: "Utilization"
-#             averageUtilization: 80
+# TODO: Replace "___" with the correct health check config dict.
+#   url: "http://localhost:8000/healthz"
+#   interval_seconds: 30
+#   timeout_seconds: 10
+#   retries: 3
+#   start_delay_seconds: 15
 
-hpa_spec = "___"
+healthcheck_spec = "___"
+
+# -- Validate TODO 2 --------------------------------------------------------
+total += 1
+expected_healthcheck = {
+    "url": "http://localhost:8000/healthz",
+    "interval_seconds": 30,
+    "timeout_seconds": 10,
+    "retries": 3,
+    "start_delay_seconds": 15,
+}
+if healthcheck_spec == expected_healthcheck:
+    score += 1
+    print("[PASS] Health check spec is correct")
+else:
+    print("[FAIL] Expected:", json.dumps(expected_healthcheck, indent=2))
+    print("       Got:     ", json.dumps(healthcheck_spec, indent=2) if isinstance(healthcheck_spec, dict) else healthcheck_spec)
+print()
+
+# ============================================================================
+# TODO 3 -- Define LangFuse Process Spec
+# ============================================================================
+
+print("=" * 70)
+print("TODO 3: Define the process config for LangFuse")
+print("=" * 70)
+print()
+
+# TODO: Replace "___" with the correct LangFuse process spec dict.
+#   service_name: "langfuse"
+#   module: "langfuse-server"
+#   host: "0.0.0.0"
+#   port: 3000
+#   max_memory_mb: 512
+#   restart_policy: "unless_stopped"
+#   wait_for: ["langfuse-db"]
+#   environment:
+#     DATABASE_URL: "postgresql://langfuse:langfuse@localhost:5432/langfuse"
+#     NEXTAUTH_URL: "http://localhost:3000"
+#     NEXTAUTH_SECRET: "my-secret-key"
+
+langfuse_spec = "___"
+
+# -- Validate TODO 3 --------------------------------------------------------
+total += 1
+expected_langfuse = {
+    "service_name": "langfuse",
+    "module": "langfuse-server",
+    "host": "0.0.0.0",
+    "port": 3000,
+    "max_memory_mb": 512,
+    "restart_policy": "unless_stopped",
+    "wait_for": ["langfuse-db"],
+    "environment": {
+        "DATABASE_URL": "postgresql://langfuse:langfuse@localhost:5432/langfuse",
+        "NEXTAUTH_URL": "http://localhost:3000",
+        "NEXTAUTH_SECRET": "my-secret-key",
+    },
+}
+if langfuse_spec == expected_langfuse:
+    score += 1
+    print("[PASS] LangFuse process spec is correct")
+else:
+    print("[FAIL] Expected:", json.dumps(expected_langfuse, indent=2))
+    print("       Got:     ", json.dumps(langfuse_spec, indent=2) if isinstance(langfuse_spec, dict) else langfuse_spec)
+print()
+
+# ============================================================================
+# TODO 4 -- Define PostgreSQL and ChromaDB Process Configs
+# ============================================================================
+
+print("=" * 70)
+print("TODO 4: Define PostgreSQL (langfuse-db) and ChromaDB process configs")
+print("=" * 70)
+print()
+
+# TODO: Replace "___" with the correct dict containing both process specs.
+#   "langfuse-db":
+#     module: "postgresql"
+#     port: 5432
+#     max_memory_mb: 256
+#     restart_policy: "unless_stopped"
+#     environment:
+#       POSTGRES_USER: "langfuse"
+#       POSTGRES_PASSWORD: "langfuse"
+#       POSTGRES_DB: "langfuse"
+#     data_dir: "/tmp/langfuse-data"
+#   "chromadb":
+#     module: "chromadb"
+#     port: 8001
+#     max_memory_mb: 256
+#     restart_policy: "unless_stopped"
+#     data_dir: "/tmp/chroma-data"
+
+infra_services = "___"
 
 # -- Validate TODO 4 --------------------------------------------------------
 total += 1
-expected_hpa = {
-    "apiVersion": "autoscaling/v2",
-    "kind": "HorizontalPodAutoscaler",
-    "metadata": {
-        "name": "support-agent-hpa",
-        "namespace": "production",
-    },
-    "spec": {
-        "scaleTargetRef": {
-            "apiVersion": "apps/v1",
-            "kind": "Deployment",
-            "name": "support-agent",
+expected_infra = {
+    "langfuse-db": {
+        "module": "postgresql",
+        "port": 5432,
+        "max_memory_mb": 256,
+        "restart_policy": "unless_stopped",
+        "environment": {
+            "POSTGRES_USER": "langfuse",
+            "POSTGRES_PASSWORD": "langfuse",
+            "POSTGRES_DB": "langfuse",
         },
-        "minReplicas": 2,
-        "maxReplicas": 10,
-        "metrics": [
-            {
-                "type": "Resource",
-                "resource": {
-                    "name": "cpu",
-                    "target": {
-                        "type": "Utilization",
-                        "averageUtilization": 70,
-                    },
-                },
-            },
-            {
-                "type": "Resource",
-                "resource": {
-                    "name": "memory",
-                    "target": {
-                        "type": "Utilization",
-                        "averageUtilization": 80,
-                    },
-                },
-            },
-        ],
+        "data_dir": "/tmp/langfuse-data",
+    },
+    "chromadb": {
+        "module": "chromadb",
+        "port": 8001,
+        "max_memory_mb": 256,
+        "restart_policy": "unless_stopped",
+        "data_dir": "/tmp/chroma-data",
     },
 }
-if hpa_spec == expected_hpa:
+if infra_services == expected_infra:
     score += 1
-    print("[PASS] HPA spec is correct")
+    print("[PASS] Infrastructure process specs are correct")
 else:
-    print("[FAIL] Expected:", json.dumps(expected_hpa, indent=2))
-    print("       Got:     ", json.dumps(hpa_spec, indent=2) if isinstance(hpa_spec, dict) else hpa_spec)
+    print("[FAIL] Expected:", json.dumps(expected_infra, indent=2))
+    print("       Got:     ", json.dumps(infra_services, indent=2) if isinstance(infra_services, dict) else infra_services)
 print()
 
 # ============================================================================
-# TODO 5 -- Define Secret Spec
+# TODO 5 -- Define Environment File Template
 # ============================================================================
 
 print("=" * 70)
-print("TODO 5: Define the Kubernetes Secret spec")
+print("TODO 5: Define the .env file template for secrets")
 print("=" * 70)
 print()
 
-# TODO: Replace "___" with the correct Secret spec dict.
-#   apiVersion: "v1"
-#   kind: "Secret"
-#   metadata:
-#     name: "support-agent-secrets"
-#     namespace: "production"
-#   type: "Opaque"
-#   stringData:
-#     GROQ_API_KEY: "<groq-api-key>"
-#     LANGFUSE_PUBLIC_KEY: "<langfuse-public-key>"
-#     LANGFUSE_SECRET_KEY: "<langfuse-secret-key>"
-#     CHROMADB_AUTH_TOKEN: "<chromadb-auth-token>"
+# TODO: Replace "___" with the correct env file template dict.
+#   file_name: ".env"
+#   gitignored: True
+#   variables:
+#     GROQ_API_KEY: "<your-groq-api-key>"
+#     LANGFUSE_PUBLIC_KEY: "<your-langfuse-public-key>"
+#     LANGFUSE_SECRET_KEY: "<your-langfuse-secret-key>"
+#     LANGFUSE_HOST: "http://localhost:3000"
+#   best_practices:
+#     - "Never commit .env to version control"
+#     - "Use .env.example as a template with placeholder values"
+#     - "Rotate API keys every 90 days"
+#     - "Use different keys per environment (dev/staging/prod)"
 
-secret_spec = "___"
+env_template = "___"
 
 # -- Validate TODO 5 --------------------------------------------------------
 total += 1
-expected_secret = {
-    "apiVersion": "v1",
-    "kind": "Secret",
-    "metadata": {
-        "name": "support-agent-secrets",
-        "namespace": "production",
+expected_env = {
+    "file_name": ".env",
+    "gitignored": True,
+    "variables": {
+        "GROQ_API_KEY": "<your-groq-api-key>",
+        "LANGFUSE_PUBLIC_KEY": "<your-langfuse-public-key>",
+        "LANGFUSE_SECRET_KEY": "<your-langfuse-secret-key>",
+        "LANGFUSE_HOST": "http://localhost:3000",
     },
-    "type": "Opaque",
-    "stringData": {
-        "GROQ_API_KEY": "<groq-api-key>",
-        "LANGFUSE_PUBLIC_KEY": "<langfuse-public-key>",
-        "LANGFUSE_SECRET_KEY": "<langfuse-secret-key>",
-        "CHROMADB_AUTH_TOKEN": "<chromadb-auth-token>",
-    },
+    "best_practices": [
+        "Never commit .env to version control",
+        "Use .env.example as a template with placeholder values",
+        "Rotate API keys every 90 days",
+        "Use different keys per environment (dev/staging/prod)",
+    ],
 }
-if secret_spec == expected_secret:
+if env_template == expected_env:
     score += 1
-    print("[PASS] Secret spec is correct")
+    print("[PASS] Environment file template is correct")
 else:
-    print("[FAIL] Expected:", json.dumps(expected_secret, indent=2))
-    print("       Got:     ", json.dumps(secret_spec, indent=2) if isinstance(secret_spec, dict) else secret_spec)
+    print("[FAIL] Expected:", json.dumps(expected_env, indent=2))
+    print("       Got:     ", json.dumps(env_template, indent=2) if isinstance(env_template, dict) else env_template)
 print()
 
 # ============================================================================
@@ -411,16 +341,16 @@ print()
 
 if score == total:
     specs = {
-        "deployment": deployment_spec,
-        "container": container_spec,
-        "service": service_spec,
-        "hpa": hpa_spec,
-        "secret": {k: v for k, v in expected_secret.items() if k != "stringData"},
+        "support_agent": service_spec,
+        "healthcheck": healthcheck_spec,
+        "langfuse": langfuse_spec,
+        "infrastructure": infra_services,
+        "env_template": {k: v for k, v in expected_env.items() if k != "variables"},
     }
-    out_path = os.path.join(WORKDIR, "k8s_manifests.json")
+    out_path = os.path.join(WORKDIR, "deployment_config.json")
     with open(out_path, "w") as f:
         json.dump(specs, f, indent=2)
-    print(f"Kubernetes manifests saved to {out_path}")
+    print(f"Deployment config saved to {out_path}")
     print()
 
 # ============================================================================

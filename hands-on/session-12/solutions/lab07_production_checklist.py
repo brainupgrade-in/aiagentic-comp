@@ -1,8 +1,8 @@
 """
-Lab 01: Production Checklist Essentials
+Lab 07: Production Checklist Essentials
 =========================================
 Understand the production readiness checklist
-for deploying AI applications on Kubernetes.
+for deploying AI applications with Python tooling.
 """
 
 import os
@@ -11,7 +11,7 @@ import shutil
 WORKDIR = "/tmp/prod-lab-12-07"
 
 print("=" * 50)
-print("  Lab 01: Production Checklist Essentials")
+print("  Lab 07: Production Checklist Essentials")
 print("=" * 50)
 
 if os.path.exists(WORKDIR):
@@ -27,39 +27,39 @@ print("\n--- Step 1: Production Readiness Categories ---\n")
 
 categories = [
     ("Health & Reliability", [
-        "Readiness + liveness probes",
-        "Self-healing (Deployment + 2+ replicas)",
-        "PodDisruptionBudget",
-        "Rolling update strategy",
+        "Python async HealthChecker for each service endpoint",
+        "Signal handlers (SIGTERM) for graceful shutdown",
+        "Startup sequencing with retry/wait loops for dependencies",
+        "FastAPI /health endpoint with dependency checks",
     ]),
     ("Resource Management", [
-        "CPU/memory requests and limits",
-        "HPA (CPU target 60-80%)",
-        "StatefulSets for persistent data",
-        "PVC for vector DB storage",
+        "psutil for memory/CPU monitoring per process",
+        "uvicorn --workers for scaling worker processes",
+        "Local file storage for persistent data",
+        "In-process ChromaDB for vector DB (no server needed)",
     ]),
     ("Secrets Management", [
-        "K8s Secrets (NOT ConfigMap for keys)",
-        "RBAC for secret access",
-        "Never hardcode API keys",
-        "External Secrets Operator (advanced)",
+        ".env files (never committed to git)",
+        ".gitignore for .env, .env.example for templates",
+        "python-dotenv load_dotenv() for env injection",
+        "Vault services for production (HashiCorp Vault, AWS Secrets Manager)",
     ]),
     ("Observability", [
         "Structured JSON logs with trace_id",
-        "Prometheus /metrics endpoint",
-        "Grafana dashboards (RED method)",
-        "LangFuse for AI-specific traces",
+        "LangFuse for AI-specific traces and cost tracking",
+        "FastAPI /health endpoint for monitoring",
+        "Python logging module with JSONFormatter",
     ]),
     ("Alerting", [
         "Critical: down, error rate, OOM",
         "Warning: latency, cost, storage",
-        "Alertmanager routing per severity",
-        "PagerDuty (critical), Slack (warning)",
+        "LangFuse alerts for cost/latency thresholds",
+        "External monitoring (UptimeRobot, Healthchecks.io)",
     ]),
     ("Backup & Recovery", [
-        "ChromaDB PVC snapshots",
-        "PostgreSQL pg_dump for LangFuse",
-        "GitOps: all manifests in version control",
+        "ChromaDB persist_directory backups",
+        "Application state snapshots",
+        "Config files in version control",
         "RTO/RPO targets defined",
     ]),
 ]
@@ -77,15 +77,14 @@ for cat, items in categories:
 
 print("--- Step 2: Deployment Order ---\n")
 
-print("  Correct order for deploying AI stack:\n")
+print("  Correct order for deploying AI stack with Python tooling:\n")
 order = [
-    ("1. Namespaces",      "kubectl create namespace ai-stack && monitoring"),
-    ("2. Config + Secrets", "ConfigMap, Secret (API keys, settings)"),
-    ("3. Data layer",       "Redis, ChromaDB (StatefulSet), PostgreSQL"),
-    ("4. Observability",    "Prometheus (Helm), OTel Collector, LangFuse"),
-    ("5. Application",      "Deployment, Service, HPA, PDB"),
-    ("6. Ingress",          "Ingress controller + rules"),
-    ("7. Verify",           "kubectl get all -n ai-stack"),
+    ("1. Environment",     "Create .env from .env.example, set API keys"),
+    ("2. Config files",    ".env, app.py, requirements.txt"),
+    ("3. Dependencies",    "pip install -r requirements.txt"),
+    ("4. Startup checks",  "Validate env vars, wait for external services (retry loops)"),
+    ("5. Application",     "uvicorn app:app --host 0.0.0.0 --port 8000"),
+    ("6. Verify",          "curl localhost:8000/health"),
 ]
 for step, detail in order:
     print(f"    {step:<22} {detail}")
@@ -95,21 +94,19 @@ for step, detail in order:
 # Step 3: Resource Recommendations
 # ============================================================
 
-print("\n\n--- Step 3: Resource Recommendations ---\n")
+print("\n\n--- Step 3: Resource Recommendations (8 GB Codespace) ---\n")
 
 resources = [
-    ("Agent API",     "256Mi/250m",  "1Gi/1000m",    "3 (HPA: 2-10)"),
-    ("ChromaDB",      "512Mi/500m",  "2Gi/1000m",    "1 (StatefulSet)"),
-    ("Redis",         "64Mi/100m",   "128Mi/200m",   "1"),
-    ("OTel Collector", "128Mi/100m", "512Mi/500m",   "1"),
-    ("LangFuse",      "256Mi/250m",  "1Gi/1000m",    "1"),
-    ("PostgreSQL",    "256Mi/250m",  "1Gi/500m",     "1 (StatefulSet)"),
+    ("Agent API (uvicorn)",  "256 MB",   "1 GB",     "2 workers (--workers 2)"),
+    ("ChromaDB (in-proc)",   "512 MB",   "2 GB",     "1 (in-process, no server)"),
+    ("LangFuse (if used)",   "512 MB",   "1 GB",     "1 (external service)"),
+    ("Python total",         "~1.5 GB",  "~4 GB",    "Monitor with psutil"),
 ]
 
-print(f"    {'Component':<18} {'Requests':<16} {'Limits':<16} {'Replicas'}")
-print(f"    {'-'*70}")
+print(f"    {'Component':<22} {'Typical':<16} {'Peak':<16} {'Notes'}")
+print(f"    {'-'*74}")
 for comp, req, lim, rep in resources:
-    print(f"    {comp:<18} {req:<16} {lim:<16} {rep}")
+    print(f"    {comp:<22} {req:<16} {lim:<16} {rep}")
 
 
 # ============================================================
@@ -123,7 +120,7 @@ print("  Options: health, resources, secrets, observability, alerting, backup\n"
 
 scenarios = [
     {
-        "scenario": "API keys are stored in a ConfigMap visible to all pods",
+        "scenario": "API keys are stored in a file committed to git",
         "answer": "secrets",
         "correct": "secrets",
     },
@@ -138,12 +135,12 @@ scenarios = [
         "correct": "observability",
     },
     {
-        "scenario": "Traffic spike causes pods to run out of memory",
+        "scenario": "Traffic spike causes process to run out of memory",
         "answer": "resources",
         "correct": "resources",
     },
     {
-        "scenario": "ChromaDB data lost after pod restart",
+        "scenario": "ChromaDB data lost after process restart",
         "answer": "backup",
         "correct": "backup",
     },
@@ -153,7 +150,7 @@ scenarios = [
         "correct": "alerting",
     },
     {
-        "scenario": "Deploying 3 pods but cluster maintenance takes all down",
+        "scenario": "App starts before database is ready, crashes on connect",
         "answer": "health",
         "correct": "health",
     },
@@ -187,34 +184,34 @@ print("\n\n--- TODO 2: Production Readiness Quiz ---\n")
 
 quiz = [
     {
-        "question": "What K8s object ensures minimum pods during maintenance?",
-        "answer": "PDB (PodDisruptionBudget)",
-        "correct": "poddisruptionbudget",
-        "check": "pdb",
+        "question": "What Python signal enables graceful shutdown on termination?",
+        "answer": "SIGTERM",
+        "correct": "sigterm",
+        "check": "sigterm",
     },
     {
-        "question": "What probe checks if a pod is ready to receive traffic?",
-        "answer": "readiness probe",
-        "correct": "readinessprobe",
-        "check": "readiness",
+        "question": "What Python class can periodically check if endpoints are healthy?",
+        "answer": "HealthChecker",
+        "correct": "healthchecker",
+        "check": "healthcheck",
     },
     {
-        "question": "Should API keys go in ConfigMap or Secret?",
-        "answer": "secret",
-        "correct": "secret",
-        "check": "secret",
+        "question": "Should API keys go in git or in a .env file?",
+        "answer": ".env file",
+        "correct": ".env",
+        "check": "env",
     },
     {
-        "question": "What K8s object auto-scales pods based on CPU?",
-        "answer": "HPA",
-        "correct": "hpa",
-        "check": "hpa",
+        "question": "What Python library monitors process memory and CPU usage?",
+        "answer": "psutil",
+        "correct": "psutil",
+        "check": "psutil",
     },
     {
-        "question": "What K8s object type should ChromaDB use for persistent storage?",
-        "answer": "StatefulSet",
-        "correct": "statefulset",
-        "check": "stateful",
+        "question": "What tool provides AI-specific trace observability (traces, cost, latency)?",
+        "answer": "LangFuse",
+        "correct": "langfuse",
+        "check": "langfuse",
     },
 ]
 
@@ -239,12 +236,12 @@ print(f"\n  Score: {score2}/{len(quiz)}")
 # Summary
 # ============================================================
 
-print(f"\n\n--- Lab 01 Summary ---\n")
+print(f"\n\n--- Lab 07 Summary ---\n")
 print("  Key concepts:")
 print("    1. Six categories: health, resources, secrets, observability, alerting, backup")
-print("    2. Deploy in order: config -> data -> observability -> app -> ingress")
-print("    3. Set resource requests AND limits for every container")
-print("    4. Use Secrets (not ConfigMap) for API keys")
+print("    2. Deploy in order: config -> deps -> startup checks -> app -> verify")
+print("    3. Use psutil to monitor resource usage and prevent OOM")
+print("    4. Use .env files (not hardcoded) for API keys with load_dotenv()")
 print(f"\n  TODO 1: {score1}/{len(scenarios)} scenarios matched")
 print(f"  TODO 2: {score2}/{len(quiz)} quiz answers correct")
 print(f"\n  Files generated in {WORKDIR}/")

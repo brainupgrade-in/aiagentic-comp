@@ -12,7 +12,7 @@ df -h / | tail -1 | awk '{print "Storage: "$3" used / "$2" total ("$5" used)"}'
 echo ""
 
 # Verify Python
-echo "[1/4] Verifying Python environment..."
+echo "[1/3] Verifying Python environment..."
 if [ -f /home/vscode/.venv/bin/python ]; then
   source /home/vscode/.venv/bin/activate
   echo "  Virtual environment active: $(python --version)"
@@ -21,13 +21,16 @@ else
 fi
 
 # Verify FastAPI and production packages
-echo "[2/4] Verifying production packages..."
+echo "[2/3] Verifying production packages..."
 python -c "import fastapi; print(f'  fastapi {fastapi.__version__}')" 2>/dev/null || echo "  WARNING: fastapi not installed"
 python -c "import uvicorn; print(f'  uvicorn {uvicorn.__version__}')" 2>/dev/null || echo "  WARNING: uvicorn not installed"
 python -c "import pydantic; print(f'  pydantic {pydantic.__version__}')" 2>/dev/null || echo "  WARNING: pydantic not installed"
+python -c "import psutil; print(f'  psutil {psutil.__version__}')" 2>/dev/null || echo "  WARNING: psutil not installed"
+python -c "import langfuse; print(f'  langfuse {langfuse.__version__}')" 2>/dev/null || echo "  WARNING: langfuse not installed"
+python -c "import opentelemetry; print(f'  opentelemetry-api installed')" 2>/dev/null || echo "  WARNING: opentelemetry not installed"
 
 # Verify GROQ_API_KEY
-echo "[3/4] Checking GROQ_API_KEY..."
+echo "[3/3] Checking GROQ_API_KEY..."
 if [ -z "$GROQ_API_KEY" ]; then
     if [ -f .env ]; then
         source .env
@@ -45,24 +48,6 @@ else
     echo "  GROQ_API_KEY is set"
 fi
 
-# Start observability stack
-COMPOSE_DIR=~/workspace/day4/observability
-
-echo "[4/4] Starting observability stack..."
-mkdir -p "$COMPOSE_DIR"
-
-if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
-  cp scripts/day5-docker-compose.yml "$COMPOSE_DIR/docker-compose.yml"
-  cp scripts/prometheus.yml "$COMPOSE_DIR/prometheus.yml"
-fi
-
-cd "$COMPOSE_DIR"
-docker compose up -d
-
-echo ""
-echo "Waiting for services to be healthy..."
-sleep 10
-
 echo ""
 echo "============================================"
 echo "  Day 4 Ready!"
@@ -73,17 +58,15 @@ echo "  Session 10: Observability Fundamentals"
 echo "  Session 11: LangFuse Observability"
 echo "  Session 12: Production Development & Deployment"
 echo ""
-echo "Services:"
-echo "  Prometheus:  http://localhost:9090"
-echo "  Grafana:     http://localhost:3000  (admin/admin)"
-echo "  LangFuse:    http://localhost:8080"
+echo "All labs run as pure Python — no external services needed."
+echo "LangFuse SDK patterns are taught using mock mode (logs to local JSON)."
 echo ""
 echo "Labs:"
 echo "  python hands-on/session-10/lab01_three_pillars.py"
 echo "  python hands-on/session-11/lab01_langfuse_fundamentals.py"
 echo "  python hands-on/session-12/lab01_fastapi_basics.py"
 echo ""
-echo "Resource usage: ~5-7 GB RAM (Docker Compose + Python)"
+echo "Resource usage: ~2-3 GB RAM (Python only)"
 echo ""
 echo "IMPORTANT: Run 'bash scripts/day4-cleanup.sh' at end of day"
 echo ""

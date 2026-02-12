@@ -9,9 +9,6 @@
   },
 
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "dockerDashComposeVersion": "v2"
-    },
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": false
     }
@@ -24,7 +21,6 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "ms-azuretools.vscode-docker",
         "redhat.vscode-yaml"
       ],
       "unwantedRecommendations": [
@@ -45,17 +41,11 @@
   },
 
   "forwardPorts": [
-    8000,
-    3000,
-    9090,
-    8080
+    8000
   ],
 
   "portsAttributes": {
-    "8000": { "label": "FastAPI App" },
-    "3000": { "label": "Grafana" },
-    "9090": { "label": "Prometheus" },
-    "8080": { "label": "LangFuse" }
+    "8000": { "label": "FastAPI App" }
   },
 
   "remoteUser": "vscode"

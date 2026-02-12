@@ -77,8 +77,8 @@ for challenge, why, solution in challenges:
 print("\n\n--- Step 3: When to Use Which Pillar ---\n")
 
 scenarios = [
-    ("Dashboard: Is system healthy?",            "Metrics",  "Counters, gauges on Grafana dashboard"),
-    ("Alert: Error rate spiked!",                 "Metrics",  "Prometheus alert on rate() > threshold"),
+    ("Dashboard: Is system healthy?",            "Metrics",  "Counters, gauges on LangFuse dashboard"),
+    ("Alert: Error rate spiked!",                 "Metrics",  "LangFuse alert on rate() > threshold"),
     ("Debug: Why did request X fail?",            "Logs",     "Search logs for request ID / trace ID"),
     ("Debug: Why is this request slow?",          "Traces",   "View span breakdown, find bottleneck"),
     ("Audit: What did the agent do?",             "Logs",     "Structured log with tool_calls, actions"),
@@ -100,7 +100,7 @@ print("  For each scenario, write 'metrics', 'logs', or 'traces'.\n")
 
 quiz = [
     {
-        "scenario": "You need a Grafana dashboard showing request rate over time",
+        "scenario": "You need a LangFuse dashboard showing request rate over time",
         "answer": "___",
         "correct": "metrics",
     },

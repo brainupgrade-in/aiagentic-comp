@@ -80,7 +80,7 @@ def get_tech_stack(category: str) -> str:
         "frontend": "React + TypeScript for new projects. Angular maintained for Dashboard & Admin portal.",
         "database": "PostgreSQL (primary relational), MongoDB (document store), Redis (caching & sessions).",
         "cloud": "AWS (EKS/Kubernetes). Docker + Terraform. CI/CD via GitHub Actions.",
-        "monitoring": "Prometheus (metrics), Grafana (dashboards), LangFuse (LLM tracing), PagerDuty (alerts).",
+        "monitoring": "LangFuse (LLM tracing & metrics), PagerDuty (alerts).",
     }
     return stack.get(category.lower(), f"Unknown category '{category}'. Try: backend, frontend, database, cloud, monitoring.")
 

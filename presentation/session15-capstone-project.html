@@ -303,7 +303,7 @@
           </div>
           <div class="card card-green">
             <h4>Full Observability</h4>
-            <p>Prometheus metrics, Grafana dashboards, LangFuse tracing &mdash; every request is visible</p>
+            <p>LangFuse tracing, structured logging, health probes &mdash; every request is visible</p>
           </div>
           <div class="card card-orange">
             <h4>Tested &amp; Resilient</h4>
@@ -311,7 +311,7 @@
           </div>
           <div class="card card-red">
             <h4>Deployment-Ready</h4>
-            <p>Containerized with Docker, configured for Kubernetes, ready for production</p>
+            <p>Configured with Python process management, uvicorn serving, ready for production</p>
           </div>
         </div>
         <br>
@@ -346,9 +346,8 @@
           </div>
           <div style="font-size:1.5em; color:#888;">&#x2193;</div>
           <div class="diagram" style="margin:8px 0;">
-            <div class="box box-red" style="min-width:130px;">&#x1F4CA; <strong>Prometheus</strong><br><span style="font-size:0.8em;">Metrics</span></div>
-            <div class="box box-orange" style="min-width:130px;">&#x1F4C8; <strong>Grafana</strong><br><span style="font-size:0.8em;">Dashboards</span></div>
-            <div class="box box-green" style="min-width:130px;">&#x1F50D; <strong>LangFuse</strong><br><span style="font-size:0.8em;">Traces</span></div>
+            <div class="box box-green" style="min-width:180px;">&#x1F50D; <strong>LangFuse</strong><br><span style="font-size:0.8em;">Traces, Metrics &amp; Dashboards</span></div>
+            <div class="box box-orange" style="min-width:130px;">&#x1F4CB; <strong>Structured Logs</strong><br><span style="font-size:0.8em;">JSON Logging</span></div>
           </div>
         </div>
       </section>
@@ -392,7 +391,7 @@
           <tr>
             <td><strong>Observability</strong></td>
             <td>Session 13</td>
-            <td>Prometheus metrics, structured logging, OpenTelemetry</td>
+            <td>LangFuse tracing, structured logging, OpenTelemetry</td>
           </tr>
           <tr>
             <td><strong>LangFuse</strong></td>
@@ -432,7 +431,7 @@
               <h4>Draw Data Flows</h4>
               <ul>
                 <li>Request path: Client &rarr; API &rarr; Agent &rarr; Tools &rarr; Response</li>
-                <li>Observability path: App &rarr; Prometheus &rarr; Grafana</li>
+                <li>Observability path: App &rarr; LangFuse &rarr; Dashboard</li>
                 <li>Trace path: App &rarr; LangFuse &rarr; Dashboard</li>
               </ul>
             </div>
@@ -589,12 +588,12 @@
               </ul>
             </div>
             <div class="card card-orange">
-              <h4>Prometheus Metrics</h4>
+              <h4>LangFuse Metrics</h4>
               <ul>
-                <li>Request count (Counter)</li>
-                <li>Request duration (Histogram)</li>
-                <li>Active requests (Gauge)</li>
-                <li>Error rate (Counter by status code)</li>
+                <li>Trace count and latency</li>
+                <li>Token usage per request</li>
+                <li>Cost tracking per model</li>
+                <li>Error rate by trace status</li>
               </ul>
             </div>
             <div class="card card-red">
@@ -629,7 +628,7 @@
               <ul>
                 <li>Returns 200 if app is alive</li>
                 <li>Checks: process running, no deadlock</li>
-                <li>Failure: container restart</li>
+                <li>Failure: process restart</li>
               </ul>
             </div>
             <div class="card card-green">
@@ -642,12 +641,12 @@
               </ul>
             </div>
             <div class="card card-orange">
-              <h4>Metrics Endpoint</h4>
-              <p><code>GET /metrics</code></p>
+              <h4>LangFuse Tracing</h4>
+              <p><code>CallbackHandler</code></p>
               <ul>
-                <li>Prometheus-compatible format</li>
-                <li>Scraped every 15s by Prometheus</li>
-                <li>Visualized in Grafana dashboards</li>
+                <li>Auto-instrumented LLM calls</li>
+                <li>Traces sent to LangFuse</li>
+                <li>Visualized in LangFuse dashboard</li>
               </ul>
             </div>
           </div>
@@ -655,9 +654,7 @@
           <div class="diagram">
             <div class="box">&#x26A1; FastAPI</div>
             <span class="arrow">&rarr;</span>
-            <div class="box box-red">&#x1F4CA; Prometheus<br><span style="font-size:0.8em;">scrape /metrics</span></div>
-            <span class="arrow">&rarr;</span>
-            <div class="box box-orange">&#x1F4C8; Grafana<br><span style="font-size:0.8em;">dashboards</span></div>
+            <div class="box box-green">&#x1F50D; LangFuse<br><span style="font-size:0.8em;">traces &amp; dashboards</span></div>
           </div>
         </section>
       </section>
@@ -676,30 +673,30 @@
           <br>
           <div class="card-grid">
             <div class="card card-accent">
-              <h4>Dockerfile</h4>
+              <h4>uvicorn Configuration</h4>
               <ul>
-                <li>Multi-stage build for small image</li>
-                <li>Non-root user for security</li>
-                <li>Health check instruction</li>
+                <li>Host, port, and worker settings</li>
+                <li>Graceful shutdown with signal handlers</li>
+                <li>Health check endpoint</li>
                 <li>Environment variable configuration</li>
               </ul>
             </div>
             <div class="card card-green">
-              <h4>Docker Compose</h4>
+              <h4>Python Process Management</h4>
               <ul>
-                <li>App + Prometheus + Grafana + LangFuse</li>
-                <li>Memory limits on all containers</li>
-                <li>Network isolation</li>
-                <li>Volume mounts for persistence</li>
+                <li>App + mock LangFuse + ChromaDB in-process</li>
+                <li>psutil resource monitoring</li>
+                <li>Python startup sequencing</li>
+                <li>Local file persistence</li>
               </ul>
             </div>
             <div class="card card-orange">
-              <h4>K8s Manifests</h4>
+              <h4>Environment Config</h4>
               <ul>
-                <li>Deployment with resource limits</li>
-                <li>Service for internal routing</li>
-                <li>ConfigMap and Secret for config</li>
-                <li>HPA for auto-scaling</li>
+                <li>psutil for resource monitoring</li>
+                <li>Python dotenv for config loading</li>
+                <li>.env files for config and secrets</li>
+                <li>Async HealthChecker for all services</li>
               </ul>
             </div>
             <div class="card card-red">
@@ -816,7 +813,7 @@
           <div class="card card-accent" style="text-align:center; padding:20px;">
             <h4>Success Criteria</h4>
             <p style="font-size:0.8em;">Send a query &rarr; Agent processes it &rarr; Tools are called &rarr; Response returned &rarr;
-            Trace visible in LangFuse &rarr; Metrics appear in Grafana &rarr; Health probes pass</p>
+            Trace visible in LangFuse &rarr; Metrics appear in LangFuse dashboard &rarr; Health probes pass</p>
           </div>
         </section>
       </section>
@@ -844,7 +841,7 @@
           </tr>
           <tr>
             <td><strong style="color:var(--accent3);">Observability</strong></td>
-            <td>LangFuse traces, Prometheus metrics, structured logging, Grafana dashboard</td>
+            <td>LangFuse traces, cost tracking, structured logging, LangFuse dashboard</td>
             <td class="score">20</td>
           </tr>
           <tr>
@@ -859,7 +856,7 @@
           </tr>
           <tr>
             <td><strong>Deployment</strong></td>
-            <td>Dockerfile, docker-compose or K8s manifests, resource limits</td>
+            <td>uvicorn config, process management, .env files, resource monitoring</td>
             <td class="score">10</td>
           </tr>
         </table>
@@ -895,7 +892,7 @@
             <h4>Show Observability</h4>
             <ul>
               <li>Open LangFuse &mdash; show the trace</li>
-              <li>Open Grafana &mdash; show the metrics</li>
+              <li>Open LangFuse dashboard &mdash; show the metrics</li>
               <li>Show health probe responses</li>
             </ul>
           </div>
