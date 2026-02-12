@@ -120,8 +120,8 @@ print()
 #       Tools: create_pr, search_code     |  Resources: repo://structure (app loads repo info)
 #   "ticket_tracking"       → server: "jira",        primitives: "both"
 #       Tools: create_issue, update       |  Resources: jira://board (app loads sprint data)
-#   "knowledge_base"        → server: "confluence",  primitives: "resource"
-#       Resources only: wiki://pages, wiki://spaces (app loads docs as context)
+#   "knowledge_base"        → server: "confluence",  primitives: "both"
+#       Tools: create_page, search (model performs actions)  |  Resources: wiki://pages (app loads docs)
 #   "team_communication"    → server: "slack",        primitives: "tool"
 #       Tools only: send_message, search (model performs actions, no pre-loaded context)
 
@@ -129,7 +129,7 @@ business_to_mcp = {
     "database_analytics": {"server": "___", "primitives": "___"},
     "code_management":    {"server": "___", "primitives": "___"},
     "ticket_tracking":    {"server": "___", "primitives": "___"},
-    "knowledge_base":     {"server": "___", "primitives": "___"},
+    "knowledge_base":     {"server": "___", "primitives": "___"},  # create pages + read pages
     "team_communication": {"server": "___", "primitives": "___"},
 }
 
@@ -139,7 +139,7 @@ expected_mapping = {
     "database_analytics": {"server": "postgres",   "primitives": "both"},
     "code_management":    {"server": "github",     "primitives": "both"},
     "ticket_tracking":    {"server": "jira",       "primitives": "both"},
-    "knowledge_base":     {"server": "confluence", "primitives": "resource"},
+    "knowledge_base":     {"server": "confluence", "primitives": "both"},
     "team_communication": {"server": "slack",      "primitives": "tool"},
 }
 if business_to_mcp == expected_mapping:
@@ -274,9 +274,9 @@ print()
 #           "postgres":   {"transport": "stdio",  "tools": ["query_db"],           "resources": ["db://schema"]},
 #           "github":     {"transport": "stdio",  "tools": ["search_code", "create_pr"], "resources": ["repo://structure"]},
 #           "slack":      {"transport": "stdio",  "tools": ["send_message", "search_messages"], "resources": []},
-#           "confluence": {"transport": "sse",    "tools": [],                      "resources": ["wiki://pages", "wiki://spaces"]},
+#           "confluence": {"transport": "sse",    "tools": ["create_page", "search_pages"], "resources": ["wiki://pages", "wiki://spaces"]},
 #       },
-#       "total_tools": 5,
+#       "total_tools": 7,
 #       "total_resources": 4,
 #   }
 
@@ -289,7 +289,7 @@ try:
         isinstance(agent_config, dict),
         agent_config.get("agent_name") == "enterprise-assistant",
         len(agent_config.get("mcp_servers", {})) == 4,
-        agent_config.get("total_tools") == 5,
+        agent_config.get("total_tools") == 7,
         agent_config.get("total_resources") == 4,
         "postgres" in agent_config.get("mcp_servers", {}),
         "github" in agent_config.get("mcp_servers", {}),

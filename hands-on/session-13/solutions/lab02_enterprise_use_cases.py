@@ -111,7 +111,7 @@ business_to_mcp = {
     "database_analytics": {"server": "postgres",   "primitives": "both"},
     "code_management":    {"server": "github",     "primitives": "both"},
     "ticket_tracking":    {"server": "jira",       "primitives": "both"},
-    "knowledge_base":     {"server": "confluence", "primitives": "resource"},
+    "knowledge_base":     {"server": "confluence", "primitives": "both"},
     "team_communication": {"server": "slack",      "primitives": "tool"},
 }
 
@@ -121,7 +121,7 @@ expected_mapping = {
     "database_analytics": {"server": "postgres",   "primitives": "both"},
     "code_management":    {"server": "github",     "primitives": "both"},
     "ticket_tracking":    {"server": "jira",       "primitives": "both"},
-    "knowledge_base":     {"server": "confluence", "primitives": "resource"},
+    "knowledge_base":     {"server": "confluence", "primitives": "both"},
     "team_communication": {"server": "slack",      "primitives": "tool"},
 }
 if business_to_mcp == expected_mapping:
@@ -232,9 +232,9 @@ agent_config = {
         "postgres":   {"transport": "stdio",  "tools": ["query_db"],           "resources": ["db://schema"]},
         "github":     {"transport": "stdio",  "tools": ["search_code", "create_pr"], "resources": ["repo://structure"]},
         "slack":      {"transport": "stdio",  "tools": ["send_message", "search_messages"], "resources": []},
-        "confluence": {"transport": "sse",    "tools": [],                      "resources": ["wiki://pages", "wiki://spaces"]},
+        "confluence": {"transport": "sse",    "tools": ["create_page", "search_pages"], "resources": ["wiki://pages", "wiki://spaces"]},
     },
-    "total_tools": 5,
+    "total_tools": 7,
     "total_resources": 4,
 }
 
@@ -245,7 +245,7 @@ try:
         isinstance(agent_config, dict),
         agent_config.get("agent_name") == "enterprise-assistant",
         len(agent_config.get("mcp_servers", {})) == 4,
-        agent_config.get("total_tools") == 5,
+        agent_config.get("total_tools") == 7,
         agent_config.get("total_resources") == 4,
         "postgres" in agent_config.get("mcp_servers", {}),
         "github" in agent_config.get("mcp_servers", {}),
