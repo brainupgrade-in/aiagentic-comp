@@ -67,6 +67,38 @@ print("  └──────────────────────�
 print()
 
 # ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  STEP 3 — Tools vs Resources: Who Controls What?                           ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+print("=" * 70)
+print("STEP 3: Tools vs Resources — The Key Distinction")
+print("=" * 70)
+print()
+print("  The difference is WHO INITIATES the interaction:")
+print()
+print("  ┌────────────┬───────────────────┬──────────────────────────────────┐")
+print("  │ Primitive  │ Controlled By     │ Description                      │")
+print("  ├────────────┼───────────────────┼──────────────────────────────────┤")
+print("  │ Tool       │ The MODEL decides │ Actions: query, create, send,    │")
+print("  │            │ when to call it   │ update. May have side effects.   │")
+print("  ├────────────┼───────────────────┼──────────────────────────────────┤")
+print("  │ Resource   │ The APP decides   │ Context: schema, pages, config.  │")
+print("  │            │ when to load it   │ Read-only, no side effects.      │")
+print("  └────────────┴───────────────────┴──────────────────────────────────┘")
+print()
+print("  Example — Postgres MCP server:")
+print("    Tool:     query_db(sql)   → model decides to run a query")
+print("    Resource: db://schema     → app pre-loads table structure as context")
+print()
+print("  Example — Jira MCP server:")
+print("    Tool:     create_issue()  → model decides to create a ticket")
+print("    Resource: jira://board    → app pre-loads sprint board as context")
+print()
+print("  The same data CAN be exposed as either — it depends on whether")
+print("  the model or the application should control when it's accessed.")
+print()
+
+# ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║  TODO 1 — Map Business Functions to MCP Servers                            ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -76,27 +108,27 @@ print("=" * 70)
 print()
 
 business_to_mcp = {
-    "database_analytics": {"server": "postgres",   "type": "both"},
-    "code_management":    {"server": "github",     "type": "both"},
-    "ticket_tracking":    {"server": "jira",       "type": "tool"},
-    "knowledge_base":     {"server": "confluence", "type": "resource"},
-    "team_communication": {"server": "slack",      "type": "tool"},
+    "database_analytics": {"server": "postgres",   "primitives": "both"},
+    "code_management":    {"server": "github",     "primitives": "both"},
+    "ticket_tracking":    {"server": "jira",       "primitives": "both"},
+    "knowledge_base":     {"server": "confluence", "primitives": "resource"},
+    "team_communication": {"server": "slack",      "primitives": "tool"},
 }
 
 # ── Validate TODO 1 ─────────────────────────────────────────────────────────
 total += 1
 expected_mapping = {
-    "database_analytics": {"server": "postgres",   "type": "both"},
-    "code_management":    {"server": "github",     "type": "both"},
-    "ticket_tracking":    {"server": "jira",       "type": "tool"},
-    "knowledge_base":     {"server": "confluence", "type": "resource"},
-    "team_communication": {"server": "slack",      "type": "tool"},
+    "database_analytics": {"server": "postgres",   "primitives": "both"},
+    "code_management":    {"server": "github",     "primitives": "both"},
+    "ticket_tracking":    {"server": "jira",       "primitives": "both"},
+    "knowledge_base":     {"server": "confluence", "primitives": "resource"},
+    "team_communication": {"server": "slack",      "primitives": "tool"},
 }
 if business_to_mcp == expected_mapping:
     score += 1
     print("[PASS] Business-to-MCP mapping is correct")
     for func, cfg in business_to_mcp.items():
-        print(f"       {func:25s} → {cfg['server']:12s} ({cfg['type']})")
+        print(f"       {func:25s} → {cfg['server']:12s} (primitives: {cfg['primitives']})")
 else:
     print("[FAIL] Expected:", json.dumps(expected_mapping, indent=2))
     print("       Got:     ", json.dumps(business_to_mcp, indent=2))
