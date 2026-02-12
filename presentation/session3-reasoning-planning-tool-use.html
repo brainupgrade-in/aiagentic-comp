@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 3: Reasoning, Planning & Tool Use</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    /* Diagram boxes */
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .diagram-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+    .arrow-down { font-size: 1.2em; color: #888; }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    /* Analogy callout */
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.75em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    /* Section divider */
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    /* Key takeaway */
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 16px;
+      font-size: 0.75em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    /* Trainer info */
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+
+    /* ==================== QUIZ STYLES ==================== */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 16px 0 24px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 18px 20px;
+      text-align: left;
+      font-size: 0.7em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-top: 20px;
+      font-size: 0.7em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
+    /* Code block */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.6em;
+      text-align: left;
+      color: #e0e0e0;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #888; }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--accent2); }
+    .code-block .func { color: var(--accent3); }
+
+    /* Step flow for reasoning */
+    .step-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 16px 0;
+      font-size: 0.65em;
+      text-align: left;
+    }
+    .step-row {
+      display: flex;
+      align-items: stretch;
+      gap: 10px;
+    }
+    .step-label {
+      min-width: 90px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-label.think { background: rgba(79,195,247,0.2); color: var(--accent); }
+    .step-label.act { background: rgba(255,183,77,0.2); color: var(--accent3); }
+    .step-label.observe { background: rgba(129,199,132,0.2); color: var(--accent2); }
+    .step-content {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 8px 14px;
+      flex: 1;
+      color: #ccc;
+    }
+    /* Prevent content overflow on slides */
+    .reveal .slides section { overflow: hidden; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>Reasoning, Planning<br>& Tool Use</h1>
+        <p style="font-size:0.9em; color:#ccc;">How AI Agents Think and Act</p>
+        <p class="subtitle">Session 3 &middot; Day 1, Slot C</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== SESSION 2 AGENDA ==================== -->
+      <section>
+        <h2>Session 3: What We'll Cover</h2>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>1. Reasoning</h4>
+            <p>How agents think step-by-step to solve problems</p>
+          </div>
+          <div class="card card-green">
+            <h4>2. Tool Calling</h4>
+            <p>How agents interact with the outside world</p>
+          </div>
+          <div class="card card-orange">
+            <h4>3. Memory Systems</h4>
+            <p>How agents remember and learn from experience</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PART 1: REASONING ARCHITECTURES ==================== -->
+      <section>
+        <section>
+          <div class="section-number">01</div>
+          <h2>Reasoning Architectures</h2>
+          <p class="subtitle">ReAct &middot; Chain-of-Thought &middot; Tree-of-Thought &middot; Reflection</p>
+        </section>
+
+        <!-- WHY REASONING MATTERS -->
+        <section>
+          <h2>Why Does Reasoning Matter?</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-red" style="text-align:center;">
+              <h4>Without Reasoning</h4>
+              <p style="font-size:1.1em; margin-bottom:10px;">"What's 17 x 28?"</p>
+              <p>LLM guesses: <strong style="color:var(--accent4);">"436"</strong></p>
+              <p style="margin-top:6px; color:#888;">(Confident but wrong. Actual: 476)</p>
+            </div>
+            <div class="card card-green" style="text-align:center;">
+              <h4>With Reasoning</h4>
+              <p style="font-size:1.1em; margin-bottom:10px;">"What's 17 x 28?"</p>
+              <p style="text-align:left;">
+                17 x 28<br>
+                = 17 x 30 - 17 x 2<br>
+                = 510 - 34<br>
+                = <strong style="color:var(--accent2);">476</strong>
+              </p>
+            </div>
+          </div>
+          <br>
+          <div class="takeaway">
+            Reasoning forces the model to <strong>show its work</strong> rather than jumping to an answer.
+            This dramatically improves accuracy on complex tasks.
+          </div>
+        </section>
+
+        <!-- CHAIN OF THOUGHT -->
+        <section>
+          <h2>Chain-of-Thought (CoT)</h2>
+          <h3>Think step by step before answering</h3>
+          <br>
+          <div class="card-grid">
+            <div class="card card-red">
+              <h4>Without CoT</h4>
+              <p><strong>Q:</strong> "A store has 15 apples. They sell 8 and receive a shipment of 20. How many now?"</p>
+              <p style="margin-top:8px;"><strong>A:</strong> "35" (might guess wrong)</p>
+            </div>
+            <div class="card card-green">
+              <h4>With CoT</h4>
+              <p><strong>Q:</strong> Same question + "Let's think step by step."</p>
+              <p style="margin-top:8px;">
+                <strong>A:</strong><br>
+                1. Start with 15 apples<br>
+                2. Sell 8: 15 - 8 = 7<br>
+                3. Receive 20: 7 + 20 = <strong>27</strong>
+              </p>
+            </div>
+          </div>
+          <br>
+          <div class="analogy">
+            Like showing your work on a math exam. Even if the final answer is easy,
+            writing out each step prevents silly mistakes and helps you catch errors.
+          </div>
+        </section>
+
+        <!-- ReAct -->
+        <section>
+          <h2>ReAct Pattern</h2>
+          <h3>Reasoning + Acting &mdash; The core agent pattern</h3>
+          <br>
+          <p style="font-size:0.7em; color:#ccc;">
+            Chain-of-Thought makes LLMs think better. But thinking alone isn't enough &mdash;<br>
+            agents also need to <strong>act</strong> and <strong>observe</strong> results.
+            ReAct combines both.
+          </p>
+          <br>
+          <div class="diagram">
+            <div class="box box-large" style="min-width:180px;">
+              🧠 <strong>Reason</strong><br>
+              <span style="font-size:0.8em;">"I need to find X"</span>
+            </div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-large box-orange" style="min-width:180px;">
+              ⚡ <strong>Act</strong><br>
+              <span style="font-size:0.8em;">Use search tool</span>
+            </div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-large box-green" style="min-width:180px;">
+              👀 <strong>Observe</strong><br>
+              <span style="font-size:0.8em;">Read the result</span>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:1.2em; color:var(--accent);">
+            ↻ Repeat until goal is achieved
+          </div>
+        </section>
+
+        <!-- ReAct EXAMPLE -->
+        <section>
+          <h2>ReAct in Action</h2>
+          <h3>"What's the population of the capital of France?"</h3>
+          <div class="step-flow" style="margin-top:14px;">
+            <div class="step-row">
+              <div class="step-label think">Thought 1</div>
+              <div class="step-content">I need to find the capital of France first, then look up its population.</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label act">Action 1</div>
+              <div class="step-content">search("capital of France")</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label observe">Observe 1</div>
+              <div class="step-content">Result: "Paris is the capital of France"</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label think">Thought 2</div>
+              <div class="step-content">Now I know it's Paris. I need its population.</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label act">Action 2</div>
+              <div class="step-content">search("population of Paris 2024")</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label observe">Observe 2</div>
+              <div class="step-content">Result: "Paris has approximately 2.1 million residents"</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label think">Thought 3</div>
+              <div class="step-content">I have the answer. The capital of France is Paris with ~2.1M people.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TREE OF THOUGHT -->
+        <section>
+          <h2>Tree-of-Thought (ToT)</h2>
+          <h3>Explore multiple paths, pick the best one</h3>
+          <div style="text-align:center; margin-top:14px;">
+            <div class="box box-large" style="display:inline-block;">📋 Problem</div>
+            <div style="font-size:1.3em; color:#888; margin:4px 0;">↙ &nbsp;&nbsp; ↓ &nbsp;&nbsp; ↘</div>
+            <div class="diagram" style="margin-top:0;">
+              <div class="box box-green" style="min-width:160px;">
+                Path A<br><span style="font-size:0.85em;">Score: 6/10</span>
+              </div>
+              <div class="box" style="min-width:160px; border-color:var(--accent2); border-width:3px;">
+                Path B<br><span style="font-size:0.85em; color:var(--accent2);">Score: 9/10 ✓</span>
+              </div>
+              <div class="box box-red" style="min-width:160px;">
+                Path C<br><span style="font-size:0.85em;">Score: 3/10</span>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="card card-accent">
+            <h4>How is this different from CoT?</h4>
+            <p>Chain-of-Thought follows <strong>one path</strong>. Tree-of-Thought explores <strong>multiple paths</strong>,
+            evaluates each, and picks the best. More expensive but better for complex decisions.</p>
+          </div>
+          <div class="analogy">
+            Like a chess player who considers 3 possible moves, thinks a few steps ahead for each,
+            and then picks the move that leads to the best position.
+          </div>
+        </section>
+
+        <!-- REFLECTION -->
+        <section>
+          <h2>Reflection Pattern</h2>
+          <h3>The agent reviews and improves its own work</h3>
+          <div class="diagram-vertical" style="margin:14px 0;">
+            <div class="box" style="width:70%; padding:10px 18px;">
+              <strong>Step 1:</strong> Agent produces an initial output
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="box box-orange" style="width:70%; padding:10px 18px;">
+              <strong>Step 2:</strong> Agent critiques its own output &mdash;
+              <span style="font-size:0.85em;">"Is this accurate? Did I miss anything?"</span>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="box box-green" style="width:70%; padding:10px 18px;">
+              <strong>Step 3:</strong> Agent produces an improved version
+            </div>
+            <div class="arrow-down" style="color:var(--accent);">↻ Repeat if needed</div>
+          </div>
+          <div class="analogy" style="margin-top:10px; font-size:0.7em;">
+            Like writing a first draft, then re-reading it with fresh eyes and fixing mistakes.
+            Professional writers always edit their own work &mdash; reflection lets agents do the same.
+          </div>
+        </section>
+
+        <!-- COMPARISON -->
+        <section>
+          <h2>Reasoning Patterns: Summary</h2>
+          <table class="compare-table">
+            <tr>
+              <th>Pattern</th>
+              <th>How It Works</th>
+              <th>Best For</th>
+              <th>Cost</th>
+            </tr>
+            <tr>
+              <td><strong>Chain-of-Thought</strong></td>
+              <td>Think step by step in a single chain</td>
+              <td>Math, logic, multi-step questions</td>
+              <td style="color:var(--accent2);">Low</td>
+            </tr>
+            <tr>
+              <td><strong>ReAct</strong></td>
+              <td>Think, Act, Observe in a loop</td>
+              <td>Tasks requiring external data or tools</td>
+              <td style="color:var(--accent3);">Medium</td>
+            </tr>
+            <tr>
+              <td><strong>Tree-of-Thought</strong></td>
+              <td>Explore multiple paths, pick the best</td>
+              <td>Complex decisions with multiple options</td>
+              <td style="color:var(--accent4);">High</td>
+            </tr>
+            <tr>
+              <td><strong>Reflection</strong></td>
+              <td>Generate, critique, improve</td>
+              <td>Content creation, code generation</td>
+              <td style="color:var(--accent3);">Medium</td>
+            </tr>
+          </table>
+          <br>
+          <div class="takeaway">
+            <strong>ReAct is the most commonly used pattern</strong> for agents because it naturally combines
+            thinking with real-world actions. You'll implement it in today's lab using LangChain.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PART 2: TOOL CALLING ==================== -->
+      <section>
+        <section>
+          <div class="section-number">02</div>
+          <h2>Tool Calling</h2>
+          <p class="subtitle">Why Tools Matter &middot; API Patterns &middot; Custom Tools</p>
+        </section>
+
+        <!-- WHY TOOLS MATTER -->
+        <section>
+          <h2>Why Tools Matter</h2>
+          <h3>LLMs are smart but limited</h3>
+          <br>
+          <div class="card-grid">
+            <div class="card card-red">
+              <h4>What LLMs Can't Do Alone</h4>
+              <ul>
+                <li>Access real-time data (weather, stock prices)</li>
+                <li>Do precise math reliably</li>
+                <li>Read your database</li>
+                <li>Send emails or make API calls</li>
+                <li>Execute code</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>What Tools Enable</h4>
+              <ul>
+                <li>Live web search and data retrieval</li>
+                <li>Precise calculations (calculator tool)</li>
+                <li>Database queries (SQL tool)</li>
+                <li>Sending messages and notifications</li>
+                <li>Running Python code safely</li>
+              </ul>
+            </div>
+          </div>
+          <br>
+          <div class="analogy">
+            A brilliant person locked in a room can answer many questions from memory.
+            Give them a phone, a computer, and internet access &mdash;
+            now they can answer <em>anything</em> and get things done.
+          </div>
+        </section>
+
+        <!-- HOW TOOL CALLING WORKS -->
+        <section>
+          <h2>How Tool Calling Works</h2>
+          <br>
+          <div class="step-flow">
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(79,195,247,0.2); color:var(--accent);">1. User</div>
+              <div class="step-content">"What's the weather in Mumbai right now?"</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label think">2. LLM Thinks</div>
+              <div class="step-content">I need live weather data. I should use the <strong>weather_api</strong> tool with location="Mumbai"</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label act">3. Tool Runs</div>
+              <div class="step-content">weather_api(location="Mumbai") &rarr; {"temp": 32, "condition": "Partly Cloudy"}</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label observe">4. LLM Reads</div>
+              <div class="step-content">The API returned 32°C, Partly Cloudy for Mumbai.</div>
+            </div>
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2);">5. Response</div>
+              <div class="step-content">"It's currently 32°C and partly cloudy in Mumbai."</div>
+            </div>
+          </div>
+          <br>
+          <div class="takeaway">
+            The LLM <strong>decides which tool to call and what parameters to pass</strong>.
+            It doesn't execute the tool itself &mdash; the framework (LangChain) handles execution
+            and sends the result back.
+          </div>
+        </section>
+
+        <!-- API CALLING PATTERNS -->
+        <section>
+          <h2>Common Tool Calling Patterns</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Single Tool Call</h4>
+              <p>Agent calls one tool to get an answer</p>
+              <p style="margin-top:6px;"><em>"What time is it?" &rarr; clock_tool()</em></p>
+            </div>
+            <div class="card card-green">
+              <h4>Sequential Calls</h4>
+              <p>Output of one tool feeds into the next</p>
+              <p style="margin-top:6px;"><em>search("CEO of Tesla") &rarr; lookup_bio(name="Elon Musk")</em></p>
+            </div>
+            <div class="card card-orange">
+              <h4>Parallel Calls</h4>
+              <p>Multiple independent tools at once</p>
+              <p style="margin-top:6px;"><em>weather("NYC") + weather("London") simultaneously</em></p>
+            </div>
+            <div class="card card-red">
+              <h4>Conditional Calls</h4>
+              <p>Choose which tool based on the situation</p>
+              <p style="margin-top:6px;"><em>If math question &rarr; calculator, if factual &rarr; search</em></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHAT A TOOL LOOKS LIKE -->
+        <section>
+          <h2>What Does a Tool Look Like in Code?</h2>
+          <br>
+          <div class="code-block">
+            <span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool<br>
+            <br>
+            <span class="keyword">@tool</span><br>
+            <span class="keyword">def</span> <span class="func">calculate</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Calculate a math expression. Use this for any math question."""</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result = <span class="func">eval</span>(expression)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">str</span>(result)<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span>:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"Error: Invalid expression"</span><br>
+            <br>
+            <span class="comment"># The agent reads the docstring to know WHEN to use this tool</span><br>
+            <span class="comment"># LangChain handles calling it and returning the result</span>
+          </div>
+          <br>
+          <div class="card card-accent">
+            <h4>Three things every tool needs</h4>
+            <ul>
+              <li><strong>A name</strong> &mdash; so the agent can refer to it</li>
+              <li><strong>A description</strong> &mdash; so the agent knows <em>when</em> to use it</li>
+              <li><strong>Parameters</strong> &mdash; so the agent knows <em>what</em> to pass in</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- BUILT-IN vs CUSTOM -->
+        <section>
+          <h2>Built-in vs Custom Tools</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Built-in Tools (LangChain provides)</h4>
+              <ul>
+                <li>Web search (DuckDuckGo, Google)</li>
+                <li>Wikipedia lookup</li>
+                <li>Python code executor</li>
+                <li>File reader / writer</li>
+                <li>API request maker</li>
+              </ul>
+              <p style="margin-top:8px;"><em>Ready to use out of the box</em></p>
+            </div>
+            <div class="card card-green">
+              <h4>Custom Tools (You build)</h4>
+              <ul>
+                <li>Your company's internal API</li>
+                <li>Database query tool</li>
+                <li>Email sender</li>
+                <li>Ticket booking system</li>
+                <li>Anything you can write in Python!</li>
+              </ul>
+              <p style="margin-top:8px;"><em>Just a Python function + @tool decorator</em></p>
+            </div>
+          </div>
+          <br>
+          <div class="takeaway">
+            The beauty of tool calling: any Python function can become an agent tool.
+            This means your agent can interact with <strong>any system your company uses</strong>.
+            You'll build custom tools in today's lab.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PART 3: MEMORY SYSTEMS ==================== -->
+      <section>
+        <section>
+          <div class="section-number">03</div>
+          <h2>Memory Systems</h2>
+          <p class="subtitle">Short-Term &middot; Long-Term &middot; Episodic</p>
+        </section>
+
+        <!-- WHY MEMORY MATTERS -->
+        <section>
+          <h2>Why Memory Matters</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-red" style="text-align:center;">
+              <h4>Without Memory</h4>
+              <p style="font-size:0.8em;">
+                <strong>You:</strong> "My name is Priya."<br>
+                <strong>Agent:</strong> "Nice to meet you, Priya!"<br><br>
+                <strong>You:</strong> "What's my name?"<br>
+                <strong>Agent:</strong> "I don't know your name." 😐
+              </p>
+            </div>
+            <div class="card card-green" style="text-align:center;">
+              <h4>With Memory</h4>
+              <p style="font-size:0.8em;">
+                <strong>You:</strong> "My name is Priya."<br>
+                <strong>Agent:</strong> "Nice to meet you, Priya!"<br><br>
+                <strong>You:</strong> "What's my name?"<br>
+                <strong>Agent:</strong> "Your name is Priya!" 😊
+              </p>
+            </div>
+          </div>
+          <br>
+          <p style="font-size:0.7em; color:#aaa; text-align:center;">
+            Memory = context. Without it, every message is a brand new conversation.
+          </p>
+        </section>
+
+        <!-- THREE TYPES -->
+        <section>
+          <h2>Three Types of Memory</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card card-accent" style="text-align:center;">
+              <h4>Short-Term Memory</h4>
+              <p style="font-size:1.5em; margin:8px 0;">💬</p>
+              <p><strong>Current conversation</strong></p>
+              <p style="margin-top:8px;">Remembers what was said in this chat session</p>
+              <p style="margin-top:8px; color:var(--accent); font-size:0.9em;">
+                Like your working memory during a meeting
+              </p>
+            </div>
+            <div class="card card-green" style="text-align:center;">
+              <h4>Long-Term Memory</h4>
+              <p style="font-size:1.5em; margin:8px 0;">🗄️</p>
+              <p><strong>Across sessions</strong></p>
+              <p style="margin-top:8px;">Persists information between separate conversations</p>
+              <p style="margin-top:8px; color:var(--accent2); font-size:0.9em;">
+                Like notes you save in a file for later
+              </p>
+            </div>
+            <div class="card card-orange" style="text-align:center;">
+              <h4>Episodic Memory</h4>
+              <p style="font-size:1.5em; margin:8px 0;">📔</p>
+              <p><strong>Past experiences</strong></p>
+              <p style="margin-top:8px;">Remembers what worked and what failed before</p>
+              <p style="margin-top:8px; color:var(--accent3); font-size:0.9em;">
+                Like learning from past mistakes
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SHORT TERM DEEP DIVE -->
+        <section>
+          <h2>Short-Term Memory: Conversation Context</h2>
+          <br>
+          <p style="font-size:0.7em; color:#ccc;">How does an agent "remember" what you just said?</p>
+          <br>
+          <div class="step-flow">
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(79,195,247,0.2); color:var(--accent); min-width:70px;">Turn 1</div>
+              <div class="step-content">
+                <strong>User:</strong> "I'm planning a trip to Japan in March."<br>
+                <strong>Agent:</strong> "Great choice! March is cherry blossom season."
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2); min-width:70px;">Turn 2</div>
+              <div class="step-content">
+                <strong>User:</strong> "What should I pack?"<br>
+                <strong>Agent:</strong> "For <em>Japan in March</em>, pack layers &mdash; it's 8-15°C..."
+              </div>
+            </div>
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(255,183,77,0.2); color:var(--accent3); min-width:70px;">Turn 3</div>
+              <div class="step-content">
+                <strong>User:</strong> "And hotel recommendations?"<br>
+                <strong>Agent:</strong> "For <em>cherry blossom season in Japan</em>, consider Kyoto..."
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="card card-accent">
+            <h4>What's happening behind the scenes?</h4>
+            <p>The agent includes the <strong>full conversation history</strong> with every request to the LLM.
+            That's how it knows "there" means Japan and "then" means March. Simple but effective.</p>
+          </div>
+        </section>
+
+        <!-- LONG TERM MEMORY -->
+        <section>
+          <h2>Long-Term Memory: Persistent Knowledge</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Session 1 (Monday)</h4>
+              <p>
+                <strong>User:</strong> "I'm allergic to peanuts."<br>
+                <strong>Agent:</strong> <em>Saves to long-term memory</em>
+              </p>
+            </div>
+            <div class="card card-green">
+              <h4>Session 2 (Friday)</h4>
+              <p>
+                <strong>User:</strong> "Suggest a Thai restaurant."<br>
+                <strong>Agent:</strong> "Here are options that don't use peanuts, since you mentioned your allergy."
+              </p>
+            </div>
+          </div>
+          <br>
+          <div class="card card-orange">
+            <h4>How it works</h4>
+            <p>Information is stored in a <strong>vector database</strong> (like ChromaDB).
+            Before answering, the agent searches this database for relevant past context.
+            This is closely related to RAG &mdash; which we'll cover in depth on Day 2.</p>
+          </div>
+        </section>
+
+        <!-- EPISODIC MEMORY -->
+        <section>
+          <h2>Episodic Memory: Learning from Experience</h2>
+          <div class="card-grid" style="margin-top:14px;">
+            <div class="card card-red" style="padding:14px;">
+              <h4>Attempt 1</h4>
+              <p>
+                Agent tries API-A to get flight prices<br>
+                &rarr; <strong style="color:var(--accent4);">Failed</strong> (API-A is down)
+              </p>
+            </div>
+            <div class="card card-green" style="padding:14px;">
+              <h4>Attempt 2</h4>
+              <p>
+                Agent remembers API-A failed, tries API-B instead<br>
+                &rarr; <strong style="color:var(--accent2);">Success!</strong>
+              </p>
+            </div>
+          </div>
+          <div class="card card-accent" style="margin-top:14px; padding:14px;">
+            <h4>Next time a similar task comes up...</h4>
+            <p>The agent recalls: "Last time API-A was unreliable. I'll try API-B first."
+            This is episodic memory &mdash; the agent builds a library of <strong>what worked</strong>
+            and <strong>what didn't</strong> for different situations.</p>
+          </div>
+          <div class="analogy" style="margin-top:12px; font-size:0.7em;">
+            Like a delivery driver who remembers that Main Street is always jammed at 5 PM,
+            so they automatically take the alternate route without being told.
+          </div>
+        </section>
+
+        <!-- MEMORY SUMMARY -->
+        <section>
+          <h2>Memory: Putting It Together</h2>
+          <br>
+          <table class="compare-table">
+            <tr>
+              <th>Type</th>
+              <th>Scope</th>
+              <th>Duration</th>
+              <th>Implementation</th>
+            </tr>
+            <tr>
+              <td><strong>Short-Term</strong></td>
+              <td>Current conversation</td>
+              <td>One session</td>
+              <td>Conversation buffer / LangGraph state</td>
+            </tr>
+            <tr>
+              <td><strong>Long-Term</strong></td>
+              <td>Across all sessions</td>
+              <td>Permanent</td>
+              <td>Vector database (ChromaDB)</td>
+            </tr>
+            <tr>
+              <td><strong>Episodic</strong></td>
+              <td>Past task outcomes</td>
+              <td>Permanent</td>
+              <td>Experience logs / knowledge base</td>
+            </tr>
+          </table>
+          <br>
+          <div class="takeaway">
+            Most agents today use short-term memory well. Long-term and episodic memory are
+            <strong>active areas of development</strong> &mdash; getting these right is what separates
+            a demo agent from a production agent. You'll implement all three during this course.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== BRINGING IT ALL TOGETHER ==================== -->
+      <section>
+        <section>
+          <h2>Bringing It All Together</h2>
+          <h3>A complete agent interaction</h3>
+          <br>
+          <p style="font-size:0.75em; color:#ccc;">
+            "Find the cheapest flight from Delhi to Tokyo next Friday<br>
+            and email me the details."
+          </p>
+        </section>
+
+        <section>
+          <h2>The Complete Flow</h2>
+          <div class="step-flow" style="font-size:0.9em; gap:4px;">
+            <div class="step-row">
+              <div class="step-label think">Think</div>
+              <div class="step-content">I need to: 1) Find flights, 2) Compare prices, 3) Send email. Let me start with flights. <span style="color:#888;">(Planning)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label act">Act</div>
+              <div class="step-content">flight_search(from="DEL", to="TYO", date="next Friday") <span style="color:#888;">(Tool calling)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label observe">Observe</div>
+              <div class="step-content">Found 5 flights. Cheapest is Air India at ₹38,500. <span style="color:#888;">(Reading result)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label think">Think</div>
+              <div class="step-content">I have the cheapest option. Now I need to email the user. I remember their email from our last conversation. <span style="color:#888;">(Memory)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label act">Act</div>
+              <div class="step-content">send_email(to="user@email.com", subject="Delhi-Tokyo Flight", body="...") <span style="color:#888;">(Tool calling)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label observe">Observe</div>
+              <div class="step-content">Email sent successfully. <span style="color:#888;">(Confirming)</span></div>
+            </div>
+            <div class="step-row">
+              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2);">Done</div>
+              <div class="step-content">"I found the cheapest flight &mdash; Air India at ₹38,500 on Friday. I've emailed you the full details!" <span style="color:#888;">(ReAct complete)</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Every Concept in One Interaction</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Chain-of-Thought</h4>
+              <p>Agent broke the problem into 3 sub-tasks before starting</p>
+            </div>
+            <div class="card card-green">
+              <h4>ReAct Loop</h4>
+              <p>Think &rarr; Act &rarr; Observe repeated twice (search + email)</p>
+            </div>
+            <div class="card card-orange">
+              <h4>Tool Calling</h4>
+              <p>Used flight_search and send_email tools with correct parameters</p>
+            </div>
+            <div class="card card-red">
+              <h4>Memory</h4>
+              <p>Remembered the user's email from a previous conversation</p>
+            </div>
+          </div>
+          <br>
+          <div class="takeaway">
+            This is what you'll be building. Not just one piece &mdash;
+            the <strong>complete system</strong> where reasoning, tools, and memory work together.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== RECAP ==================== -->
+      <section>
+        <section>
+          <h2>Session 2 Recap</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card card-accent">
+              <h4>Reasoning</h4>
+              <ul>
+                <li><strong>CoT:</strong> Step-by-step thinking</li>
+                <li><strong>ReAct:</strong> Think + Act + Observe loop</li>
+                <li><strong>ToT:</strong> Explore multiple paths</li>
+                <li><strong>Reflection:</strong> Self-critique and improve</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Tool Calling</h4>
+              <ul>
+                <li>LLMs decide <em>which</em> tool to use</li>
+                <li>Framework executes the tool</li>
+                <li>Any Python function can be a tool</li>
+                <li>@tool decorator makes it easy</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Memory</h4>
+              <ul>
+                <li><strong>Short-term:</strong> Current conversation</li>
+                <li><strong>Long-term:</strong> Across sessions</li>
+                <li><strong>Episodic:</strong> Past experiences</li>
+                <li>Key differentiator for production</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHAT'S NEXT -->
+        <section>
+          <h2>What's Next?</h2>
+          <br>
+          <div class="card card-accent" style="text-align:center; padding:24px;">
+            <h4>Session 4: LangChain Fundamentals</h4>
+            <br>
+            <p>Time to turn theory into code!</p>
+            <br>
+            <div class="card-grid-3" style="margin-top:0;">
+              <div class="card">
+                <h4>Models & Prompts</h4>
+                <p>Ollama integration, prompt templates</p>
+              </div>
+              <div class="card">
+                <h4>LCEL</h4>
+                <p>LangChain Expression Language &mdash; the pipe syntax</p>
+              </div>
+              <div class="card">
+                <h4>Chains</h4>
+                <p>Composing steps into workflows</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- QUESTIONS -->
+        <section>
+          <h1 style="font-size:3em;">Questions?</h1>
+          <br>
+          <p style="color:#aaa; font-size:0.7em;">
+            We'll be implementing all of these patterns hands-on in Session 4 labs today.
+          </p>
+        </section>
+      </section>
+
+      <!-- ==================== QUIZ: SESSION 2 SELF-CHECK ==================== -->
+      <section>
+        <section>
+          <h1 style="font-size:2.5em;">Session 2 Quiz</h1>
+          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
+          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+            I'll show a question with 4 choices.<br>
+            Think about your answer. We'll discuss, then I'll reveal it.
+          </p>
+        </section>
+
+        <!-- Q1 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <div class="quiz-question">
+            In the <strong>ReAct</strong> pattern, what are the three repeating steps an agent performs?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Read, Evaluate, Answer</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Think (Reason), Act, Observe</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Input, Process, Output</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Plan, Execute, Deploy</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q1 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="quiz-question">
+            In the <strong>ReAct</strong> pattern, what are the three repeating steps?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Read, Evaluate, Answer</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>Think (Reason), Act, Observe</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Input, Process, Output</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Plan, Execute, Deploy</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> ReAct stands for <em>Reasoning + Acting</em>. The agent <strong>thinks</strong> about what to do,
+            <strong>acts</strong> by calling a tool, and <strong>observes</strong> the result &mdash; then loops until the goal is met.
+          </div>
+        </section>
+
+        <!-- Q2 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <div class="quiz-question">
+            What is the key difference between <strong>Chain-of-Thought</strong> and <strong>Tree-of-Thought</strong>?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>CoT uses tools, ToT does not</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>CoT follows one path; ToT explores multiple paths and picks the best</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>ToT is faster because it skips reasoning steps</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>They are the same thing with different names</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q2 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="quiz-question">
+            Key difference between <strong>Chain-of-Thought</strong> and <strong>Tree-of-Thought</strong>?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>CoT uses tools, ToT does not</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>CoT follows one path; ToT explores multiple paths and picks the best</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>ToT is faster because it skips reasoning steps</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>They are the same thing with different names</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> CoT is a single linear path of reasoning. ToT branches out like a chess player
+            considering multiple moves, evaluates each, and picks the best. More expensive but better for complex decisions.
+          </div>
+        </section>
+
+        <!-- Q3 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <div class="quiz-question">
+            Every tool an agent uses needs three things. Which of these is <strong>NOT</strong> one of them?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>A name &mdash; so the agent can refer to it</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>A description &mdash; so the agent knows when to use it</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>A training dataset &mdash; so the tool can learn</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Parameters &mdash; so the agent knows what input to pass</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q3 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="quiz-question">
+            Which is <strong>NOT</strong> one of the three things every tool needs?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>A name &mdash; so the agent can refer to it</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">B</span>
+              <span>A description &mdash; so the agent knows when to use it</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">C</span>
+              <span>A training dataset &mdash; so the tool can learn</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Parameters &mdash; so the agent knows what input to pass</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why C?</strong> Tools are just regular Python functions &mdash; they don't learn or train.
+            A tool needs a <strong>name</strong>, a <strong>description</strong> (the agent reads this to decide when to use it),
+            and <strong>parameters</strong> (what inputs to provide).
+          </div>
+        </section>
+
+        <!-- Q4 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <div class="quiz-question">
+            Your agent remembers that you prefer vegetarian food, even though you mentioned it
+            <strong>two weeks ago in a different conversation</strong>. Which type of memory is this?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Short-term memory</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Long-term memory</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Episodic memory</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Cache memory</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q4 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="quiz-question">
+            Agent remembers your food preference from <strong>two weeks ago</strong>. Which memory type?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Short-term memory</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>Long-term memory</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Episodic memory</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Cache memory</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> Long-term memory persists <em>across sessions</em> using a vector database.
+            Short-term is within one conversation. Episodic is about past task successes/failures, not user preferences.
+          </div>
+        </section>
+
+        <!-- Q5 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <div class="quiz-question">
+            In the <strong>Reflection</strong> pattern, what does the agent do after producing its first output?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Immediately returns it to the user</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Deletes it and starts over from scratch</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Critiques its own output and produces an improved version</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Sends it to another LLM for review</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="quiz-question">
+            In <strong>Reflection</strong>, what happens after the first output?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Immediately returns it to the user</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">B</span>
+              <span>Deletes it and starts over from scratch</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">C</span>
+              <span>Critiques its own output and produces an improved version</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Sends it to another LLM for review</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why C?</strong> Reflection is self-editing. The agent generates a draft, asks itself
+            "Is this accurate? Did I miss anything?" and produces an improved version.
+            The same LLM does both generation and critique.
+          </div>
+        </section>
+
+        <!-- QUIZ SCORE -->
+        <section>
+          <h2>How Did You Do?</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
+              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <p>No worries! These concepts will click as we start coding in Session 3.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
+              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <p>Solid! You've got the reasoning patterns down.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
+              <h4 style="color:var(--accent2);">5 correct</h4>
+              <p>Perfect! Ready to implement all of this in LangChain.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      center: true,
+      width: 1100,
+      height: 700,
+      margin: 0.06,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

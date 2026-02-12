@@ -16,10 +16,10 @@ echo "[1/2] Stopping any ChromaDB containers..."
 docker stop chromadb 2>/dev/null || true
 docker rm chromadb 2>/dev/null || true
 
-# Clean Python cache
-echo "[2/2] Cleaning Python cache..."
-find ~/workspace/day2 -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-find /tmp -type d -name "k8s-lab-*" -exec rm -rf {} + 2>/dev/null || true
+# Clean Python cache and temp files
+echo "[2/2] Cleaning temp files..."
+find ~/workspace -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+rm -rf /tmp/k8s-lab-04-* /tmp/k8s-lab-05-* /tmp/k8s-lab-06-*
 
 echo ""
 echo "After cleanup:"

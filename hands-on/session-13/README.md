@@ -1,27 +1,26 @@
-# Session 13: Observability Fundamentals — Hands-on Labs
+# Session 13: Model Context Protocol (MCP) -- Hands-on Labs
 
 ## Prerequisites
 
 - Python 3.10+ installed
-- No Kubernetes cluster needed — labs generate config files and validate YAML
+- No external packages needed -- these labs simulate MCP concepts using standard library
 
 ```bash
-# No pip packages needed — these labs generate configs and validate answers
 python --version  # 3.10+
 ```
 
 ## Labs Overview
 
-| Lab | Topic | What You'll Learn | Needs K8s? |
-|-----|-------|-------------------|------------|
-| 01 | Three Pillars | Metrics, Logs, Traces — when to use which | No |
-| 02 | Metric Types | Counter, Gauge, Histogram, Summary | No |
-| 03 | Structured Logging | JSON logs, trace_id correlation, AI log fields | No |
-| 04 | Distributed Traces | Trace/span hierarchy, AI trace patterns | No |
-| 05 | OpenTelemetry Setup | TracerProvider, exporters, OTel Collector config | No |
-| 06 | Instrumentation | Auto vs manual instrumentation, custom spans | No |
-| 07 | OTel Collector | Collector deployment, K8s integration | No |
-| 08 | **Challenge** | Complete observability stack: Collector + Agent + design | No |
+| Lab | Topic | What You'll Learn |
+|-----|-------|-------------------|
+| 01 | MCP Fundamentals | Resource/Tool/Prompt class models, MCP architecture |
+| 02 | MCP Protocol | JSON-RPC 2.0 messages, request/response validation |
+| 03 | MCP Server Skeleton | Generate complete MCP server file from templates |
+| 04 | MCP Tool Implementation | Typed tool functions: file_search, code_metrics |
+| 05 | MCP Resources | Static + dynamic resources, URI templates |
+| 06 | MCP Transport | stdio encoding/decoding, SSE event formatting |
+| 07 | MCP Client | Client discovery + multi-step tool workflow |
+| 08 | **Challenge** | Complete MCP server (3 tools, 2 resources, 1 prompt) + client |
 
 ## How to Run
 
@@ -29,20 +28,20 @@ python --version  # 3.10+
 cd hands-on/session-13
 
 # Run a lab
-python lab01_three_pillars.py
+python lab01_mcp_fundamentals.py
 
 # Check the solution
-python solutions/lab01_three_pillars.py
+python solutions/lab01_mcp_fundamentals.py
 ```
 
 ## Tips
 
-- All 8 labs work WITHOUT a Kubernetes cluster
-- Look for `# TODO` markers — that's where you write code or YAML
-- Labs 01-04 cover observability concepts
-- Labs 05-07 cover OpenTelemetry implementation
-- Lab 08 is the challenge combining all concepts
-- Generated files appear in `/tmp/k8s-lab-13-XX/` directories
+- Look for `# TODO` markers -- that's where you write code
+- Labs 01-03 cover MCP architecture and protocol
+- Labs 04-06 cover building MCP primitives
+- Lab 07 covers the client side
+- Lab 08 is the comprehensive challenge
+- Generated files appear in `/tmp/aidev-lab-13-XX/` directories
 - Compare your work with `solutions/` when done
 
 ## Estimated Time

@@ -1,253 +1,262 @@
 """
-Lab 08 Challenge: Complete UniGPS Production Agent API
-========================================================
-Build a production-ready agent API that combines everything from Session 9:
-- FastAPI with Pydantic models
-- LangGraph multi-agent system
-- Streaming and batch endpoints
-- Error handling and validation
-- Caching for performance
-- Comprehensive test suite
+Lab 08: Challenge — Complete UniGPS Multi-Agent Support System
+================================================================
+Goal: Build a production-grade multi-agent support system combining
+      ALL patterns from this session.
 
-Requirements:
-1. FastAPI app with these endpoints:
-   - GET  /health               → health check with uptime
-   - POST /api/support          → batch agent response
-   - POST /api/support/stream   → SSE streaming response
-   - GET  /api/tickets          → list recent tickets
-   - GET  /api/tickets/{id}     → get ticket by ID
-   - GET  /api/stats            → cache stats and request counts
+Scenario:
+  UniGPS needs a complete support desk system that:
+  1. Uses an LLM supervisor to classify and route requests
+  2. Has specialized worker agents (HR, Tech, Finance, Facilities)
+  3. Supports handoff/escalation when a worker can't handle a request
+  4. Aggregates results for multi-domain requests
+  5. Implements fallback chains for reliability
+  6. Tracks everything in an audit trail
+  7. Uses checkpointing for conversation persistence
 
-2. LangGraph agent with:
-   - LLM supervisor (classify hr/tech/finance/general)
-   - Domain workers with specialized prompts
-   - Fallback templates when LLM fails
-   - Audit trail for every request
-
-3. Performance features:
-   - Classification caching (lru_cache)
-   - Per-request timing in response
-   - Shared LLM client (connection pooling)
-
-4. Tests (at least 6):
-   - Health endpoint
-   - Support endpoint success
-   - Validation errors (422)
-   - Fallback on failure
-   - Ticket storage and retrieval
-   - Cache statistics
-
-Needs: GROQ_API_KEY in .env
+Requires: GROQ_API_KEY in .env
 """
 
 import os
-import json
-import time
 from typing import TypedDict, Annotated
 from operator import add
-from functools import lru_cache
 from datetime import datetime
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
-from fastapi.testclient import TestClient
-from pydantic import BaseModel, Field
-from unittest.mock import MagicMock
-
-# from langchain_groq import ChatGroq
-# from langgraph.graph import StateGraph, START, END
+from langchain_groq import ChatGroq
+from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
 
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+
 print("=" * 60)
-print("  Challenge: UniGPS Production Agent API")
+print("  Challenge: UniGPS Multi-Agent Support System")
 print("=" * 60)
 
 # ============================================================
-# YOUR CODE HERE
+# YOUR TASK: Build the complete multi-agent system
 # ============================================================
-# Build the complete production agent API.
-# Implement each section below.
+#
+# State definition (provided):
 
-# --- 1. LLM Setup ---
-# llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+class SupportRequest(TypedDict):
+    # Input
+    employee_name: str
+    request: str
+    # Routing
+    category: str               # hr, tech, finance, facilities, general
+    confidence: int             # 1-10 from LLM classifier
+    # Processing
+    worker_output: str
+    needs_escalation: bool
+    escalation_reason: str
+    # Fallback
+    error: str
+    fallback_used: bool
+    # Output
+    final_response: str
+    # Tracking
+    audit: Annotated[list, add]
 
-# --- 2. Agent State ---
-# class SupportState(TypedDict):
-#     request: str
-#     employee_name: str
-#     category: str
-#     confidence: str
-#     worker_output: str
-#     error: str
-#     fallback_used: bool
-#     final_response: str
-#     timings: Annotated[list, add]
-#     audit: Annotated[list, add]
+#
+# Requirements:
+#
+# 1. LLM SUPERVISOR (router)
+#    - Classify request into: hr, tech, finance, facilities, general
+#    - Include confidence score (1-10)
+#    - If confidence < 5, route to "clarify" agent
+#    - Handle LLM errors gracefully (fallback to "general")
+#
+# 2. SPECIALIZED WORKERS (4 domain agents)
+#    - HR: leave, policies, insurance, onboarding
+#    - Tech: servers, laptops, deployments, bugs
+#    - Finance: expenses, salary, tax, reimbursement
+#    - Facilities: desk, parking, cafeteria, access cards
+#    - Each with domain-specific system prompt
+#
+# 3. ESCALATION
+#    - Worker can set needs_escalation=True if request is too complex
+#    - Escalation goes to a "manager_agent" node
+#    - Manager agent handles with broader authority
+#
+# 4. FALLBACK CHAIN
+#    - Primary (LLM specialist) → Fallback (template) → Error response
+#    - QA check: verify output length and quality
+#
+# 5. AUDIT TRAIL
+#    - Every node adds to audit: Annotated[list, add]
+#    - Include timestamps in audit entries
+#
+# 6. CHECKPOINTING
+#    - MemorySaver with thread_id per employee
+#    - Support conversation history
+#
+# Graph structure:
+#   START → supervisor → [clarify | hr | tech | finance | facilities | general]
+#         → [escalation_check] → [manager | qa_check] → [finalize | fallback]
+#         → finalize → END
 
-# --- 3. Templates ---
-# TEMPLATES = {
-#     "hr": "Please visit the HR portal or email hr@unigps.in.",
-#     "tech": "Please create a Jira ticket or contact IT at ext. 5555.",
-#     "finance": "Please email finance@unigps.in with details.",
-#     "general": "Your request has been noted. A team member will respond shortly.",
-# }
+# ============================================================
+# YOUR CODE BELOW
+# ============================================================
 
-# --- 4. Cached classification ---
-# @lru_cache(maxsize=200)
-# def cached_classify(request_text: str) -> str:
-#     """Classify with caching for repeated queries."""
+# def supervisor(state: SupportRequest) -> dict:
+#     """LLM-powered supervisor with confidence scoring."""
+#     prompt = (
+#         f"You are the UniGPS support desk supervisor.\n"
+#         f"Classify this request into: hr, tech, finance, facilities, general\n"
+#         f"Rate your confidence 1-10.\n"
+#         f"Request: {state['request']}\n"
+#         f"Reply:\nCATEGORY: ...\nCONFIDENCE: ..."
+#     )
 #     ...
 
-# --- 5. Agent Nodes ---
-# def supervisor(state: SupportState) -> dict:
-#     """LLM supervisor with timing."""
-#     ...
-#
-# def worker(state: SupportState) -> dict:
-#     """Domain worker with fallback."""
-#     ...
-#
-# def route_after_worker(state: SupportState) -> str:
-#     ...
-#
-# def fallback(state: SupportState) -> dict:
-#     ...
-#
-# def finalize(state: SupportState) -> dict:
+# def route_supervisor(state: SupportRequest) -> str:
+#     if state["confidence"] < 5:
+#         return "clarify"
+#     return state["category"]
+
+# def clarify_agent(state: SupportRequest) -> dict:
 #     ...
 
-# --- 6. Build LangGraph ---
-# graph = StateGraph(SupportState)
-# ...
-# agent = graph.compile()
-
-# --- 7. Pydantic Models ---
-# class SupportRequest(BaseModel):
-#     employee_name: str = Field(..., min_length=2, max_length=100)
-#     request: str = Field(..., min_length=5, max_length=1000)
-#
-# class SupportResponse(BaseModel):
-#     ticket_id: str
-#     category: str
-#     response: str
-#     fallback_used: bool
-#     timing_seconds: float
-#     audit: list[str]
-#
-# class TicketInfo(BaseModel):
-#     ticket_id: str
-#     employee_name: str
-#     request: str
-#     category: str
-#     response: str
-#     timestamp: str
-
-# --- 8. Ticket Store ---
-# ticket_store = {}
-# request_count = 0
-
-# --- 9. FastAPI App ---
-# app = FastAPI(
-#     title="UniGPS Production Agent API",
-#     version="2.0.0",
-#     description="Production-ready multi-agent support system",
-# )
-#
-# @app.get("/health")
-# async def health():
-#     ...
-#
-# @app.post("/api/support", response_model=SupportResponse)
-# async def handle_support(req: SupportRequest):
-#     """Batch endpoint: returns full response."""
-#     ...
-#
-# @app.post("/api/support/stream")
-# async def stream_support(req: SupportRequest):
-#     """Streaming endpoint: SSE events per agent node."""
-#     ...
-#
-# @app.get("/api/tickets")
-# async def list_tickets(category: str = None, limit: int = 10):
-#     ...
-#
-# @app.get("/api/tickets/{ticket_id}")
-# async def get_ticket(ticket_id: str):
-#     ...
-#
-# @app.get("/api/stats")
-# async def get_stats():
-#     """Return cache stats and request counts."""
+# def hr_worker(state: SupportRequest) -> dict:
 #     ...
 
-# --- 10. Tests ---
-# client = TestClient(app)
-#
-# def test_health():
-#     resp = client.get("/health")
-#     assert resp.status_code == 200
-#     assert resp.json()["status"] == "healthy"
-#
-# def test_support_success():
-#     resp = client.post("/api/support", json={
-#         "employee_name": "Priya",
-#         "request": "I need sick leave for 3 days",
-#     })
-#     assert resp.status_code == 200
-#     data = resp.json()
-#     assert data["category"] in ["hr", "tech", "finance", "general"]
-#     assert data["ticket_id"].startswith("TKT-")
-#     assert data["timing_seconds"] > 0
-#
-# def test_validation_error():
-#     resp = client.post("/api/support", json={
-#         "employee_name": "P",  # too short
-#         "request": "Hi",      # too short
-#     })
-#     assert resp.status_code == 422
-#
-# def test_ticket_retrieval():
-#     # Create a ticket first
-#     resp = client.post("/api/support", json={
-#         "employee_name": "Vikram",
-#         "request": "Server is down in production",
-#     })
-#     ticket_id = resp.json()["ticket_id"]
-#
-#     # Retrieve it
-#     resp = client.get(f"/api/tickets/{ticket_id}")
-#     assert resp.status_code == 200
-#     assert resp.json()["employee_name"] == "Vikram"
-#
-# def test_ticket_not_found():
-#     resp = client.get("/api/tickets/FAKE-9999")
-#     assert resp.status_code == 404
-#
-# def test_stats_endpoint():
-#     resp = client.get("/api/stats")
-#     assert resp.status_code == 200
-#     data = resp.json()
-#     assert "cache" in data
-#     assert "total_requests" in data
+# def tech_worker(state: SupportRequest) -> dict:
+#     ...
 
-# --- Run Tests ---
+# def finance_worker(state: SupportRequest) -> dict:
+#     ...
 
-print("\n  Implement the challenge code above, then run:")
-print("  python lab08_challenge.py")
-print("  python -m pytest lab08_challenge.py -v")
+# def facilities_worker(state: SupportRequest) -> dict:
+#     ...
 
-print("\n--- Test Scenarios ---")
-print("  1. Priya: 'I need sick leave for 3 days'         → HR")
-print("  2. Vikram: 'Server is down in production'         → Tech")
-print("  3. Anita: 'Submit my expense report for March'    → Finance")
-print("  4. Rahul: 'Where is the cafeteria?'               → General")
-print("  5. Meera: 'I need leave AND my laptop is broken'  → HR or Tech")
-print("  6. Repeated: Same request twice → cache hit")
+# def general_worker(state: SupportRequest) -> dict:
+#     ...
+
+# def escalation_check(state: SupportRequest) -> dict:
+#     """Check if the worker flagged for escalation."""
+#     ...
+
+# def route_escalation(state: SupportRequest) -> str:
+#     return "manager" if state["needs_escalation"] else "qa_check"
+
+# def manager_agent(state: SupportRequest) -> dict:
+#     """Manager agent with broader authority."""
+#     ...
+
+# def qa_check(state: SupportRequest) -> dict:
+#     """Verify response quality."""
+#     ...
+
+# def route_qa(state: SupportRequest) -> str:
+#     return "fallback" if state["error"] else "finalize"
+
+# def fallback(state: SupportRequest) -> dict:
+#     ...
+
+# def finalize(state: SupportRequest) -> dict:
+#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#     ...
+
+# Build graph
+# graph = StateGraph(SupportRequest)
+# ... add all nodes and edges ...
+
+# memory = MemorySaver()
+# app = graph.compile(checkpointer=memory)
+
+# ============================================================
+# Test cases (provided):
+# ============================================================
+
+test_requests = [
+    {
+        "employee_name": "Priya Sharma",
+        "request": "I want to apply for 5 days casual leave from next Monday",
+        "thread_id": "support-001",
+    },
+    {
+        "employee_name": "Vikram Patel",
+        "request": "The production database is running very slow and queries are timing out",
+        "thread_id": "support-002",
+    },
+    {
+        "employee_name": "Anita Desai",
+        "request": "When will my travel expense reimbursement from last month be credited?",
+        "thread_id": "support-003",
+    },
+    {
+        "employee_name": "Rahul Kumar",
+        "request": "I need a standing desk and a parking spot in the new building",
+        "thread_id": "support-004",
+    },
+    {
+        "employee_name": "Meera Joshi",
+        "request": "asdfghjkl",
+        "thread_id": "support-005",
+    },
+    {
+        "employee_name": "Amit Singh",
+        "request": "I need a policy exception for 30 days leave for my wedding",
+        "thread_id": "support-006",
+    },
+]
+
+# Uncomment to test when your implementation is ready:
+#
+# print("\n--- Processing Support Requests ---\n")
+# for req in test_requests:
+#     config = {"configurable": {"thread_id": req["thread_id"]}}
+#     print(f"{'='*50}")
+#     print(f"Employee: {req['employee_name']}")
+#     print(f"Request: {req['request']}")
+#
+#     result = app.invoke({
+#         "employee_name": req["employee_name"],
+#         "request": req["request"],
+#         "category": "", "confidence": 0,
+#         "worker_output": "", "needs_escalation": False,
+#         "escalation_reason": "", "error": "",
+#         "fallback_used": False, "final_response": "",
+#         "audit": [],
+#     }, config)
+#
+#     print(f"\n  Category: {result.get('category', 'N/A')}")
+#     print(f"  Confidence: {result.get('confidence', 'N/A')}/10")
+#     print(f"  Escalated: {result.get('needs_escalation', False)}")
+#     print(f"  Fallback: {result.get('fallback_used', False)}")
+#     print(f"  Response: {result.get('final_response', 'N/A')[:80]}...")
+#     print(f"  Audit trail:")
+#     for entry in result.get("audit", []):
+#         print(f"    {entry}")
+#     print()
+#
+# # Summary
+# print(f"\n{'='*60}")
+# print("--- Summary ---")
+# print(f"{'Thread':<14} {'Employee':<18} {'Category':<12} {'Escalated'}")
+# print("-" * 60)
+# for req in test_requests:
+#     config = {"configurable": {"thread_id": req["thread_id"]}}
+#     snap = app.get_state(config)
+#     v = snap.values
+#     print(
+#         f"{req['thread_id']:<14} "
+#         f"{req['employee_name']:<18} "
+#         f"{v.get('category', 'N/A'):<12} "
+#         f"{v.get('needs_escalation', False)}"
+#     )
 
 print("\n" + "=" * 60)
-print("Challenge: Build the complete production API!")
-print("- 6 endpoints (health, support, stream, tickets, stats)")
-print("- LangGraph agent with fallback + audit")
-print("- Caching + timing")
-print("- 6+ tests passing")
+print("Challenge: Implement the complete multi-agent support system")
+print("Patterns to use:")
+print("  - LLM supervisor with confidence routing")
+print("  - 4 specialized domain workers + general")
+print("  - Escalation path for complex requests")
+print("  - Fallback chain (LLM → template → error message)")
+print("  - QA gate before finalizing")
+print("  - Audit trail with timestamps")
+print("  - MemorySaver checkpointing with thread_id")
+print("\nCheck solutions/lab08_challenge.py when done!")

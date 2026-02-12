@@ -1,181 +1,216 @@
 """
-Lab 08: Challenge — Build a UniGPS Employee Support Agent — SOLUTION
+Lab 08: Challenge — Build a Company Q&A Bot — SOLUTION
 """
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
-from langgraph.checkpoint.memory import MemorySaver
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
 load_dotenv()
 
 print("=" * 50)
-print("  UniGPS Employee Support Agent — SOLUTION")
+print("  Company Q&A Bot — SOLUTION")
 print("=" * 50)
 
-# Company knowledge base
-LEAVE_DATA = {
-    "annual": {"days": 24, "notice": "3 working days", "carry_forward": False,
-               "notes": "Prorated for <6 months tenure"},
-    "sick": {"days": 12, "notice": "Same day by 10 AM", "carry_forward": True,
-             "notes": "Medical cert after 2 consecutive days. Max carry-forward: 30 days"},
-    "maternity": {"days": "26 weeks", "notice": "30 days", "carry_forward": False,
-                  "notes": "After 80 days of employment. Can start 8 weeks before delivery"},
-    "paternity": {"days": "2 weeks", "notice": "15 days", "carry_forward": False,
-                  "notes": "Must take within 6 months of child's birth"},
-}
+COMPANY_DOCS = [
+    {
+        "text": """UniGPS Leave Policy (Updated January 2025)
 
-OFFICE_DATA = {
-    "bangalore": {"address": "WeWork Embassy Tech Village, Outer Ring Road, 5th Floor",
-                  "employees": "200+", "teams": "All departments (HQ)",
-                  "facilities": "Cafeteria (3rd floor), Gym, Basement parking"},
-    "mumbai": {"address": "Worli Business District, Tower A, 12th Floor",
-               "employees": "50", "teams": "Sales, Client Success, Marketing",
-               "facilities": "Sea-facing meeting rooms for client presentations"},
-    "hyderabad": {"address": "HITEC City, Cyber Gateway, 8th Floor",
-                  "employees": "80", "teams": "Backend Engineering, Data Engineering",
-                  "facilities": "24/7 access for oncall engineers"},
-    "pune": {"address": "Hinjewadi Phase 2, Building C, 4th Floor",
-             "employees": "40", "teams": "QA, DevOps, SRE",
-             "facilities": "Performance testing lab"},
-}
+Annual Leave: All full-time employees receive 24 days of annual leave per year. Leave must be applied for at least 3 working days in advance through the HR portal. Unused annual leave cannot be carried forward to the next financial year. Employees with less than 6 months tenure receive prorated leave.
 
-TECH_STACK = {
-    "backend": "Python (FastAPI) for new services. Java (Spring Boot) for existing. RESTful APIs mandatory.",
-    "frontend": "React + TypeScript (new projects). Angular (existing: Dashboard, Admin portal).",
-    "database": "PostgreSQL (primary relational). MongoDB (document storage). Redis (caching + sessions).",
-    "cloud": "AWS (EKS/Kubernetes). Docker for containers. Terraform for IaC. GitHub Actions for CI/CD.",
-    "monitoring": "Prometheus (metrics). Grafana (dashboards). LangFuse (LLM tracing). PagerDuty (alerts).",
-}
+Sick Leave: 12 days per year. Employees must notify their manager by 10 AM on the day of absence. For absences exceeding 2 consecutive days, a medical certificate from a registered medical practitioner is mandatory. Unused sick leave can be carried forward up to a maximum of 30 days.
 
-EXPENSE_LIMITS = {
-    "meal_domestic": "Rs 500/day",
-    "meal_international": "Rs 3,000/day",
-    "team_dinner": "Rs 1,000/person",
-    "monitor": "Rs 15,000 (through IT)",
-    "mobile": "Rs 1,000/month",
-    "internet": "Rs 1,500/month (WFH)",
-    "ergonomic_chair": "Rs 10,000 (one-time)",
-    "laptop": "Provided by company, replaced every 3 years",
-}
+Maternity Leave: 26 weeks of paid leave as per the Maternity Benefit Act. This can be taken up to 8 weeks before the expected delivery date. Applicable after 80 days of continuous employment.
 
-# PART A: Create the tools
-@tool
-def leave_policy_lookup(leave_type: str) -> str:
-    """Look up UniGPS leave policy for a specific type (annual, sick, maternity, paternity)."""
-    policy = LEAVE_DATA.get(leave_type.lower())
-    if policy:
-        return (f"{leave_type.title()} Leave: {policy['days']} days. "
-                f"Notice: {policy['notice']}. "
-                f"Carry-forward: {'Yes' if policy['carry_forward'] else 'No'}. "
-                f"Notes: {policy['notes']}")
-    return f"Unknown type: '{leave_type}'. Available: {', '.join(LEAVE_DATA.keys())}"
+Paternity Leave: 2 weeks of paid leave. Must be taken within 6 months of the child's birth. Apply at least 15 days in advance.""",
+        "source": "leave-policy.pdf",
+        "category": "leave"
+    },
+    {
+        "text": """UniGPS Work From Home Policy
 
-@tool
-def office_directory(city: str) -> str:
-    """Get UniGPS office details — address, team size, departments, and facilities."""
-    office = OFFICE_DATA.get(city.lower())
-    if office:
-        return (f"UniGPS {city.title()}: {office['address']}. "
-                f"{office['employees']} employees. Teams: {office['teams']}. "
-                f"Facilities: {office['facilities']}")
-    return f"No office in '{city}'. Available: {', '.join(OFFICE_DATA.keys())}"
+Eligibility: All employees who have completed their probation period (6 months) are eligible for WFH. New employees must work from office for the first 6 months.
 
-@tool
-def tech_recommendation(category: str) -> str:
-    """Get UniGPS recommended technology stack for a category (backend, frontend, database, cloud, monitoring)."""
-    rec = TECH_STACK.get(category.lower())
-    if rec:
-        return f"UniGPS {category.title()} Stack: {rec}"
-    return f"Unknown category: '{category}'. Try: {', '.join(TECH_STACK.keys())}"
+Schedule: Up to 3 days per week with team lead approval. Core hours are 10 AM to 4 PM IST — you must be available on Slack and email during these hours. Friday is a mandatory in-office day for all teams.
 
-@tool
-def expense_checker(expense_type: str) -> str:
-    """Check UniGPS expense policy limits for a specific type (meal_domestic, monitor, internet, etc.)."""
-    limit = EXPENSE_LIMITS.get(expense_type.lower().replace(" ", "_"))
-    if limit:
-        return f"{expense_type.replace('_', ' ').title()}: {limit}"
-    return f"Unknown type. Available: {', '.join(EXPENSE_LIMITS.keys())}"
+Equipment: Company-provided laptop must be used. VPN connection is mandatory for accessing internal systems. Contact IT helpdesk (it@unigps.in) for VPN setup.
 
-print("Tools created: leave_policy_lookup, office_directory, tech_recommendation, expense_checker")
+Reimbursement: Internet allowance of Rs 1,500 per month. Ergonomic chair reimbursement up to Rs 10,000 (one-time). Submit receipts to finance@unigps.in by the 5th of each month.""",
+        "source": "wfh-policy.pdf",
+        "category": "wfh"
+    },
+    {
+        "text": """UniGPS Expense Policy
 
-# PART B: Build the agent with memory
+Travel: All business travel must be pre-approved by your manager. Expenses must be submitted with original receipts within 7 working days of travel completion. Economy class flights for domestic travel; business class allowed for international flights over 6 hours.
+
+Meals: Meal allowance is Rs 500 per day during client visits within India. Rs 3,000 per day for international travel. Team dinners up to Rs 1,000 per person with manager approval.
+
+Equipment: Laptops provided by company, replaced every 3 years. External monitors (up to Rs 15,000), keyboards, and mice can be requested through IT. Software licenses must be requested through the IT helpdesk — do NOT purchase independently.
+
+Communication: Mobile reimbursement of Rs 1,000 per month for roles requiring client communication. Provide monthly bill to finance.""",
+        "source": "expense-policy.pdf",
+        "category": "expense"
+    },
+    {
+        "text": """UniGPS Technology Stack Guide
+
+Backend: Primary languages are Python (using FastAPI framework) and Java (using Spring Boot). New microservices should use Python unless there's a specific reason for Java. All APIs must follow RESTful conventions.
+
+Frontend: React is the standard for new projects. Angular is maintained for existing applications (UniGPS dashboard, Admin portal). TypeScript is mandatory for all frontend code.
+
+Database: PostgreSQL is the primary relational database. MongoDB for document storage where schema flexibility is needed. Redis for caching and session management.
+
+Cloud & Infrastructure: AWS is our primary cloud provider. All services run on EKS (Kubernetes). Docker is used for containerization. Terraform for infrastructure as code. CI/CD through GitHub Actions.
+
+Monitoring: Prometheus for metrics collection. Grafana for dashboards. LangFuse for LLM application tracing. PagerDuty for alerts.""",
+        "source": "tech-guide.pdf",
+        "category": "tech"
+    },
+    {
+        "text": """UniGPS Office Directory
+
+Bangalore (Headquarters): WeWork Embassy Tech Village, Outer Ring Road, 5th Floor. 200+ employees. All departments represented. Cafeteria on 3rd floor. Gym membership included. Parking available in basement (apply through admin). Office hours: 9 AM to 6 PM, Monday to Friday.
+
+Mumbai: Worli Business District, Tower A, 12th Floor. 50 employees. Primarily sales, client success, and marketing teams. Sea-facing meeting rooms available for client presentations.
+
+Hyderabad: HITEC City, Cyber Gateway, 8th Floor. 80 employees. Engineering hub for backend services and data engineering. 24/7 access for oncall engineers.
+
+Pune: Hinjewadi Phase 2, Building C, 4th Floor. 40 employees. QA, DevOps, and SRE teams. Lab environment for performance testing available.
+
+All offices have high-speed internet, meeting rooms (book via Outlook), and free tea/coffee. Report facility issues to admin@unigps.in.""",
+        "source": "office-directory.pdf",
+        "category": "office"
+    },
+]
+
+# PART A: Build the knowledge base
+docs = []
+for d in COMPANY_DOCS:
+    docs.append(Document(
+        page_content=d["text"],
+        metadata={"source": d["source"], "category": d["category"]}
+    ))
+
+splitter = RecursiveCharacterTextSplitter(chunk_size=400, chunk_overlap=50)
+chunks = splitter.split_documents(docs)
+print(f"Split {len(docs)} documents into {len(chunks)} chunks")
+
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings)
+print(f"Vector store ready: {vectorstore._collection.count()} chunks")
+
+# PART B: RAG chain with citations
+def format_docs(docs):
+    return "\n\n".join(
+        f"[{d.metadata['source']}]\n{d.page_content}" for d in docs
+    )
+
+retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
 llm = ChatGroq(model="llama-3.3-70b-versatile")
-memory = MemorySaver()
-agent = create_react_agent(
-    llm,
-    [leave_policy_lookup, office_directory, tech_recommendation, expense_checker],
-    checkpointer=memory,
-    state_modifier="You are UniBot, UniGPS's AI employee support assistant. "
-                   "Be friendly, concise, and always cite the policy source. "
-                   "If you don't know something, say so honestly.",
+
+prompt = ChatPromptTemplate.from_template("""You are UniGPS's AI assistant.
+Answer using ONLY the context. Cite sources in parentheses.
+If unsure, say "I don't have that information."
+
+Context:
+{context}
+
+Question: {question}
+Answer:""")
+
+rag_chain = (
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
 )
-print("UniBot agent ready!\n")
 
-# PART C: Test with single-topic questions
-config = {"configurable": {"thread_id": "test-session"}}
-
+# PART C: Test questions
 test_questions = [
-    "How many sick leave days do I get per year?",
-    "Where is the Pune office located?",
-    "What language should I use for a new backend service?",
-    "What's the limit for mobile reimbursement?",
+    "How many days of sick leave do I get?",
+    "Can a new employee work from home?",
+    "How much is the meal allowance abroad?",
+    "What programming language should I use for a new microservice?",
+    "Where is the Hyderabad office?",
+    "How do I get a new monitor?",
+    "What is the company's stock price?",
 ]
 
-print("--- Single-Topic Tests ---")
+print("\n--- Testing Q&A Bot ---")
 for q in test_questions:
-    response = agent.invoke({"messages": [("user", q)]}, config)
     print(f"\nQ: {q}")
-    print(f"A: {response['messages'][-1].content[:200]}")
+    print(f"A: {rag_chain.invoke(q)}")
 
-# PART D: Test memory across turns
-print("\n\n--- Multi-Turn Memory Test ---")
-config_mem = {"configurable": {"thread_id": "memory-test"}}
+# PART D: Category-specific chains
+hr_retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 3, "filter": {"category": "leave"}}
+)
+hr_chain = (
+    {"context": hr_retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)
 
-turns = [
-    "Hi! I'm Vikram from the engineering team.",
-    "What database should I use for a new project?",
-    "What's my name?",
-    "I also need to check — how many annual leave days do I get?",
-]
+tech_retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 3, "filter": {"category": "tech"}}
+)
+tech_chain = (
+    {"context": tech_retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)
 
-for i, q in enumerate(turns, 1):
-    r = agent.invoke({"messages": [("user", q)]}, config_mem)
-    print(f"Turn {i}: {q}")
-    print(f"  → {r['messages'][-1].content[:200]}")
-    print()
+print("\n--- HR-only chain ---")
+print(f"Q: What leave options do new mothers have?")
+print(f"A: {hr_chain.invoke('What leave options do new mothers have?')}")
 
-# PART E: Multi-user sessions
-print("--- Multi-User Sessions ---")
-config_user1 = {"configurable": {"thread_id": "priya-001"}}
-config_user2 = {"configurable": {"thread_id": "rahul-002"}}
+print("\n--- Tech-only chain ---")
+print(f"Q: What database should I use for a new project?")
+print(f"A: {tech_chain.invoke('What database should I use for a new project?')}")
 
-agent.invoke({"messages": [("user", "I'm Priya. Tell me about maternity leave.")]}, config_user1)
-agent.invoke({"messages": [("user", "I'm Rahul. What's the Hyderabad office like?")]}, config_user2)
+# PART F: Answer with sources
+print("\n--- Answer with Sources ---")
 
-r1 = agent.invoke({"messages": [("user", "What did I ask about?")]}, config_user1)
-r2 = agent.invoke({"messages": [("user", "What did I ask about?")]}, config_user2)
-print(f"Priya's session: {r1['messages'][-1].content[:150]}")
-print(f"Rahul's session: {r2['messages'][-1].content[:150]}")
 
-# PART F: Interactive mode
+def get_answer_with_sources(question):
+    docs = retriever.invoke(question)
+    context = format_docs(docs)
+    answer = (prompt | llm | StrOutputParser()).invoke(
+        {"context": context, "question": question}
+    )
+    return {
+        "answer": answer,
+        "sources": [
+            {"source": d.metadata["source"], "text": d.page_content[:100]}
+            for d in docs
+        ]
+    }
+
+
+result = get_answer_with_sources("What is the WFH policy?")
+print(f"\nAnswer: {result['answer']}")
+print(f"\nSources used:")
+for s in result["sources"]:
+    print(f"  - [{s['source']}] {s['text']}...")
+
+# PART E: Interactive mode
 print("\n" + "=" * 50)
-print("UniBot Interactive — type '/quit' to exit, '/switch <name>' to switch user")
+print("Interactive Q&A — type 'quit' to exit")
 print("=" * 50)
 
-current_user = "default"
 while True:
-    user_input = input(f"\n[{current_user}] You: ").strip()
-    if not user_input:
-        continue
-    if user_input == "/quit":
+    question = input("\nYour question: ").strip()
+    if question.lower() in ("quit", "exit", "q"):
         break
-    if user_input.startswith("/switch "):
-        current_user = user_input.split(" ", 1)[1]
-        print(f"Switched to session: {current_user}")
+    if not question:
         continue
 
-    config = {"configurable": {"thread_id": f"{current_user}-session"}}
-    response = agent.invoke({"messages": [("user", user_input)]}, config)
-    print(f"[UniBot] {response['messages'][-1].content}")
+    print("\nSearching knowledge base...")
+    result = get_answer_with_sources(question)
+    print(f"\nAnswer: {result['answer']}")
+    print(f"\nSources:")
+    for s in result["sources"]:
+        print(f"  - [{s['source']}] {s['text'][:80]}...")

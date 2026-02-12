@@ -1,43 +1,35 @@
-# Session 4: Building RAG Applications — Hands-on Labs
+# Session 4: LangChain Fundamentals — Hands-on Labs
 
 ## Prerequisites
 
-- Day 1 cleanup is complete (`bash scripts/day1-cleanup.sh` — removes Ollama)
+- Codespace is running with Day 1 setup complete (`bash scripts/day1-setup.sh`)
+- Ollama is running with `llama3.2:1b` model pulled
 - Python virtual environment is activated
-- **Groq API key** is set up (free at https://console.groq.com)
 
 Verify your setup:
 ```bash
+# Check Ollama is running and model is available
+ollama list
+
 # Activate virtual environment (if not already)
 source ~/.venv/bin/activate
 
-# Set your Groq API key (get one at https://console.groq.com)
-export GROQ_API_KEY="your-key-here"
-
-# Or add it to your .env file
-echo 'GROQ_API_KEY=your-key-here' >> ~/workspace/.env
-
-# Install sentence-transformers for embeddings (if not already installed)
-pip install sentence-transformers
-
-# Verify everything is ready
-python -c "from langchain_groq import ChatGroq; print('Groq ready!')"
-python -c "import chromadb; print(f'ChromaDB {chromadb.__version__}')"
-python -c "from langchain_community.embeddings import HuggingFaceEmbeddings; print('Embeddings ready!')"
+# Verify LangChain is installed
+python -c "import langchain; print(f'LangChain {langchain.__version__}')"
 ```
 
 ## Labs Overview
 
 | Lab | Topic | What You'll Learn |
 |-----|-------|-------------------|
-| 01 | Hello Groq | Switch from Ollama to Groq API, verify connection, compare model quality |
-| 02 | Understanding Embeddings | Generate embeddings, measure similarity, see how meaning is captured |
-| 03 | ChromaDB Basics | Create collections, add documents with metadata, run similarity searches |
-| 04 | Document Loading & Splitting | Load text, split into chunks, understand chunk size and overlap |
-| 05 | LangChain + ChromaDB | Use LangChain's Chroma wrapper, create retrievers, search documents |
-| 06 | Your First RAG Chain | Build a RAG chain with LCEL — retriever + prompt + LLM |
-| 07 | RAG with Citations | Add source citations, format documents, filter by metadata |
-| 08 | Challenge: Company Q&A Bot | Build a complete RAG-powered knowledge base from scratch |
+| 01 | Hello LangChain | Connect to Ollama, first `.invoke()`, explore the response object |
+| 02 | Message Types | SystemMessage, HumanMessage — control LLM behavior |
+| 03 | Prompt Templates | ChatPromptTemplate — reusable prompts with variables |
+| 04 | Your First Chain | LCEL pipe syntax — `prompt \| llm \| parser` |
+| 05 | Output Parsers | StrOutputParser, JsonOutputParser, PydanticOutputParser |
+| 06 | Streaming & Batch | `.stream()` for real-time output, `.batch()` for bulk processing |
+| 07 | Chain Composition | Connect multiple chains — output of one feeds into the next |
+| 08 | Challenge: Build a Mini App | Combine everything into a working application |
 
 ## How to Run
 
@@ -45,20 +37,10 @@ python -c "from langchain_community.embeddings import HuggingFaceEmbeddings; pri
 cd hands-on/session-4
 
 # Run any lab
-python lab01_groq_setup.py
+python lab01_hello_langchain.py
 
 # Run with solutions to compare
-python solutions/lab01_groq_setup.py
-```
-
-## Important: Groq API Key
-
-Every lab in this session uses the Groq API (except Lab 02 which only uses local embeddings).
-Make sure your `GROQ_API_KEY` environment variable is set before running labs.
-
-```bash
-# Quick check
-echo $GROQ_API_KEY
+python solutions/lab01_hello_langchain.py
 ```
 
 ## Tips
@@ -67,9 +49,8 @@ echo $GROQ_API_KEY
 - **Look for `# TODO` markers** — these are the parts you need to fill in
 - **Run frequently** — don't wait until you've written everything; run after each TODO
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
-- **Experiment!** — change queries, add your own documents, try different chunk sizes
-- **No PDFs needed** — all labs use inline sample data so they're fully self-contained
+- **Experiment!** — change prompts, try different inputs, break things on purpose
 
 ## Estimated Time
 
-~60-75 minutes for all labs (including experimentation)
+~45-60 minutes for all labs (including experimentation)

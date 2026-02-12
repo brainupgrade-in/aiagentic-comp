@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 2: AI Coding Assistants &amp; Vibe Coding</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .diagram-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+    .arrow-down { font-size: 1.2em; color: #888; }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 14px;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+
+    /* Quiz styles */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 14px 0 20px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 0.68em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.65em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
+    /* Code block */
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.58em;
+      text-align: left;
+      color: #e0e0e0;
+      margin: 14px 0;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+    .code-block .comment { color: #888; }
+    .code-block .keyword { color: var(--accent); }
+    .code-block .string { color: var(--accent2); }
+    .code-block .func { color: var(--accent3); }
+    .code-block .output { color: #aaa; font-style: italic; }
+
+    /* Prevent content overflow */
+    .reveal .slides section { overflow: hidden; }
+
+    /* Pattern label */
+    .pattern-label {
+      display: inline-block;
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      font-weight: bold;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.55em;
+      margin-bottom: 8px;
+    }
+
+    /* Warning box */
+    .warning {
+      background: rgba(229,115,115,0.1);
+      border-left: 4px solid var(--accent4);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 14px 0;
+      font-size: 0.7em;
+      text-align: left;
+    }
+    .warning::before {
+      content: "Warning";
+      display: block;
+      font-weight: bold;
+      color: var(--accent4);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    /* Fragment fade-in override for cleaner look */
+    .reveal .slides section .fragment.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>AI Coding Agents &amp;<br>Vibe Coding</h1>
+        <p style="font-size:0.9em; color:#ccc;">Plan-Code-Test Loops &middot; Context Management &middot; Prompt Engineering</p>
+        <p class="subtitle">Session 2 &middot; Day 1, Slot B</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== DAY 4 CONTEXT ==================== -->
+      <section>
+        <h2>Day 4: AI-Powered Development</h2>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>Session 1 (Now)</h4>
+            <p>AI Coding Agents &amp; Vibe Coding &mdash; how AI coding tools work, landscape, prompt engineering</p>
+          </div>
+          <div class="card card-green" style="opacity:0.5;">
+            <h4>Session 2</h4>
+            <p>Model Context Protocol &mdash; MCP architecture, client-server model, building servers</p>
+          </div>
+          <div class="card card-orange" style="opacity:0.5;">
+            <h4>Session 3</h4>
+            <p>Building Custom AI Dev Tools &mdash; Python SDK, FastMCP, real-world patterns</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== RECAP ==================== -->
+      <section>
+        <h2>Session 9 Recap</h2>
+        <h3>Production Application Development</h3>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>FastAPI &amp; Testing</h4>
+            <ul>
+              <li>Built FastAPI endpoints for agents</li>
+              <li>Async patterns with run_in_executor</li>
+              <li>Structured error handling &amp; validation</li>
+              <li>pytest with mocked LLM responses</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Deployment Patterns</h4>
+            <ul>
+              <li>Configuration management</li>
+              <li>Health checks &amp; monitoring</li>
+              <li>Environment variables &amp; secrets</li>
+              <li>Production-ready API structure</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway">
+          Days 1-3 built the AI pipeline: agents, RAG, workflows, and production APIs.
+          Now: how do <strong>AI coding tools</strong> actually work under the hood?
+        </div>
+      </section>
+
+      <!-- ==================== WHAT WE'LL COVER ==================== -->
+      <section>
+        <h2>What We'll Cover</h2>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>01 &mdash; How AI Coding Agents Work</h4>
+            <ul>
+              <li>Plan-code-test loop</li>
+              <li>Tool architecture</li>
+              <li>Context management</li>
+              <li>Token budgeting</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>02 &mdash; AI Coding Agent Landscape</h4>
+            <ul>
+              <li>OpenCode, Claude Code, Copilot, Cursor</li>
+              <li>CLI vs IDE agents</li>
+              <li>Strengths &amp; trade-offs</li>
+              <li>CLAUDE.md and persistent context</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>03 &mdash; Vibe Coding &amp; Prompt Engineering</h4>
+            <ul>
+              <li>Natural language to code</li>
+              <li>When AI helps vs hurts</li>
+              <li>Prompt craft for developers</li>
+              <li>Structured prompt templates</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 01: How AI Coding Agents Work
+           ===================================================== -->
+      <section>
+        <section>
+          <div class="section-number">01</div>
+          <h2>How AI Coding Agents Work</h2>
+          <p class="subtitle">Plan-Code-Test Loop &middot; Tool Architecture &middot; Context Management</p>
+        </section>
+
+        <!-- THE AGENT LOOP -->
+        <section>
+          <h2>The Agent Loop</h2>
+          <h3>Every AI coding agent follows this cycle</h3>
+          <div class="diagram">
+            <div class="box" style="border-color:#888;">User Prompt</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box">Plan</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-green">Code</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-orange">Test</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-red">Reflect</div>
+          </div>
+          <div style="text-align:center; font-size:0.7em; color:#888; margin-top:10px;">
+            <span class="arrow">&larr;</span>
+            Loop back if tests fail or reflection finds issues
+            <span class="arrow">&rarr;</span>
+          </div>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Plan</h4>
+              <p>Analyze the request, gather context, decide which files to read/modify</p>
+            </div>
+            <div class="card card-green">
+              <h4>Code</h4>
+              <p>Generate diffs, write new files, modify existing code</p>
+            </div>
+            <div class="card card-orange">
+              <h4>Test</h4>
+              <p>Run tests, linters, build commands to validate changes</p>
+            </div>
+            <div class="card card-red">
+              <h4>Reflect</h4>
+              <p>Analyze test results, decide if done or needs another iteration</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- WHAT MAKES A CODING AGENT -->
+        <section>
+          <h2>What Makes a Coding Agent?</h2>
+          <div class="card-grid">
+            <div class="card card-orange">
+              <h4>Traditional Autocomplete</h4>
+              <ul>
+                <li>Single-line suggestions</li>
+                <li>No context beyond current file</li>
+                <li>No tool use (can't run commands)</li>
+                <li>Reactive &mdash; only completes what you type</li>
+                <li>No planning or reasoning</li>
+              </ul>
+            </div>
+            <div class="card card-accent">
+              <h4>AI Coding Agent</h4>
+              <ul>
+                <li>Multi-file changes in one action</li>
+                <li>Codebase-wide context awareness</li>
+                <li>Runs tools: shell, tests, search, git</li>
+                <li>Proactive planning and task decomposition</li>
+                <li>Self-corrects based on feedback</li>
+              </ul>
+            </div>
+          </div>
+          <div class="analogy">
+            Autocomplete is like a helpful spell-checker that finishes your sentence.
+            A coding agent is like a junior developer who reads the whole codebase,
+            writes code, runs the tests, and fixes bugs &mdash; all from a single instruction.
+          </div>
+        </section>
+
+        <!-- CORE ARCHITECTURE -->
+        <section>
+          <h2>Core Architecture</h2>
+          <table class="compare-table">
+            <tr>
+              <th>Component</th>
+              <th>Role</th>
+              <th>Example</th>
+            </tr>
+            <tr>
+              <td><strong class="highlight">Context Engine</strong></td>
+              <td>Gathers relevant code from the codebase</td>
+              <td>File search, grep, AST parsing, dependency graph</td>
+            </tr>
+            <tr>
+              <td><strong class="highlight-green">Planner</strong></td>
+              <td>Decides what to do and in what order</td>
+              <td>"I need to modify 3 files to add this feature"</td>
+            </tr>
+            <tr>
+              <td><strong class="highlight-orange">Code Generator</strong></td>
+              <td>Writes code as diffs or full files</td>
+              <td>LLM generates edits based on plan + context</td>
+            </tr>
+            <tr>
+              <td><strong class="highlight-red">Tool Executor</strong></td>
+              <td>Runs commands in the environment</td>
+              <td>bash, pytest, linters, git, file read/write</td>
+            </tr>
+            <tr>
+              <td><strong style="color:#ce93d8;">Validator</strong></td>
+              <td>Checks results and decides next step</td>
+              <td>Parse test output, verify no errors, check types</td>
+            </tr>
+          </table>
+          <div class="takeaway">
+            These five components form a feedback loop. The agent keeps cycling through
+            them until the task is complete or it decides to ask the human for help.
+          </div>
+        </section>
+
+        <!-- TOOL ARCHITECTURE -->
+        <section>
+          <h2>Tool Architecture</h2>
+          <div class="pattern-label">Pseudo-Python</div>
+          <div class="code-block">
+TOOLS = {
+    <span class="string">"read_file"</span>:    read_file_contents,
+    <span class="string">"write_file"</span>:   write_file_contents,
+    <span class="string">"search_code"</span>:  grep_codebase,
+    <span class="string">"run_tests"</span>:    execute_pytest,
+    <span class="string">"run_command"</span>:  safe_bash_exec,
+}
+
+<span class="keyword">def</span> <span class="func">agent_loop</span>(task):
+    plan = llm.plan(task, context)
+    <span class="keyword">for</span> step <span class="keyword">in</span> plan.steps:
+        tool = select_tool(step)
+        result = TOOLS[tool.name](**tool.args)
+        <span class="keyword">if not</span> validate(result):
+            plan = llm.replan(task, result)  <span class="comment"># adapt on failure</span>
+          </div>
+          <div class="card-grid-3">
+            <div class="card card-accent">
+              <h4>Read Tools</h4>
+              <p>File contents, grep results, directory listings, git history</p>
+            </div>
+            <div class="card card-green">
+              <h4>Write Tools</h4>
+              <p>Create files, edit files, apply diffs, delete files</p>
+            </div>
+            <div class="card card-orange">
+              <h4>Execute Tools</h4>
+              <p>Run shell commands, tests, linters, build scripts</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONTEXT MANAGEMENT -->
+        <section>
+          <h2>Context Management</h2>
+          <h3>The KEY challenge for AI coding agents</h3>
+          <div class="card-grid">
+            <div class="card card-red">
+              <h4>Context Window Limits</h4>
+              <ul>
+                <li>LLMs have 8K-200K token windows</li>
+                <li>A typical codebase is <strong>millions</strong> of tokens</li>
+                <li>Can't send everything to the model</li>
+                <li>Wrong context = wrong code</li>
+                <li>Too much context = slow + expensive</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Strategies</h4>
+              <ul>
+                <li>File relevance scoring (most related first)</li>
+                <li>AST-based extraction (functions, not full files)</li>
+                <li>CLAUDE.md / README.md priority loading</li>
+                <li>Recent edit history weighting</li>
+                <li>Dependency graph traversal</li>
+              </ul>
+            </div>
+          </div>
+          <div class="analogy">
+            You're studying for an exam with 50 textbooks, but you can only bring 3 pages of notes into the exam room.
+            Context management is the art of choosing which 3 pages contain the most useful information.
+          </div>
+        </section>
+
+        <!-- TOKEN BUDGETING -->
+        <section>
+          <h2>Token Budgeting</h2>
+          <p class="subtitle">How agents allocate their limited context window</p>
+          <table class="compare-table">
+            <tr>
+              <th>Priority</th>
+              <th>Content</th>
+              <th>Budget %</th>
+            </tr>
+            <tr>
+              <td><strong>1</strong></td>
+              <td>System prompt + instructions (CLAUDE.md, rules)</td>
+              <td><span class="highlight">10-15%</span></td>
+            </tr>
+            <tr>
+              <td><strong>2</strong></td>
+              <td>User's current request</td>
+              <td><span class="highlight">5-10%</span></td>
+            </tr>
+            <tr>
+              <td><strong>3</strong></td>
+              <td>Currently open / most relevant files</td>
+              <td><span class="highlight-green">20-30%</span></td>
+            </tr>
+            <tr>
+              <td><strong>4</strong></td>
+              <td>Search results / grep output</td>
+              <td><span class="highlight-green">20-30%</span></td>
+            </tr>
+            <tr>
+              <td><strong>5</strong></td>
+              <td>Tool outputs / test results</td>
+              <td><span class="highlight-orange">15-20%</span></td>
+            </tr>
+            <tr>
+              <td><strong>6</strong></td>
+              <td>Conversation history</td>
+              <td><span class="highlight-red">10-15%</span></td>
+            </tr>
+          </table>
+          <div class="takeaway">
+            Higher priority content is <strong>never dropped</strong>. Lower priority items are
+            summarized or truncated when the window fills up. This is why being specific
+            in your prompts matters &mdash; it helps the agent find the right context faster.
+          </div>
+        </section>
+
+        <!-- THE CONTEXT PIPELINE -->
+        <section>
+          <h2>Context Pipeline</h2>
+          <h3>How an agent gathers context before writing code</h3>
+          <div class="diagram-vertical" style="margin:14px 0;">
+            <div class="box" style="width:80%; padding:10px 18px;">
+              <strong>Step 1:</strong> Read CLAUDE.md / project instructions
+              <span style="float:right; color:#888;">project rules</span>
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-green" style="width:80%; padding:10px 18px;">
+              <strong>Step 2:</strong> Search codebase for relevant files
+              <span style="float:right; color:#888;">grep / glob</span>
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-orange" style="width:80%; padding:10px 18px;">
+              <strong>Step 3:</strong> Read most relevant files fully
+              <span style="float:right; color:#888;">file read</span>
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-red" style="width:80%; padding:10px 18px;">
+              <strong>Step 4:</strong> Assemble context + generate plan + code
+              <span style="float:right; color:#888;">LLM call</span>
+            </div>
+          </div>
+          <p style="font-size:0.65em; color:#aaa;">
+            The agent makes multiple tool calls <em>before</em> writing any code.
+            Better context gathering = better code generation.
+          </p>
+        </section>
+
+        <!-- PLAN-CODE-TEST IN ACTION -->
+        <section>
+          <h2>Plan-Code-Test in Action</h2>
+          <h3>Example: "Add input validation to the login endpoint"</h3>
+          <div class="code-block">
+<span class="comment"># Agent's internal reasoning trace:</span>
+
+<span class="keyword">1. PLAN:</span>
+   - Search for login endpoint: <span class="func">grep</span> "def login" across codebase
+   - Found: auth/routes.py:42
+   - Read auth/routes.py and auth/models.py
+   - Need to: add Pydantic validation, update tests
+
+<span class="keyword">2. CODE:</span>
+   - Edit auth/models.py: add LoginRequest(BaseModel) with field constraints
+   - Edit auth/routes.py: add request validation, proper error responses
+   - Edit tests/test_auth.py: add validation test cases
+
+<span class="keyword">3. TEST:</span>
+   - Run: pytest tests/test_auth.py
+   - Result: 1 failure &mdash; test_login_empty_email expected 422 got 400
+
+<span class="keyword">4. REFLECT:</span>
+   - Fix: update status code from 400 to 422 in route
+   - Re-run: pytest tests/test_auth.py &mdash; ALL PASSED
+          </div>
+        </section>
+
+        <!-- SAFETY AND SANDBOXING -->
+        <section>
+          <h2>Safety &amp; Sandboxing</h2>
+          <h3>Agents run real commands &mdash; guardrails are essential</h3>
+          <div class="card-grid">
+            <div class="card card-green">
+              <h4>Allowed by Default</h4>
+              <ul>
+                <li>Read any file in the project</li>
+                <li>Search code with grep/glob</li>
+                <li>Run tests (pytest, npm test)</li>
+                <li>Git operations (status, diff, log)</li>
+              </ul>
+            </div>
+            <div class="card card-red">
+              <h4>Requires Approval</h4>
+              <ul>
+                <li>Write/edit files</li>
+                <li>Run arbitrary shell commands</li>
+                <li>Install packages</li>
+                <li>Network requests / API calls</li>
+              </ul>
+            </div>
+          </div>
+          <div class="warning">
+            AI coding agents can execute <strong>any command</strong> on your machine.
+            Always review commands before approving, especially <code>rm</code>, <code>git push --force</code>,
+            or commands touching production systems.
+          </div>
+        </section>
+
+        <!-- SECTION 1 SUMMARY -->
+        <section>
+          <h2>Section 01 Summary</h2>
+          <div style="text-align:left; font-size:0.78em; margin-top:16px;">
+            <p><span class="highlight-green">1.</span> AI coding agents follow a <span class="highlight">Plan &rarr; Code &rarr; Test &rarr; Reflect</span> loop</p>
+            <p><span class="highlight-green">2.</span> Five core components: <span class="highlight">Context Engine, Planner, Code Generator, Tool Executor, Validator</span></p>
+            <p><span class="highlight-green">3.</span> <span class="highlight">Context management</span> is the hardest problem &mdash; millions of tokens, limited window</p>
+            <p><span class="highlight-green">4.</span> <span class="highlight">Token budgeting</span> prioritizes system prompt &gt; request &gt; files &gt; search &gt; history</p>
+            <p><span class="highlight-green">5.</span> Safety requires <span class="highlight">sandboxing and approval</span> for destructive commands</p>
+          </div>
+          <div class="takeaway">
+            Understanding how coding agents work internally helps you <strong>use them more effectively</strong>.
+            The better context you provide, the better code the agent produces.
+          </div>
+        </section>
+      </section>
+
+      <!-- =====================================================
+           SECTION 02: AI Coding Agent Landscape
+           ===================================================== -->
+      <section>
+        <section>
+          <div class="section-number">02</div>
+          <h2>AI Coding Agent Landscape</h2>
+          <p class="subtitle">Tools &middot; Paradigms &middot; Strengths &middot; Trade-offs</p>
+        </section>
+
+        <!-- THE CURRENT LANDSCAPE -->
+        <section>
+          <h2>The Current Landscape</h2>
+          <table class="compare-table" style="font-size:0.55em;">
+            <tr>
+              <th>Agent</th>
+              <th>Paradigm</th>
+              <th>Strengths</th>
+              <th>Limitations</th>
+            </tr>
+            <tr>
+              <td><strong>GitHub Copilot</strong></td>
+              <td>IDE plugin, inline</td>
+              <td>Fast autocomplete, wide adoption, multi-IDE</td>
+              <td>Limited multi-file, no autonomous execution</td>
+            </tr>
+            <tr>
+              <td><strong>Cursor</strong></td>
+              <td>IDE-native, chat+edit</td>
+              <td>Deep IDE integration, smart apply, composer mode</td>
+              <td>Tied to Cursor editor, proprietary</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent);">Claude Code</strong></td>
+              <td>CLI terminal agent</td>
+              <td>Full codebase context, autonomous, tool use, CLAUDE.md</td>
+              <td>Terminal-only, requires API key</td>
+            </tr>
+            <tr>
+              <td><strong>OpenCode</strong></td>
+              <td>CLI terminal agent</td>
+              <td>Open source, multiple LLM backends, TUI interface</td>
+              <td>Newer, smaller community</td>
+            </tr>
+            <tr>
+              <td><strong>Windsurf</strong></td>
+              <td>IDE, cascade agent</td>
+              <td>Flow-based multi-step, good at refactoring</td>
+              <td>Proprietary, limited customization</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- CLI vs IDE AGENTS -->
+        <section>
+          <h2>CLI Agents vs IDE Agents</h2>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>CLI Agents (Claude Code, OpenCode)</h4>
+              <ul>
+                <li>Full shell access &mdash; can run <em>any</em> command</li>
+                <li>Git-native workflow (commit, branch, diff)</li>
+                <li>Headless / scriptable (CI/CD integration)</li>
+                <li>Context from file system traversal</li>
+                <li>Works with any editor</li>
+                <li>CLAUDE.md for persistent project context</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>IDE Agents (Copilot, Cursor)</h4>
+              <ul>
+                <li>Visual diff previews before applying</li>
+                <li>Inline suggestions as you type</li>
+                <li>UI-integrated (hover, sidebar, panels)</li>
+                <li>Context from open tabs and cursor position</li>
+                <li>Lower barrier to entry</li>
+                <li>Settings-based configuration</li>
+              </ul>
+            </div>
+          </div>
+          <div class="analogy">
+            CLI agents are like a skilled developer working in a terminal &mdash; they can do
+            anything a human can do via command line. IDE agents are like a pair programmer
+            sitting next to you, pointing at your screen and making suggestions.
+          </div>
+        </section>
+
+        <!-- HOW CLAUDE.md WORKS -->
+        <section>
+          <h2>How CLAUDE.md Works</h2>
+          <h3>Persistent project-level context for AI agents</h3>
+          <div class="code-block">
+<span class="comment"># CLAUDE.md &mdash; placed in project root</span>
+
+<span class="keyword">## Project Overview</span>
+This is a FastAPI microservice for order processing.
+Uses PostgreSQL, Redis for caching, deployed on K8s.
+
+<span class="keyword">## Architecture Decisions</span>
+- All endpoints are async
+- Pydantic v2 for validation
+- Alembic for DB migrations
+
+<span class="keyword">## Commands</span>
+- Run tests: pytest tests/ -v
+- Start dev: uvicorn main:app --reload
+- Migrate DB: alembic upgrade head
+
+<span class="keyword">## Conventions</span>
+- snake_case for functions, PascalCase for classes
+- Every endpoint must have a docstring
+- Never commit .env files
+          </div>
+          <div class="takeaway">
+            CLAUDE.md is loaded <strong>automatically</strong> at the start of every conversation.
+            It gives the agent persistent context about your project without you repeating it every time.
+            Think of it as onboarding docs for your AI teammate.
+          </div>
+        </section>
+
+        <!-- CHOOSING THE RIGHT TOOL -->
+        <section>
+          <h2>Choosing the Right Tool</h2>
+          <table class="compare-table">
+            <tr>
+              <th>Use Case</th>
+              <th>Best Fit</th>
+              <th>Why</th>
+            </tr>
+            <tr>
+              <td>Quick autocomplete while typing</td>
+              <td><span class="highlight">Copilot</span></td>
+              <td>Fastest inline suggestions, zero context switch</td>
+            </tr>
+            <tr>
+              <td>Multi-file refactoring with preview</td>
+              <td><span class="highlight-green">Cursor / Windsurf</span></td>
+              <td>Visual diffs, composer mode for large changes</td>
+            </tr>
+            <tr>
+              <td>Autonomous feature implementation</td>
+              <td><span class="highlight-orange">Claude Code</span></td>
+              <td>Full tool use, runs tests, self-corrects</td>
+            </tr>
+            <tr>
+              <td>Open-source / custom LLM backend</td>
+              <td><span class="highlight-red">OpenCode</span></td>
+              <td>Bring your own model, fully customizable</td>
+            </tr>
+            <tr>
+              <td>Learning a new codebase</td>
+              <td><span class="highlight">Any CLI agent</span></td>
+              <td>Can search, read, and explain the entire codebase</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- SECTION 2 SUMMARY -->
+        <section>
+          <h2>Section 02 Summary</h2>
+          <div class="card-grid-3">
+            <div class="card card-accent">
+              <h4>Diverse Ecosystem</h4>
+              <p>From inline autocomplete (Copilot) to fully autonomous terminal agents (Claude Code)</p>
+            </div>
+            <div class="card card-green">
+              <h4>CLI vs IDE</h4>
+              <p>CLI agents have full shell access and are scriptable. IDE agents have visual integration and lower friction.</p>
+            </div>
+            <div class="card card-orange">
+              <h4>Persistent Context</h4>
+              <p>CLAUDE.md and similar files give agents project knowledge that persists across sessions.</p>
+            </div>
+          </div>
+          <div class="takeaway">
+            There's no single "best" tool. <strong>Use autocomplete for speed, IDE agents for visual work,
+            and CLI agents for autonomous tasks.</strong> Many developers use 2-3 tools together.
+          </div>
+        </section>
+      </section>
+
+      <!-- =====================================================
+           SECTION 03: Vibe Coding & Prompt Engineering
+           ===================================================== -->
+      <section>
+        <section>
+          <div class="section-number">03</div>
+          <h2>Vibe Coding &amp; Prompt Engineering</h2>
+          <p class="subtitle">Natural Language to Code &middot; When to Use &middot; Prompt Craft</p>
+        </section>
+
+        <!-- WHAT IS VIBE CODING -->
+        <section>
+          <h2>What is Vibe Coding?</h2>
+          <div class="card card-accent" style="padding:24px; text-align:center; font-size:0.85em;">
+            <p><em>"You describe what you want in natural language,
+            the AI writes the code, you <span class="highlight">review and guide</span>."</em></p>
+            <p style="font-size:0.7em; color:#aaa; margin-top:8px;">&mdash; Andrej Karpathy (paraphrased)</p>
+          </div>
+          <div class="card-grid" style="margin-top:16px;">
+            <div class="card card-green">
+              <h4>When Vibe Coding Works</h4>
+              <ul>
+                <li>Prototyping and MVPs</li>
+                <li>Boilerplate and scaffolding</li>
+                <li>Standard patterns (CRUD, REST, forms)</li>
+                <li>Learning a new framework</li>
+                <li>Writing tests for existing code</li>
+                <li>Documentation and comments</li>
+              </ul>
+            </div>
+            <div class="card card-red">
+              <h4>When It Doesn't</h4>
+              <ul>
+                <li>Performance-critical hot paths</li>
+                <li>Security-sensitive code (auth, crypto)</li>
+                <li>Complex algorithms (custom data structures)</li>
+                <li>Highly custom business logic</li>
+                <li>Code that must meet regulatory compliance</li>
+                <li>Debugging subtle concurrency issues</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- PROMPT ENGINEERING FOR CODE -->
+        <section>
+          <h2>Prompt Engineering for Code</h2>
+          <div class="card-grid-3">
+            <div class="card card-red">
+              <h4>Bad Prompt</h4>
+              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the bug"</em></p>
+              <ul style="margin-top:8px;">
+                <li>No file or location</li>
+                <li>No expected behavior</li>
+                <li>No error information</li>
+                <li>No validation criteria</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Good Prompt</h4>
+              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the TypeError in auth.py:42 &mdash; login() receives None for user_id when the session cookie is expired. Expected: redirect to /login"</em></p>
+              <ul style="margin-top:8px;">
+                <li>Specific file and line</li>
+                <li>Error type and cause</li>
+                <li>Expected behavior</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Great Prompt</h4>
+              <p style="font-size:0.8em; margin-top:8px;"><em>Same as good + "Run the test suite after fixing and ensure test_login_expired passes"</em></p>
+              <ul style="margin-top:8px;">
+                <li>Everything from "good"</li>
+                <li>Includes validation step</li>
+                <li>Agent can self-verify</li>
+              </ul>
+            </div>
+          </div>
+          <div class="takeaway">
+            The more context you give, the fewer iterations the agent needs.
+            <strong>A great prompt saves 3-4 round trips</strong> of back-and-forth.
+          </div>
+        </section>
+
+        <!-- STRUCTURED PROMPT TEMPLATE -->
+        <section>
+          <h2>Structured Prompt Template</h2>
+          <div class="code-block">
+<span class="keyword">## Task</span>
+[What you want to accomplish]
+
+<span class="keyword">## Context</span>
+[Relevant files, current behavior, constraints]
+- File: src/auth/routes.py
+- Current behavior: returns 500 on expired session
+- Constraint: must be backwards-compatible with v2 API
+
+<span class="keyword">## Expected Behavior</span>
+[What success looks like]
+- Return 401 with {error: "session_expired"} JSON body
+- Set WWW-Authenticate header
+
+<span class="keyword">## Validation</span>
+[How to verify the fix: tests, commands, manual checks]
+- Run: pytest tests/test_auth.py -k test_expired_session
+- Run: curl -H "Cookie: session=expired" localhost:8000/api/me
+- Expected: HTTP 401 with JSON error body
+          </div>
+          <div class="analogy">
+            This template is like a well-written Jira ticket. The developer (or agent)
+            reading it knows exactly what to do, where to look, and how to verify the result
+            &mdash; without asking 5 clarifying questions.
+          </div>
+        </section>
+
+        <!-- NL TO APPLICATION FLOW -->
+        <section>
+          <h2>NL-to-Application Flow</h2>
+          <h3>From description to working code</h3>
+          <div class="diagram-vertical" style="margin:14px 0;">
+            <div class="box" style="width:80%; padding:10px 18px;">
+              <strong>Natural Language:</strong> "Build a REST API for a todo app with CRUD"
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-green" style="width:80%; padding:10px 18px;">
+              <strong>Parse Intent:</strong> REST API, CRUD operations, todo resource
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-orange" style="width:80%; padding:10px 18px;">
+              <strong>Generate Structure:</strong> models.py, routes.py, tests/, requirements.txt
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box box-red" style="width:80%; padding:10px 18px;">
+              <strong>Generate Code:</strong> FastAPI endpoints, Pydantic models, CRUD logic
+            </div>
+            <div class="arrow-down">&darr;</div>
+            <div class="box" style="width:80%; padding:10px 18px;">
+              <strong>Run Tests &amp; Iterate:</strong> pytest, fix failures, re-run until green
+            </div>
+          </div>
+        </section>
+
+        <!-- THE HUMAN IN THE LOOP -->
+        <section>
+          <h2>The Human in the Loop</h2>
+          <h3>Vibe coding is collaborative, not hands-off</h3>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>AI Does Well</h4>
+              <ul>
+                <li>Translating requirements to code structure</li>
+                <li>Writing boilerplate and repetitive code</li>
+                <li>Following established patterns</li>
+                <li>Generating test cases from specs</li>
+                <li>Refactoring with consistent style</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Human Must Do</h4>
+              <ul>
+                <li>Define the requirements clearly</li>
+                <li>Review all generated code</li>
+                <li>Make architecture decisions</li>
+                <li>Validate business logic correctness</li>
+                <li>Catch security vulnerabilities</li>
+              </ul>
+            </div>
+          </div>
+          <div class="warning">
+            Vibe coding does NOT mean "accept everything the AI writes."
+            You are still the <strong>architect, reviewer, and quality gate</strong>.
+            The AI is a force multiplier, not a replacement for understanding your code.
+          </div>
+        </section>
+
+        <!-- COMMON ANTI-PATTERNS -->
+        <section>
+          <h2>Prompt Anti-Patterns</h2>
+          <table class="compare-table">
+            <tr>
+              <th>Anti-Pattern</th>
+              <th>Problem</th>
+              <th>Better Approach</th>
+            </tr>
+            <tr>
+              <td><span class="highlight-red">"Fix it"</span></td>
+              <td>No context &mdash; agent guesses what's broken</td>
+              <td>"Fix the TypeError in auth.py:42 where user_id is None"</td>
+            </tr>
+            <tr>
+              <td><span class="highlight-red">"Make it better"</span></td>
+              <td>Subjective &mdash; agent can't know your definition of "better"</td>
+              <td>"Reduce response time by adding Redis caching for /api/users"</td>
+            </tr>
+            <tr>
+              <td><span class="highlight-red">"Rewrite everything"</span></td>
+              <td>Too broad &mdash; agent makes unnecessary changes</td>
+              <td>"Refactor the auth module to use dependency injection"</td>
+            </tr>
+            <tr>
+              <td><span class="highlight-red">Pasting entire stack traces</span></td>
+              <td>Noise drowns out the signal</td>
+              <td>Paste the relevant error + 2-3 lines of context</td>
+            </tr>
+          </table>
+        </section>
+
+        <!-- SECTION 3 SUMMARY -->
+        <section>
+          <h2>Section 03 Summary</h2>
+          <div style="text-align:left; font-size:0.78em; margin-top:16px;">
+            <p><span class="highlight-green">1.</span> <span class="highlight">Vibe coding</span> = describe in natural language, AI writes code, you review and guide</p>
+            <p><span class="highlight-green">2.</span> Works great for <span class="highlight-green">prototyping, boilerplate, CRUD</span> &mdash; not for <span class="highlight-red">security, performance, complex algorithms</span></p>
+            <p><span class="highlight-green">3.</span> Good prompts include <span class="highlight">file, error, expected behavior, and validation steps</span></p>
+            <p><span class="highlight-green">4.</span> Use the <span class="highlight">Task / Context / Expected / Validation</span> template for structured prompts</p>
+            <p><span class="highlight-green">5.</span> You are still the <span class="highlight">architect and reviewer</span> &mdash; AI is a force multiplier, not a replacement</p>
+          </div>
+          <div class="takeaway">
+            The developers who get the most out of AI coding tools are the ones who give the
+            <strong>clearest instructions</strong> and do the <strong>most thorough reviews</strong>.
+          </div>
+        </section>
+      </section>
+
+      <!-- =====================================================
+           SESSION RECAP
+           ===================================================== -->
+      <section>
+        <h2>Session 10 Recap</h2>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>How AI Coding Agents Work</h4>
+            <ul>
+              <li>Plan-Code-Test-Reflect loop</li>
+              <li>5 core components</li>
+              <li>Context management is the key challenge</li>
+              <li>Token budgeting strategies</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>The Landscape</h4>
+            <ul>
+              <li>Copilot, Cursor, Claude Code, OpenCode</li>
+              <li>CLI agents vs IDE agents</li>
+              <li>CLAUDE.md for persistent context</li>
+              <li>Choose tool by use case</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Vibe Coding &amp; Prompts</h4>
+            <ul>
+              <li>NL to code &mdash; when it works/doesn't</li>
+              <li>Structured prompt template</li>
+              <li>Avoid anti-patterns</li>
+              <li>Human stays in the loop</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== WHAT'S NEXT ==================== -->
+      <section>
+        <h2>What's Next?</h2>
+        <div class="card card-accent" style="max-width:750px; margin:20px auto; padding:24px;">
+          <h4>Session 3: Reasoning, Planning &amp; Tool Use</h4>
+          <br>
+          <div class="card-grid-3" style="margin-top:0;">
+            <div class="card">
+              <h4>ReAct Pattern</h4>
+              <p>Reasoning + Acting combined &mdash; observe, think, act loops</p>
+            </div>
+            <div class="card">
+              <h4>Chain-of-Thought</h4>
+              <p>Step-by-step reasoning, few-shot prompting techniques</p>
+            </div>
+            <div class="card">
+              <h4>Tool Calling</h4>
+              <p>Function calling, structured outputs, tool selection strategies</p>
+            </div>
+          </div>
+        </div>
+        <div class="analogy">
+          Now that you have AI coding assistants in your toolkit, let's understand
+          <em>how</em> agents actually think &mdash; the reasoning and planning patterns behind the magic.
+        </div>
+      </section>
+
+      <!-- ==================== QUESTIONS ==================== -->
+      <section>
+        <h2>Session 10 Complete</h2>
+        <br>
+        <p style="color:#ccc; font-size:0.85em;">AI Coding Agents &middot; Vibe Coding &middot; Prompt Engineering</p>
+        <br>
+        <div class="card-grid-3">
+          <div class="card card-accent" style="text-align:center;">
+            <h4>Agent Internals</h4>
+            <p>Loop? Architecture?<br>Context? Tools?</p>
+          </div>
+          <div class="card card-green" style="text-align:center;">
+            <h4>Tool Landscape</h4>
+            <p>CLI vs IDE?<br>Which tool for what?</p>
+          </div>
+          <div class="card card-orange" style="text-align:center;">
+            <h4>Vibe Coding</h4>
+            <p>Prompt craft?<br>When to use / not use?</p>
+          </div>
+        </div>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; Day 4, Session 1
+        </p>
+      </section>
+
+      <!-- =====================================================
+           Q&A QUIZ (5 Questions)
+           ===================================================== -->
+      <section>
+        <section>
+          <h2>Quick Quiz</h2>
+          <p style="font-size:0.8em; color:#ccc;">5 questions on AI coding agents and vibe coding</p>
+          <br>
+          <div class="card-grid-3">
+            <div class="card card-accent" style="text-align:center;">
+              <h4>Q1-Q2</h4>
+              <p>Agent Internals</p>
+            </div>
+            <div class="card card-green" style="text-align:center;">
+              <h4>Q3</h4>
+              <p>CLI vs IDE</p>
+            </div>
+            <div class="card card-orange" style="text-align:center;">
+              <h4>Q4-Q5</h4>
+              <p>Vibe Coding &amp; Prompts</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q1 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <div class="quiz-question">
+            What is the core loop of an AI coding agent?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Read file &rarr; Autocomplete &rarr; Save</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Plan &rarr; Code &rarr; Test &rarr; Reflect</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Prompt &rarr; Response &rarr; Deploy</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Parse &rarr; Compile &rarr; Run &rarr; Debug</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q1 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="quiz-question">
+            What is the core loop of an AI coding agent?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Read file &rarr; Autocomplete &rarr; Save</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>Plan &rarr; Code &rarr; Test &rarr; Reflect</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Prompt &rarr; Response &rarr; Deploy</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Parse &rarr; Compile &rarr; Run &rarr; Debug</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> AI coding agents follow a <strong>Plan &rarr; Code &rarr; Test &rarr; Reflect</strong> loop.
+            At each step, the agent uses tools (file search, code generation, test execution) and loops back
+            if tests fail or reflection identifies issues. This is what makes them agents, not just autocomplete.
+          </div>
+        </section>
+
+        <!-- Q2 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <div class="quiz-question">
+            Why is context management the <strong>biggest challenge</strong> for AI coding agents?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>LLMs are too slow to process code</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Code is harder to understand than natural language</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Codebases have millions of tokens but LLM context windows are limited</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Context isn't important for code generation</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q2 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="quiz-question">
+            Why is context management the <strong>biggest challenge</strong> for AI coding agents?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>LLMs are too slow to process code</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">B</span>
+              <span>Code is harder to understand than natural language</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">C</span>
+              <span>Codebases have millions of tokens but LLM context windows are limited</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Context isn't important for code generation</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why C?</strong> Even the largest context windows (200K tokens) can hold only a fraction
+            of a typical codebase. The agent must intelligently <strong>select the most relevant files and snippets</strong>
+            using strategies like file relevance scoring, AST extraction, and dependency graph traversal.
+            Wrong context leads to wrong code.
+          </div>
+        </section>
+
+        <!-- Q3 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <div class="quiz-question">
+            What distinguishes CLI agents (like Claude Code) from IDE agents (like Copilot)?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>CLI agents can only read files, IDE agents can edit</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>CLI agents have full shell access and can run any command autonomously</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>IDE agents are always more accurate than CLI agents</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>CLI agents don't support conversation</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q3 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="quiz-question">
+            What distinguishes CLI agents (like Claude Code) from IDE agents (like Copilot)?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>CLI agents can only read files, IDE agents can edit</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>CLI agents have full shell access and can run any command autonomously</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>IDE agents are always more accurate than CLI agents</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>CLI agents don't support conversation</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> CLI agents operate in the terminal with <strong>full shell access</strong> &mdash; they can run
+            tests (pytest), use git (commit, branch, diff), execute linters, install packages, and more.
+            IDE agents are embedded in the editor and primarily work through the IDE's API.
+            Both can read and edit files, but CLI agents have broader tool access.
+          </div>
+        </section>
+
+        <!-- Q4 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <div class="quiz-question">
+            When is vibe coding <strong>LEAST</strong> appropriate?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Prototyping a new feature</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Writing CRUD API endpoints</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Security-critical authentication code</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Learning a new framework</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q4 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="quiz-question">
+            When is vibe coding <strong>LEAST</strong> appropriate?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Prototyping a new feature</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">B</span>
+              <span>Writing CRUD API endpoints</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">C</span>
+              <span>Security-critical authentication code</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Learning a new framework</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why C?</strong> Security-critical code (authentication, encryption, access control) requires
+            <strong>deep human expertise and careful review</strong>. AI can introduce subtle vulnerabilities
+            that look correct but are exploitable. Prototyping (A), CRUD (B), and learning (D) are all
+            excellent use cases for vibe coding because mistakes are low-cost and easily caught.
+          </div>
+        </section>
+
+        <!-- Q5 QUESTION -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <div class="quiz-question">
+            What makes a "great" prompt for an AI coding agent?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Being as brief as possible</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Including specific file, error, expected behavior, and validation steps</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Writing the solution yourself and asking the AI to review it</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Using technical jargon to impress the AI</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 ANSWER -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="quiz-question">
+            What makes a "great" prompt for an AI coding agent?
+          </div>
+          <div class="quiz-options">
+            <div class="quiz-option wrong">
+              <span class="opt-letter">A</span>
+              <span>Being as brief as possible</span>
+            </div>
+            <div class="quiz-option correct">
+              <span class="opt-letter">B</span>
+              <span>Including specific file, error, expected behavior, and validation steps</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">C</span>
+              <span>Writing the solution yourself and asking the AI to review it</span>
+            </div>
+            <div class="quiz-option wrong">
+              <span class="opt-letter">D</span>
+              <span>Using technical jargon to impress the AI</span>
+            </div>
+          </div>
+          <div class="answer-explain">
+            <strong>Why B?</strong> A great prompt follows the <strong>Task / Context / Expected Behavior / Validation</strong>
+            template. Specific file paths, error messages, expected outcomes, and validation commands
+            give the agent everything it needs to solve the problem in one pass.
+            Brevity (A) often means missing context. Jargon (D) doesn't help &mdash; clarity does.
+          </div>
+        </section>
+
+        <!-- QUIZ SCORE -->
+        <section>
+          <h2>How Did You Do?</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
+              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <p>Review the agent loop and prompt patterns. The hands-on labs will make it click.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
+              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <p>Good understanding! You're ready to use AI coding tools more effectively.</p>
+            </div>
+            <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
+              <h4 style="color:var(--accent2);">5 correct</h4>
+              <p>Excellent! You understand how AI coding agents work under the hood.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      center: true,
+      width: 1200,
+      height: 700,
+      margin: 0.04,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

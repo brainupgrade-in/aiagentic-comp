@@ -32,13 +32,14 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 ### Learning Outcomes
 
 - Understand agentic AI fundamentals and architectural patterns
+- Use AI coding assistants and vibe coding workflows from Day 1
 - Build AI agents using LangChain and its ecosystem
 - Develop production-ready agentic applications
-- Build and use AI coding agents and vibe coding workflows
-- Implement Model Context Protocol (MCP) servers and clients
-- Build custom AI developer tools (code review, tool registries, sandboxing)
 - Implement observability with OpenTelemetry, Prometheus, and Grafana
 - Monitor and debug agents with LangFuse
+- Build production-grade FastAPI endpoints with health probes, secrets, and structured logging
+- Implement Model Context Protocol (MCP) servers and clients
+- Complete a capstone project integrating all course concepts
 - Leverage agentic IDEs for AI-assisted development
 
 ### Target Audience
@@ -105,7 +106,7 @@ Each participant will be provided with a dedicated lab environment:
 
 ---
 
-## Day 1: Agentic AI Foundations & LangChain
+## Day 1: Foundations & AI-Assisted Development
 
 ### Session 1: Introduction to Agentic AI
 
@@ -130,7 +131,24 @@ Each participant will be provided with a dedicated lab environment:
 - Tools (Actions) - External capabilities (APIs, databases, web)
 - Planning (Orchestration) - Task decomposition and execution strategy
 
-### Session 2: Reasoning, Planning & Tool Use
+### Session 2: AI Coding Assistants & Vibe Coding
+
+**The Agent Loop Model**
+- Five phases: Plan, Code, Test, Reflect, Iterate
+- Context management and token budgeting
+- Tool registries for file operations, search, and testing
+
+**Vibe Coding & Prompt Engineering**
+- Natural language to code workflows
+- Structured prompt templates for code generation
+- Iterative refinement patterns
+
+**AI Coding Agent Comparison**
+- OpenCode, Claude Code, GitHub Copilot, Cursor
+- Feature scoring: context window, tool use, autonomy
+- Choosing the right tool for the task
+
+### Session 3: Reasoning, Planning & Tool Use
 
 **Reasoning Architectures**
 - ReAct pattern (Reasoning + Acting)
@@ -148,7 +166,25 @@ Each participant will be provided with a dedicated lab environment:
 - Long-term memory (persistent storage)
 - Episodic memory (experience-based)
 
-### Session 3: LangChain Fundamentals
+### Session 4: Hands-on Labs
+
+**Lab 1: Environment Setup & Meet Your LLM**
+- Set up LangChain environment
+- Configure local LLM with Ollama
+
+**Lab 2: Vibe Coding Workflows**
+- Practice AI-assisted coding patterns
+- Build simple programs using natural language descriptions
+
+**Lab 3: Reasoning Patterns**
+- Implement ReAct and Chain-of-Thought
+- Test reasoning with tool use
+
+---
+
+## Day 2: LangChain, RAG & Agents
+
+### Session 4: LangChain Fundamentals
 
 **LangChain Overview**
 - Why LangChain? (70M+ monthly downloads, Production-ready 1.0)
@@ -160,7 +196,7 @@ Each participant will be provided with a dedicated lab environment:
 - Data Layer - Retrievers (RAG), Document Loaders, Vector Stores
 
 **Working with Models & Prompts**
-- Model integrations with Ollama (local, free)
+- Model integrations with Groq API (cloud, free)
 - ChatPromptTemplate and message types
 - LCEL (LangChain Expression Language)
 
@@ -169,29 +205,7 @@ Each participant will be provided with a dedicated lab environment:
 - StrOutputParser, JSON parsing
 - Pydantic output parsers
 
-### Session 4: Hands-on Labs
-
-**Lab 1: Environment Setup & First Chain**
-- Set up LangChain environment
-- Configure local LLM with Ollama
-- Create prompt templates
-- Build simple chains with LCEL
-
-**Lab 2: Document Processing**
-- Load documents (PDF, web pages)
-- Implement text splitting
-- Parse structured outputs with Pydantic
-
-**Lab 3: Simple Agent with Tools**
-- Create custom tools with @tool decorator
-- Build calculator + search agent
-- Test reasoning patterns
-
----
-
-## Day 2: RAG Applications & LangChain Ecosystem
-
-### Session 1: Building RAG Applications
+### Session 5: Building RAG Applications
 
 **Retrieval-Augmented Generation**
 - Why RAG matters for agents
@@ -209,7 +223,7 @@ Each participant will be provided with a dedicated lab environment:
 - Context retrieval
 - Response generation with citations
 
-### Session 2: LangChain Agents & Memory
+### Session 6: LangChain Agents & Memory
 
 **Agent Types**
 - ReAct agents
@@ -226,32 +240,32 @@ Each participant will be provided with a dedicated lab environment:
 - ConversationSummaryMemory
 - Session management and persistence
 
-**Lab 4: RAG-Powered Q&A Agent**
+### Session 4 Labs
+
+**Lab 4: LangChain Fundamentals**
+- Build chains with LCEL
+- Create prompt templates
+- Parse structured outputs
+
+**Lab 5: RAG-Powered Q&A Agent**
 - Build vector store from documents
 - Create retrieval chain with memory
 - Add conversational context
 
-### Session 3: LangChain Ecosystem
+---
 
-**LangGraph - Stateful Workflows**
+## Day 3: LangGraph & Multi-Agent Systems
+
+### Session 7: LangGraph Stateful Workflows
+
+**StateGraph - Stateful Workflows**
 - StateGraph - Define and manage workflow state
 - Nodes - Processing steps in the workflow
 - Edges - Connections between nodes (including cycles)
 - Checkpointing - Save and resume workflow state
 - Human-in-Loop - Pause for human approval/input
 
-### Session 4: Hands-on Labs
-
-**Lab 5: LangGraph Workflow**
-- Create multi-step stateful workflow
-- Implement conditional branching
-- Add human approval checkpoint
-
----
-
-## Day 3: Advanced Agents & Production Development
-
-### Session 1: Advanced LangGraph Workflows
+### Session 8: Advanced LangGraph Workflows
 
 **Complex Workflow Patterns**
 - Multi-branch state graphs
@@ -270,7 +284,7 @@ Each participant will be provided with a dedicated lab environment:
 - User input collection mid-workflow
 - Timeout and escalation handling
 
-### Session 2: Multi-Agent Systems
+### Session 9: Multi-Agent Systems
 
 **Multi-Agent Architectures**
 - Supervisor/Worker pattern implementation
@@ -287,117 +301,23 @@ Each participant will be provided with a dedicated lab environment:
 - Load balancing across agents
 - Fallback and redundancy
 
-### Session 3: Production Application Development
+### Session 3 Labs
 
-**FastAPI Integration**
-- Building REST APIs for agents
-- Async request handling
-- Streaming responses
-- Error handling and validation
-
-**Testing AI Applications**
-- Unit testing agent components
-- Integration testing workflows
-- Mocking LLM responses
-- Test fixtures and factories
-
-**Performance Optimization**
-- Caching strategies for embeddings
-- Connection pooling
-- Async operations and concurrency
-
-### Session 4: Hands-on Labs
-
-**Lab 6: Advanced LangGraph Application**
-- Build multi-branch workflow with human approval
-- Implement state persistence
-- Add error handling and retries
+**Lab 6: LangGraph Workflow**
+- Create multi-step stateful workflow
+- Implement conditional branching
+- Add human approval checkpoint
 
 **Lab 7: Multi-Agent System**
 - Create supervisor agent with specialized workers
 - Implement task delegation logic
 - Test agent collaboration
 
-**Lab 8: Production API**
-- Build FastAPI endpoint for agent
-- Add streaming responses
-- Implement health checks and monitoring endpoints
-
 ---
 
-## Day 4: AI Coding Agents & Developer Tools
+## Day 4: Observability & Production
 
-### Session 1: AI Coding Agents & Vibe Coding
-
-**The Agent Loop Model**
-- Five phases: Plan, Code, Test, Reflect, Iterate
-- Context management and token budgeting
-- Tool registries for file operations, search, and testing
-
-**Vibe Coding & Prompt Engineering**
-- Natural language to code workflows
-- Structured prompt templates for code generation
-- Iterative refinement patterns
-
-**AI Coding Agent Comparison**
-- OpenCode, Claude Code, GitHub Copilot, Cursor
-- Feature scoring: context window, tool use, autonomy
-- Choosing the right tool for the task
-
-**Lab 9: Coding Agent Simulation**
-- Build a coding agent loop simulator
-- Implement tool calling patterns
-- Practice vibe coding workflows
-
-### Session 2: Model Context Protocol (MCP)
-
-**MCP Architecture**
-- JSON-RPC 2.0 message format
-- Host, Client, Server roles
-- Request/Response lifecycle
-
-**MCP Primitives**
-- Tools: Functions the AI can invoke
-- Resources: Data the AI can read (static + dynamic)
-- Prompts: Pre-built prompt templates
-
-**Transport Layers**
-- stdio transport: encoding and decoding
-- SSE (Server-Sent Events): streaming responses
-- Client discovery and multi-step workflows
-
-**Lab 10: Build an MCP Server**
-- Implement MCP server skeleton with FastMCP
-- Add tools, resources, and prompts
-- Connect client to server
-
-### Session 3: Building Custom AI Dev Tools
-
-**Code Quality & Review Servers**
-- AST-based code analysis (lint, complexity, security)
-- Test runner simulation and pytest output parsing
-- Documentation generation from source code
-
-**Review Agent Workflows**
-- TypedDict state design for review pipelines
-- Multi-step workflow: analyze, test, review, report
-- Tool registries: register, discover, route
-
-**Sandboxed Execution**
-- Restricted subprocess with timeouts
-- Input validation and safety checks
-- Combining MCP servers with review agents
-
-**Lab 11: AI Dev Tool Suite**
-- Build code quality MCP server
-- Implement review agent workflow
-- Create tool registry with sandboxed execution
-
----
-
-## Day 5: Observability & Capstone
-
-### Session 1: Observability Fundamentals
+### Session 10: Observability Fundamentals
 
 **Three Pillars of Observability**
 - Metrics - Quantitative measurements over time
@@ -421,12 +341,7 @@ Each participant will be provided with a dedicated lab environment:
 - Custom spans and attributes
 - OTel Collector deployment and configuration
 
-**Lab 12: Observability Stack**
-- Configure OTel TracerProvider and exporters
-- Implement structured logging
-- Set up OTel Collector pipeline
-
-### Session 2: AI-Specific Observability with LangFuse
+### Session 11: LangFuse Observability
 
 **LangFuse Overview**
 - Open-source LLM observability
@@ -446,38 +361,88 @@ Each participant will be provided with a dedicated lab environment:
 - Token usage per step
 - Latency breakdown and cost analysis
 
-**Lab 13: LangFuse Integration**
-- Set up LangFuse (self-hosted via Docker Compose)
+### Session 12: Production Development & Deployment
+
+**FastAPI Integration**
+- Building REST APIs for agents
+- Pydantic models for request/response validation
+- Streaming responses with SSE
+- Error handling and HTTP status codes
+
+**Production Readiness**
+- Health checks and readiness probes
+- Kubernetes probe configuration (readiness, liveness, startup)
+- Secrets management (K8s Secrets, env vars)
+- Structured JSON logging with AI-specific fields
+- Production checklist (health, resources, secrets, observability, alerting, backup)
+- Deployment order and resource recommendations
+
+**Testing AI Applications**
+- Unit testing agent components
+- Mocking LLM responses
+- Integration testing workflows
+
+### Session 4 Labs
+
+**Lab 8: Observability Stack**
+- Configure OTel TracerProvider and exporters
+- Implement structured logging
+- Set up OTel Collector pipeline
+
+**Lab 9: LangFuse Integration**
 - Instrument LangChain application
 - Analyze traces and costs
-- Configure Prometheus bridge for metrics
 
-### Session 3: Capstone & Production Readiness
+**Lab 10: Production API**
+- Build FastAPI endpoint for agent
+- Add health probes and secrets management
+- Implement structured logging
 
-**Production Checklist**
-- Health checks and readiness probes
-- Resource limits and autoscaling (HPA)
-- Secrets management (K8s Secrets, env vars)
-- Structured logging and monitoring
-- Alerting configuration and severity levels
-- Backup and recovery (PVC snapshots, pg_dump, GitOps)
+---
 
-**Capstone Project: Production AI Agent**
+## Day 5: MCP & Capstone
 
-Deploy a complete, observable AI agent:
-1. LangChain agent with RAG
-2. Full observability stack (OTel + Prometheus + Grafana + LangFuse)
-3. Production-ready configuration (health probes, autoscaling, alerts)
+### Session 13: Model Context Protocol (MCP)
 
-**Lab Time & Presentations**
-- Complete capstone deployment
-- Demo observability dashboards
-- Q&A and feedback
+**MCP Architecture**
+- JSON-RPC 2.0 message format
+- Host, Client, Server roles
+- Request/Response lifecycle
+
+**MCP Primitives**
+- Tools: Functions the AI can invoke
+- Resources: Data the AI can read (static + dynamic)
+- Prompts: Pre-built prompt templates
+
+**Transport Layers**
+- stdio transport: encoding and decoding
+- SSE (Server-Sent Events): streaming responses
+- Client discovery and multi-step workflows
+
+### Session 14: Capstone Project (2 Time Slots)
+
+**Capstone: Production AI Agent System**
+
+Build a complete, observable AI agent integrating all course concepts:
+1. Architecture design (component mapping, data flows)
+2. MCP server with tools (from Session 13)
+3. FastAPI endpoint (from Session 12)
+4. LangFuse instrumentation (from Session 11)
+5. Health probes and monitoring (from Session 12)
+6. Production deployment configuration
+7. Testing and validation
+8. Final integration challenge
+
+**Demo & Presentations**
+- Present capstone to the group
+- Discuss architectural decisions
+- Peer review and feedback
 
 **Course Wrap-up**
-- Key takeaways
+- Key takeaways across 5 days
 - Learning path recommendations
 - Resources and community
+- Feedback collection
 
 ---
 

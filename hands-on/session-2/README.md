@@ -1,60 +1,49 @@
-# Session 2: Reasoning, Planning & Tool Use — Hands-on Labs
+# Session 2: AI Coding Agents & Vibe Coding — Hands-on Labs
 
 ## Prerequisites
 
-- Codespace is running with Day 1 setup complete (`bash scripts/day1-setup.sh`)
-- Ollama is running with `llama3.2:1b` model pulled
-- Python virtual environment is activated
+- Python 3.10+ installed
+- No external packages needed — these labs use only the Python standard library
 
-Verify your setup:
 ```bash
-# Check Ollama is running and model is available
-ollama list
-
-# Activate virtual environment (if not already)
-source ~/.venv/bin/activate
-
-# Quick test
-python -c "from langchain_ollama import ChatOllama; print('Ready!')"
+python --version  # 3.10+
 ```
 
 ## Labs Overview
 
 | Lab | Topic | What You'll Learn |
 |-----|-------|-------------------|
-| 01 | Chain-of-Thought | How "think step by step" improves LLM accuracy |
-| 02 | ReAct Pattern | The Thought → Action → Observation loop |
-| 03 | Tree-of-Thought | Explore multiple solutions, evaluate, pick the best |
-| 04 | Reflection | Generate → Critique → Improve cycle |
-| 05 | Tool Calling | Build Python tools an LLM can decide to use |
-| 06 | Memory | Stateless vs stateful — why conversation history matters |
-| 07 | Challenge: Mini Agent | Combine reasoning + tools + memory into one agent |
+| 01 | Coding Agent Anatomy | Agent loop model: plan/code/test, tool registry |
+| 02 | Tool Calling Patterns | File R/W/search tools, tool dispatcher, multi-step chains |
+| 03 | Context Management | Token budgeting, priority file selector, CLAUDE.md generation |
+| 04 | Prompt Engineering for Code | Vague vs precise prompts, structured prompt templates |
+| 05 | Vibe Coding Simulation | NL parser → file structure → pseudo-code generation |
+| 06 | Agent Comparison | Feature scoring for OpenCode/Claude Code/Copilot/Cursor |
+| 07 | Code Review Basics | AST-based issue detection, structured review report |
+| 08 | **Challenge** | End-to-end coding agent simulation |
 
 ## How to Run
 
 ```bash
 cd hands-on/session-2
 
-# Run any lab
-python lab01_chain_of_thought.py
+# Run a lab
+python lab01_coding_agent_anatomy.py
 
-# Run with solutions to compare
-python solutions/lab01_chain_of_thought.py
+# Check the solution
+python solutions/lab01_coding_agent_anatomy.py
 ```
-
-## What Makes This Session Different
-
-Session 2 labs focus on **agentic AI patterns** — the reasoning strategies, tool use concepts, and memory systems that make agents intelligent. These are the patterns you'll implement with LangChain in Session 3 and beyond.
-
-We use a local LLM (Ollama) to keep things simple and focused on the concepts, not the framework.
 
 ## Tips
 
-- **Read the output carefully** — the key learning is seeing HOW the LLM responds differently with each pattern
-- **Compare with/without** — most labs show the "without" approach first, then the improved version
-- **Experiment with prompts** — small changes in prompts can dramatically change results
-- **Look for `# TODO` markers** — these are exercises for you to try
+- Look for `# TODO` markers — that's where you write code
+- Labs 01-03 cover agent internals
+- Labs 04-06 cover prompt engineering and vibe coding
+- Lab 07 covers code review
+- Lab 08 is the comprehensive challenge
+- Generated files appear in `/tmp/aidev-lab-02-XX/` directories
+- Compare your work with `solutions/` when done
 
 ## Estimated Time
 
-~45-60 minutes for all labs (including experimentation)
+~60-75 minutes for all labs (including the challenge)

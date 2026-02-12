@@ -2,7 +2,7 @@
 set -e
 
 echo "============================================"
-echo "  Day 5: Observability Stack Setup"
+echo "  Day 5: MCP & Capstone Setup"
 echo "============================================"
 echo ""
 
@@ -11,36 +11,46 @@ free -h | head -2
 df -h / | tail -1 | awk '{print "Storage: "$3" used / "$2" total ("$5" used)"}'
 echo ""
 
-COMPOSE_DIR=~/workspace/day5/observability
+# Verify Python
+echo "[1/3] Verifying Python..."
+python3 --version || { echo "ERROR: Python 3 not found"; exit 1; }
 
-# Ensure docker-compose file is in place
-if [ ! -f "$COMPOSE_DIR/docker-compose.yml" ]; then
-  echo "Copying docker-compose.yml to workspace..."
-  cp scripts/day5-docker-compose.yml "$COMPOSE_DIR/docker-compose.yml"
-  cp scripts/prometheus.yml "$COMPOSE_DIR/prometheus.yml"
+# Verify pip and install MCP SDK
+echo "[2/3] Installing MCP Python SDK..."
+pip install --quiet mcp>=1.0 2>/dev/null || pip install mcp>=1.0
+
+# Verify GROQ_API_KEY
+echo "[3/3] Checking GROQ_API_KEY..."
+if [ -z "$GROQ_API_KEY" ]; then
+    if [ -f .env ]; then
+        source .env
+    fi
+    if [ -z "$GROQ_API_KEY" ]; then
+        echo ""
+        echo "WARNING: GROQ_API_KEY not set."
+        echo "  Set it in .env or export GROQ_API_KEY=gsk_..."
+        echo "  Get your free key at: https://console.groq.com"
+        echo ""
+    else
+        echo "  GROQ_API_KEY found in .env"
+    fi
+else
+    echo "  GROQ_API_KEY is set"
 fi
 
-# Start the observability stack
-echo "Starting observability stack..."
-cd "$COMPOSE_DIR"
-docker compose up -d
-
-echo ""
-echo "Waiting for services to be healthy..."
-sleep 10
-
 echo ""
 echo "============================================"
-echo "  Observability stack running!"
+echo "  Day 5 Ready!"
 echo "============================================"
 echo ""
-echo "Services:"
-echo "  Prometheus:  http://localhost:9090"
-echo "  Grafana:     http://localhost:3000  (admin/admin)"
-echo "  LangFuse:    http://localhost:8080"
+echo "Today's sessions:"
+echo "  Session 13: Model Context Protocol (MCP)"
+echo "  Session 14: Capstone Project (2 time slots)"
 echo ""
-echo "Check status:  docker compose -f $COMPOSE_DIR/docker-compose.yml ps"
-echo "View logs:     docker compose -f $COMPOSE_DIR/docker-compose.yml logs -f"
+echo "Labs:"
+echo "  python hands-on/session-13/lab01_mcp_fundamentals.py"
+echo "  python hands-on/session-14/lab01_capstone_architecture.py"
 echo ""
-echo "To stop:       bash scripts/day5-cleanup.sh"
+echo "Resource usage: ~3-4 GB RAM (Python + MCP SDK only)"
+echo "Day 5 is lightweight — no observability stack needed."
 echo ""

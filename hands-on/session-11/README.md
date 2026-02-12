@@ -1,26 +1,27 @@
-# Session 11: Model Context Protocol (MCP) -- Hands-on Labs
+# Session 11: AI-Specific Observability with LangFuse — Hands-on Labs
 
 ## Prerequisites
 
 - Python 3.10+ installed
-- No external packages needed -- these labs simulate MCP concepts using standard library
+- No Kubernetes cluster needed — labs generate config files and validate YAML
 
 ```bash
+# No pip packages needed — these labs generate configs and validate answers
 python --version  # 3.10+
 ```
 
 ## Labs Overview
 
-| Lab | Topic | What You'll Learn |
-|-----|-------|-------------------|
-| 01 | MCP Fundamentals | Resource/Tool/Prompt class models, MCP architecture |
-| 02 | MCP Protocol | JSON-RPC 2.0 messages, request/response validation |
-| 03 | MCP Server Skeleton | Generate complete MCP server file from templates |
-| 04 | MCP Tool Implementation | Typed tool functions: file_search, code_metrics |
-| 05 | MCP Resources | Static + dynamic resources, URI templates |
-| 06 | MCP Transport | stdio encoding/decoding, SSE event formatting |
-| 07 | MCP Client | Client discovery + multi-step tool workflow |
-| 08 | **Challenge** | Complete MCP server (3 tools, 2 resources, 1 prompt) + client |
+| Lab | Topic | What You'll Learn | Needs K8s? |
+|-----|-------|-------------------|------------|
+| 01 | LangFuse Fundamentals | Architecture, trace hierarchy, tool comparison | No |
+| 02 | LangFuse Setup | Docker Compose deployment, environment variables | No |
+| 03 | LangChain Integration | CallbackHandler, RAG tracing, handler config | No |
+| 04 | Tracing Agents | Multi-step traces, bottleneck analysis, debugging | No |
+| 05 | Feedback & Evaluation | User scores, automated eval, quality tracking | No |
+| 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
+| 07 | Cost & Token Analysis | Cost tracking, Prometheus bridge, dashboard PromQL | No |
+| 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
 
 ## How to Run
 
@@ -28,20 +29,21 @@ python --version  # 3.10+
 cd hands-on/session-11
 
 # Run a lab
-python lab01_mcp_fundamentals.py
+python lab01_langfuse_fundamentals.py
 
 # Check the solution
-python solutions/lab01_mcp_fundamentals.py
+python solutions/lab01_langfuse_fundamentals.py
 ```
 
 ## Tips
 
-- Look for `# TODO` markers -- that's where you write code
-- Labs 01-03 cover MCP architecture and protocol
-- Labs 04-06 cover building MCP primitives
-- Lab 07 covers the client side
-- Lab 08 is the comprehensive challenge
-- Generated files appear in `/tmp/aidev-lab-11-XX/` directories
+- All 8 labs work WITHOUT a Kubernetes cluster
+- Look for `# TODO` markers — that's where you write code or YAML
+- Labs 01-03 cover LangFuse setup and LangChain integration
+- Labs 04-06 cover tracing, feedback, and prompt management
+- Lab 07 covers cost analysis with Prometheus bridge
+- Lab 08 is the challenge combining all concepts
+- Generated files appear in `/tmp/k8s-lab-11-XX/` directories
 - Compare your work with `solutions/` when done
 
 ## Estimated Time

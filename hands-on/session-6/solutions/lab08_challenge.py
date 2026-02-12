@@ -1,317 +1,181 @@
 """
-Lab 08 Solution: Challenge — UniGPS Support Request Workflow
-==============================================================
-Complete implementation combining: state, conditional routing,
-reducers, checkpointing, and human-in-the-loop.
+Lab 08: Challenge — Build a UniGPS Employee Support Agent — SOLUTION
 """
 
-import os
-import re
-from typing import TypedDict, Annotated
-from operator import add
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langgraph.graph import StateGraph, START, END
+from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
 
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.3)
+print("=" * 50)
+print("  UniGPS Employee Support Agent — SOLUTION")
+print("=" * 50)
 
-print("=" * 60)
-print("  Challenge Solution: UniGPS Support Request Workflow")
-print("=" * 60)
+# Company knowledge base
+LEAVE_DATA = {
+    "annual": {"days": 24, "notice": "3 working days", "carry_forward": False,
+               "notes": "Prorated for <6 months tenure"},
+    "sick": {"days": 12, "notice": "Same day by 10 AM", "carry_forward": True,
+             "notes": "Medical cert after 2 consecutive days. Max carry-forward: 30 days"},
+    "maternity": {"days": "26 weeks", "notice": "30 days", "carry_forward": False,
+                  "notes": "After 80 days of employment. Can start 8 weeks before delivery"},
+    "paternity": {"days": "2 weeks", "notice": "15 days", "carry_forward": False,
+                  "notes": "Must take within 6 months of child's birth"},
+}
 
-# ============================================================
-# State definition
-# ============================================================
+OFFICE_DATA = {
+    "bangalore": {"address": "WeWork Embassy Tech Village, Outer Ring Road, 5th Floor",
+                  "employees": "200+", "teams": "All departments (HQ)",
+                  "facilities": "Cafeteria (3rd floor), Gym, Basement parking"},
+    "mumbai": {"address": "Worli Business District, Tower A, 12th Floor",
+               "employees": "50", "teams": "Sales, Client Success, Marketing",
+               "facilities": "Sea-facing meeting rooms for client presentations"},
+    "hyderabad": {"address": "HITEC City, Cyber Gateway, 8th Floor",
+                  "employees": "80", "teams": "Backend Engineering, Data Engineering",
+                  "facilities": "24/7 access for oncall engineers"},
+    "pune": {"address": "Hinjewadi Phase 2, Building C, 4th Floor",
+             "employees": "40", "teams": "QA, DevOps, SRE",
+             "facilities": "Performance testing lab"},
+}
 
-class SupportRequest(TypedDict):
-    employee_name: str
-    message: str
-    category: str
-    priority: str
-    amount: int
-    response: str
-    approved: bool
-    audit_trail: Annotated[list, add]
+TECH_STACK = {
+    "backend": "Python (FastAPI) for new services. Java (Spring Boot) for existing. RESTful APIs mandatory.",
+    "frontend": "React + TypeScript (new projects). Angular (existing: Dashboard, Admin portal).",
+    "database": "PostgreSQL (primary relational). MongoDB (document storage). Redis (caching + sessions).",
+    "cloud": "AWS (EKS/Kubernetes). Docker for containers. Terraform for IaC. GitHub Actions for CI/CD.",
+    "monitoring": "Prometheus (metrics). Grafana (dashboards). LangFuse (LLM tracing). PagerDuty (alerts).",
+}
 
-# ============================================================
-# STEP 1: Nodes
-# ============================================================
+EXPENSE_LIMITS = {
+    "meal_domestic": "Rs 500/day",
+    "meal_international": "Rs 3,000/day",
+    "team_dinner": "Rs 1,000/person",
+    "monitor": "Rs 15,000 (through IT)",
+    "mobile": "Rs 1,000/month",
+    "internet": "Rs 1,500/month (WFH)",
+    "ergonomic_chair": "Rs 10,000 (one-time)",
+    "laptop": "Provided by company, replaced every 3 years",
+}
 
-def receive_request(state: SupportRequest) -> dict:
-    """Log receipt of the request."""
-    print(f"  [receive] From: {state['employee_name']}")
-    return {
-        "audit_trail": [f"[RECEIVED] From: {state['employee_name']} — {state['message'][:50]}"]
-    }
+# PART A: Create the tools
+@tool
+def leave_policy_lookup(leave_type: str) -> str:
+    """Look up UniGPS leave policy for a specific type (annual, sick, maternity, paternity)."""
+    policy = LEAVE_DATA.get(leave_type.lower())
+    if policy:
+        return (f"{leave_type.title()} Leave: {policy['days']} days. "
+                f"Notice: {policy['notice']}. "
+                f"Carry-forward: {'Yes' if policy['carry_forward'] else 'No'}. "
+                f"Notes: {policy['notes']}")
+    return f"Unknown type: '{leave_type}'. Available: {', '.join(LEAVE_DATA.keys())}"
 
-def classify_request(state: SupportRequest) -> dict:
-    """Use LLM to classify and extract metadata."""
-    prompt = (
-        f"Analyze this employee support request and reply in exactly this format:\n"
-        f"CATEGORY: hr or tech or finance\n"
-        f"PRIORITY: HIGH or MEDIUM or LOW\n"
-        f"AMOUNT: number (if a money amount is mentioned, else 0)\n\n"
-        f"Request: {state['message']}\n\n"
-        f"Rules:\n"
-        f"- HR: leave, sick, vacation, wfh, maternity, transfer\n"
-        f"- Tech: server, deploy, bug, database, code, api, error\n"
-        f"- Finance: expense, reimburse, invoice, salary, bill\n"
-        f"- HIGH priority if: urgent, critical, down, emergency\n"
-        f"- Extract Rs/INR amount if mentioned"
-    )
-    response = llm.invoke(prompt)
-    text = response.content.strip()
+@tool
+def office_directory(city: str) -> str:
+    """Get UniGPS office details — address, team size, departments, and facilities."""
+    office = OFFICE_DATA.get(city.lower())
+    if office:
+        return (f"UniGPS {city.title()}: {office['address']}. "
+                f"{office['employees']} employees. Teams: {office['teams']}. "
+                f"Facilities: {office['facilities']}")
+    return f"No office in '{city}'. Available: {', '.join(OFFICE_DATA.keys())}"
 
-    # Parse response
-    category = "general"
-    priority = "LOW"
-    amount = 0
+@tool
+def tech_recommendation(category: str) -> str:
+    """Get UniGPS recommended technology stack for a category (backend, frontend, database, cloud, monitoring)."""
+    rec = TECH_STACK.get(category.lower())
+    if rec:
+        return f"UniGPS {category.title()} Stack: {rec}"
+    return f"Unknown category: '{category}'. Try: {', '.join(TECH_STACK.keys())}"
 
-    for line in text.split("\n"):
-        line_lower = line.lower()
-        if "category:" in line_lower:
-            cat = line_lower.split("category:")[-1].strip()
-            if cat in ["hr", "tech", "finance"]:
-                category = cat
-        elif "priority:" in line_lower:
-            pri = line.split(":")[-1].strip().upper()
-            if pri in ["HIGH", "MEDIUM", "LOW"]:
-                priority = pri
-        elif "amount:" in line_lower:
-            nums = re.findall(r'\d+', line)
-            if nums:
-                amount = int(nums[0])
+@tool
+def expense_checker(expense_type: str) -> str:
+    """Check UniGPS expense policy limits for a specific type (meal_domestic, monitor, internet, etc.)."""
+    limit = EXPENSE_LIMITS.get(expense_type.lower().replace(" ", "_"))
+    if limit:
+        return f"{expense_type.replace('_', ' ').title()}: {limit}"
+    return f"Unknown type. Available: {', '.join(EXPENSE_LIMITS.keys())}"
 
-    print(f"  [classify] category={category}, priority={priority}, amount=Rs {amount}")
-    return {
-        "category": category,
-        "priority": priority,
-        "amount": amount,
-        "audit_trail": [f"[CLASSIFIED] {category}/{priority}, amount=Rs {amount}"],
-    }
+print("Tools created: leave_policy_lookup, office_directory, tech_recommendation, expense_checker")
 
-def handle_hr(state: SupportRequest) -> dict:
-    """Generate HR-specific response."""
-    prompt = (
-        f"You are UniGPS HR support. Write a brief, helpful response (2 sentences) for:\n"
-        f"{state['message']}\nEmployee: {state['employee_name']}"
-    )
-    response = llm.invoke(prompt)
-    text = response.content.strip()
-    print(f"  [handle_hr] → {text[:60]}...")
-    return {
-        "response": f"[{state['priority']}] {text}",
-        "approved": True,
-        "audit_trail": [f"[HR HANDLER] Response generated"],
-    }
-
-def handle_tech(state: SupportRequest) -> dict:
-    """Generate Tech-specific response."""
-    prompt = (
-        f"You are UniGPS Tech Support. Write a brief, helpful response (2 sentences) for:\n"
-        f"{state['message']}\nEmployee: {state['employee_name']}"
-    )
-    response = llm.invoke(prompt)
-    text = response.content.strip()
-    print(f"  [handle_tech] → {text[:60]}...")
-    return {
-        "response": f"[{state['priority']}] {text}",
-        "approved": True,
-        "audit_trail": [f"[TECH HANDLER] Response generated"],
-    }
-
-def handle_finance(state: SupportRequest) -> dict:
-    """Generate Finance-specific response. Flag high amounts."""
-    prompt = (
-        f"You are UniGPS Finance Support. Write a brief, helpful response (2 sentences) for:\n"
-        f"{state['message']}\nEmployee: {state['employee_name']}\nAmount: Rs {state['amount']}"
-    )
-    response = llm.invoke(prompt)
-    text = response.content.strip()
-
-    # Auto-approve if under Rs 5000, flag otherwise
-    needs_approval = state["amount"] > 5000
-    approved = not needs_approval
-
-    status = "PENDING MANAGER APPROVAL" if needs_approval else "Auto-approved"
-    print(f"  [handle_finance] Rs {state['amount']} → {status}")
-    print(f"  [handle_finance] → {text[:60]}...")
-
-    return {
-        "response": f"[{state['priority']}] {text}",
-        "approved": approved,
-        "audit_trail": [f"[FINANCE HANDLER] {status}, response generated"],
-    }
-
-def finalize(state: SupportRequest) -> dict:
-    """Create final audit entry."""
-    status = "APPROVED" if state["approved"] else "PENDING MANAGER REVIEW"
-    print(f"  [finalize] Status: {status}")
-    return {
-        "audit_trail": [f"[FINALIZED] Status: {status} — Response delivered to {state['employee_name']}"]
-    }
-
-# ============================================================
-# STEP 2: Routing function
-# ============================================================
-
-def route_to_handler(state: SupportRequest) -> str:
-    """Route based on category."""
-    category = state["category"]
-    if category == "hr":
-        return "handle_hr"
-    elif category == "tech":
-        return "handle_tech"
-    elif category == "finance":
-        return "handle_finance"
-    return "handle_hr"  # Default to HR for general
-
-# ============================================================
-# STEP 3: Build the graph
-# ============================================================
-
-graph = StateGraph(SupportRequest)
-
-graph.add_node("receive", receive_request)
-graph.add_node("classify", classify_request)
-graph.add_node("handle_hr", handle_hr)
-graph.add_node("handle_tech", handle_tech)
-graph.add_node("handle_finance", handle_finance)
-graph.add_node("finalize", finalize)
-
-graph.add_edge(START, "receive")
-graph.add_edge("receive", "classify")
-
-graph.add_conditional_edges(
-    "classify",
-    route_to_handler,
-    {
-        "handle_hr": "handle_hr",
-        "handle_tech": "handle_tech",
-        "handle_finance": "handle_finance",
-    }
-)
-
-graph.add_edge("handle_hr", "finalize")
-graph.add_edge("handle_tech", "finalize")
-graph.add_edge("handle_finance", "finalize")
-graph.add_edge("finalize", END)
-
+# PART B: Build the agent with memory
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 memory = MemorySaver()
-app = graph.compile(checkpointer=memory, interrupt_before=["finalize"])
+agent = create_react_agent(
+    llm,
+    [leave_policy_lookup, office_directory, tech_recommendation, expense_checker],
+    checkpointer=memory,
+    state_modifier="You are UniBot, UniGPS's AI employee support assistant. "
+                   "Be friendly, concise, and always cite the policy source. "
+                   "If you don't know something, say so honestly.",
+)
+print("UniBot agent ready!\n")
 
-print("\nGraph: START → receive → classify → [HR|Tech|Finance] → [PAUSE] → finalize → END")
-print("Finance requests > Rs 5000 require manager approval at the pause point.\n")
+# PART C: Test with single-topic questions
+config = {"configurable": {"thread_id": "test-session"}}
 
-# ============================================================
-# STEP 4: Test the workflow
-# ============================================================
-
-test_requests = [
-    {
-        "employee_name": "Priya Sharma",
-        "message": "I need to apply for maternity leave starting next month",
-        "thread_id": "req-001",
-    },
-    {
-        "employee_name": "Vikram Patel",
-        "message": "URGENT: Production database is down, all services affected",
-        "thread_id": "req-002",
-    },
-    {
-        "employee_name": "Anita Desai",
-        "message": "Please reimburse my travel expense of Rs 8500 for the client visit",
-        "thread_id": "req-003",
-    },
-    {
-        "employee_name": "Rahul Kumar",
-        "message": "Submit my lunch expense of Rs 450",
-        "thread_id": "req-004",
-    },
+test_questions = [
+    "How many sick leave days do I get per year?",
+    "Where is the Pune office located?",
+    "What language should I use for a new backend service?",
+    "What's the limit for mobile reimbursement?",
 ]
 
-print("--- Processing Requests ---")
-for req in test_requests:
-    config = {"configurable": {"thread_id": req["thread_id"]}}
+print("--- Single-Topic Tests ---")
+for q in test_questions:
+    response = agent.invoke({"messages": [("user", q)]}, config)
+    print(f"\nQ: {q}")
+    print(f"A: {response['messages'][-1].content[:200]}")
 
-    print(f"\n{'='*50}")
-    print(f"Request from: {req['employee_name']}")
-    print(f"Message: {req['message']}")
+# PART D: Test memory across turns
+print("\n\n--- Multi-Turn Memory Test ---")
+config_mem = {"configurable": {"thread_id": "memory-test"}}
 
-    result = app.invoke({
-        "employee_name": req["employee_name"],
-        "message": req["message"],
-        "category": "",
-        "priority": "",
-        "amount": 0,
-        "response": "",
-        "approved": False,
-        "audit_trail": [],
-    }, config)
+turns = [
+    "Hi! I'm Vikram from the engineering team.",
+    "What database should I use for a new project?",
+    "What's my name?",
+    "I also need to check — how many annual leave days do I get?",
+]
 
-    # Check if workflow paused (needs manager approval)
-    snapshot = app.get_state(config)
-    if snapshot.next:
-        amount = snapshot.values.get("amount", 0)
-        approved = snapshot.values.get("approved", False)
+for i, q in enumerate(turns, 1):
+    r = agent.invoke({"messages": [("user", q)]}, config_mem)
+    print(f"Turn {i}: {q}")
+    print(f"  → {r['messages'][-1].content[:200]}")
+    print()
 
-        if not approved and amount > 5000:
-            print(f"\n  ⚠ PAUSED: Needs manager approval! (Rs {amount})")
-            print(f"  Response preview: {snapshot.values['response'][:60]}...")
+# PART E: Multi-user sessions
+print("--- Multi-User Sessions ---")
+config_user1 = {"configurable": {"thread_id": "priya-001"}}
+config_user2 = {"configurable": {"thread_id": "rahul-002"}}
 
-            # Simulate manager approval
-            print(f"  [Manager] Reviewing Rs {amount} expense...")
-            print(f"  [Manager] APPROVED")
-            app.update_state(config, {
-                "approved": True,
-                "audit_trail": [f"[MANAGER] Approved Rs {amount} expense for {req['employee_name']}"],
-            })
+agent.invoke({"messages": [("user", "I'm Priya. Tell me about maternity leave.")]}, config_user1)
+agent.invoke({"messages": [("user", "I'm Rahul. What's the Hyderabad office like?")]}, config_user2)
 
-        # Resume the workflow
-        result = app.invoke(None, config)
-    else:
-        result = snapshot.values
+r1 = agent.invoke({"messages": [("user", "What did I ask about?")]}, config_user1)
+r2 = agent.invoke({"messages": [("user", "What did I ask about?")]}, config_user2)
+print(f"Priya's session: {r1['messages'][-1].content[:150]}")
+print(f"Rahul's session: {r2['messages'][-1].content[:150]}")
 
-    print(f"\n  Category: {result['category']}")
-    print(f"  Priority: {result['priority']}")
-    print(f"  Amount: Rs {result['amount']}")
-    print(f"  Approved: {result['approved']}")
-    print(f"  Response: {result['response'][:80]}...")
-    print(f"  Audit trail:")
-    for entry in result["audit_trail"]:
-        print(f"    {entry}")
+# PART F: Interactive mode
+print("\n" + "=" * 50)
+print("UniBot Interactive — type '/quit' to exit, '/switch <name>' to switch user")
+print("=" * 50)
 
-# ============================================================
-# BONUS: All Tickets Summary
-# ============================================================
+current_user = "default"
+while True:
+    user_input = input(f"\n[{current_user}] You: ").strip()
+    if not user_input:
+        continue
+    if user_input == "/quit":
+        break
+    if user_input.startswith("/switch "):
+        current_user = user_input.split(" ", 1)[1]
+        print(f"Switched to session: {current_user}")
+        continue
 
-print(f"\n{'='*60}")
-print("--- All Tickets Summary ---")
-print(f"{'Thread':<12} {'Category':<10} {'Priority':<8} {'Amount':>8} {'Approved'}")
-print("-" * 55)
-
-for req in test_requests:
-    config = {"configurable": {"thread_id": req["thread_id"]}}
-    snap = app.get_state(config)
-    v = snap.values
-    print(
-        f"{req['thread_id']:<12} "
-        f"{v.get('category', 'N/A'):<10} "
-        f"{v.get('priority', 'N/A'):<8} "
-        f"Rs {v.get('amount', 0):>5} "
-        f"{v.get('approved', 'N/A')}"
-    )
-
-print(f"\n{'='*60}")
-print("Challenge Solution complete!")
-print("Concepts used:")
-print("  - StateGraph with TypedDict")
-print("  - Annotated[list, add] for audit_trail (reducer)")
-print("  - Conditional routing (HR/Tech/Finance)")
-print("  - MemorySaver checkpointing with thread_id")
-print("  - interrupt_before for HITL (finance > Rs 5000)")
-print("  - update_state() for manager approval")
-print("  - invoke(None, config) to resume paused workflow")
+    config = {"configurable": {"thread_id": f"{current_user}-session"}}
+    response = agent.invoke({"messages": [("user", user_input)]}, config)
+    print(f"[UniBot] {response['messages'][-1].content}")

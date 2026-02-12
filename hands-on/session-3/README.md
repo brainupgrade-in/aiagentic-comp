@@ -1,4 +1,4 @@
-# Session 3: LangChain Fundamentals — Hands-on Labs
+# Session 3: Reasoning, Planning & Tool Use — Hands-on Labs
 
 ## Prerequisites
 
@@ -14,22 +14,21 @@ ollama list
 # Activate virtual environment (if not already)
 source ~/.venv/bin/activate
 
-# Verify LangChain is installed
-python -c "import langchain; print(f'LangChain {langchain.__version__}')"
+# Quick test
+python -c "from langchain_ollama import ChatOllama; print('Ready!')"
 ```
 
 ## Labs Overview
 
 | Lab | Topic | What You'll Learn |
 |-----|-------|-------------------|
-| 01 | Hello LangChain | Connect to Ollama, first `.invoke()`, explore the response object |
-| 02 | Message Types | SystemMessage, HumanMessage — control LLM behavior |
-| 03 | Prompt Templates | ChatPromptTemplate — reusable prompts with variables |
-| 04 | Your First Chain | LCEL pipe syntax — `prompt \| llm \| parser` |
-| 05 | Output Parsers | StrOutputParser, JsonOutputParser, PydanticOutputParser |
-| 06 | Streaming & Batch | `.stream()` for real-time output, `.batch()` for bulk processing |
-| 07 | Chain Composition | Connect multiple chains — output of one feeds into the next |
-| 08 | Challenge: Build a Mini App | Combine everything into a working application |
+| 01 | Chain-of-Thought | How "think step by step" improves LLM accuracy |
+| 02 | ReAct Pattern | The Thought → Action → Observation loop |
+| 03 | Tree-of-Thought | Explore multiple solutions, evaluate, pick the best |
+| 04 | Reflection | Generate → Critique → Improve cycle |
+| 05 | Tool Calling | Build Python tools an LLM can decide to use |
+| 06 | Memory | Stateless vs stateful — why conversation history matters |
+| 07 | Challenge: Mini Agent | Combine reasoning + tools + memory into one agent |
 
 ## How to Run
 
@@ -37,19 +36,24 @@ python -c "import langchain; print(f'LangChain {langchain.__version__}')"
 cd hands-on/session-3
 
 # Run any lab
-python lab01_hello_langchain.py
+python lab01_chain_of_thought.py
 
 # Run with solutions to compare
-python solutions/lab01_hello_langchain.py
+python solutions/lab01_chain_of_thought.py
 ```
+
+## What Makes This Session Different
+
+Session 3 labs focus on **agentic AI patterns** — the reasoning strategies, tool use concepts, and memory systems that make agents intelligent. These are the patterns you'll implement with LangChain in Session 4 and beyond.
+
+We use a local LLM (Ollama) to keep things simple and focused on the concepts, not the framework.
 
 ## Tips
 
-- **Read the comments** — each lab file explains what's happening step by step
-- **Look for `# TODO` markers** — these are the parts you need to fill in
-- **Run frequently** — don't wait until you've written everything; run after each TODO
-- **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
-- **Experiment!** — change prompts, try different inputs, break things on purpose
+- **Read the output carefully** — the key learning is seeing HOW the LLM responds differently with each pattern
+- **Compare with/without** — most labs show the "without" approach first, then the improved version
+- **Experiment with prompts** — small changes in prompts can dramatically change results
+- **Look for `# TODO` markers** — these are exercises for you to try
 
 ## Estimated Time
 

@@ -1,18 +1,18 @@
 """
-Lab 08: Challenge — Complete UniGPS Multi-Agent Support System
-================================================================
-Goal: Build a production-grade multi-agent support system combining
-      ALL patterns from this session.
+Lab 08: Challenge — Production-Grade UniGPS Expense Approval System
+=====================================================================
+Goal: Build a complete production-grade workflow combining ALL advanced
+      patterns from this session.
 
 Scenario:
-  UniGPS needs a complete support desk system that:
-  1. Uses an LLM supervisor to classify and route requests
-  2. Has specialized worker agents (HR, Tech, Finance, Facilities)
-  3. Supports handoff/escalation when a worker can't handle a request
-  4. Aggregates results for multi-domain requests
-  5. Implements fallback chains for reliability
-  6. Tracks everything in an audit trail
-  7. Uses checkpointing for conversation persistence
+  UniGPS needs an expense approval system that:
+  1. Validates the submission (parallel checks)
+  2. Classifies using LLM (category + priority routing)
+  3. Routes based on amount thresholds (auto/manager/VP approval)
+  4. Handles errors with fallbacks
+  5. Pauses for human approval on large expenses
+  6. Maintains a complete audit trail (reducers)
+  7. Uses checkpointing for state persistence
 
 Requires: GROQ_API_KEY in .env
 """
@@ -31,232 +31,213 @@ load_dotenv()
 llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 
 print("=" * 60)
-print("  Challenge: UniGPS Multi-Agent Support System")
+print("  Challenge: Production Expense Approval System")
 print("=" * 60)
 
 # ============================================================
-# YOUR TASK: Build the complete multi-agent system
+# YOUR TASK: Build the complete workflow
 # ============================================================
 #
 # State definition (provided):
 
-class SupportRequest(TypedDict):
+class ExpenseRequest(TypedDict):
     # Input
     employee_name: str
-    request: str
-    # Routing
-    category: str               # hr, tech, finance, facilities, general
-    confidence: int             # 1-10 from LLM classifier
+    description: str
+    amount: int
+    receipt_attached: bool
     # Processing
-    worker_output: str
-    needs_escalation: bool
-    escalation_reason: str
-    # Fallback
-    error: str
-    fallback_used: bool
+    category: str                          # travel, meals, equipment, other
+    priority: str                          # normal, urgent
+    validation_checks: Annotated[list, add]  # ← parallel checks
+    is_valid: bool
+    # Approval
+    approval_level: str                    # auto, manager, vp
+    approved: bool
+    approver_notes: str
     # Output
-    final_response: str
+    response: str
     # Tracking
-    audit: Annotated[list, add]
+    audit_trail: Annotated[list, add]      # ← reducer
 
-#
-# Requirements:
-#
-# 1. LLM SUPERVISOR (router)
-#    - Classify request into: hr, tech, finance, facilities, general
-#    - Include confidence score (1-10)
-#    - If confidence < 5, route to "clarify" agent
-#    - Handle LLM errors gracefully (fallback to "general")
-#
-# 2. SPECIALIZED WORKERS (4 domain agents)
-#    - HR: leave, policies, insurance, onboarding
-#    - Tech: servers, laptops, deployments, bugs
-#    - Finance: expenses, salary, tax, reimbursement
-#    - Facilities: desk, parking, cafeteria, access cards
-#    - Each with domain-specific system prompt
-#
-# 3. ESCALATION
-#    - Worker can set needs_escalation=True if request is too complex
-#    - Escalation goes to a "manager_agent" node
-#    - Manager agent handles with broader authority
-#
-# 4. FALLBACK CHAIN
-#    - Primary (LLM specialist) → Fallback (template) → Error response
-#    - QA check: verify output length and quality
-#
-# 5. AUDIT TRAIL
-#    - Every node adds to audit: Annotated[list, add]
-#    - Include timestamps in audit entries
-#
-# 6. CHECKPOINTING
-#    - MemorySaver with thread_id per employee
-#    - Support conversation history
-#
+# ============================================================
+# STEP 1: Validation nodes (run in parallel)
+# ============================================================
+# Create parallel validation checks:
+
+# def check_amount(state) -> dict:
+#     """Check if amount is positive and reasonable (< Rs 500,000)."""
+#     passed = 0 < state["amount"] < 500000
+#     return {"validation_checks": [{"type": "amount", "passed": passed}]}
+
+# def check_receipt(state) -> dict:
+#     """Check if receipt is attached for amounts > Rs 500."""
+#     if state["amount"] <= 500:
+#         passed = True  # No receipt needed for small amounts
+#     else:
+#         passed = state["receipt_attached"]
+#     return {"validation_checks": [{"type": "receipt", "passed": passed}]}
+
+# def check_description(state) -> dict:
+#     """Check if description is at least 10 characters."""
+#     passed = len(state["description"]) >= 10
+#     return {"validation_checks": [{"type": "description", "passed": passed}]}
+
+# def merge_validations(state) -> dict:
+#     """Merge validation results."""
+#     all_passed = all(c["passed"] for c in state["validation_checks"])
+#     return {"is_valid": all_passed, "audit_trail": [...]}
+
+# ============================================================
+# STEP 2: Classification node (LLM-powered)
+# ============================================================
+
+# def classify_expense(state) -> dict:
+#     """Use LLM to classify expense category and priority."""
+#     prompt = f"Classify this expense: {state['description']}, Rs {state['amount']}"
+#     # Parse: category (travel/meals/equipment/other)
+#     # Parse: priority (urgent/normal)
+#     pass
+
+# ============================================================
+# STEP 3: Approval routing
+# ============================================================
+
+# def determine_approval_level(state) -> dict:
+#     """Determine approval level based on amount:
+#        - Rs 0-5000: auto-approve
+#        - Rs 5001-50000: manager approval
+#        - Rs 50000+: VP approval"""
+#     pass
+
+# def route_approval(state) -> str:
+#     if not state["is_valid"]:
+#         return "reject"
+#     return state["approval_level"]  # "auto", "manager", "vp"
+
+# ============================================================
+# STEP 4: Handler nodes
+# ============================================================
+
+# def auto_approve(state) -> dict:
+#     """Auto-approve small expenses."""
+#     return {"approved": True, "response": "Auto-approved.", "audit_trail": [...]}
+
+# def manager_review(state) -> dict:
+#     """Prepare for manager review."""
+#     return {"audit_trail": ["Awaiting manager approval"]}
+
+# def vp_review(state) -> dict:
+#     """Prepare for VP review."""
+#     return {"audit_trail": ["Awaiting VP approval"]}
+
+# def reject_invalid(state) -> dict:
+#     """Reject invalid submissions."""
+#     failed = [c for c in state["validation_checks"] if not c["passed"]]
+#     return {"approved": False, "response": f"Rejected: {failed}", "audit_trail": [...]}
+
+# def finalize(state) -> dict:
+#     """Final processing and response generation."""
+#     pass
+
+# ============================================================
+# STEP 5: Build the graph
+# ============================================================
 # Graph structure:
-#   START → supervisor → [clarify | hr | tech | finance | facilities | general]
-#         → [escalation_check] → [manager | qa_check] → [finalize | fallback]
-#         → finalize → END
+#   START → [check_amount | check_receipt | check_description] → merge
+#         → classify → determine_level
+#         → [auto | manager_review | vp_review | reject] → finalize → END
+#
+# Interrupt: interrupt_before=["manager_review", "vp_review"]
 
-# ============================================================
-# YOUR CODE BELOW
-# ============================================================
-
-# def supervisor(state: SupportRequest) -> dict:
-#     """LLM-powered supervisor with confidence scoring."""
-#     prompt = (
-#         f"You are the UniGPS support desk supervisor.\n"
-#         f"Classify this request into: hr, tech, finance, facilities, general\n"
-#         f"Rate your confidence 1-10.\n"
-#         f"Request: {state['request']}\n"
-#         f"Reply:\nCATEGORY: ...\nCONFIDENCE: ..."
-#     )
-#     ...
-
-# def route_supervisor(state: SupportRequest) -> str:
-#     if state["confidence"] < 5:
-#         return "clarify"
-#     return state["category"]
-
-# def clarify_agent(state: SupportRequest) -> dict:
-#     ...
-
-# def hr_worker(state: SupportRequest) -> dict:
-#     ...
-
-# def tech_worker(state: SupportRequest) -> dict:
-#     ...
-
-# def finance_worker(state: SupportRequest) -> dict:
-#     ...
-
-# def facilities_worker(state: SupportRequest) -> dict:
-#     ...
-
-# def general_worker(state: SupportRequest) -> dict:
-#     ...
-
-# def escalation_check(state: SupportRequest) -> dict:
-#     """Check if the worker flagged for escalation."""
-#     ...
-
-# def route_escalation(state: SupportRequest) -> str:
-#     return "manager" if state["needs_escalation"] else "qa_check"
-
-# def manager_agent(state: SupportRequest) -> dict:
-#     """Manager agent with broader authority."""
-#     ...
-
-# def qa_check(state: SupportRequest) -> dict:
-#     """Verify response quality."""
-#     ...
-
-# def route_qa(state: SupportRequest) -> str:
-#     return "fallback" if state["error"] else "finalize"
-
-# def fallback(state: SupportRequest) -> dict:
-#     ...
-
-# def finalize(state: SupportRequest) -> dict:
-#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#     ...
-
-# Build graph
-# graph = StateGraph(SupportRequest)
-# ... add all nodes and edges ...
-
+# graph = StateGraph(ExpenseRequest)
+# ... add nodes ...
+# ... add edges (parallel fan-out for validation) ...
+# ... add conditional edges for routing ...
 # memory = MemorySaver()
-# app = graph.compile(checkpointer=memory)
+# app = graph.compile(checkpointer=memory, interrupt_before=["manager_review", "vp_review"])
 
 # ============================================================
-# Test cases (provided):
+# STEP 6: Test the workflow
 # ============================================================
 
-test_requests = [
+test_expenses = [
     {
         "employee_name": "Priya Sharma",
-        "request": "I want to apply for 5 days casual leave from next Monday",
-        "thread_id": "support-001",
+        "description": "Team lunch at office cafeteria",
+        "amount": 450,
+        "receipt_attached": False,
+        "thread_id": "exp-001",
     },
     {
         "employee_name": "Vikram Patel",
-        "request": "The production database is running very slow and queries are timing out",
-        "thread_id": "support-002",
+        "description": "Client dinner at Taj Hotel for project discussion",
+        "amount": 8500,
+        "receipt_attached": True,
+        "thread_id": "exp-002",  # Should pause for manager
     },
     {
         "employee_name": "Anita Desai",
-        "request": "When will my travel expense reimbursement from last month be credited?",
-        "thread_id": "support-003",
+        "description": "New MacBook Pro for development team",
+        "amount": 175000,
+        "receipt_attached": True,
+        "thread_id": "exp-003",  # Should pause for VP
     },
     {
         "employee_name": "Rahul Kumar",
-        "request": "I need a standing desk and a parking spot in the new building",
-        "thread_id": "support-004",
-    },
-    {
-        "employee_name": "Meera Joshi",
-        "request": "asdfghjkl",
-        "thread_id": "support-005",
-    },
-    {
-        "employee_name": "Amit Singh",
-        "request": "I need a policy exception for 30 days leave for my wedding",
-        "thread_id": "support-006",
+        "description": "Cab",
+        "amount": 2000,
+        "receipt_attached": False,
+        "thread_id": "exp-004",  # Should fail validation (short description, no receipt)
     },
 ]
 
-# Uncomment to test when your implementation is ready:
-#
-# print("\n--- Processing Support Requests ---\n")
-# for req in test_requests:
-#     config = {"configurable": {"thread_id": req["thread_id"]}}
-#     print(f"{'='*50}")
-#     print(f"Employee: {req['employee_name']}")
-#     print(f"Request: {req['request']}")
-#
+# for exp in test_expenses:
+#     config = {"configurable": {"thread_id": exp["thread_id"]}}
 #     result = app.invoke({
-#         "employee_name": req["employee_name"],
-#         "request": req["request"],
-#         "category": "", "confidence": 0,
-#         "worker_output": "", "needs_escalation": False,
-#         "escalation_reason": "", "error": "",
-#         "fallback_used": False, "final_response": "",
-#         "audit": [],
+#         "employee_name": exp["employee_name"],
+#         "description": exp["description"],
+#         "amount": exp["amount"],
+#         "receipt_attached": exp["receipt_attached"],
+#         "validation_checks": [],
+#         "audit_trail": [],
+#         "is_valid": False, "approved": False,
+#         "category": "", "priority": "", "approval_level": "",
+#         "approver_notes": "", "response": "",
 #     }, config)
 #
-#     print(f"\n  Category: {result.get('category', 'N/A')}")
-#     print(f"  Confidence: {result.get('confidence', 'N/A')}/10")
-#     print(f"  Escalated: {result.get('needs_escalation', False)}")
-#     print(f"  Fallback: {result.get('fallback_used', False)}")
-#     print(f"  Response: {result.get('final_response', 'N/A')[:80]}...")
-#     print(f"  Audit trail:")
-#     for entry in result.get("audit", []):
-#         print(f"    {entry}")
-#     print()
-#
-# # Summary
-# print(f"\n{'='*60}")
-# print("--- Summary ---")
-# print(f"{'Thread':<14} {'Employee':<18} {'Category':<12} {'Escalated'}")
-# print("-" * 60)
-# for req in test_requests:
-#     config = {"configurable": {"thread_id": req["thread_id"]}}
+#     # Check if paused
 #     snap = app.get_state(config)
-#     v = snap.values
-#     print(
-#         f"{req['thread_id']:<14} "
-#         f"{req['employee_name']:<18} "
-#         f"{v.get('category', 'N/A'):<12} "
-#         f"{v.get('needs_escalation', False)}"
-#     )
+#     if snap.next:
+#         print(f"\n⚠ PAUSED for {snap.next}: {exp['employee_name']}'s Rs {exp['amount']} expense")
+#         # Simulate approval
+#         app.update_state(config, {
+#             "approved": True,
+#             "approver_notes": "Approved after review",
+#             "audit_trail": [f"[{snap.next[0].upper()}] Approved"],
+#         })
+#         result = app.invoke(None, config)
+#
+#     print(f"\n{'='*45}")
+#     print(f"Employee: {exp['employee_name']}")
+#     print(f"Amount: Rs {exp['amount']}")
+#     print(f"Valid: {result.get('is_valid')}")
+#     print(f"Approved: {result.get('approved')}")
+#     print(f"Response: {result.get('response', 'N/A')[:60]}")
+#     print(f"Audit trail:")
+#     for entry in result.get("audit_trail", []):
+#         print(f"    {entry}")
+
+print("\nChallenge: Uncomment and implement the code above!")
+print("Combine everything from Labs 01-07:")
+print("  - Lab 01: Multi-branch fan-out/convergence")
+print("  - Lab 02: Parallel validation checks with reducers")
+print("  - Lab 03: Custom reducers for audit trail")
+print("  - Lab 04: Error handling with fallbacks")
+print("  - Lab 05: Retry logic (optional: retry LLM classification)")
+print("  - Lab 06: LLM-powered routing + priority routing")
+print("  - Lab 07: Multi-gate HITL (manager + VP approval gates)")
 
 print("\n" + "=" * 60)
-print("Challenge: Implement the complete multi-agent support system")
-print("Patterns to use:")
-print("  - LLM supervisor with confidence routing")
-print("  - 4 specialized domain workers + general")
-print("  - Escalation path for complex requests")
-print("  - Fallback chain (LLM → template → error message)")
-print("  - QA gate before finalizing")
-print("  - Audit trail with timestamps")
-print("  - MemorySaver checkpointing with thread_id")
-print("\nCheck solutions/lab08_challenge.py when done!")
+print("Lab 08 (Challenge) — Good luck!")
+print("Check solutions/lab08_challenge.py when you're done.")

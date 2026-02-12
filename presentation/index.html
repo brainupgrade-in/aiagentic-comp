@@ -141,6 +141,16 @@
       color: var(--text-muted);
     }
 
+    .session-card .slot-badge {
+      display: inline-block;
+      background: rgba(186,104,200,0.2);
+      color: #ba68c8;
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 0.7em;
+      margin-left: 8px;
+    }
+
     footer {
       text-align: center;
       margin-top: 48px;
@@ -155,14 +165,14 @@
   <div class="container">
     <header>
       <h1>Agentic AI Course</h1>
-      <p>5 Days &middot; 15 Sessions &middot; 117 Hands-on Labs</p>
+      <p>5 Days &middot; 14 Sessions &middot; 109 Hands-on Labs</p>
     </header>
 
     <!-- Day 1 -->
     <div class="day-group day-1">
       <div class="day-header">
         <span class="day-badge">Day 1</span>
-        <span class="day-theme">Agentic AI Foundations & LangChain</span>
+        <span class="day-theme">Foundations & AI-Assisted Development</span>
       </div>
       <div class="sessions">
         <a class="session-card" href="session1-introduction-to-agentic-ai.html">
@@ -176,8 +186,19 @@
           </div>
           <div class="labs">6 labs</div>
         </a>
-        <a class="session-card" href="session2-reasoning-planning-tool-use.html">
+        <a class="session-card" href="session2-ai-coding-assistants-vibe-coding.html">
           <div class="session-num">Session 2</div>
+          <h3>AI Coding Assistants & Vibe Coding</h3>
+          <div class="topics">
+            <span class="topic-tag">Agent Loop</span>
+            <span class="topic-tag">Context Mgmt</span>
+            <span class="topic-tag">Vibe Coding</span>
+            <span class="topic-tag">Prompts</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session3-reasoning-planning-tool-use.html">
+          <div class="session-num">Session 3</div>
           <h3>Reasoning, Planning & Tool Use</h3>
           <div class="topics">
             <span class="topic-tag">ReAct</span>
@@ -186,8 +207,18 @@
           </div>
           <div class="labs">7 labs</div>
         </a>
-        <a class="session-card" href="session3-langchain-fundamentals.html">
-          <div class="session-num">Session 3</div>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="day-group day-2">
+      <div class="day-header">
+        <span class="day-badge">Day 2</span>
+        <span class="day-theme">LangChain, RAG & Agents</span>
+      </div>
+      <div class="sessions">
+        <a class="session-card" href="session4-langchain-fundamentals.html">
+          <div class="session-num">Session 4</div>
           <h3>LangChain Fundamentals</h3>
           <div class="topics">
             <span class="topic-tag">LCEL</span>
@@ -197,18 +228,8 @@
           </div>
           <div class="labs">8 labs</div>
         </a>
-      </div>
-    </div>
-
-    <!-- Day 2 -->
-    <div class="day-group day-2">
-      <div class="day-header">
-        <span class="day-badge">Day 2</span>
-        <span class="day-theme">RAG, Agents & LangGraph</span>
-      </div>
-      <div class="sessions">
-        <a class="session-card" href="session4-building-rag-applications.html">
-          <div class="session-num">Session 4</div>
+        <a class="session-card" href="session5-building-rag-applications.html">
+          <div class="session-num">Session 5</div>
           <h3>Building RAG Applications</h3>
           <div class="topics">
             <span class="topic-tag">Document Loaders</span>
@@ -218,24 +239,13 @@
           </div>
           <div class="labs">8 labs</div>
         </a>
-        <a class="session-card" href="session5-langchain-agents-memory.html">
-          <div class="session-num">Session 5</div>
+        <a class="session-card" href="session6-langchain-agents-memory.html">
+          <div class="session-num">Session 6</div>
           <h3>LangChain Agents & Memory</h3>
           <div class="topics">
             <span class="topic-tag">Agent Types</span>
             <span class="topic-tag">Memory Patterns</span>
             <span class="topic-tag">Conversations</span>
-          </div>
-          <div class="labs">8 labs</div>
-        </a>
-        <a class="session-card" href="session6-langgraph-stateful-workflows.html">
-          <div class="session-num">Session 6</div>
-          <h3>LangGraph Stateful Workflows</h3>
-          <div class="topics">
-            <span class="topic-tag">StateGraph</span>
-            <span class="topic-tag">Nodes</span>
-            <span class="topic-tag">Edges</span>
-            <span class="topic-tag">Conditional Routing</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
@@ -246,11 +256,22 @@
     <div class="day-group day-3">
       <div class="day-header">
         <span class="day-badge">Day 3</span>
-        <span class="day-theme">Advanced Patterns & Production</span>
+        <span class="day-theme">LangGraph & Multi-Agent Systems</span>
       </div>
       <div class="sessions">
-        <a class="session-card" href="session7-advanced-langgraph-workflows.html">
+        <a class="session-card" href="session7-langgraph-stateful-workflows.html">
           <div class="session-num">Session 7</div>
+          <h3>LangGraph Stateful Workflows</h3>
+          <div class="topics">
+            <span class="topic-tag">StateGraph</span>
+            <span class="topic-tag">Nodes</span>
+            <span class="topic-tag">Edges</span>
+            <span class="topic-tag">Conditional Routing</span>
+          </div>
+          <div class="labs">8 labs</div>
+        </a>
+        <a class="session-card" href="session8-advanced-langgraph-workflows.html">
+          <div class="session-num">Session 8</div>
           <h3>Advanced LangGraph Workflows</h3>
           <div class="topics">
             <span class="topic-tag">Human-in-the-Loop</span>
@@ -259,24 +280,13 @@
           </div>
           <div class="labs">8 labs</div>
         </a>
-        <a class="session-card" href="session8-multi-agent-systems.html">
-          <div class="session-num">Session 8</div>
+        <a class="session-card" href="session9-multi-agent-systems.html">
+          <div class="session-num">Session 9</div>
           <h3>Multi-Agent Systems</h3>
           <div class="topics">
             <span class="topic-tag">Supervisor Pattern</span>
             <span class="topic-tag">Collaboration</span>
             <span class="topic-tag">Orchestration</span>
-          </div>
-          <div class="labs">8 labs</div>
-        </a>
-        <a class="session-card" href="session9-production-application-development.html">
-          <div class="session-num">Session 9</div>
-          <h3>Production Application Development</h3>
-          <div class="topics">
-            <span class="topic-tag">FastAPI</span>
-            <span class="topic-tag">Error Handling</span>
-            <span class="topic-tag">Testing</span>
-            <span class="topic-tag">Deployment</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
@@ -287,39 +297,39 @@
     <div class="day-group day-4">
       <div class="day-header">
         <span class="day-badge">Day 4</span>
-        <span class="day-theme">AI Coding Agents & Developer Tools</span>
+        <span class="day-theme">Observability & Production</span>
       </div>
       <div class="sessions">
-        <a class="session-card" href="session10-ai-coding-agents-vibe-coding.html">
+        <a class="session-card" href="session10-observability-fundamentals.html">
           <div class="session-num">Session 10</div>
-          <h3>AI Coding Agents & Vibe Coding</h3>
+          <h3>Observability Fundamentals</h3>
           <div class="topics">
-            <span class="topic-tag">Agent Loop</span>
-            <span class="topic-tag">Context Mgmt</span>
-            <span class="topic-tag">Vibe Coding</span>
-            <span class="topic-tag">Prompts</span>
+            <span class="topic-tag">Three Pillars</span>
+            <span class="topic-tag">Metric Types</span>
+            <span class="topic-tag">Structured Logging</span>
+            <span class="topic-tag">OTel</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
-        <a class="session-card" href="session11-model-context-protocol.html">
+        <a class="session-card" href="session11-langfuse-observability.html">
           <div class="session-num">Session 11</div>
-          <h3>Model Context Protocol (MCP)</h3>
+          <h3>LangFuse Observability</h3>
           <div class="topics">
-            <span class="topic-tag">JSON-RPC 2.0</span>
-            <span class="topic-tag">Tools</span>
-            <span class="topic-tag">Resources</span>
-            <span class="topic-tag">FastMCP</span>
+            <span class="topic-tag">Trace Hierarchy</span>
+            <span class="topic-tag">Callbacks</span>
+            <span class="topic-tag">Feedback</span>
+            <span class="topic-tag">Cost Tracking</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
-        <a class="session-card" href="session12-building-custom-ai-dev-tools.html">
+        <a class="session-card" href="session12-production-development-deployment.html">
           <div class="session-num">Session 12</div>
-          <h3>Building Custom AI Dev Tools</h3>
+          <h3>Production Development & Deployment</h3>
           <div class="topics">
-            <span class="topic-tag">Code Review</span>
-            <span class="topic-tag">MCP Servers</span>
-            <span class="topic-tag">Tool Registry</span>
-            <span class="topic-tag">Sandboxing</span>
+            <span class="topic-tag">FastAPI</span>
+            <span class="topic-tag">Health Probes</span>
+            <span class="topic-tag">Secrets</span>
+            <span class="topic-tag">Logging</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
@@ -330,41 +340,30 @@
     <div class="day-group day-5">
       <div class="day-header">
         <span class="day-badge">Day 5</span>
-        <span class="day-theme">Observability & Capstone</span>
+        <span class="day-theme">MCP & Capstone</span>
       </div>
       <div class="sessions">
-        <a class="session-card" href="session13-observability-fundamentals.html">
+        <a class="session-card" href="session13-model-context-protocol.html">
           <div class="session-num">Session 13</div>
-          <h3>Observability Fundamentals</h3>
+          <h3>Model Context Protocol (MCP)</h3>
           <div class="topics">
-            <span class="topic-tag">Three Pillars</span>
-            <span class="topic-tag">Metric Types</span>
-            <span class="topic-tag">Structured Logging</span>
-            <span class="topic-tag">OTel</span>
+            <span class="topic-tag">JSON-RPC 2.0</span>
+            <span class="topic-tag">Tools</span>
+            <span class="topic-tag">Resources</span>
+            <span class="topic-tag">FastMCP</span>
           </div>
           <div class="labs">8 labs</div>
         </a>
-        <a class="session-card" href="session14-langfuse-observability.html">
+        <a class="session-card" href="session14-capstone-project.html">
           <div class="session-num">Session 14</div>
-          <h3>LangFuse Observability</h3>
+          <h3>Capstone Project</h3>
           <div class="topics">
-            <span class="topic-tag">Trace Hierarchy</span>
-            <span class="topic-tag">Callbacks</span>
-            <span class="topic-tag">Feedback</span>
-            <span class="topic-tag">Cost Tracking</span>
+            <span class="topic-tag">Integration</span>
+            <span class="topic-tag">Architecture</span>
+            <span class="topic-tag">Deployment</span>
+            <span class="topic-tag">Testing</span>
           </div>
-          <div class="labs">8 labs</div>
-        </a>
-        <a class="session-card" href="session15-capstone-production-readiness.html">
-          <div class="session-num">Session 15</div>
-          <h3>Capstone & Production Readiness</h3>
-          <div class="topics">
-            <span class="topic-tag">Health Probes</span>
-            <span class="topic-tag">HPA</span>
-            <span class="topic-tag">Secrets</span>
-            <span class="topic-tag">Alerting</span>
-          </div>
-          <div class="labs">8 labs</div>
+          <div class="labs">8 labs<span class="slot-badge">2 time slots</span></div>
         </a>
       </div>
     </div>

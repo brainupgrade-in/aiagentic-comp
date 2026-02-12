@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Session 14: Capstone Project</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <style>
+    :root {
+      --accent: #4fc3f7;
+      --accent2: #81c784;
+      --accent3: #ffb74d;
+      --accent4: #e57373;
+      --bg-card: rgba(255,255,255,0.07);
+    }
+    .reveal { font-size: 32px; }
+    .reveal h1 { font-size: 2.2em; color: var(--accent); text-transform: none; }
+    .reveal h2 { font-size: 1.6em; color: var(--accent); text-transform: none; }
+    .reveal h3 { font-size: 1.2em; color: var(--accent2); text-transform: none; }
+    .reveal ul { text-align: left; }
+    .reveal li { margin-bottom: 0.4em; font-size: 0.85em; }
+    .reveal .subtitle { color: #aaa; font-size: 0.7em; margin-top: 0.5em; }
+    .reveal .highlight { color: var(--accent); font-weight: bold; }
+    .reveal .highlight-green { color: var(--accent2); font-weight: bold; }
+    .reveal .highlight-orange { color: var(--accent3); font-weight: bold; }
+    .reveal .highlight-red { color: var(--accent4); font-weight: bold; }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 0.85em;
+      color: var(--accent);
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 0.65em;
+      color: #ccc;
+    }
+    .card ul { padding-left: 1.2em; }
+    .card li { margin-bottom: 0.2em; }
+    .card-accent { border-left: 4px solid var(--accent); }
+    .card-green { border-left: 4px solid var(--accent2); }
+    .card-orange { border-left: 4px solid var(--accent3); }
+    .card-red { border-left: 4px solid var(--accent4); }
+
+    /* Diagram boxes */
+    .diagram {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .diagram-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+    .box {
+      background: var(--bg-card);
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: 0.7em;
+      text-align: center;
+      min-width: 100px;
+    }
+    .box-green { border-color: var(--accent2); }
+    .box-orange { border-color: var(--accent3); }
+    .box-red { border-color: var(--accent4); }
+    .box-large {
+      padding: 20px 30px;
+      font-size: 0.8em;
+      min-width: 140px;
+    }
+    .arrow { font-size: 1.5em; color: #888; }
+    .arrow-down { font-size: 1.2em; color: #888; }
+
+    /* Timeline / Evolution */
+    .evolution {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin: 30px 0;
+    }
+    .evo-step {
+      text-align: center;
+      padding: 16px;
+      font-size: 0.65em;
+      min-width: 110px;
+    }
+    .evo-step .evo-icon { font-size: 2em; display: block; margin-bottom: 6px; }
+    .evo-step .evo-label { font-weight: bold; color: #fff; display: block; }
+    .evo-step .evo-year { color: #888; font-size: 0.85em; }
+    .evo-arrow { font-size: 1.8em; color: var(--accent); padding: 0 4px; }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.6em;
+      margin-top: 16px;
+    }
+    .compare-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .compare-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    /* Analogy callout */
+    .analogy {
+      background: rgba(79,195,247,0.08);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 0.75em;
+      text-align: left;
+    }
+    .analogy::before {
+      content: "Think of it like...";
+      display: block;
+      font-weight: bold;
+      color: var(--accent);
+      margin-bottom: 6px;
+      font-size: 0.9em;
+    }
+
+    /* Section divider */
+    .section-number {
+      font-size: 4em;
+      color: var(--accent);
+      opacity: 0.3;
+      font-weight: bold;
+      line-height: 1;
+    }
+
+    /* Key takeaway */
+    .takeaway {
+      background: rgba(129,199,132,0.1);
+      border: 1px solid var(--accent2);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 16px;
+      font-size: 0.75em;
+      text-align: left;
+    }
+    .takeaway::before {
+      content: "Key Takeaway";
+      display: block;
+      font-weight: bold;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    /* Trainer info */
+    .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
+    /* Prevent content overflow on slides */
+    .reveal .slides section { overflow: hidden; }
+
+    /* Phase badge */
+    .phase-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .phase-badge-green { background: var(--accent2); }
+    .phase-badge-orange { background: var(--accent3); }
+    .phase-badge-red { background: var(--accent4); }
+
+    /* Scoring rubric */
+    .rubric-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.55em;
+      margin-top: 16px;
+    }
+    .rubric-table th {
+      background: rgba(79,195,247,0.15);
+      color: var(--accent);
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+    .rubric-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+    .rubric-table .score {
+      font-weight: bold;
+      color: var(--accent2);
+      text-align: center;
+    }
+
+    /* Fragment fade-in override for cleaner look */
+    .reveal .slides section .fragment.visible { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ==================== TITLE ==================== -->
+      <section>
+        <h1>Capstone Project</h1>
+        <p style="font-size:0.9em; color:#ccc;">Build a Production-Ready AI Agent System</p>
+        <p class="subtitle">Session 14 &middot; Day 5, Slots B + C + D</p>
+        <br>
+        <p class="trainer-info">
+          Trainer: <strong>Rajesh Gheware</strong><br>
+          Agentic AI: Comprehensive Course &middot; 5 Days
+        </p>
+      </section>
+
+      <!-- ==================== COURSE JOURNEY RECAP ==================== -->
+      <section>
+        <h2>Your 5-Day Journey</h2>
+        <p style="font-size:0.7em; color:#ccc;">Everything you have learned leads to this moment</p>
+        <div class="evolution" style="margin-top:24px;">
+          <div class="evo-step" style="border:2px solid var(--accent); border-radius:10px; padding:12px;">
+            <span class="evo-icon">&#x1F9E0;</span>
+            <span class="evo-label" style="color:var(--accent);">Day 1</span>
+            <span class="evo-year">Foundations</span>
+          </div>
+          <span class="evo-arrow">&rarr;</span>
+          <div class="evo-step" style="border:2px solid var(--accent2); border-radius:10px; padding:12px;">
+            <span class="evo-icon">&#x1F4DA;</span>
+            <span class="evo-label" style="color:var(--accent2);">Day 2</span>
+            <span class="evo-year">RAG &amp; Agents</span>
+          </div>
+          <span class="evo-arrow">&rarr;</span>
+          <div class="evo-step" style="border:2px solid var(--accent3); border-radius:10px; padding:12px;">
+            <span class="evo-icon">&#x1F504;</span>
+            <span class="evo-label" style="color:var(--accent3);">Day 3</span>
+            <span class="evo-year">LangGraph &amp; Multi-Agent</span>
+          </div>
+          <span class="evo-arrow">&rarr;</span>
+          <div class="evo-step" style="border:2px solid var(--accent4); border-radius:10px; padding:12px;">
+            <span class="evo-icon">&#x1F50D;</span>
+            <span class="evo-label" style="color:var(--accent4);">Day 4</span>
+            <span class="evo-year">Observability &amp; Production</span>
+          </div>
+          <span class="evo-arrow">&rarr;</span>
+          <div class="evo-step" style="border:2px solid #fff; border-radius:10px; padding:12px; background:rgba(79,195,247,0.12);">
+            <span class="evo-icon">&#x1F3C6;</span>
+            <span class="evo-label" style="color:#fff;">Day 5</span>
+            <span class="evo-year">MCP &amp; Capstone</span>
+          </div>
+        </div>
+        <br>
+        <div class="takeaway">
+          The capstone integrates <strong>every concept</strong> from the past 13 sessions into a single,
+          production-ready AI agent system. This is where it all comes together.
+        </div>
+      </section>
+
+      <!-- ==================== CAPSTONE OBJECTIVES ==================== -->
+      <section>
+        <h2>Capstone Objectives</h2>
+        <h3>What you will build in the next 3 hours</h3>
+        <br>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Production-Ready Agent</h4>
+            <p>A fully functional AI agent system with FastAPI serving, LangGraph orchestration, and MCP tool integration</p>
+          </div>
+          <div class="card card-green">
+            <h4>Full Observability</h4>
+            <p>Prometheus metrics, Grafana dashboards, LangFuse tracing &mdash; every request is visible</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Tested &amp; Resilient</h4>
+            <p>Error handling, health probes, graceful degradation, and a comprehensive test plan</p>
+          </div>
+          <div class="card card-red">
+            <h4>Deployment-Ready</h4>
+            <p>Containerized with Docker, configured for Kubernetes, ready for production</p>
+          </div>
+        </div>
+        <br>
+        <div class="analogy">
+          Building a house: you have learned plumbing, electrical, framing, and roofing in separate sessions.
+          Now you build the entire house from foundation to finish, using every skill together.
+        </div>
+      </section>
+
+      <!-- ==================== ARCHITECTURE OVERVIEW ==================== -->
+      <section>
+        <h2>Architecture Overview</h2>
+        <h3>The full system you will build</h3>
+        <br>
+        <div style="text-align:center;">
+          <div class="box box-large" style="display:inline-block; min-width:180px; margin-bottom:8px;">
+            &#x1F464; <strong>Client</strong><br>
+            <span style="font-size:0.8em;">HTTP Requests</span>
+          </div>
+          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
+          <div class="box box-large" style="display:inline-block; min-width:320px; margin-bottom:8px; border-color:var(--accent);">
+            &#x26A1; <strong>FastAPI Application</strong><br>
+            <span style="font-size:0.8em;">REST API + Health Probes + Metrics</span>
+          </div>
+          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
+          <div class="diagram" style="margin:8px 0;">
+            <div class="box box-green" style="min-width:140px;">&#x1F504; <strong>LangGraph</strong><br><span style="font-size:0.8em;">Agent Orchestration</span></div>
+            <span class="arrow">&harr;</span>
+            <div class="box box-orange" style="min-width:140px;">&#x1F527; <strong>MCP Server</strong><br><span style="font-size:0.8em;">Tool Registry</span></div>
+            <span class="arrow">&harr;</span>
+            <div class="box" style="min-width:140px;">&#x1F4BE; <strong>ChromaDB</strong><br><span style="font-size:0.8em;">Vector Store</span></div>
+          </div>
+          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
+          <div class="diagram" style="margin:8px 0;">
+            <div class="box box-red" style="min-width:130px;">&#x1F4CA; <strong>Prometheus</strong><br><span style="font-size:0.8em;">Metrics</span></div>
+            <div class="box box-orange" style="min-width:130px;">&#x1F4C8; <strong>Grafana</strong><br><span style="font-size:0.8em;">Dashboards</span></div>
+            <div class="box box-green" style="min-width:130px;">&#x1F50D; <strong>LangFuse</strong><br><span style="font-size:0.8em;">Traces</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== COMPONENT CHECKLIST ==================== -->
+      <section>
+        <h2>Component Checklist</h2>
+        <h3>Every piece and where you learned it</h3>
+        <br>
+        <table class="compare-table" style="font-size:0.55em;">
+          <tr>
+            <th>Component</th>
+            <th>Session</th>
+            <th>Role in Capstone</th>
+          </tr>
+          <tr>
+            <td><strong>LangChain + LCEL</strong></td>
+            <td>Sessions 3-5</td>
+            <td>Chains, prompts, output parsing, RAG retrieval</td>
+          </tr>
+          <tr>
+            <td><strong>LangGraph</strong></td>
+            <td>Sessions 6-8</td>
+            <td>Stateful agent orchestration, conditional routing, multi-agent</td>
+          </tr>
+          <tr>
+            <td><strong>FastAPI</strong></td>
+            <td>Session 9</td>
+            <td>REST API endpoints, error handling, health probes</td>
+          </tr>
+          <tr>
+            <td><strong>AI Coding Agents</strong></td>
+            <td>Session 10</td>
+            <td>Agent loop patterns, context management</td>
+          </tr>
+          <tr>
+            <td><strong>MCP Protocol</strong></td>
+            <td>Sessions 11-12</td>
+            <td>Tool server, resource exposure, prompt templates</td>
+          </tr>
+          <tr>
+            <td><strong>Observability</strong></td>
+            <td>Session 13</td>
+            <td>Prometheus metrics, structured logging, OpenTelemetry</td>
+          </tr>
+          <tr>
+            <td><strong>LangFuse</strong></td>
+            <td>Session 11</td>
+            <td>Trace hierarchy, cost tracking, feedback collection</td>
+          </tr>
+        </table>
+        <br>
+        <div class="takeaway">
+          No new concepts today &mdash; only <strong>integration</strong>. Every component has been
+          practiced individually. The challenge is wiring them together into a cohesive system.
+        </div>
+      </section>
+
+      <!-- ==================== PHASE 1: ARCHITECTURE DESIGN ==================== -->
+      <section>
+        <section>
+          <div class="section-number">01</div>
+          <h2>Phase 1: Architecture Design</h2>
+          <p class="subtitle">Lab 01 &middot; Define components, data flows, dependencies</p>
+        </section>
+
+        <section>
+          <div class="phase-badge">Phase 1 &mdash; Lab 01</div>
+          <h2>Architecture Design</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Define Components</h4>
+              <ul>
+                <li>List every service your system needs</li>
+                <li>Identify which sessions each component comes from</li>
+                <li>Map dependencies between components</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Draw Data Flows</h4>
+              <ul>
+                <li>Request path: Client &rarr; API &rarr; Agent &rarr; Tools &rarr; Response</li>
+                <li>Observability path: App &rarr; Prometheus &rarr; Grafana</li>
+                <li>Trace path: App &rarr; LangFuse &rarr; Dashboard</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Plan Dependencies</h4>
+              <ul>
+                <li>Which services start first?</li>
+                <li>What happens if ChromaDB is down?</li>
+                <li>What happens if the LLM API times out?</li>
+              </ul>
+            </div>
+            <div class="card card-red">
+              <h4>Deliverable</h4>
+              <ul>
+                <li>Architecture diagram (code or drawing)</li>
+                <li>Component inventory list</li>
+                <li>Startup order and dependency map</li>
+              </ul>
+            </div>
+          </div>
+          <br>
+          <p style="font-size:0.65em; color:#aaa;">
+            Good architecture is the foundation. Spend time here &mdash; it saves debugging time later.
+          </p>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 2: MCP SERVER ==================== -->
+      <section>
+        <section>
+          <div class="section-number">02</div>
+          <h2>Phase 2: MCP Server</h2>
+          <p class="subtitle">Lab 02 &middot; Build MCP server with tools from Session 13</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-green" style="display:inline-block; background:var(--accent2); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 2 &mdash; Lab 02</div>
+          <h2>MCP Server Implementation</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>FastMCP Server</h4>
+              <ul>
+                <li>Create server with <code>mcp.server.FastMCP</code></li>
+                <li>Register tools using <code>@mcp.tool()</code> decorator</li>
+                <li>Expose resources with <code>@mcp.resource()</code></li>
+                <li>Define prompt templates with <code>@mcp.prompt()</code></li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Tool Registry</h4>
+              <ul>
+                <li>Document search tool (ChromaDB)</li>
+                <li>Calculator / data analysis tool</li>
+                <li>Web lookup tool</li>
+                <li>File generation tool</li>
+              </ul>
+            </div>
+          </div>
+          <br>
+          <div class="diagram">
+            <div class="box" style="border-color:#888;">&#x1F916; Agent</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-green" style="min-width:180px;">&#x1F527; <strong>MCP Server</strong><br><span style="font-size:0.8em;">JSON-RPC 2.0</span></div>
+            <span class="arrow">&rarr;</span>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div class="box" style="padding:8px 14px; font-size:0.6em;">Tool 1: Search</div>
+              <div class="box box-orange" style="padding:8px 14px; font-size:0.6em;">Tool 2: Calculate</div>
+              <div class="box box-red" style="padding:8px 14px; font-size:0.6em;">Tool 3: Generate</div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 3: API ENDPOINT ==================== -->
+      <section>
+        <section>
+          <div class="section-number">03</div>
+          <h2>Phase 3: API Endpoint</h2>
+          <p class="subtitle">Lab 03 &middot; FastAPI endpoint from Session 9</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-orange" style="display:inline-block; background:var(--accent3); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 3 &mdash; Lab 03</div>
+          <h2>FastAPI Application</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card card-accent">
+              <h4>Endpoints</h4>
+              <ul>
+                <li><code>POST /agent/query</code></li>
+                <li><code>GET /health</code></li>
+                <li><code>GET /ready</code></li>
+                <li><code>GET /metrics</code></li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Request Handling</h4>
+              <ul>
+                <li>Input validation (Pydantic)</li>
+                <li>Async request processing</li>
+                <li>Structured JSON responses</li>
+                <li>Error codes and messages</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Production Features</h4>
+              <ul>
+                <li>Request timeout handling</li>
+                <li>Rate limiting middleware</li>
+                <li>CORS configuration</li>
+                <li>Graceful shutdown</li>
+              </ul>
+            </div>
+          </div>
+          <br>
+          <div class="analogy">
+            The FastAPI application is the <strong>front door</strong> of your system.
+            Every request enters here, gets validated, routed to the agent, and returns a structured response.
+            If the front door is broken, nothing else matters.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 4: INSTRUMENTATION ==================== -->
+      <section>
+        <section>
+          <div class="section-number">04</div>
+          <h2>Phase 4: Instrumentation</h2>
+          <p class="subtitle">Lab 04 &middot; LangFuse traces from Session 11</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-red" style="display:inline-block; background:var(--accent4); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 4 &mdash; Lab 04</div>
+          <h2>Observability Instrumentation</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>LangFuse Integration</h4>
+              <ul>
+                <li>Initialize <code>CallbackHandler</code> for LangChain</li>
+                <li>Trace hierarchy: Session &rarr; Trace &rarr; Span &rarr; Generation</li>
+                <li>Track token usage and cost per request</li>
+                <li>Collect user feedback scores</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Structured Logging</h4>
+              <ul>
+                <li>JSON-formatted log entries</li>
+                <li>Correlation IDs across services</li>
+                <li>Log levels: DEBUG, INFO, WARN, ERROR</li>
+                <li>Request/response payload logging</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Prometheus Metrics</h4>
+              <ul>
+                <li>Request count (Counter)</li>
+                <li>Request duration (Histogram)</li>
+                <li>Active requests (Gauge)</li>
+                <li>Error rate (Counter by status code)</li>
+              </ul>
+            </div>
+            <div class="card card-red">
+              <h4>What You Can See</h4>
+              <ul>
+                <li>Which tool was called and how long it took</li>
+                <li>How many tokens each request consumed</li>
+                <li>Where errors occur in the agent chain</li>
+                <li>End-to-end latency breakdown</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 5: HEALTH & MONITORING ==================== -->
+      <section>
+        <section>
+          <div class="section-number">05</div>
+          <h2>Phase 5: Health &amp; Monitoring</h2>
+          <p class="subtitle">Lab 05 &middot; Probes + metrics from Session 12</p>
+        </section>
+
+        <section>
+          <div class="phase-badge">Phase 5 &mdash; Lab 05</div>
+          <h2>Health Probes &amp; Monitoring</h2>
+          <br>
+          <div class="card-grid-3">
+            <div class="card card-accent">
+              <h4>Liveness Probe</h4>
+              <p><code>GET /health</code></p>
+              <ul>
+                <li>Returns 200 if app is alive</li>
+                <li>Checks: process running, no deadlock</li>
+                <li>Failure: container restart</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Readiness Probe</h4>
+              <p><code>GET /ready</code></p>
+              <ul>
+                <li>Returns 200 if ready for traffic</li>
+                <li>Checks: DB connected, LLM reachable</li>
+                <li>Failure: removed from load balancer</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>Metrics Endpoint</h4>
+              <p><code>GET /metrics</code></p>
+              <ul>
+                <li>Prometheus-compatible format</li>
+                <li>Scraped every 15s by Prometheus</li>
+                <li>Visualized in Grafana dashboards</li>
+              </ul>
+            </div>
+          </div>
+          <br>
+          <div class="diagram">
+            <div class="box">&#x26A1; FastAPI</div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-red">&#x1F4CA; Prometheus<br><span style="font-size:0.8em;">scrape /metrics</span></div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-orange">&#x1F4C8; Grafana<br><span style="font-size:0.8em;">dashboards</span></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 6: DEPLOYMENT CONFIG ==================== -->
+      <section>
+        <section>
+          <div class="section-number">06</div>
+          <h2>Phase 6: Deployment Config</h2>
+          <p class="subtitle">Lab 06 &middot; Containerization and deployment manifests</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-green" style="display:inline-block; background:var(--accent2); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 6 &mdash; Lab 06</div>
+          <h2>Deployment Configuration</h2>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>Dockerfile</h4>
+              <ul>
+                <li>Multi-stage build for small image</li>
+                <li>Non-root user for security</li>
+                <li>Health check instruction</li>
+                <li>Environment variable configuration</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Docker Compose</h4>
+              <ul>
+                <li>App + Prometheus + Grafana + LangFuse</li>
+                <li>Memory limits on all containers</li>
+                <li>Network isolation</li>
+                <li>Volume mounts for persistence</li>
+              </ul>
+            </div>
+            <div class="card card-orange">
+              <h4>K8s Manifests</h4>
+              <ul>
+                <li>Deployment with resource limits</li>
+                <li>Service for internal routing</li>
+                <li>ConfigMap and Secret for config</li>
+                <li>HPA for auto-scaling</li>
+              </ul>
+            </div>
+            <div class="card card-red">
+              <h4>Security</h4>
+              <ul>
+                <li>API keys in Secrets, not env vars</li>
+                <li>Read-only filesystem where possible</li>
+                <li>Network policies for traffic control</li>
+                <li>Image scanning before deploy</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 7: TESTING ==================== -->
+      <section>
+        <section>
+          <div class="section-number">07</div>
+          <h2>Phase 7: Testing</h2>
+          <p class="subtitle">Lab 07 &middot; Comprehensive test plan</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-orange" style="display:inline-block; background:var(--accent3); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 7 &mdash; Lab 07</div>
+          <h2>Testing Strategy</h2>
+          <br>
+          <div class="diagram-vertical">
+            <div class="box" style="width:70%; padding:12px 18px; border-color:var(--accent4);">
+              <strong>End-to-End Tests</strong><br>
+              <span style="font-size:0.85em;">Full request through agent to response</span>
+            </div>
+            <div class="arrow-down">&#x2193;</div>
+            <div class="box box-orange" style="width:70%; padding:12px 18px;">
+              <strong>Integration Tests</strong><br>
+              <span style="font-size:0.85em;">API + Agent + Tools working together</span>
+            </div>
+            <div class="arrow-down">&#x2193;</div>
+            <div class="box box-green" style="width:70%; padding:12px 18px;">
+              <strong>Unit Tests</strong><br>
+              <span style="font-size:0.85em;">Individual functions, tools, and parsers</span>
+            </div>
+          </div>
+          <br>
+          <div class="card-grid">
+            <div class="card card-accent">
+              <h4>What to Test</h4>
+              <ul>
+                <li>Happy path: valid query &rarr; correct response</li>
+                <li>Error path: invalid input &rarr; proper error message</li>
+                <li>Timeout path: slow LLM &rarr; graceful timeout</li>
+                <li>Tool failure: MCP server down &rarr; fallback behavior</li>
+              </ul>
+            </div>
+            <div class="card card-green">
+              <h4>Tools &amp; Frameworks</h4>
+              <ul>
+                <li><code>pytest</code> for unit and integration tests</li>
+                <li><code>httpx</code> for async API testing</li>
+                <li>Mock LLM responses for deterministic tests</li>
+                <li>Health endpoint smoke tests</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PHASE 8: INTEGRATION CHALLENGE ==================== -->
+      <section>
+        <section>
+          <div class="section-number">08</div>
+          <h2>Phase 8: Integration Challenge</h2>
+          <p class="subtitle">Lab 08 &middot; Full production deployment</p>
+        </section>
+
+        <section>
+          <div class="phase-badge-red" style="display:inline-block; background:var(--accent4); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 8 &mdash; Lab 08</div>
+          <h2>The Final Challenge</h2>
+          <h3>Wire everything together and deploy</h3>
+          <br>
+          <div class="diagram">
+            <div class="box box-large" style="min-width:160px;">
+              &#x2705; Architecture<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 1</span>
+            </div>
+            <span class="arrow">+</span>
+            <div class="box box-large box-green" style="min-width:160px;">
+              &#x2705; MCP Server<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 2</span>
+            </div>
+            <span class="arrow">+</span>
+            <div class="box box-large box-orange" style="min-width:160px;">
+              &#x2705; FastAPI<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 3</span>
+            </div>
+          </div>
+          <div class="diagram" style="margin-top:8px;">
+            <div class="box box-large box-red" style="min-width:160px;">
+              &#x2705; Traces<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 4</span>
+            </div>
+            <span class="arrow">+</span>
+            <div class="box box-large" style="min-width:160px;">
+              &#x2705; Monitoring<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 5</span>
+            </div>
+            <span class="arrow">+</span>
+            <div class="box box-large box-green" style="min-width:160px;">
+              &#x2705; Deploy<br>
+              <span style="font-size:0.8em; color:var(--accent2);">Phase 6</span>
+            </div>
+          </div>
+          <br>
+          <div class="card card-accent" style="text-align:center; padding:20px;">
+            <h4>Success Criteria</h4>
+            <p style="font-size:0.8em;">Send a query &rarr; Agent processes it &rarr; Tools are called &rarr; Response returned &rarr;
+            Trace visible in LangFuse &rarr; Metrics appear in Grafana &rarr; Health probes pass</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== EVALUATION CRITERIA ==================== -->
+      <section>
+        <h2>Evaluation Criteria</h2>
+        <h3>Scoring rubric for your capstone</h3>
+        <br>
+        <table class="rubric-table">
+          <tr>
+            <th>Category</th>
+            <th>What We Look For</th>
+            <th style="text-align:center;">Points</th>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent);">API Design</strong></td>
+            <td>Clean endpoints, input validation, structured responses, error handling</td>
+            <td class="score">20</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent2);">Agent Logic</strong></td>
+            <td>LangGraph workflow, tool selection, state management, fallback handling</td>
+            <td class="score">25</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent3);">Observability</strong></td>
+            <td>LangFuse traces, Prometheus metrics, structured logging, Grafana dashboard</td>
+            <td class="score">20</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--accent4);">Security &amp; Reliability</strong></td>
+            <td>Secrets management, health probes, graceful degradation, timeouts</td>
+            <td class="score">15</td>
+          </tr>
+          <tr>
+            <td><strong>Testing</strong></td>
+            <td>Unit tests, integration tests, error scenarios, test coverage</td>
+            <td class="score">10</td>
+          </tr>
+          <tr>
+            <td><strong>Deployment</strong></td>
+            <td>Dockerfile, docker-compose or K8s manifests, resource limits</td>
+            <td class="score">10</td>
+          </tr>
+        </table>
+        <br>
+        <p style="font-size:0.65em; color:#aaa; text-align:center;">
+          Total: <strong style="color:var(--accent2);">100 points</strong> &mdash; Focus on getting a working end-to-end system first, then optimize.
+        </p>
+      </section>
+
+      <!-- ==================== DEMO TIME ==================== -->
+      <section>
+        <h1 style="font-size:2.5em;">Demo Time</h1>
+        <p style="color:#ccc; font-size:0.85em;">Present your capstone to the group</p>
+        <br>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Show Your Architecture</h4>
+            <ul>
+              <li>Walk through your component diagram</li>
+              <li>Explain your design decisions</li>
+              <li>Highlight what worked well</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Live Demo</h4>
+            <ul>
+              <li>Send a query to your API</li>
+              <li>Show the agent processing in real time</li>
+              <li>Display the response</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Show Observability</h4>
+            <ul>
+              <li>Open LangFuse &mdash; show the trace</li>
+              <li>Open Grafana &mdash; show the metrics</li>
+              <li>Show health probe responses</li>
+            </ul>
+          </div>
+          <div class="card card-red">
+            <h4>Lessons Learned</h4>
+            <ul>
+              <li>What was the hardest part?</li>
+              <li>What would you do differently?</li>
+              <li>What would you add with more time?</li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <p style="font-size:0.65em; color:#aaa;">
+          Each team gets <strong>5 minutes</strong> to present. Focus on the end-to-end flow, not individual code lines.
+        </p>
+      </section>
+
+      <!-- ==================== KEY TAKEAWAYS ==================== -->
+      <section>
+        <h2>Key Takeaways</h2>
+        <h3>What we learned across 5 days</h3>
+        <br>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Day 1: Foundations</h4>
+            <p>AI agents are autonomous, goal-oriented systems built on LLMs with tools, memory, and planning</p>
+          </div>
+          <div class="card card-green">
+            <h4>Day 2: RAG &amp; Agents</h4>
+            <p>Retrieval-Augmented Generation grounds agents in real data; agents use memory and tools to act</p>
+          </div>
+          <div class="card card-orange">
+            <h4>Day 3: LangGraph &amp; Multi-Agent</h4>
+            <p>Stateful workflows enable complex orchestration; multiple agents can collaborate on hard problems</p>
+          </div>
+          <div class="card card-red">
+            <h4>Day 4: Observability &amp; Production</h4>
+            <p>You cannot operate what you cannot see &mdash; metrics, traces, and logs are non-negotiable</p>
+          </div>
+        </div>
+        <div class="card card-accent" style="text-align:center; margin-top:20px; border-left:4px solid #fff;">
+          <h4 style="color:#fff;">Day 5: MCP &amp; Capstone</h4>
+          <p>MCP standardizes tool integration; the capstone proves you can build production-ready AI systems</p>
+        </div>
+        <br>
+        <div class="takeaway">
+          The most important skill is not any single technology &mdash; it is the ability to
+          <strong>integrate multiple components</strong> into a working, observable, reliable system.
+        </div>
+      </section>
+
+      <!-- ==================== NEXT STEPS ==================== -->
+      <section>
+        <h2>Next Steps</h2>
+        <h3>Your learning path beyond this course</h3>
+        <br>
+        <div class="card-grid-3">
+          <div class="card card-accent">
+            <h4>Deepen Your Skills</h4>
+            <ul>
+              <li>LangChain &amp; LangGraph docs</li>
+              <li>MCP specification &amp; ecosystem</li>
+              <li>Advanced RAG patterns</li>
+              <li>Agent evaluation frameworks</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Build Real Projects</h4>
+            <ul>
+              <li>Internal knowledge assistant</li>
+              <li>Code review automation agent</li>
+              <li>CI/CD pipeline AI advisor</li>
+              <li>Incident response agent</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Stay Current</h4>
+            <ul>
+              <li>LangChain blog &amp; changelog</li>
+              <li>Anthropic &amp; OpenAI research</li>
+              <li>AI agent safety &amp; guardrails</li>
+              <li>MCP server registry</li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div class="card card-green" style="text-align:center; padding:18px;">
+          <h4>Recommended Resources</h4>
+          <p style="font-size:0.7em;">
+            <strong>LangChain:</strong> python.langchain.com &nbsp;|&nbsp;
+            <strong>LangGraph:</strong> langchain-ai.github.io/langgraph &nbsp;|&nbsp;
+            <strong>MCP:</strong> modelcontextprotocol.io<br>
+            <strong>LangFuse:</strong> langfuse.com &nbsp;|&nbsp;
+            <strong>OpenTelemetry:</strong> opentelemetry.io &nbsp;|&nbsp;
+            <strong>FastAPI:</strong> fastapi.tiangolo.com
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================== THANK YOU ==================== -->
+      <section>
+        <section>
+          <h1 style="font-size:2.8em;">Thank You!</h1>
+          <br>
+          <p style="font-size:0.9em; color:#ccc;">
+            Congratulations on completing the<br>
+            <span class="highlight">Agentic AI Comprehensive Course</span>
+          </p>
+          <br>
+          <div class="card card-accent" style="text-align:center; padding:24px; max-width:600px; margin:0 auto;">
+            <p style="font-size:0.85em; color:#fff;">
+              You started with <em>"What is an AI agent?"</em><br><br>
+              You are leaving with the ability to <strong>design, build, instrument, test, and deploy</strong> production-ready AI agent systems.
+            </p>
+          </div>
+          <br>
+          <p class="trainer-info">
+            Trainer: <strong>Rajesh Gheware</strong><br>
+            Agentic AI: Comprehensive Course &middot; 5 Days
+          </p>
+        </section>
+
+        <!-- QUESTIONS -->
+        <section>
+          <h1 style="font-size:3em;">Questions?</h1>
+          <br>
+          <p style="color:#aaa; font-size:0.7em;">
+            Final Q&amp;A &mdash; anything from any day, any topic.
+          </p>
+        </section>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script>
+    Reveal.initialize({
+      hash: true,
+      slideNumber: 'c/t',
+      showSlideNumber: 'all',
+      transition: 'slide',
+      transitionSpeed: 'default',
+      center: true,
+      width: 1100,
+      height: 700,
+      margin: 0.06,
+      // Keyboard shortcuts
+      keyboard: {
+        // Use 'f' for fullscreen
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

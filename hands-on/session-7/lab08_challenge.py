@@ -1,18 +1,19 @@
 """
-Lab 08: Challenge — Production-Grade UniGPS Expense Approval System
-=====================================================================
-Goal: Build a complete production-grade workflow combining ALL advanced
-      patterns from this session.
+Lab 08: Challenge — UniGPS Support Request Workflow
+=====================================================
+Goal: Build a complete LangGraph workflow that combines everything
+      from this session: state, conditional routing, reducers,
+      cycles, checkpointing, and human-in-the-loop.
 
 Scenario:
-  UniGPS needs an expense approval system that:
-  1. Validates the submission (parallel checks)
-  2. Classifies using LLM (category + priority routing)
-  3. Routes based on amount thresholds (auto/manager/VP approval)
-  4. Handles errors with fallbacks
-  5. Pauses for human approval on large expenses
-  6. Maintains a complete audit trail (reducers)
-  7. Uses checkpointing for state persistence
+  UniGPS receives support requests from employees. Build a workflow that:
+  1. Receives and classifies the request (HR, Tech, Finance)
+  2. Routes to the appropriate handler
+  3. Generates a response using LLM
+  4. For Finance requests > Rs 5000: pause for manager approval (HITL)
+  5. Maintains a full audit trail (reducer)
+  6. If response quality is low, retry (cycle)
+  7. Uses checkpointing to track state
 
 Requires: GROQ_API_KEY in .env
 """
@@ -20,7 +21,6 @@ Requires: GROQ_API_KEY in .env
 import os
 from typing import TypedDict, Annotated
 from operator import add
-from datetime import datetime
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langgraph.graph import StateGraph, START, END
@@ -28,10 +28,10 @@ from langgraph.checkpoint.memory import MemorySaver
 
 load_dotenv()
 
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.3)
 
 print("=" * 60)
-print("  Challenge: Production Expense Approval System")
+print("  Challenge: UniGPS Support Request Workflow")
 print("=" * 60)
 
 # ============================================================
@@ -40,203 +40,162 @@ print("=" * 60)
 #
 # State definition (provided):
 
-class ExpenseRequest(TypedDict):
+class SupportRequest(TypedDict):
     # Input
     employee_name: str
-    description: str
-    amount: int
-    receipt_attached: bool
+    message: str
     # Processing
-    category: str                          # travel, meals, equipment, other
-    priority: str                          # normal, urgent
-    validation_checks: Annotated[list, add]  # ← parallel checks
-    is_valid: bool
-    # Approval
-    approval_level: str                    # auto, manager, vp
-    approved: bool
-    approver_notes: str
+    category: str           # hr, tech, finance
+    priority: str           # LOW, MEDIUM, HIGH
+    amount: int             # For finance requests (Rs)
     # Output
     response: str
+    approved: bool
     # Tracking
-    audit_trail: Annotated[list, add]      # ← reducer
+    audit_trail: Annotated[list, add]  # ← reducer!
 
 # ============================================================
-# STEP 1: Validation nodes (run in parallel)
+# STEP 1: Create the nodes
 # ============================================================
-# Create parallel validation checks:
+# Implement these nodes:
 
-# def check_amount(state) -> dict:
-#     """Check if amount is positive and reasonable (< Rs 500,000)."""
-#     passed = 0 < state["amount"] < 500000
-#     return {"validation_checks": [{"type": "amount", "passed": passed}]}
-
-# def check_receipt(state) -> dict:
-#     """Check if receipt is attached for amounts > Rs 500."""
-#     if state["amount"] <= 500:
-#         passed = True  # No receipt needed for small amounts
-#     else:
-#         passed = state["receipt_attached"]
-#     return {"validation_checks": [{"type": "receipt", "passed": passed}]}
-
-# def check_description(state) -> dict:
-#     """Check if description is at least 10 characters."""
-#     passed = len(state["description"]) >= 10
-#     return {"validation_checks": [{"type": "description", "passed": passed}]}
-
-# def merge_validations(state) -> dict:
-#     """Merge validation results."""
-#     all_passed = all(c["passed"] for c in state["validation_checks"])
-#     return {"is_valid": all_passed, "audit_trail": [...]}
-
-# ============================================================
-# STEP 2: Classification node (LLM-powered)
-# ============================================================
-
-# def classify_expense(state) -> dict:
-#     """Use LLM to classify expense category and priority."""
-#     prompt = f"Classify this expense: {state['description']}, Rs {state['amount']}"
-#     # Parse: category (travel/meals/equipment/other)
-#     # Parse: priority (urgent/normal)
+# def receive_request(state) -> dict:
+#     """Log receipt of the request. Add to audit trail."""
+#     # Return: audit_trail entry
 #     pass
 
-# ============================================================
-# STEP 3: Approval routing
-# ============================================================
-
-# def determine_approval_level(state) -> dict:
-#     """Determine approval level based on amount:
-#        - Rs 0-5000: auto-approve
-#        - Rs 5001-50000: manager approval
-#        - Rs 50000+: VP approval"""
+# def classify_request(state) -> dict:
+#     """Use LLM to classify into hr/tech/finance.
+#        Also detect priority (HIGH if "urgent"/"critical" in message).
+#        For finance: extract amount if mentioned."""
+#     # Return: category, priority, amount, audit_trail entry
 #     pass
 
-# def route_approval(state) -> str:
-#     if not state["is_valid"]:
-#         return "reject"
-#     return state["approval_level"]  # "auto", "manager", "vp"
+# def handle_hr(state) -> dict:
+#     """Use LLM to generate HR-specific response."""
+#     # Return: response, audit_trail entry
+#     pass
 
-# ============================================================
-# STEP 4: Handler nodes
-# ============================================================
+# def handle_tech(state) -> dict:
+#     """Use LLM to generate Tech-specific response."""
+#     # Return: response, audit_trail entry
+#     pass
 
-# def auto_approve(state) -> dict:
-#     """Auto-approve small expenses."""
-#     return {"approved": True, "response": "Auto-approved.", "audit_trail": [...]}
-
-# def manager_review(state) -> dict:
-#     """Prepare for manager review."""
-#     return {"audit_trail": ["Awaiting manager approval"]}
-
-# def vp_review(state) -> dict:
-#     """Prepare for VP review."""
-#     return {"audit_trail": ["Awaiting VP approval"]}
-
-# def reject_invalid(state) -> dict:
-#     """Reject invalid submissions."""
-#     failed = [c for c in state["validation_checks"] if not c["passed"]]
-#     return {"approved": False, "response": f"Rejected: {failed}", "audit_trail": [...]}
+# def handle_finance(state) -> dict:
+#     """Use LLM to generate Finance-specific response.
+#        If amount > 5000, set approved=False (needs manager)."""
+#     # Return: response, approved, audit_trail entry
+#     pass
 
 # def finalize(state) -> dict:
-#     """Final processing and response generation."""
+#     """Create final audit entry with status."""
+#     # Return: audit_trail entry with final status
 #     pass
 
 # ============================================================
-# STEP 5: Build the graph
+# STEP 2: Create the routing function
+# ============================================================
+
+# def route_to_handler(state) -> str:
+#     """Route based on category."""
+#     # Return: "handle_hr", "handle_tech", or "handle_finance"
+#     pass
+
+# ============================================================
+# STEP 3: Build the graph
 # ============================================================
 # Graph structure:
-#   START → [check_amount | check_receipt | check_description] → merge
-#         → classify → determine_level
-#         → [auto | manager_review | vp_review | reject] → finalize → END
+#   START → receive → classify → [route] → handle_* → finalize → END
 #
-# Interrupt: interrupt_before=["manager_review", "vp_review"]
+# For finance with amount > 5000:
+#   Use interrupt_before=["finalize"] so manager can approve/reject
 
-# graph = StateGraph(ExpenseRequest)
+# graph = StateGraph(SupportRequest)
 # ... add nodes ...
-# ... add edges (parallel fan-out for validation) ...
-# ... add conditional edges for routing ...
+# ... add edges (including conditional edges for routing) ...
 # memory = MemorySaver()
-# app = graph.compile(checkpointer=memory, interrupt_before=["manager_review", "vp_review"])
+# app = graph.compile(checkpointer=memory, interrupt_before=["finalize"])
 
 # ============================================================
-# STEP 6: Test the workflow
+# STEP 4: Test the workflow
 # ============================================================
+# Test with these requests:
 
-test_expenses = [
+test_requests = [
     {
         "employee_name": "Priya Sharma",
-        "description": "Team lunch at office cafeteria",
-        "amount": 450,
-        "receipt_attached": False,
-        "thread_id": "exp-001",
+        "message": "I need to apply for maternity leave starting next month",
+        "thread_id": "req-001",
     },
     {
         "employee_name": "Vikram Patel",
-        "description": "Client dinner at Taj Hotel for project discussion",
-        "amount": 8500,
-        "receipt_attached": True,
-        "thread_id": "exp-002",  # Should pause for manager
+        "message": "URGENT: Production database is down, all services affected",
+        "thread_id": "req-002",
     },
     {
         "employee_name": "Anita Desai",
-        "description": "New MacBook Pro for development team",
-        "amount": 175000,
-        "receipt_attached": True,
-        "thread_id": "exp-003",  # Should pause for VP
+        "message": "Please reimburse my travel expense of Rs 8500 for the client visit",
+        "thread_id": "req-003",  # This should trigger HITL!
     },
     {
         "employee_name": "Rahul Kumar",
-        "description": "Cab",
-        "amount": 2000,
-        "receipt_attached": False,
-        "thread_id": "exp-004",  # Should fail validation (short description, no receipt)
+        "message": "Submit my lunch expense of Rs 450",
+        "thread_id": "req-004",  # Low amount, auto-approve
     },
 ]
 
-# for exp in test_expenses:
-#     config = {"configurable": {"thread_id": exp["thread_id"]}}
+# for req in test_requests:
+#     config = {"configurable": {"thread_id": req["thread_id"]}}
 #     result = app.invoke({
-#         "employee_name": exp["employee_name"],
-#         "description": exp["description"],
-#         "amount": exp["amount"],
-#         "receipt_attached": exp["receipt_attached"],
-#         "validation_checks": [],
+#         "employee_name": req["employee_name"],
+#         "message": req["message"],
 #         "audit_trail": [],
-#         "is_valid": False, "approved": False,
-#         "category": "", "priority": "", "approval_level": "",
-#         "approver_notes": "", "response": "",
 #     }, config)
 #
-#     # Check if paused
-#     snap = app.get_state(config)
-#     if snap.next:
-#         print(f"\n⚠ PAUSED for {snap.next}: {exp['employee_name']}'s Rs {exp['amount']} expense")
-#         # Simulate approval
-#         app.update_state(config, {
-#             "approved": True,
-#             "approver_notes": "Approved after review",
-#             "audit_trail": [f"[{snap.next[0].upper()}] Approved"],
-#         })
+#     # Check if workflow paused (finance > 5000)
+#     snapshot = app.get_state(config)
+#     if snapshot.next:
+#         print(f"\n⚠ PAUSED: {req['employee_name']}'s request needs manager approval!")
+#         print(f"  Amount: Rs {snapshot.values.get('amount', 0)}")
+#         print(f"  Response: {snapshot.values['response'][:60]}...")
+#
+#         # Manager approves
+#         app.update_state(config, {"approved": True, "audit_trail": ["[MANAGER] Approved"]})
 #         result = app.invoke(None, config)
 #
-#     print(f"\n{'='*45}")
-#     print(f"Employee: {exp['employee_name']}")
-#     print(f"Amount: Rs {exp['amount']}")
-#     print(f"Valid: {result.get('is_valid')}")
-#     print(f"Approved: {result.get('approved')}")
-#     print(f"Response: {result.get('response', 'N/A')[:60]}")
+#     print(f"\n{'='*40}")
+#     print(f"Employee: {req['employee_name']}")
+#     print(f"Category: {result['category']}")
+#     print(f"Priority: {result['priority']}")
+#     print(f"Response: {result['response'][:80]}...")
+#     print(f"Approved: {result.get('approved', 'N/A')}")
 #     print(f"Audit trail:")
-#     for entry in result.get("audit_trail", []):
+#     for entry in result['audit_trail']:
 #         print(f"    {entry}")
 
+# ============================================================
+# BONUS: Add state inspection
+# ============================================================
+# After all requests are processed, list all threads and their
+# final states using get_state() for each config.
+
+# print("\n--- All Tickets Summary ---")
+# for req in test_requests:
+#     config = {"configurable": {"thread_id": req["thread_id"]}}
+#     snap = app.get_state(config)
+#     print(f"  {req['thread_id']}: {snap.values['category']} / "
+#           f"{snap.values['priority']} / "
+#           f"Approved: {snap.values.get('approved', 'N/A')}")
+
 print("\nChallenge: Uncomment and implement the code above!")
-print("Combine everything from Labs 01-07:")
-print("  - Lab 01: Multi-branch fan-out/convergence")
-print("  - Lab 02: Parallel validation checks with reducers")
-print("  - Lab 03: Custom reducers for audit trail")
-print("  - Lab 04: Error handling with fallbacks")
-print("  - Lab 05: Retry logic (optional: retry LLM classification)")
-print("  - Lab 06: LLM-powered routing + priority routing")
-print("  - Lab 07: Multi-gate HITL (manager + VP approval gates)")
+print("Use what you learned in Labs 01-07 to build this workflow.")
+print("\nHints:")
+print("- Lab 01-02: StateGraph basics and multi-step workflows")
+print("- Lab 03: Conditional routing with add_conditional_edges()")
+print("- Lab 04: Annotated[list, add] for audit_trail")
+print("- Lab 05: Cycles for retry logic (optional)")
+print("- Lab 06: MemorySaver and thread_id for checkpointing")
+print("- Lab 07: interrupt_before for human-in-the-loop")
 
 print("\n" + "=" * 60)
 print("Lab 08 (Challenge) — Good luck!")

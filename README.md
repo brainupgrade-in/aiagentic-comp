@@ -2,7 +2,7 @@
 
 A 5-day hands-on training covering the full spectrum of Agentic AI development -- from LangChain fundamentals to production deployment with enterprise-grade observability.
 
-**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 117 hands-on exercises
+**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 109 hands-on exercises
 
 ---
 
@@ -40,47 +40,46 @@ cp .env.example .env
 
 ## Course Structure
 
-### Day 1: Agentic AI Foundations & LangChain
+### Day 1: Foundations & AI-Assisted Development
 
 | Session | Topic | Labs |
 |---------|-------|------|
 | 1 | Introduction to Agentic AI | 6 |
-| 2 | Reasoning, Planning & Tool Use | 7 |
-| 3 | LangChain Fundamentals | 8 |
+| 2 | AI Coding Assistants & Vibe Coding | 8 |
+| 3 | Reasoning, Planning & Tool Use | 7 |
 
-### Day 2: RAG, Agents & LangGraph
-
-| Session | Topic | Labs |
-|---------|-------|------|
-| 4 | Building RAG Applications | 8 |
-| 5 | LangChain Agents & Memory | 8 |
-| 6 | LangGraph Stateful Workflows | 8 |
-
-### Day 3: Advanced Patterns & Production
+### Day 2: LangChain, RAG & Agents
 
 | Session | Topic | Labs |
 |---------|-------|------|
-| 7 | Advanced LangGraph Workflows | 8 |
-| 8 | Multi-Agent Systems | 8 |
-| 9 | Production Application Development | 8 |
+| 4 | LangChain Fundamentals | 8 |
+| 5 | Building RAG Applications | 8 |
+| 6 | LangChain Agents & Memory | 8 |
 
-### Day 4: AI Coding Agents & MCP
-
-| Session | Topic | Labs |
-|---------|-------|------|
-| 10 | AI Coding Agents & Vibe Coding | 8 |
-| 11 | Model Context Protocol (MCP) | 8 |
-| 12 | Building Custom AI Dev Tools | 8 |
-
-### Day 5: Observability & Production Operations
+### Day 3: LangGraph & Multi-Agent Systems
 
 | Session | Topic | Labs |
 |---------|-------|------|
-| 13 | Observability Fundamentals | 8 |
-| 14 | AI-Specific Observability with LangFuse | 8 |
-| 15 | Capstone & Production Readiness | 8 |
+| 7 | LangGraph Stateful Workflows | 8 |
+| 8 | Advanced LangGraph Workflows | 8 |
+| 9 | Multi-Agent Systems | 8 |
 
-**Total: 15 sessions, 117 labs, 117 solutions**
+### Day 4: Observability & Production
+
+| Session | Topic | Labs |
+|---------|-------|------|
+| 10 | Observability Fundamentals | 8 |
+| 11 | LangFuse Observability | 8 |
+| 12 | Production Development & Deployment | 8 |
+
+### Day 5: MCP & Capstone
+
+| Session | Topic | Labs |
+|---------|-------|------|
+| 13 | Model Context Protocol (MCP) | 8 |
+| 14 | Capstone Project (2 time slots) | 8 |
+
+**Total: 14 sessions, 109 labs, 109 solutions**
 
 ---
 
@@ -88,29 +87,30 @@ cp .env.example .env
 
 ```
 .
-├── presentation/              15 HTML slide decks
+├── presentation/              14 HTML slide decks
 │   ├── session1-introduction-to-agentic-ai.html
+│   ├── session2-ai-coding-assistants-vibe-coding.html
 │   ├── ...
-│   └── session15-capstone-production-readiness.html
+│   └── session14-capstone-project.html
 │
-├── hands-on/                  15 session directories
+├── hands-on/                  14 session directories
 │   ├── session-1/             6 labs + solutions + README
-│   ├── session-2/             7 labs + solutions + README
-│   ├── session-3/             8 labs + solutions + README
-│   ├── ...
-│   └── session-15/            8 labs + solutions + README
+│   ├── session-2/             8 labs + solutions + README
+│   ├── session-3/             7 labs + solutions + README
+│   ├── session-4/ ... session-14/  8 labs + solutions + README each
+│   └── (109 total labs + 109 solutions)
 │
 ├── scripts/                   Day-specific automation
 │   ├── day1-setup.sh          Install Ollama + llama3.2:1b
 │   ├── day1-cleanup.sh        Remove Ollama (~2 GB freed)
 │   ├── day2-setup.sh          Verify Groq API + packages
 │   ├── day2-cleanup.sh        Clean temp files
-│   ├── day3-setup.sh          Verify FastAPI + pull ChromaDB
+│   ├── day3-setup.sh          Verify LangGraph packages
 │   ├── day3-cleanup.sh        Stop servers + clean up
-│   ├── day4-setup.sh          MCP SDK + AI coding tools
-│   ├── day4-cleanup.sh        Clean up MCP servers + temp files
-│   ├── day5-setup.sh          Start observability stack
-│   ├── day5-cleanup.sh        Tear down Docker Compose
+│   ├── day4-setup.sh          Start observability stack + verify FastAPI
+│   ├── day4-cleanup.sh        Stop observability stack + clean temp
+│   ├── day5-setup.sh          MCP SDK + capstone setup
+│   ├── day5-cleanup.sh        Final cleanup
 │   ├── day5-docker-compose.yml
 │   ├── prometheus.yml
 │   └── check-resources.sh     Monitor memory/storage/containers
@@ -134,13 +134,13 @@ Each session has a README with lab details. The general pattern:
 
 ```bash
 # Navigate to a session
-cd hands-on/session-3
+cd hands-on/session-4
 
 # Run a student lab (has TODO sections to fill in)
-python lab01_lcel_basics.py
+python lab01_hello_langchain.py
 
 # Check your work against the solution
-python solutions/lab01_lcel_basics.py
+python solutions/lab01_hello_langchain.py
 ```
 
 Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` markers.
@@ -152,23 +152,23 @@ Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` marker
 Run the setup script at the start of each day and cleanup at the end:
 
 ```bash
-# Day 1: Ollama + Local LLM
+# Day 1: Ollama + Local LLM + Vibe Coding
 bash scripts/day1-setup.sh
 bash scripts/day1-cleanup.sh    # End of day
 
-# Day 2: LangChain + Groq API
+# Day 2: LangChain + RAG + Agents
 bash scripts/day2-setup.sh
 bash scripts/day2-cleanup.sh    # End of day
 
-# Day 3: Production Development
+# Day 3: LangGraph + Multi-Agent
 bash scripts/day3-setup.sh
 bash scripts/day3-cleanup.sh    # End of day
 
-# Day 4: AI Coding Agents + MCP
+# Day 4: Observability + Production
 bash scripts/day4-setup.sh
 bash scripts/day4-cleanup.sh    # End of day
 
-# Day 5: Observability Stack
+# Day 5: MCP + Capstone
 bash scripts/day5-setup.sh
 bash scripts/day5-cleanup.sh    # End of day
 

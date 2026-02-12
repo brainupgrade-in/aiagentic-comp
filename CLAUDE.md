@@ -5,10 +5,10 @@
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
 **Client:** Oracle
-**Duration:** 5 days (15 sessions, ~3-4 sessions/day + hands-on labs)
+**Duration:** 5 days (14 sessions, ~3 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
-**Slides:** 15 HTML presentations in `presentation/`
-**Hands-on:** 117 labs + 117 solutions in `hands-on/session-1/` through `session-15/`
+**Slides:** 14 HTML presentations in `presentation/`
+**Hands-on:** 109 labs + 109 solutions in `hands-on/session-1/` through `session-14/`
 
 ## Lab Environment
 
@@ -27,7 +27,7 @@
 | LLM (Day 1) | Ollama + llama3.2:1b | Smallest model (~1.3 GB), sufficient for demos, removed after Day 1 |
 | LLM (Days 2-5) | Groq free API | Offloads inference to cloud, saves ~2 GB RAM/storage. Each participant creates own Groq API key |
 | MCP SDK | MCP Python SDK (`mcp>=1.0`) | Standard protocol for AI tool integration. Lightweight, no infrastructure overhead |
-| Observability | Docker Compose (not K8s) | Lower overhead on 2-core. Prometheus, Grafana, LangFuse run as containers on Day 5 |
+| Observability | Docker Compose (not K8s) | Lower overhead on 2-core. Prometheus, Grafana, LangFuse run as containers on Day 4 |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
 | Base image | python:3.13-bookworm devcontainer | Pre-built, includes common dev tools |
@@ -42,18 +42,22 @@
 Resources are tight on the free tier. The course uses a sequential approach:
 
 ```
-Day 1: Ollama + LangChain + ChromaDB (~5-6 GB RAM)
+Day 1: Ollama + LangChain + Vibe Coding (~5-6 GB RAM)
        → cleanup: remove Ollama completely
 
-Day 2-3: LangChain + Groq API + ChromaDB (~3.5-4.5 GB RAM)
-         → no cleanup needed
+Day 2: LangChain + Groq API + ChromaDB (~3.5-4.5 GB RAM)
+       → no cleanup needed
 
-Day 4: Python + MCP SDK (~3-4 GB RAM)
-       → cleanup: remove /tmp/aidev-lab-* temp files
+Day 3: LangGraph + Multi-Agent (~4-5 GB RAM)
+       → cleanup: stop ChromaDB containers
 
-Day 5: Docker Compose observability stack (~5-7 GB RAM)
+Day 4: Docker Compose observability stack + FastAPI (~5-7 GB RAM)
        → all containers have mem_limit set
        → cleanup: docker compose down + prune
+
+Day 5: MCP SDK + Capstone (~3-4 GB RAM)
+       → lightweight, no Docker needed
+       → cleanup: remove temp files
 ```
 
 ## File Structure
@@ -71,30 +75,29 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install, pre-pull Docker images
-├── presentation/                        15 HTML slide decks (one per session)
+├── presentation/                        14 HTML slide decks (one per session)
 │   ├── session1-introduction-to-agentic-ai.html
+│   ├── session2-ai-coding-assistants-vibe-coding.html
 │   ├── ...
-│   ├── session10-ai-coding-agents-vibe-coding.html
-│   ├── session11-model-context-protocol.html
-│   ├── session12-building-custom-ai-dev-tools.html
-│   ├── ...
-│   └── session15-capstone-production-readiness.html
-├── hands-on/                            15 session directories with labs + solutions
+│   ├── session13-model-context-protocol.html
+│   └── session14-capstone-project.html
+├── hands-on/                            14 session directories with labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README
-│   ├── session-2/                       7 labs + 7 solutions + README
-│   ├── session-3/ through session-15/   8 labs + 8 solutions + README each
-│   └── (session-1 has lab01-lab06, session-2 has lab01-lab07, sessions 3-15 have lab01-lab08)
+│   ├── session-2/                       8 labs + 8 solutions + README (AI Coding / Vibe Coding)
+│   ├── session-3/                       7 labs + 7 solutions + README
+│   ├── session-4/ through session-14/   8 labs + 8 solutions + README each
+│   └── (session-1 has 6, session-3 has 7, all others have 8)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
     ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
     ├── day2-setup.sh                    Verify Groq API key + LangChain packages
     ├── day2-cleanup.sh                  Clean ChromaDB containers + temp files
-    ├── day3-setup.sh                    Verify FastAPI packages + pull ChromaDB
+    ├── day3-setup.sh                    Verify LangGraph packages
     ├── day3-cleanup.sh                  Stop servers + clean up for Day 4
-    ├── day4-setup.sh                    Verify Python, install MCP SDK, check GROQ_API_KEY
-    ├── day4-cleanup.sh                  Remove temp files, kill stale processes
-    ├── day5-setup.sh                    Start observability stack via docker-compose
-    ├── day5-cleanup.sh                  Tear down stack + docker prune
+    ├── day4-setup.sh                    Start observability stack + verify FastAPI
+    ├── day4-cleanup.sh                  Stop observability stack + clean temp files
+    ├── day5-setup.sh                    Install MCP SDK, verify env
+    ├── day5-cleanup.sh                  Final cleanup
     ├── day5-docker-compose.yml          Prometheus + Grafana + LangFuse + PostgreSQL (note: in scripts/, not project root)
     ├── prometheus.yml                   Scrape config for FastAPI app
     └── check-resources.sh              Memory/storage/container status monitor
@@ -104,45 +107,45 @@ Oracle/
 
 | Day | Theme | Sessions | Key Technologies |
 |-----|-------|----------|-----------------|
-| 1 | Agentic AI Foundations & LangChain | 1-3 | Ollama, LangChain, LCEL, ReAct, Chain-of-Thought |
-| 2 | RAG, Agents & LangGraph | 4-6 | RAG, ChromaDB, Agents, Memory, LangGraph |
-| 3 | Advanced Patterns & Production | 7-9 | Advanced LangGraph, Multi-Agent, FastAPI |
-| 4 | AI Coding Agents & Developer Tools | 10-12 | AI Coding Agents, MCP, Vibe Coding, Tool Registries |
-| 5 | Observability & Capstone | 13-15 | OpenTelemetry, LangFuse, Production Readiness |
+| 1 | Foundations & AI-Assisted Dev | 1-3 | Ollama, Vibe Coding, ReAct, Chain-of-Thought |
+| 2 | LangChain, RAG & Agents | 4-6 | LangChain, LCEL, ChromaDB, RAG, Agents, Memory |
+| 3 | LangGraph & Multi-Agent | 7-9 | LangGraph, StateGraph, Multi-Agent, Orchestration |
+| 4 | Observability & Production | 10-12 | OTel, LangFuse, FastAPI, Health Probes, Secrets |
+| 5 | MCP & Capstone | 13-14 | MCP, JSON-RPC 2.0, Capstone Integration |
 
 ## Session-by-Session Details
 
 | Session | Title | Labs | Topics |
 |---------|-------|------|--------|
 | 1 | Introduction to Agentic AI | 6 | AI agents, reasoning, tool use, architectures |
-| 2 | Reasoning, Planning & Tool Use | 7 | ReAct, chain-of-thought, tool calling |
-| 3 | LangChain Fundamentals | 8 | LCEL, chains, prompts, output parsers |
-| 4 | Building RAG Applications | 8 | Document loaders, embeddings, vector stores, retrieval |
-| 5 | LangChain Agents & Memory | 8 | Agent types, memory patterns, conversation management |
-| 6 | LangGraph Stateful Workflows | 8 | StateGraph, nodes, edges, conditional routing |
-| 7 | Advanced LangGraph Workflows | 8 | Human-in-the-loop, subgraphs, parallel execution |
-| 8 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
-| 9 | Production Application Development | 8 | FastAPI, error handling, testing, deployment patterns |
-| 10 | AI Coding Agents & Vibe Coding | 8 | Agent loop, context management, prompt engineering, NL-to-code |
-| 11 | Model Context Protocol (MCP) | 8 | MCP architecture, JSON-RPC 2.0, FastMCP, tools/resources/prompts |
-| 12 | Building Custom AI Dev Tools | 8 | Code quality servers, review agents, tool registries, sandboxing |
-| 13 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
-| 14 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
-| 15 | Capstone & Production Readiness | 8 | Health probes, HPA, secrets, alerting, backup, full deployment |
+| 2 | AI Coding Assistants & Vibe Coding | 8 | Agent loop, context management, vibe coding, prompts |
+| 3 | Reasoning, Planning & Tool Use | 7 | ReAct, chain-of-thought, tool calling |
+| 4 | LangChain Fundamentals | 8 | LCEL, chains, prompts, output parsers |
+| 5 | Building RAG Applications | 8 | Document loaders, embeddings, vector stores, retrieval |
+| 6 | LangChain Agents & Memory | 8 | Agent types, memory patterns, conversation management |
+| 7 | LangGraph Stateful Workflows | 8 | StateGraph, nodes, edges, conditional routing |
+| 8 | Advanced LangGraph Workflows | 8 | Human-in-the-loop, subgraphs, parallel execution |
+| 9 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
+| 10 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
+| 11 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
+| 12 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
+| 13 | Model Context Protocol (MCP) | 8 | MCP architecture, JSON-RPC 2.0, FastMCP, tools/resources/prompts |
+| 14 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
 
 ## Key Ports
 
 | Port | Service | Days Active |
 |------|---------|-------------|
-| 8000 | FastAPI application | 3-5 |
-| 9090 | Prometheus | 5 |
-| 3000 | Grafana | 5 |
+| 8000 | FastAPI application | 3-4 |
+| 9090 | Prometheus | 4 |
+| 3000 | Grafana | 4 |
 | 11434 | Ollama | 1 only |
-| 8001 | ChromaDB (if containerized) | 1-4 |
+| 8001 | ChromaDB (if containerized) | 2-3 |
+| 8080 | LangFuse | 4 |
 
 **Port conflict note:** ChromaDB defaults to port 8000, which conflicts with FastAPI. When both are needed, run ChromaDB on port 8001 or use it as an in-process library (no port needed).
 
-## Docker Compose Memory Limits (Day 5)
+## Docker Compose Memory Limits (Day 4)
 
 All containers are memory-capped to prevent OOM on 8 GB:
 - Prometheus: 256 MB (1-day retention, 256 MB storage cap)
@@ -171,11 +174,13 @@ All containers are memory-capped to prevent OOM on 8 GB:
 ## Course Outline Review Notes
 
 Strengths identified:
-- Strong logical 5-day progression (foundations → ecosystem → advanced → AI dev tools → observe)
-- 117 labs + 15 challenge labs across 15 sessions
+- Strong logical 5-day progression (foundations → LangChain → LangGraph → observability+production → MCP+capstone)
+- 109 labs + 14 challenge labs across 14 sessions
 - Production-focused with observability and capstone
 - All open-source/free tooling — no vendor lock-in
-- Day 4 (AI Coding Agents, MCP, Dev Tools) is highly current and practical
+- Vibe coding on Day 1 means students use AI assistants for 4 more days
+- Observability directly after multi-agent (Day 4) for natural flow into production
+- Extended capstone (2 time slots) on Day 5 for comprehensive integration
 
 Gaps to consider addressing:
 - **Guardrails/safety** — no coverage of prompt injection defense or output validation
@@ -200,10 +205,14 @@ python hands-on/session-NN/solutions/labXX_topic.py
 - Educational Steps (tables, code examples, architecture diagrams)
 - TODO sections with `"___"` placeholders for answers
 - Validation with `[PASS]/[FAIL]` string matching and scoring
-- Generated files saved to `/tmp/k8s-lab-NN-XX/` (sessions 1-9, 13-15) or `/tmp/aidev-lab-NN-XX/` (sessions 10-12)
+- Generated files saved to:
+  - `/tmp/k8s-lab-NN-XX/` (sessions 1, 3-11)
+  - `/tmp/aidev-lab-NN-XX/` (sessions 2, 13)
+  - `/tmp/prod-lab-12-XX/` (session 12)
+  - `/tmp/capstone-lab-14-XX/` (session 14)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session)
+**Totals:** 109 labs + 109 solutions across 14 sessions (~60-75 min per session, ~90-120 min for session 14)
 
 ## Error Recovery (Constrained Environment)
 
@@ -223,17 +232,17 @@ bash scripts/check-resources.sh
 
 # Day-specific setup
 bash scripts/day1-setup.sh      # Ollama + model
-bash scripts/day2-setup.sh      # Verify Groq API + packages
-bash scripts/day3-setup.sh      # Verify FastAPI + ChromaDB
-bash scripts/day4-setup.sh      # MCP SDK + verify env
-bash scripts/day5-setup.sh      # Observability stack
+bash scripts/day2-setup.sh      # Verify Groq API + LangChain packages
+bash scripts/day3-setup.sh      # Verify LangGraph packages
+bash scripts/day4-setup.sh      # Observability stack + FastAPI packages
+bash scripts/day5-setup.sh      # MCP SDK + verify env
 
 # Day-specific cleanup
 bash scripts/day1-cleanup.sh    # Remove Ollama
 bash scripts/day2-cleanup.sh    # Clean temp files
 bash scripts/day3-cleanup.sh    # Stop servers
-bash scripts/day4-cleanup.sh    # Remove temp files
-bash scripts/day5-cleanup.sh    # Tear down Docker Compose
+bash scripts/day4-cleanup.sh    # Stop observability stack + clean temp
+bash scripts/day5-cleanup.sh    # Final cleanup
 ```
 
 ## Git Remote
