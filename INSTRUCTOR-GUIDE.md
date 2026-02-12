@@ -112,7 +112,7 @@
 **Day 5 Cleanup:** Run `bash scripts/day5-cleanup.sh` at end.
 
 **Teaching Notes:**
-- Session 13 (MCP) is a significant conceptual addition -- walk through the protocol architecture carefully
+- Session 13 (MCP) focuses on enterprise use cases and consuming MCP -- walk through the N×M problem, then enterprise use cases (data access, dev productivity, knowledge ops), then client config and LangChain bridge
 - Session 14 (AI Safety) is critical for enterprise audience -- emphasize OWASP Top 10 for LLMs and production guardrails
 - Session 15 (Capstone) uses 2 time slots (Slots C+D) for extended hands-on work
 - The capstone integrates all 5 days -- encourage participants to reference previous session labs

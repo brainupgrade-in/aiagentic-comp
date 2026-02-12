@@ -38,7 +38,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 - Implement observability with OpenTelemetry and LangFuse
 - Monitor and debug agents with LangFuse
 - Build production-grade FastAPI endpoints with health probes, secrets, and structured logging
-- Implement Model Context Protocol (MCP) servers and clients
+- Understand Model Context Protocol (MCP) architecture and enterprise use cases
 - Implement AI safety guardrails: prompt injection defense, output validation, and red team testing
 - Complete a capstone project integrating all course concepts
 - Leverage agentic IDEs for AI-assisted development
@@ -63,7 +63,7 @@ A comprehensive program covering the full spectrum of Agentic AI development -- 
 
 ### AI Developer Tools
 
-- **MCP Python SDK** - Model Context Protocol (MIT)
+- **MCP** - Model Context Protocol ecosystem (MIT)
 - **OpenCode** - AI-assisted coding in terminal
 
 ### Observability
@@ -400,19 +400,23 @@ Each participant will be provided with a dedicated lab environment:
 ### Session 13: Model Context Protocol (MCP)
 
 **MCP Architecture**
-- JSON-RPC 2.0 message format
-- Host, Client, Server roles
-- Request/Response lifecycle
+- The N×M integration problem and how MCP solves it (N+M)
+- Host, Client, Server roles and JSON-RPC 2.0 protocol
+- Three primitives: Tools, Resources, Prompts
+- Transport essentials: stdio vs SSE
 
-**MCP Primitives**
-- Tools: Functions the AI can invoke
-- Resources: Data the AI can read (static + dynamic)
-- Prompts: Pre-built prompt templates
+**Enterprise MCP Use Cases**
+- Enterprise Data Access: Postgres, Snowflake, BigQuery via natural language
+- Developer Productivity: GitHub, Jira, CI/CD integration (25% gains)
+- Knowledge & Customer Ops: Confluence, Salesforce, Zendesk unified
+- Multi-tool agent pattern and ROI analysis
 
-**Transport Layers**
-- stdio transport: encoding and decoding
-- SSE (Server-Sent Events): streaming responses
-- Client discovery and multi-step workflows
+**Consuming MCP in Applications**
+- MCP ecosystem: 1,000+ servers across categories
+- Client configuration: Claude Desktop, Claude Code JSON configs
+- Multi-server configuration and role-based assignment
+- Bridging MCP with LangChain (`langchain-mcp-adapters`)
+- Enterprise security: input validation, RBAC, audit logging
 
 ### Session 14: AI Safety & Guardrails
 
@@ -447,7 +451,7 @@ Each participant will be provided with a dedicated lab environment:
 
 Build a complete, observable AI agent integrating all course concepts:
 1. Architecture design (component mapping, data flows)
-2. MCP server with tools (from Session 13)
+2. MCP client configuration and enterprise workflows (from Session 13)
 3. AI safety guardrails (from Session 14)
 4. FastAPI endpoint (from Session 12)
 5. LangFuse instrumentation (from Session 11)
