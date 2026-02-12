@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lab 01: MCP Fundamentals — Architecture and Primitives
+Lab 01: MCP Architecture — Protocol Fundamentals
 
 Understand the Model Context Protocol architecture: Hosts, Clients, Servers,
 Transports, and the three core primitives (Tools, Resources, Prompts).
@@ -192,7 +192,6 @@ checks = [
 if all(checks):
     score += 1
     print("[PASS] MCPServerInfo is correct")
-    # Save to file
     out_path = os.path.join(WORKDIR, "server_info.json")
     with open(out_path, "w") as f:
         json.dump(info_dict, f, indent=2)
@@ -200,6 +199,68 @@ if all(checks):
 else:
     print("[FAIL] MCPServerInfo does not match expected values")
     print("       Got:", json.dumps(info_dict, indent=2))
+print()
+
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║  TODO 4 — Classify JSON-RPC Methods by Primitive                           ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+print("=" * 70)
+print("TODO 4: Classify JSON-RPC methods by MCP primitive type")
+print("=" * 70)
+print()
+print("  MCP uses these JSON-RPC methods:")
+print()
+print("  ┌─────────────────┬────────────────────────────────────────────┐")
+print("  │ Method           │ Description                              │")
+print("  ├─────────────────┼────────────────────────────────────────────┤")
+print("  │ tools/list       │ List available tools                     │")
+print("  │ tools/call       │ Execute a tool                           │")
+print("  │ resources/list   │ List available resources                 │")
+print("  │ resources/read   │ Read a resource's content                │")
+print("  │ prompts/list     │ List available prompt templates          │")
+print("  │ prompts/get      │ Retrieve a prompt template               │")
+print("  │ initialize       │ Handshake with capabilities exchange     │")
+print("  └─────────────────┴────────────────────────────────────────────┘")
+print()
+
+# TODO: Classify each method into the correct category.
+#   "tool"      → methods that operate on tools
+#   "resource"  → methods that operate on resources
+#   "prompt"    → methods that operate on prompts
+#   "lifecycle" → connection management methods
+
+method_classification = {
+    "tools/list":     "___",
+    "tools/call":     "___",
+    "resources/list": "___",
+    "resources/read": "___",
+    "prompts/list":   "___",
+    "prompts/get":    "___",
+    "initialize":     "___",
+}
+
+# ── Validate TODO 4 ─────────────────────────────────────────────────────────
+total += 1
+expected_classification = {
+    "tools/list":     "tool",
+    "tools/call":     "tool",
+    "resources/list": "resource",
+    "resources/read": "resource",
+    "prompts/list":   "prompt",
+    "prompts/get":    "prompt",
+    "initialize":     "lifecycle",
+}
+if method_classification == expected_classification:
+    score += 1
+    print("[PASS] Method classification is correct")
+    out_path = os.path.join(WORKDIR, "method_classification.json")
+    with open(out_path, "w") as f:
+        json.dump(method_classification, f, indent=2)
+    print(f"       Saved to {out_path}")
+else:
+    print("[FAIL] Expected:", json.dumps(expected_classification, indent=2))
+    print("       Got:     ", json.dumps(method_classification, indent=2))
 print()
 
 # ╔══════════════════════════════════════════════════════════════════════════════╗

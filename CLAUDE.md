@@ -128,7 +128,7 @@ Oracle/
 | 10 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
 | 11 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
 | 12 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
-| 13 | Model Context Protocol (MCP) | 8 | MCP architecture, JSON-RPC 2.0, FastMCP, tools/resources/prompts |
+| 13 | Model Context Protocol (MCP) | 8 | MCP architecture, enterprise use cases, ecosystem discovery, client config, LangChain bridge, security & governance |
 | 14 | AI Safety & Guardrails | 8 | Prompt injection, output validation, jailbreak defense, guardrails, red teaming |
 | 15 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
 

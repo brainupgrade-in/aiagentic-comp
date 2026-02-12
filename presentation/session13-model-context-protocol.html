@@ -154,7 +154,6 @@
 
     .trainer-info { color: #aaa; font-size: 0.55em; margin-top: 30px; }
 
-    /* Quiz styles */
     .quiz-badge {
       display: inline-block;
       background: var(--accent);
@@ -226,7 +225,6 @@
     }
     .answer-explain strong { color: var(--accent2); }
 
-    /* Code block */
     .code-block {
       background: rgba(0,0,0,0.4);
       border: 1px solid rgba(255,255,255,0.1);
@@ -241,16 +239,15 @@
       overflow-y: auto;
       max-height: 420px;
       line-height: 1.5;
+      white-space: pre;
     }
     .code-block .comment { color: #888; }
     .code-block .keyword { color: var(--accent); }
     .code-block .string { color: var(--accent2); }
     .code-block .func { color: var(--accent3); }
 
-    /* Prevent content overflow */
     .reveal .slides section { overflow: hidden; }
 
-    /* Pattern label */
     .pattern-label {
       display: inline-block;
       background: rgba(79,195,247,0.15);
@@ -262,7 +259,6 @@
       margin-bottom: 8px;
     }
 
-    /* Warning callout */
     .warning {
       background: rgba(229,115,115,0.1);
       border: 1px solid var(--accent4);
@@ -280,7 +276,6 @@
       margin-bottom: 4px;
     }
 
-    /* Flow step styles */
     .flow-step {
       display: flex;
       align-items: center;
@@ -315,7 +310,7 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Model Context Protocol<br>(MCP)</h1>
-        <p style="font-size:0.9em; color:#ccc;">Protocol Architecture &middot; Python SDK &middot; Real-World Patterns</p>
+        <p style="font-size:0.9em; color:#ccc;">Architecture &middot; Enterprise Use Cases &middot; Application Integration</p>
         <p class="subtitle">Session 13 &middot; Day 5, Slot A</p>
         <br>
         <p class="trainer-info">
@@ -324,49 +319,49 @@
         </p>
       </section>
 
-      <!-- ==================== DAY 4 CONTEXT ==================== -->
+      <!-- ==================== DAY 5 CONTEXT ==================== -->
       <section>
-        <h2>Day 4: AI Development Tools &amp; Protocols</h2>
+        <h2>Day 5: MCP, Safety &amp; Capstone</h2>
         <div class="card-grid-3">
-          <div class="card card-accent" style="opacity:0.5;">
-            <h4>Session 1 (Done)</h4>
-            <p>AI Coding Agents &amp; Vibe Coding &mdash; plan-code-test loop, tool registry, NL-to-app</p>
-          </div>
           <div class="card card-green">
-            <h4>Session 2 (Now)</h4>
-            <p>Model Context Protocol &mdash; standard protocol for AI tool integration, Python SDK</p>
+            <h4>Session 13 (Now)</h4>
+            <p>Model Context Protocol &mdash; architecture, enterprise use cases, consuming MCP in applications</p>
           </div>
           <div class="card card-orange" style="opacity:0.5;">
-            <h4>Session 3</h4>
-            <p>Building Custom AI Dev Tools &mdash; custom MCP servers, code review agents</p>
+            <h4>Session 14</h4>
+            <p>AI Safety &amp; Guardrails &mdash; prompt injection defense, output validation, red teaming</p>
+          </div>
+          <div class="card card-accent" style="opacity:0.5;">
+            <h4>Session 15</h4>
+            <p>Capstone Project &mdash; integrate everything into a production-ready agentic system</p>
           </div>
         </div>
       </section>
 
       <!-- ==================== RECAP ==================== -->
       <section>
-        <h2>Session 10 Recap</h2>
-        <p class="subtitle">AI Coding Agents &amp; Vibe Coding</p>
+        <h2>Session 12 Recap</h2>
+        <p class="subtitle">Production Development &amp; Deployment</p>
         <div class="card-grid" style="margin-top:20px;">
           <div class="card card-accent">
-            <h4>Agent Architecture</h4>
+            <h4>FastAPI &amp; Health Probes</h4>
             <ul>
-              <li>Plan-code-test loop for autonomous development</li>
-              <li>Tool registry for file ops, shell, search</li>
-              <li>Context engine for codebase understanding</li>
+              <li>Structured API serving with FastAPI</li>
+              <li>Liveness and readiness probes</li>
+              <li>Graceful shutdown patterns</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Prompt Engineering</h4>
+            <h4>Production Readiness</h4>
             <ul>
-              <li>Structured prompts for code generation</li>
-              <li>Vibe coding &mdash; natural language to applications</li>
-              <li>NL-to-app workflows with iterative refinement</li>
+              <li>Secrets management with env vars</li>
+              <li>Structured logging for observability</li>
+              <li>Production deployment checklist</li>
             </ul>
           </div>
         </div>
         <div class="takeaway" style="margin-top:16px;">
-          AI coding agents need tools and context. But how do we standardize how tools are exposed to ANY agent? That&rsquo;s what MCP solves.
+          We can build and deploy AI applications. Now: how do we give agents <span class="highlight">standardized access</span> to enterprise tools and data?
         </div>
       </section>
 
@@ -375,27 +370,27 @@
         <h2>What We&rsquo;ll Cover</h2>
         <div class="card-grid-3" style="margin-top:24px;">
           <div class="card card-accent">
-            <h4>01 &mdash; MCP Overview &amp; Architecture</h4>
-            <p>The problem, protocol spec, client-server model, three primitives</p>
+            <h4>01 &mdash; MCP Architecture</h4>
+            <p>The N&times;M problem, protocol spec, client-server model, three primitives, protocol essentials</p>
           </div>
           <div class="card card-green">
-            <h4>02 &mdash; Building MCP Servers in Python</h4>
-            <p>SDK, FastMCP, @tool/@resource/@prompt decorators, testing</p>
+            <h4>02 &mdash; Enterprise MCP Use Cases</h4>
+            <p>Fortune 500 adoption, data access, developer productivity, knowledge ops, ROI</p>
           </div>
           <div class="card card-orange">
-            <h4>03 &mdash; Real-World MCP Patterns</h4>
-            <p>Ecosystem, database servers, API gateways, security, MCP vs LangChain</p>
+            <h4>03 &mdash; Consuming MCP in Applications</h4>
+            <p>Ecosystem, client configuration, LangChain bridge, security, governance</p>
           </div>
         </div>
       </section>
 
       <!-- ====================================================== -->
-      <!--          SECTION 01: MCP OVERVIEW & ARCHITECTURE        -->
+      <!--              SECTION 01: MCP ARCHITECTURE               -->
       <!-- ====================================================== -->
       <section>
         <div class="section-number">01</div>
-        <h2>MCP Overview &amp; Architecture</h2>
-        <p class="subtitle">The Problem &middot; Protocol Spec &middot; Client-Server Model &middot; Three Primitives</p>
+        <h2>MCP Architecture</h2>
+        <p class="subtitle">The Problem &middot; Protocol Spec &middot; Three Primitives &middot; Protocol Essentials</p>
       </section>
 
       <!-- THE PROBLEM MCP SOLVES -->
@@ -469,10 +464,10 @@
             <p><strong>Model-controlled actions</strong><br><br>
               Functions the LLM can call. Like POST endpoints.<br><br>
               <strong>Examples:</strong><br>
+              &bull; query_database<br>
               &bull; search_code<br>
-              &bull; run_tests<br>
-              &bull; query_db<br>
-              &bull; create_file
+              &bull; create_ticket<br>
+              &bull; send_message
             </p>
           </div>
           <div class="card card-green" style="min-height:200px;">
@@ -480,10 +475,10 @@
             <p><strong>Application-controlled data</strong><br><br>
               Read-only context for the LLM. Like GET endpoints.<br><br>
               <strong>Examples:</strong><br>
-              &bull; file://config.yaml<br>
               &bull; db://schema<br>
+              &bull; confluence://page/123<br>
               &bull; git://log<br>
-              &bull; project://structure
+              &bull; metrics://dashboard
             </p>
           </div>
           <div class="card card-orange" style="min-height:200px;">
@@ -491,132 +486,49 @@
             <p><strong>User-controlled templates</strong><br><br>
               Pre-built prompt patterns. Like saved queries.<br><br>
               <strong>Examples:</strong><br>
-              &bull; code_review<br>
-              &bull; explain_code<br>
-              &bull; generate_tests<br>
-              &bull; summarize_diff
+              &bull; analyze_incident<br>
+              &bull; summarize_sprint<br>
+              &bull; review_pr<br>
+              &bull; explain_metric
             </p>
           </div>
         </div>
       </section>
 
-      <!-- JSON-RPC 2.0 PROTOCOL -->
+      <!-- PROTOCOL ESSENTIALS -->
       <section>
-        <h2>JSON-RPC 2.0 Protocol</h2>
-        <p style="font-size:0.75em; color:#ccc;">All MCP communication uses JSON-RPC 2.0 request/response messages</p>
-        <div class="code-block">
-<span class="comment">// Client &rarr; Server (tool call)</span>
-{
-  <span class="string">"jsonrpc"</span>: <span class="string">"2.0"</span>,
-  <span class="string">"id"</span>: 1,
-  <span class="string">"method"</span>: <span class="string">"tools/call"</span>,
-  <span class="string">"params"</span>: {
-    <span class="string">"name"</span>: <span class="string">"search_code"</span>,
-    <span class="string">"arguments"</span>: {<span class="string">"query"</span>: <span class="string">"def authenticate"</span>, <span class="string">"path"</span>: <span class="string">"src/"</span>}
-  }
-}
-
-<span class="comment">// Server &rarr; Client (response)</span>
-{
-  <span class="string">"jsonrpc"</span>: <span class="string">"2.0"</span>,
-  <span class="string">"id"</span>: 1,
-  <span class="string">"result"</span>: {
-    <span class="string">"content"</span>: [{<span class="string">"type"</span>: <span class="string">"text"</span>, <span class="string">"text"</span>: <span class="string">"Found 3 matches in auth.py..."</span>}]
-  }
-}
-        </div>
-      </section>
-
-      <!-- TRANSPORT LAYERS -->
-      <section>
-        <h2>Transport Layers</h2>
-        <div class="card-grid">
+        <h2>Protocol Essentials</h2>
+        <p style="font-size:0.7em; color:#ccc;">JSON-RPC 2.0 &middot; Transport &middot; Connection Lifecycle</p>
+        <div class="card-grid-3" style="margin-top:16px;">
           <div class="card card-accent">
-            <h4>stdio (Default)</h4>
+            <h4>JSON-RPC 2.0</h4>
             <ul>
-              <li>Communication via <strong>stdin/stdout</strong></li>
-              <li>Best for <strong>local tools</strong></li>
-              <li>Agent spawns server as subprocess</li>
-              <li>Used by Claude Code, OpenCode, Cursor</li>
-              <li>Zero network setup required</li>
-              <li>One client per server process</li>
+              <li>All messages: <code>{"jsonrpc":"2.0", ...}</code></li>
+              <li>Methods: <code>tools/list</code>, <code>tools/call</code>, <code>resources/read</code>, <code>prompts/get</code></li>
+              <li>Request has <code>id</code> + <code>method</code> + <code>params</code></li>
+              <li>Response has <code>id</code> + <code>result</code></li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>SSE (Server-Sent Events)</h4>
+            <h4>Transport</h4>
             <ul>
-              <li><strong>HTTP-based</strong> streaming</li>
-              <li>Best for <strong>remote/shared servers</strong></li>
-              <li>Multiple clients can connect</li>
-              <li>Used for team-shared tools</li>
-              <li>Works through firewalls and proxies</li>
-              <li>Supports authentication headers</li>
+              <li><strong>stdio</strong> &mdash; local, agent spawns server as subprocess (Claude Code, Cursor)</li>
+              <li><strong>SSE</strong> &mdash; HTTP-based, remote/shared servers, multiple clients</li>
+              <li>Transport is pluggable; protocol stays the same</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Lifecycle</h4>
+            <ul>
+              <li><strong>Initialize</strong> &mdash; exchange capabilities</li>
+              <li><strong>Discover</strong> &mdash; list tools, resources, prompts</li>
+              <li><strong>Operate</strong> &mdash; call tools, read resources</li>
+              <li><strong>Shutdown</strong> &mdash; clean disconnect</li>
             </ul>
           </div>
         </div>
-        <div class="analogy">
-          stdio is like a walkie-talkie &mdash; direct, one-to-one communication. SSE is like a radio station &mdash; one server broadcasting to many listeners over the network.
-        </div>
-      </section>
-
-      <!-- CAPABILITY NEGOTIATION -->
-      <section>
-        <h2>Capability Negotiation</h2>
-        <p style="font-size:0.75em; color:#ccc;">The <code>initialize</code> handshake tells each side what the other supports</p>
-        <div class="code-block">
-<span class="comment">// Client &rarr; Server: initialize request</span>
-{
-  <span class="string">"jsonrpc"</span>: <span class="string">"2.0"</span>,
-  <span class="string">"id"</span>: 0,
-  <span class="string">"method"</span>: <span class="string">"initialize"</span>,
-  <span class="string">"params"</span>: {
-    <span class="string">"protocolVersion"</span>: <span class="string">"2024-11-05"</span>,
-    <span class="string">"capabilities"</span>: {
-      <span class="string">"roots"</span>: {<span class="string">"listChanged"</span>: <span class="keyword">true</span>},
-      <span class="string">"sampling"</span>: {}
-    },
-    <span class="string">"clientInfo"</span>: {<span class="string">"name"</span>: <span class="string">"claude-code"</span>, <span class="string">"version"</span>: <span class="string">"1.0"</span>}
-  }
-}
-
-<span class="comment">// Server &rarr; Client: initialize response</span>
-{
-  <span class="string">"jsonrpc"</span>: <span class="string">"2.0"</span>,
-  <span class="string">"id"</span>: 0,
-  <span class="string">"result"</span>: {
-    <span class="string">"protocolVersion"</span>: <span class="string">"2024-11-05"</span>,
-    <span class="string">"capabilities"</span>: {
-      <span class="string">"tools"</span>: {<span class="string">"listChanged"</span>: <span class="keyword">true</span>},
-      <span class="string">"resources"</span>: {<span class="string">"subscribe"</span>: <span class="keyword">true</span>},
-      <span class="string">"prompts"</span>: {<span class="string">"listChanged"</span>: <span class="keyword">true</span>}
-    },
-    <span class="string">"serverInfo"</span>: {<span class="string">"name"</span>: <span class="string">"my-tools"</span>, <span class="string">"version"</span>: <span class="string">"0.1.0"</span>}
-  }
-}
-        </div>
-      </section>
-
-      <!-- MCP LIFECYCLE -->
-      <section>
-        <h2>MCP Connection Lifecycle</h2>
-        <div class="flow-step">
-          <span class="flow-num">1</span>
-          <div><strong style="color:var(--accent);">Initialize</strong> &mdash; Client sends capabilities, server responds with its capabilities and available primitives</div>
-        </div>
-        <div class="flow-step">
-          <span class="flow-num flow-num-green">2</span>
-          <div><strong style="color:var(--accent2);">Discover</strong> &mdash; Client calls <code>tools/list</code>, <code>resources/list</code>, <code>prompts/list</code> to learn what&rsquo;s available</div>
-        </div>
-        <div class="flow-step">
-          <span class="flow-num flow-num-orange">3</span>
-          <div><strong style="color:var(--accent3);">Operate</strong> &mdash; Client calls <code>tools/call</code>, <code>resources/read</code>, <code>prompts/get</code> as the LLM requests</div>
-        </div>
-        <div class="flow-step">
-          <span class="flow-num" style="background:var(--accent4);">4</span>
-          <div><strong style="color:var(--accent4);">Shutdown</strong> &mdash; Clean disconnection when the host application closes</div>
-        </div>
         <div class="takeaway">
-          The initialize handshake is like a first meeting: &ldquo;Here&rsquo;s who I am and what I can do.&rdquo; Both sides agree on protocol version and capabilities before any real work begins.
+          MCP is a <span class="highlight">protocol</span>, not a library. Any language, any agent, any tool &mdash; if they speak JSON-RPC 2.0 over stdio or SSE, they work together.
         </div>
       </section>
 
@@ -634,215 +546,232 @@
           </div>
           <div class="card card-orange">
             <h4>Three Primitives</h4>
-            <p>Tools (actions), Resources (data), Prompts (templates). The building blocks of every MCP server.</p>
+            <p>Tools (model-controlled actions), Resources (app-controlled data), Prompts (user-controlled templates).</p>
           </div>
         </div>
         <div class="takeaway">
-          MCP is a <span class="highlight">protocol</span>, not a library. Any language, any agent, any tool &mdash; if they speak MCP, they work together.
+          MCP is the <span class="highlight">USB-C of AI tool integration</span>. Build a tool server once, connect any MCP-compatible agent. Now let&rsquo;s see how enterprises are using this.
         </div>
       </section>
 
       <!-- ====================================================== -->
-      <!--       SECTION 02: BUILDING MCP SERVERS IN PYTHON        -->
+      <!--          SECTION 02: ENTERPRISE MCP USE CASES           -->
       <!-- ====================================================== -->
       <section>
         <div class="section-number">02</div>
-        <h2>Building MCP Servers in Python</h2>
-        <p class="subtitle">SDK &middot; FastMCP &middot; Decorators &middot; Testing</p>
+        <h2>Enterprise MCP Use Cases</h2>
+        <p class="subtitle">Fortune 500 Adoption &middot; Data Access &middot; Developer Productivity &middot; ROI</p>
       </section>
 
-      <!-- MCP PYTHON SDK -->
+      <!-- WHY FORTUNE 500 ADOPT MCP -->
       <section>
-        <h2>MCP Python SDK</h2>
-        <p style="font-size:0.75em; color:#ccc;">FastMCP makes building MCP servers as easy as building a Flask app</p>
-        <div class="code-block">
-<span class="keyword">pip install</span> mcp
-
-<span class="keyword">from</span> mcp.server.fastmcp <span class="keyword">import</span> FastMCP
-
-mcp = FastMCP(<span class="string">"my-server"</span>)
-
-<span class="keyword">@mcp.tool</span>()
-<span class="keyword">def</span> <span class="func">search_code</span>(query: str, path: str = <span class="string">"."</span>) -> str:
-    <span class="string">"""Search for code patterns in the codebase."""</span>
-    <span class="comment"># Implementation here</span>
-    <span class="keyword">return</span> f<span class="string">"Found matches for '{query}' in {path}"</span>
-
-<span class="keyword">@mcp.resource</span>(<span class="string">"file://{path}"</span>)
-<span class="keyword">def</span> <span class="func">read_file</span>(path: str) -> str:
-    <span class="string">"""Read a file from the project."""</span>
-    <span class="keyword">with</span> open(path) <span class="keyword">as</span> f:
-        <span class="keyword">return</span> f.read()
-
-<span class="keyword">@mcp.prompt</span>()
-<span class="keyword">def</span> <span class="func">code_review</span>(code: str) -> str:
-    <span class="string">"""Generate a code review prompt."""</span>
-    <span class="keyword">return</span> f<span class="string">"Review this code for bugs, style, and security:\n\n{code}"</span>
+        <h2>Why Fortune 500 Companies Adopt MCP</h2>
+        <div class="analogy">
+          In the 2000s, enterprises adopted ESBs (Enterprise Service Buses) to standardize application integration. MCP is the <strong>ESB for the AI era</strong> &mdash; one protocol connecting all AI agents to all enterprise tools and data.
         </div>
-      </section>
-
-      <!-- TOOL DECORATORS DEEP DIVE -->
-      <section>
-        <h2>Tool Decorators Deep Dive</h2>
-        <div class="code-block">
-<span class="keyword">@mcp.tool</span>()
-<span class="keyword">def</span> <span class="func">code_metrics</span>(file_path: str, include_complexity: bool = <span class="keyword">True</span>) -> str:
-    <span class="string">"""Analyze code quality metrics for a Python file.
-
-    Args:
-        file_path: Path to the Python file to analyze
-        include_complexity: Whether to calculate cyclomatic complexity
-    """</span>
-    <span class="keyword">import</span> ast
-    <span class="keyword">with</span> open(file_path) <span class="keyword">as</span> f:
-        tree = ast.parse(f.read())
-
-    functions = [n <span class="keyword">for</span> n <span class="keyword">in</span> ast.walk(tree) <span class="keyword">if</span> isinstance(n, ast.FunctionDef)]
-    classes = [n <span class="keyword">for</span> n <span class="keyword">in</span> ast.walk(tree) <span class="keyword">if</span> isinstance(n, ast.ClassDef)]
-
-    <span class="keyword">return</span> f<span class="string">"Functions: {len(functions)}, Classes: {len(classes)}"</span>
-        </div>
-        <div class="takeaway">
-          Type hints become the tool&rsquo;s JSON schema. Docstrings become the description the LLM sees. The LLM uses these to decide <em>when</em> and <em>how</em> to call your tool.
-        </div>
-      </section>
-
-      <!-- RESOURCES — EXPOSING CONTEXT -->
-      <section>
-        <h2>Resources &mdash; Exposing Context</h2>
-        <p style="font-size:0.75em; color:#ccc;">Resources provide read-only data that enriches the LLM&rsquo;s context</p>
-        <div class="code-block">
-<span class="keyword">@mcp.resource</span>(<span class="string">"project://structure"</span>)
-<span class="keyword">def</span> <span class="func">project_structure</span>() -> str:
-    <span class="string">"""Return the project directory tree."""</span>
-    <span class="comment"># Static resource &mdash; always available</span>
-    <span class="keyword">return</span> subprocess.run(
-        [<span class="string">"tree"</span>, <span class="string">"-L"</span>, <span class="string">"2"</span>], capture_output=<span class="keyword">True</span>, text=<span class="keyword">True</span>
-    ).stdout
-
-<span class="keyword">@mcp.resource</span>(<span class="string">"config://{name}"</span>)
-<span class="keyword">def</span> <span class="func">get_config</span>(name: str) -> str:
-    <span class="string">"""Read a configuration file by name."""</span>
-    <span class="comment"># Dynamic resource with URI template</span>
-    config_path = f<span class="string">"config/{name}.yaml"</span>
-    <span class="keyword">with</span> open(config_path) <span class="keyword">as</span> f:
-        <span class="keyword">return</span> f.read()
-        </div>
-        <div class="card-grid" style="margin-top:14px;">
+        <div class="card-grid" style="margin-top:16px;">
           <div class="card card-accent">
-            <h4>Static Resources</h4>
-            <p>Fixed URI like <code>project://structure</code>. Always returns the same type of data. Listed in <code>resources/list</code>.</p>
+            <h4>The Enterprise Problem</h4>
+            <ul>
+              <li>Dozens of internal tools: Jira, Confluence, Salesforce, Snowflake, GitHub, Slack...</li>
+              <li>Each AI vendor builds custom connectors</li>
+              <li>N AI products &times; M enterprise tools = <strong>integration chaos</strong></li>
+              <li>Security review needed for every point-to-point connection</li>
+            </ul>
           </div>
           <div class="card card-green">
-            <h4>Dynamic Resources</h4>
-            <p>URI templates like <code>config://{name}</code>. Parameters extracted from the URI. Infinite possible resources from one handler.</p>
+            <h4>The MCP Solution</h4>
+            <ul>
+              <li>Each tool exposes <strong>one MCP server</strong></li>
+              <li>Any AI agent connects via the <strong>standard protocol</strong></li>
+              <li>Centralized security and audit layer</li>
+              <li>Swap AI vendors without re-building integrations</li>
+              <li>New tools available to all agents instantly</li>
+            </ul>
           </div>
         </div>
       </section>
 
-      <!-- PROMPTS — REUSABLE TEMPLATES -->
+      <!-- USE CASE 1: ENTERPRISE DATA ACCESS -->
       <section>
-        <h2>Prompts &mdash; Reusable Templates</h2>
-        <p style="font-size:0.75em; color:#ccc;">Pre-built prompt patterns that users can invoke through the MCP client</p>
-        <div class="code-block">
-<span class="keyword">from</span> mcp.server.fastmcp <span class="keyword">import</span> FastMCP
-<span class="keyword">from</span> mcp.types <span class="keyword">import</span> TextContent
-
-mcp = FastMCP(<span class="string">"dev-prompts"</span>)
-
-<span class="keyword">@mcp.prompt</span>()
-<span class="keyword">def</span> <span class="func">code_review</span>(code: str, language: str = <span class="string">"python"</span>) -> str:
-    <span class="string">"""Generate a thorough code review prompt."""</span>
-    <span class="keyword">return</span> f<span class="string">"""Review this {language} code for:
-1. Bugs and logic errors
-2. Security vulnerabilities
-3. Performance issues
-4. Code style and readability
-
-Code to review:
-```{language}
-{code}
-```"""</span>
-
-<span class="keyword">@mcp.prompt</span>()
-<span class="keyword">def</span> <span class="func">generate_tests</span>(code: str, framework: str = <span class="string">"pytest"</span>) -> str:
-    <span class="string">"""Generate unit tests for the given code."""</span>
-    <span class="keyword">return</span> f<span class="string">"""Write {framework} unit tests for this code.
-Cover edge cases and error handling.
-
-Code:
-```python
-{code}
-```"""</span>
-        </div>
-      </section>
-
-      <!-- RUNNING & TESTING -->
-      <section>
-        <h2>Running &amp; Testing MCP Servers</h2>
-        <div class="code-block">
-<span class="comment"># Run the server (stdio transport — default)</span>
-python my_server.py
-
-<span class="comment"># Test with MCP Inspector (interactive browser UI)</span>
-npx @modelcontextprotocol/inspector python my_server.py
-
-<span class="comment"># Configure in Claude Code (claude_desktop_config.json)</span>
-{
-  <span class="string">"mcpServers"</span>: {
-    <span class="string">"my-tools"</span>: {
-      <span class="string">"command"</span>: <span class="string">"python"</span>,
-      <span class="string">"args"</span>: [<span class="string">"my_server.py"</span>]
-    }
-  }
-}
-
-<span class="comment"># Configure with SSE transport for remote access</span>
-{
-  <span class="string">"mcpServers"</span>: {
-    <span class="string">"remote-tools"</span>: {
-      <span class="string">"url"</span>: <span class="string">"http://tools.example.com:8080/sse"</span>
-    }
-  }
-}
+        <h2>Use Case 1: Enterprise Data Access</h2>
+        <p class="pattern-label">Analysts Query Data in Natural Language</p>
+        <div class="card-grid-3" style="margin-top:12px;">
+          <div class="card card-accent">
+            <h4>Postgres MCP Server</h4>
+            <ul>
+              <li>Schema introspection as Resources</li>
+              <li><code>query_db</code> Tool (read-only)</li>
+              <li>Natural language to SQL</li>
+              <li>Business analysts self-serve</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Snowflake MCP Server</h4>
+            <ul>
+              <li>Data warehouse exploration</li>
+              <li>Cross-table joins via AI</li>
+              <li>Dashboard data extraction</li>
+              <li>Reduces BI team bottleneck</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>BigQuery MCP Server</h4>
+            <ul>
+              <li>Petabyte-scale analytics</li>
+              <li>Cost-aware query planning</li>
+              <li>Schema + sample data as Resources</li>
+              <li>ML pipeline integration</li>
+            </ul>
+          </div>
         </div>
         <div class="takeaway">
-          The <span class="highlight">MCP Inspector</span> is your best friend during development. It shows all tools, resources, and prompts your server exposes, and lets you test them interactively.
+          <strong>Impact:</strong> Non-technical staff query enterprise data directly through AI assistants. Data teams focus on governance instead of fielding ad-hoc requests.
         </div>
       </section>
 
-      <!-- SERVER ENTRYPOINT -->
+      <!-- USE CASE 2: DEVELOPER PRODUCTIVITY -->
       <section>
-        <h2>Complete Server Example</h2>
-        <div class="code-block">
-<span class="comment"># my_server.py &mdash; A complete MCP server</span>
-<span class="keyword">from</span> mcp.server.fastmcp <span class="keyword">import</span> FastMCP
-<span class="keyword">import</span> subprocess, json
+        <h2>Use Case 2: Developer Productivity</h2>
+        <p class="pattern-label">25% Productivity Gains Reported</p>
+        <div class="card-grid-3" style="margin-top:12px;">
+          <div class="card card-accent">
+            <h4>GitHub MCP Server</h4>
+            <ul>
+              <li>Create PRs, review code, search repos</li>
+              <li>Automated issue triage</li>
+              <li>Cross-repo dependency analysis</li>
+              <li>Release note generation</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Jira MCP Server</h4>
+            <ul>
+              <li>Create/update tickets from AI chat</li>
+              <li>Sprint planning assistance</li>
+              <li>Status report generation</li>
+              <li>Backlog prioritization</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>CI/CD MCP Server</h4>
+            <ul>
+              <li>Trigger builds and deployments</li>
+              <li>Pipeline failure diagnosis</li>
+              <li>Test result analysis</li>
+              <li>Environment provisioning</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway">
+          <strong>Impact:</strong> Developers interact with their entire toolchain through one AI assistant. Context switching drops dramatically as the agent bridges GitHub, Jira, and CI/CD.
+        </div>
+      </section>
 
-mcp = FastMCP(<span class="string">"dev-assistant"</span>)
+      <!-- USE CASE 3: KNOWLEDGE & CUSTOMER OPS -->
+      <section>
+        <h2>Use Case 3: Knowledge &amp; Customer Ops</h2>
+        <p class="pattern-label">Cross-System Intelligence</p>
+        <div class="card-grid-3" style="margin-top:12px;">
+          <div class="card card-accent">
+            <h4>Confluence MCP Server</h4>
+            <ul>
+              <li>Search across knowledge base</li>
+              <li>Page content as Resources</li>
+              <li>Onboarding guide generation</li>
+              <li>Policy compliance checks</li>
+            </ul>
+          </div>
+          <div class="card card-green">
+            <h4>Salesforce MCP Server</h4>
+            <ul>
+              <li>Customer 360 view for agents</li>
+              <li>Opportunity pipeline queries</li>
+              <li>Account history + context</li>
+              <li>Auto-log meeting notes</li>
+            </ul>
+          </div>
+          <div class="card card-orange">
+            <h4>Zendesk MCP Server</h4>
+            <ul>
+              <li>Ticket search and triage</li>
+              <li>Knowledge base lookup</li>
+              <li>Response draft generation</li>
+              <li>Escalation path recommendations</li>
+            </ul>
+          </div>
+        </div>
+        <div class="takeaway">
+          <strong>Impact:</strong> Support agents get unified customer context from Salesforce + Zendesk + Confluence in one conversation &mdash; no tab-switching, no copy-paste.
+        </div>
+      </section>
 
-<span class="keyword">@mcp.tool</span>()
-<span class="keyword">def</span> <span class="func">run_tests</span>(test_path: str = <span class="string">"tests/"</span>) -> str:
-    <span class="string">"""Run pytest and return results."""</span>
-    result = subprocess.run(
-        [<span class="string">"python"</span>, <span class="string">"-m"</span>, <span class="string">"pytest"</span>, test_path, <span class="string">"-v"</span>, <span class="string">"--tb=short"</span>],
-        capture_output=<span class="keyword">True</span>, text=<span class="keyword">True</span>, timeout=60
-    )
-    <span class="keyword">return</span> f<span class="string">"Exit code: {result.returncode}\n{result.stdout}\n{result.stderr}"</span>
+      <!-- MULTI-TOOL AGENT PATTERN -->
+      <section>
+        <h2>The Multi-Tool Agent Pattern</h2>
+        <p style="font-size:0.75em; color:#ccc;">One AI agent connecting to multiple MCP servers for cross-domain intelligence</p>
+        <div style="margin:20px 0;">
+          <div style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Postgres</div>
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">GitHub</div>
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Jira</div>
+            </div>
+            <div class="arrow">&larr;</div>
+            <div class="box box-large" style="border-color:var(--accent); min-width:160px;">
+              <strong style="color:var(--accent);">AI Agent</strong><br>
+              <span style="font-size:0.8em; color:#aaa;">MCP Client</span>
+            </div>
+            <div class="arrow">&rarr;</div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Confluence</div>
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Slack</div>
+              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Salesforce</div>
+            </div>
+          </div>
+        </div>
+        <div class="analogy">
+          A senior engineer with access to all company systems: &ldquo;Check the database for recent errors, find the related Jira ticket, look up the Confluence runbook, and post a summary to Slack.&rdquo; &mdash; One prompt, six tools, zero context switching.
+        </div>
+      </section>
 
-<span class="keyword">@mcp.resource</span>(<span class="string">"project://dependencies"</span>)
-<span class="keyword">def</span> <span class="func">get_dependencies</span>() -> str:
-    <span class="string">"""List project dependencies from requirements.txt."""</span>
-    <span class="keyword">with</span> open(<span class="string">"requirements.txt"</span>) <span class="keyword">as</span> f:
-        <span class="keyword">return</span> f.read()
-
-<span class="keyword">@mcp.prompt</span>()
-<span class="keyword">def</span> <span class="func">explain_error</span>(error: str) -> str:
-    <span class="string">"""Help debug an error message."""</span>
-    <span class="keyword">return</span> f<span class="string">"Explain this error and suggest fixes:\n\n{error}"</span>
-
-<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
-    mcp.run()  <span class="comment"># Starts stdio transport by default</span>
+      <!-- ROI & BUSINESS IMPACT -->
+      <section>
+        <h2>ROI &amp; Business Impact</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Metric</th>
+            <th>Before MCP</th>
+            <th>After MCP</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">Integration Cost</span></td>
+            <td>2-4 weeks per tool per agent</td>
+            <td>Hours (configure existing MCP server)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Developer Productivity</span></td>
+            <td>Manual tool switching, 8-12 context switches/hour</td>
+            <td>AI-unified workflow, 25% fewer context switches</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Data Access</span></td>
+            <td>File tickets with data team, wait days</td>
+            <td>Self-serve via AI in minutes</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Vendor Lock-in</span></td>
+            <td>Deeply coupled to one AI vendor</td>
+            <td>Swap agents freely; tools stay connected</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Security Posture</span></td>
+            <td>N&times;M custom auth flows to audit</td>
+            <td>Centralized MCP gateway with unified audit</td>
+          </tr>
+        </table>
+        <div class="takeaway">
+          <strong>Build vs Buy:</strong> Prefer community MCP servers for common tools (GitHub, Postgres, Slack). Build custom servers only for proprietary internal systems.
         </div>
       </section>
 
@@ -851,229 +780,266 @@ mcp = FastMCP(<span class="string">"dev-assistant"</span>)
         <h2>Section 02 Summary</h2>
         <div class="card-grid-3" style="margin-top:20px;">
           <div class="card card-accent">
-            <h4>FastMCP SDK</h4>
-            <p><code>pip install mcp</code> &mdash; three decorators: <code>@mcp.tool()</code>, <code>@mcp.resource()</code>, <code>@mcp.prompt()</code></p>
+            <h4>Data Access</h4>
+            <p>Analysts query Postgres, Snowflake, BigQuery via natural language. Data teams shift to governance.</p>
           </div>
           <div class="card card-green">
-            <h4>Type Hints = Schema</h4>
-            <p>Python type annotations auto-generate JSON schema. Docstrings become tool descriptions for the LLM.</p>
+            <h4>Dev Productivity</h4>
+            <p>One agent bridges GitHub + Jira + CI/CD. 25% fewer context switches, faster cycle times.</p>
           </div>
           <div class="card card-orange">
-            <h4>Testing</h4>
-            <p>MCP Inspector for interactive testing. <code>mcp.run()</code> for stdio, configure in agent&rsquo;s JSON config.</p>
+            <h4>Knowledge Ops</h4>
+            <p>Confluence + Salesforce + Zendesk unified. Support agents get full customer context instantly.</p>
           </div>
         </div>
         <div class="takeaway">
-          Building an MCP server in Python is as simple as decorating functions. The SDK handles JSON-RPC, schema generation, and transport &mdash; you focus on the logic.
+          MCP turns AI assistants from <span class="highlight">chat-only tools</span> into <span class="highlight-green">enterprise-connected agents</span> that can actually <em>do work</em> across your entire tool stack.
         </div>
       </section>
 
       <!-- ====================================================== -->
-      <!--          SECTION 03: REAL-WORLD MCP PATTERNS            -->
+      <!--       SECTION 03: CONSUMING MCP IN APPLICATIONS         -->
       <!-- ====================================================== -->
       <section>
         <div class="section-number">03</div>
-        <h2>Real-World MCP Patterns</h2>
-        <p class="subtitle">Ecosystem &middot; Database Servers &middot; Security &middot; MCP vs LangChain</p>
+        <h2>Consuming MCP in Applications</h2>
+        <p class="subtitle">Ecosystem &middot; Client Config &middot; LangChain Bridge &middot; Security</p>
       </section>
 
       <!-- MCP ECOSYSTEM -->
       <section>
         <h2>MCP Ecosystem</h2>
-        <p style="font-size:0.75em; color:#ccc;">Growing library of open-source MCP servers for common integrations</p>
+        <p style="font-size:0.75em; color:#ccc;">1,000+ MCP servers available &mdash; open-source and vendor-provided</p>
         <table class="compare-table">
           <tr>
-            <th>Server</th>
-            <th>Purpose</th>
-            <th>Primitives</th>
+            <th>Category</th>
+            <th>Example Servers</th>
+            <th>Key Capabilities</th>
           </tr>
           <tr>
-            <td><span class="highlight">filesystem</span></td>
-            <td>Read/write local files, directory listing</td>
-            <td>Tools + Resources</td>
+            <td><span class="highlight">Databases</span></td>
+            <td>Postgres, SQLite, MySQL, MongoDB</td>
+            <td>Schema inspection, read-only queries, data export</td>
           </tr>
           <tr>
-            <td><span class="highlight">github</span></td>
-            <td>PRs, issues, code search, repos</td>
-            <td>Tools + Resources</td>
+            <td><span class="highlight">Developer Tools</span></td>
+            <td>GitHub, GitLab, Linear, Sentry</td>
+            <td>PRs, issues, code search, error tracking</td>
           </tr>
           <tr>
-            <td><span class="highlight">postgres</span></td>
-            <td>Query databases, inspect schema</td>
-            <td>Tools + Resources</td>
+            <td><span class="highlight">Cloud &amp; Infra</span></td>
+            <td>AWS, Kubernetes, Terraform, Docker</td>
+            <td>Resource management, deployment, monitoring</td>
           </tr>
           <tr>
-            <td><span class="highlight">puppeteer</span></td>
-            <td>Browser automation, screenshots</td>
-            <td>Tools</td>
+            <td><span class="highlight">Knowledge</span></td>
+            <td>Confluence, Notion, Google Drive</td>
+            <td>Document search, page content, file access</td>
           </tr>
           <tr>
-            <td><span class="highlight">memory</span></td>
-            <td>Persistent key-value store</td>
-            <td>Tools + Resources</td>
+            <td><span class="highlight">Communication</span></td>
+            <td>Slack, Gmail, Microsoft Teams</td>
+            <td>Send messages, search history, manage channels</td>
           </tr>
           <tr>
-            <td><span class="highlight">slack</span></td>
-            <td>Send messages, read channels</td>
-            <td>Tools + Resources</td>
+            <td><span class="highlight">Web &amp; Data</span></td>
+            <td>Puppeteer, Fetch, Brave Search</td>
+            <td>Browser automation, web scraping, search</td>
           </tr>
         </table>
         <div class="takeaway">
-          You don&rsquo;t have to build everything from scratch. Check <span class="highlight">github.com/modelcontextprotocol/servers</span> for official and community servers.
+          Check <span class="highlight">github.com/modelcontextprotocol/servers</span> and <span class="highlight">mcp.so</span> for the full registry. Most enterprise tools already have community MCP servers.
         </div>
       </section>
 
-      <!-- DATABASE MCP SERVER -->
+      <!-- CONFIGURING MCP CLIENTS -->
       <section>
-        <h2>Database MCP Server</h2>
-        <p style="font-size:0.75em; color:#ccc;">Example: A simple SQLite query tool exposed via MCP</p>
+        <h2>Configuring MCP Clients</h2>
+        <p style="font-size:0.75em; color:#ccc;">Most AI agents use a JSON config file to connect to MCP servers</p>
+        <div class="card-grid">
+          <div class="card card-accent">
+            <h4>Claude Desktop Config</h4>
+            <div class="code-block" style="font-size:0.55em;">
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"postgres"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>,
+        <span class="string">"@modelcontextprotocol/server-postgres"</span>,
+        <span class="string">"postgresql://localhost/mydb"</span>]
+    }
+  }
+}
+            </div>
+          </div>
+          <div class="card card-green">
+            <h4>Claude Code Config</h4>
+            <div class="code-block" style="font-size:0.55em;">
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"github"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>,
+        <span class="string">"@modelcontextprotocol/server-github"</span>],
+      <span class="string">"env"</span>: {
+        <span class="string">"GITHUB_TOKEN"</span>: <span class="string">"ghp_..."</span>
+      }
+    }
+  }
+}
+            </div>
+          </div>
+        </div>
+        <div class="takeaway">
+          <strong>Pattern:</strong> <code>command</code> + <code>args</code> = stdio transport (local). <code>url</code> = SSE transport (remote). <code>env</code> passes secrets without hardcoding.
+        </div>
+      </section>
+
+      <!-- MULTI-SERVER CONFIG -->
+      <section>
+        <h2>Multi-Server Configuration</h2>
+        <p style="font-size:0.75em; color:#ccc;">Connect one agent to five MCP servers &mdash; each with its own scope and credentials</p>
         <div class="code-block">
-<span class="keyword">import</span> sqlite3
-<span class="keyword">from</span> mcp.server.fastmcp <span class="keyword">import</span> FastMCP
-
-mcp = FastMCP(<span class="string">"database"</span>)
-DB_PATH = <span class="string">"app.db"</span>
-
-<span class="keyword">@mcp.tool</span>()
-<span class="keyword">def</span> <span class="func">query_db</span>(sql: str) -> str:
-    <span class="string">"""Execute a read-only SQL query and return results.
-
-    Args:
-        sql: A SELECT query to execute (writes are blocked)
-    """</span>
-    <span class="keyword">if not</span> sql.strip().upper().startswith(<span class="string">"SELECT"</span>):
-        <span class="keyword">return</span> <span class="string">"Error: Only SELECT queries are allowed"</span>
-
-    conn = sqlite3.connect(DB_PATH)
-    <span class="keyword">try</span>:
-        cursor = conn.execute(sql)
-        columns = [d[0] <span class="keyword">for</span> d <span class="keyword">in</span> cursor.description]
-        rows = cursor.fetchall()
-        <span class="keyword">return</span> f<span class="string">"Columns: {columns}\nRows: {rows}"</span>
-    <span class="keyword">finally</span>:
-        conn.close()
-
-<span class="keyword">@mcp.resource</span>(<span class="string">"db://schema"</span>)
-<span class="keyword">def</span> <span class="func">get_schema</span>() -> str:
-    <span class="string">"""Return the database schema."""</span>
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.execute(<span class="string">"SELECT sql FROM sqlite_master WHERE type='table'"</span>)
-    <span class="keyword">return</span> <span class="string">"\n"</span>.join(row[0] <span class="keyword">for</span> row <span class="keyword">in</span> cursor.fetchall())
+{
+  <span class="string">"mcpServers"</span>: {
+    <span class="string">"postgres"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-postgres"</span>, <span class="string">"$DB_URL"</span>]
+    },
+    <span class="string">"github"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-github"</span>],
+      <span class="string">"env"</span>: {<span class="string">"GITHUB_TOKEN"</span>: <span class="string">"$GH_TOKEN"</span>}
+    },
+    <span class="string">"slack"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-slack"</span>],
+      <span class="string">"env"</span>: {<span class="string">"SLACK_BOT_TOKEN"</span>: <span class="string">"$SLACK_TOKEN"</span>}
+    },
+    <span class="string">"filesystem"</span>: {
+      <span class="string">"command"</span>: <span class="string">"npx"</span>,
+      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-filesystem"</span>, <span class="string">"/projects"</span>]
+    },
+    <span class="string">"confluence"</span>: {
+      <span class="string">"url"</span>: <span class="string">"https://mcp-gateway.internal/confluence/sse"</span>
+    }
+  }
+}
         </div>
       </section>
 
-      <!-- MCP VS LANGCHAIN TOOLS -->
+      <!-- BRIDGING MCP WITH LANGCHAIN -->
       <section>
-        <h2>MCP vs LangChain Tools</h2>
-        <table class="compare-table">
-          <tr>
-            <th>Feature</th>
-            <th>MCP</th>
-            <th>LangChain Tools</th>
-          </tr>
-          <tr>
-            <td><span class="highlight">Protocol</span></td>
-            <td>JSON-RPC 2.0 standard</td>
-            <td>Python function interface</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Transport</span></td>
-            <td>stdio, SSE (network)</td>
-            <td>In-process only</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Discovery</span></td>
-            <td>Client queries server at runtime</td>
-            <td>Hardcoded in agent code</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Multi-agent</span></td>
-            <td>Any MCP client can use</td>
-            <td>LangChain only</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Resources</span></td>
-            <td>First-class primitive</td>
-            <td>No equivalent</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Ecosystem</span></td>
-            <td>Growing (100+ servers)</td>
-            <td>Large (LangChain community)</td>
-          </tr>
-          <tr>
-            <td><span class="highlight">Best for</span></td>
-            <td>Tool standardization across agents</td>
-            <td>Quick prototyping within LangChain</td>
-          </tr>
-        </table>
+        <h2>Bridging MCP with LangChain</h2>
+        <p style="font-size:0.75em; color:#ccc;">Use <code>langchain-mcp-adapters</code> to bring MCP tools into LangChain agents</p>
+        <div class="code-block">
+<span class="comment"># pip install langchain-mcp-adapters</span>
+<span class="keyword">from</span> langchain_mcp_adapters.client <span class="keyword">import</span> MultiServerMCPClient
+<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+
+<span class="comment"># Connect to MCP servers</span>
+<span class="keyword">async with</span> MultiServerMCPClient({
+    <span class="string">"math"</span>:    {<span class="string">"command"</span>: <span class="string">"python"</span>, <span class="string">"args"</span>: [<span class="string">"math_server.py"</span>]},
+    <span class="string">"weather"</span>: {<span class="string">"url"</span>: <span class="string">"http://localhost:8080/sse"</span>},
+}) <span class="keyword">as</span> client:
+    tools = client.get_tools()  <span class="comment"># Auto-converts MCP tools to LangChain tools</span>
+
+    agent = create_react_agent(llm, tools)
+    result = <span class="keyword">await</span> agent.ainvoke({
+        <span class="string">"messages"</span>: [(<span class="string">"user"</span>, <span class="string">"What's 2+2 and weather in SF?"</span>)]
+    })
+        </div>
+        <div class="takeaway">
+          <span class="highlight">MCP for tool standardization</span> + <span class="highlight-green">LangChain/LangGraph for orchestration</span>. The adapter bridges both worlds &mdash; MCP servers become LangChain tools automatically.
+        </div>
       </section>
 
-      <!-- SECURITY CONSIDERATIONS -->
+      <!-- ENTERPRISE SECURITY & GOVERNANCE -->
       <section>
-        <h2>Security Considerations</h2>
+        <h2>Enterprise Security &amp; Governance</h2>
         <div class="warning">
-          MCP servers can execute code, read files, and access databases. Security is not optional &mdash; it&rsquo;s critical.
+          MCP servers can execute code, query databases, and call external APIs. Enterprise deployment demands defense in depth.
         </div>
         <div class="card-grid-3" style="margin-top:16px;">
           <div class="card card-accent">
             <h4>Input Validation</h4>
             <ul>
-              <li>Always validate tool arguments</li>
-              <li>Sanitize file paths (no <code>../../etc/passwd</code>)</li>
-              <li>Limit query scope and complexity</li>
-              <li>Whitelist allowed operations</li>
+              <li>Sanitize all tool arguments</li>
+              <li>Block path traversal (<code>../../</code>)</li>
+              <li>Enforce read-only for data queries</li>
+              <li>Limit payload sizes</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Sandboxing</h4>
+            <h4>Access Control</h4>
             <ul>
-              <li>Run servers with <strong>minimal permissions</strong></li>
-              <li>Use subprocess isolation</li>
-              <li>Set timeouts on all operations</li>
-              <li>Restrict filesystem access to project dir</li>
+              <li>Role-based MCP server assignment</li>
+              <li>Analysts: data servers only</li>
+              <li>Developers: code + CI/CD servers</li>
+              <li>Admins: full server access</li>
             </ul>
           </div>
           <div class="card card-orange">
-            <h4>Secrets Management</h4>
+            <h4>Audit &amp; Monitoring</h4>
             <ul>
-              <li>Never expose API keys in MCP responses</li>
-              <li>Use environment variables for credentials</li>
-              <li>Audit tool call logs for data leaks</li>
-              <li>Rotate credentials regularly</li>
+              <li>Log every tool call + arguments</li>
+              <li>Track who accessed what data</li>
+              <li>Alert on anomalous patterns</li>
+              <li>Compliance reporting (SOC2, GDPR)</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <!-- BRIDGING MCP AND LANGCHAIN -->
+      <!-- MCP vs REST vs LANGCHAIN -->
       <section>
-        <h2>Bridging MCP and LangChain</h2>
-        <p style="font-size:0.75em; color:#ccc;">Use MCP tools within a LangChain agent &mdash; best of both worlds</p>
-        <div class="code-block">
-<span class="comment"># Concept: Use MCP tools within a LangChain agent</span>
-<span class="keyword">from</span> langchain.tools <span class="keyword">import</span> StructuredTool
-
-<span class="keyword">def</span> <span class="func">create_langchain_tool_from_mcp</span>(mcp_tool, mcp_client):
-    <span class="string">"""Bridge an MCP tool to LangChain."""</span>
-    <span class="keyword">return</span> StructuredTool.from_function(
-        func=<span class="keyword">lambda</span> **kwargs: mcp_client.call_tool(mcp_tool.name, kwargs),
-        name=mcp_tool.name,
-        description=mcp_tool.description,
-    )
-
-<span class="comment"># Usage: discover MCP tools and convert to LangChain tools</span>
-mcp_tools = mcp_client.list_tools()
-langchain_tools = [
-    create_langchain_tool_from_mcp(t, mcp_client)
-    <span class="keyword">for</span> t <span class="keyword">in</span> mcp_tools
-]
-
-<span class="comment"># Now use in a LangChain agent</span>
-agent = create_react_agent(llm, langchain_tools)
-        </div>
+        <h2>MCP vs REST APIs vs LangChain Tools</h2>
+        <table class="compare-table">
+          <tr>
+            <th>Feature</th>
+            <th>MCP</th>
+            <th>REST APIs</th>
+            <th>LangChain Tools</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">Designed For</span></td>
+            <td>AI agent &harr; tool communication</td>
+            <td>App &harr; app communication</td>
+            <td>LangChain agent orchestration</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Discovery</span></td>
+            <td>Runtime (tools/list)</td>
+            <td>Static (OpenAPI docs)</td>
+            <td>Hardcoded in agent code</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Transport</span></td>
+            <td>stdio or SSE</td>
+            <td>HTTP</td>
+            <td>In-process (Python)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Schema</span></td>
+            <td>JSON-RPC + auto from types</td>
+            <td>OpenAPI / Swagger</td>
+            <td>Pydantic models</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Multi-Agent</span></td>
+            <td>Any MCP client can connect</td>
+            <td>Any HTTP client can call</td>
+            <td>LangChain only</td>
+          </tr>
+          <tr>
+            <td><span class="highlight">Best For</span></td>
+            <td>Standardized AI tool access</td>
+            <td>Service-to-service APIs</td>
+            <td>Rapid prototyping in Python</td>
+          </tr>
+        </table>
         <div class="takeaway">
-          You don&rsquo;t have to choose. Use <span class="highlight">MCP for tool standardization</span> and <span class="highlight-green">LangChain for orchestration</span>. Bridge them together for maximum flexibility.
+          Use <span class="highlight">MCP</span> when you need agent-agnostic tool access. Use <span class="highlight-green">REST APIs</span> for service-to-service. Use <span class="highlight-orange">LangChain tools</span> for quick Python prototypes. <strong>They are complementary.</strong>
         </div>
       </section>
 
@@ -1083,39 +1049,39 @@ agent = create_react_agent(llm, langchain_tools)
         <div class="card-grid-3" style="margin-top:20px;">
           <div class="card card-accent">
             <h4>Ecosystem</h4>
-            <p>100+ MCP servers for common integrations: filesystems, databases, GitHub, Slack, browsers, and more.</p>
+            <p>1,000+ MCP servers for databases, dev tools, cloud, knowledge, communication. Build vs buy decision.</p>
           </div>
           <div class="card card-green">
-            <h4>MCP vs LangChain</h4>
-            <p>MCP standardizes tool access across agents. LangChain excels at orchestration. They are complementary.</p>
+            <h4>Client Configuration</h4>
+            <p>JSON config with command/args (stdio) or URL (SSE). Multi-server configs give agents cross-domain access.</p>
           </div>
           <div class="card card-orange">
             <h4>Security</h4>
-            <p>Validate inputs, sandbox servers, manage secrets. MCP servers have real access &mdash; treat them like production APIs.</p>
+            <p>Input validation, role-based access, comprehensive audit logging. Treat MCP servers like production APIs.</p>
           </div>
         </div>
         <div class="takeaway">
-          MCP turns tool integration from a per-agent problem into a <span class="highlight">shared ecosystem</span>. Build once, use everywhere, secure always.
+          MCP turns AI assistants from chatbots into <span class="highlight">enterprise-connected agents</span>. The ecosystem is ready &mdash; configure, secure, and deploy.
         </div>
       </section>
 
-      <!-- ==================== SESSION RECAP ==================== -->
+      <!-- ==================== SESSION 13 RECAP ==================== -->
       <section>
-        <h2>Session 11 Recap</h2>
+        <h2>Session 13 Recap</h2>
         <div class="flow-step">
           <span class="flow-num">1</span>
           <div><strong style="color:var(--accent);">MCP Architecture</strong> &mdash; Protocol spec, JSON-RPC 2.0, client-server model, three primitives (Tools, Resources, Prompts)</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-green">2</span>
-          <div><strong style="color:var(--accent2);">Python SDK</strong> &mdash; FastMCP, decorators, type hints = schema, MCP Inspector for testing</div>
+          <div><strong style="color:var(--accent2);">Enterprise Use Cases</strong> &mdash; Data access, developer productivity, knowledge ops, multi-tool agents, ROI</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-orange">3</span>
-          <div><strong style="color:var(--accent3);">Real-World Patterns</strong> &mdash; Ecosystem, database servers, MCP vs LangChain, security best practices</div>
+          <div><strong style="color:var(--accent3);">Consuming MCP</strong> &mdash; 1,000+ server ecosystem, client configuration, LangChain bridge, security &amp; governance</div>
         </div>
         <div class="takeaway" style="margin-top:20px;">
-          MCP is the <span class="highlight">USB-C of AI tool integration</span>. One standard protocol that connects any agent to any tool. Build servers in Python with three decorators, test with Inspector, deploy with confidence.
+          MCP is the <span class="highlight">USB-C of AI tool integration</span>. Fortune 500 companies adopt it to connect any AI agent to any enterprise tool via one standard protocol.
         </div>
       </section>
 
@@ -1155,150 +1121,270 @@ agent = create_react_agent(llm, langchain_tools)
       <section>
         <h1>Questions?</h1>
         <br>
-        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss MCP concepts<br>before we build custom tools</p>
+        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss MCP enterprise use cases<br>before moving to AI Safety</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
-          <h4>Session 11 Complete</h4>
-          <p>MCP Architecture &middot; Python SDK &middot; Real-World Patterns</p>
+          <h4>Session 13 Complete</h4>
+          <p>MCP Architecture &middot; Enterprise Use Cases &middot; Application Integration</p>
         </div>
       </section>
 
       <!-- ====================================================== -->
-      <!--                      Q&A SLIDES                        -->
+      <!--                      QUIZ SLIDES                       -->
       <!-- ====================================================== -->
 
-      <!-- Q1 -->
+      <!-- Q1 Question -->
       <section>
         <div class="quiz-badge">Question 1 of 5</div>
-        <p class="quiz-question">What are the three primitives in MCP?</p>
+        <p class="quiz-question">What problem does MCP solve for enterprises with N AI agents and M tools?</p>
         <div class="quiz-options">
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">A</span>
-            <span>Request, Response, Stream</span>
+            <span>It makes AI agents run faster by caching tool responses</span>
           </div>
-          <div class="quiz-option correct">
+          <div class="quiz-option">
             <span class="opt-letter">B</span>
-            <span>Tools, Resources, Prompts</span>
+            <span>It reduces N&times;M custom integrations to N+M standard connections</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">C</span>
-            <span>Read, Write, Execute</span>
+            <span>It eliminates the need for authentication between agents and tools</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">D</span>
-            <span>Client, Server, Transport</span>
+            <span>It replaces REST APIs entirely for all enterprise communication</span>
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Tools, Resources, Prompts.</strong> Tools are model-controlled actions, Resources are application-controlled data, and Prompts are user-controlled templates. These three primitives form the foundation of every MCP server.
         </div>
       </section>
 
-      <!-- Q2 -->
+      <!-- Q1 Answer -->
+      <section>
+        <div class="quiz-badge">Question 1 of 5</div>
+        <p class="quiz-question">What problem does MCP solve for enterprises with N AI agents and M tools?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>It makes AI agents run faster by caching tool responses</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>It reduces N&times;M custom integrations to N+M standard connections</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>It eliminates the need for authentication between agents and tools</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>It replaces REST APIs entirely for all enterprise communication</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; N+M instead of N&times;M.</strong> Like USB-C standardized device charging, MCP standardizes AI-tool communication. Each tool builds one MCP server, each agent builds one MCP client, and they all interoperate.
+        </div>
+      </section>
+
+      <!-- Q2 Question -->
       <section>
         <div class="quiz-badge">Question 2 of 5</div>
-        <p class="quiz-question">What protocol does MCP use for communication?</p>
+        <p class="quiz-question">Which enterprise use case involves analysts querying Snowflake or BigQuery via natural language?</p>
         <div class="quiz-options">
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">A</span>
-            <span>REST API over HTTP</span>
+            <span>Enterprise Data Access</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">B</span>
-            <span>GraphQL subscriptions</span>
+            <span>Developer Productivity</span>
           </div>
-          <div class="quiz-option correct">
+          <div class="quiz-option">
             <span class="opt-letter">C</span>
-            <span>JSON-RPC 2.0</span>
+            <span>Customer Operations</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">D</span>
-            <span>gRPC with protobuf</span>
+            <span>Security Governance</span>
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; JSON-RPC 2.0.</strong> MCP uses JSON-RPC 2.0 as its wire protocol, transported over either stdio (local) or SSE (remote). This provides a simple, well-established request/response format.
         </div>
       </section>
 
-      <!-- Q3 -->
+      <!-- Q2 Answer -->
+      <section>
+        <div class="quiz-badge">Question 2 of 5</div>
+        <p class="quiz-question">Which enterprise use case involves analysts querying Snowflake or BigQuery via natural language?</p>
+        <div class="quiz-options">
+          <div class="quiz-option correct">
+            <span class="opt-letter">A</span>
+            <span>Enterprise Data Access</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Developer Productivity</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>Customer Operations</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Security Governance</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>A &mdash; Enterprise Data Access.</strong> Database MCP servers (Postgres, Snowflake, BigQuery) let non-technical staff query data through AI assistants using natural language, eliminating bottlenecks with data teams.
+        </div>
+      </section>
+
+      <!-- Q3 Question -->
       <section>
         <div class="quiz-badge">Question 3 of 5</div>
-        <p class="quiz-question">How do MCP tool descriptions get generated in the Python SDK?</p>
+        <p class="quiz-question">In an MCP client config, what does <code>"command": "npx", "args": [...]</code> indicate?</p>
         <div class="quiz-options">
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">A</span>
-            <span>Manually written in a config file</span>
+            <span>The server runs locally via stdio transport (spawned as subprocess)</span>
           </div>
-          <div class="quiz-option correct">
+          <div class="quiz-option">
             <span class="opt-letter">B</span>
-            <span>Automatically from Python type hints and docstrings</span>
+            <span>The server runs remotely via SSE transport</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">C</span>
-            <span>The LLM generates them at runtime</span>
+            <span>The server will be downloaded and installed globally</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">D</span>
-            <span>They must be registered in a central registry</span>
+            <span>The server runs inside a Docker container</span>
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Automatically from Python type hints and docstrings.</strong> FastMCP uses type annotations to generate the JSON schema for tool parameters, and docstrings become the description that the LLM reads to understand when and how to use the tool.
         </div>
       </section>
 
-      <!-- Q4 -->
+      <!-- Q3 Answer -->
+      <section>
+        <div class="quiz-badge">Question 3 of 5</div>
+        <p class="quiz-question">In an MCP client config, what does <code>"command": "npx", "args": [...]</code> indicate?</p>
+        <div class="quiz-options">
+          <div class="quiz-option correct">
+            <span class="opt-letter">A</span>
+            <span>The server runs locally via stdio transport (spawned as subprocess)</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>The server runs remotely via SSE transport</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>The server will be downloaded and installed globally</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>The server runs inside a Docker container</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>A &mdash; Local stdio transport.</strong> When config specifies <code>command</code> + <code>args</code>, the MCP client spawns the server as a local subprocess and communicates via stdin/stdout. For remote servers, you use <code>"url"</code> instead (SSE transport).
+        </div>
+      </section>
+
+      <!-- Q4 Question -->
       <section>
         <div class="quiz-badge">Question 4 of 5</div>
-        <p class="quiz-question">What is the key advantage of MCP over custom tool integrations?</p>
+        <p class="quiz-question">How does <code>langchain-mcp-adapters</code> integrate MCP with LangChain?</p>
         <div class="quiz-options">
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">A</span>
-            <span>MCP is faster than direct function calls</span>
+            <span>It replaces LangChain tools with MCP tools entirely</span>
           </div>
-          <div class="quiz-option correct">
+          <div class="quiz-option">
             <span class="opt-letter">B</span>
-            <span>MCP standardizes the protocol so N agents + M tools = N+M integrations instead of N&times;M</span>
+            <span>It converts LangChain agents into MCP servers</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">C</span>
-            <span>MCP tools are always more secure</span>
+            <span>It auto-converts MCP tools into LangChain-compatible tools for use in agents</span>
           </div>
-          <div class="quiz-option wrong">
+          <div class="quiz-option">
             <span class="opt-letter">D</span>
-            <span>MCP eliminates the need for API keys</span>
+            <span>It runs LangChain inside an MCP server process</span>
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; N+M instead of N&times;M.</strong> Like USB-C, one standard protocol works with any compatible agent. Build a tool once and every MCP-compatible agent (Claude Code, OpenCode, Cursor, custom agents) can use it without custom integration work.
         </div>
       </section>
 
-      <!-- Q5 -->
+      <!-- Q4 Answer -->
       <section>
-        <div class="quiz-badge">Question 5 of 5</div>
-        <p class="quiz-question">When would you choose SSE transport over stdio?</p>
+        <div class="quiz-badge">Question 4 of 5</div>
+        <p class="quiz-question">How does <code>langchain-mcp-adapters</code> integrate MCP with LangChain?</p>
         <div class="quiz-options">
           <div class="quiz-option wrong">
             <span class="opt-letter">A</span>
-            <span>When running tools locally on the same machine</span>
+            <span>It replaces LangChain tools with MCP tools entirely</span>
           </div>
           <div class="quiz-option wrong">
             <span class="opt-letter">B</span>
-            <span>When you need the fastest possible communication</span>
+            <span>It converts LangChain agents into MCP servers</span>
           </div>
           <div class="quiz-option correct">
             <span class="opt-letter">C</span>
-            <span>When multiple clients need to connect to a shared, remote MCP server</span>
+            <span>It auto-converts MCP tools into LangChain-compatible tools for use in agents</span>
           </div>
           <div class="quiz-option wrong">
             <span class="opt-letter">D</span>
-            <span>When the server needs to call back to the client</span>
+            <span>It runs LangChain inside an MCP server process</span>
           </div>
         </div>
         <div class="answer-explain">
-          <strong>C &mdash; Shared, remote access.</strong> SSE (Server-Sent Events) is HTTP-based, enabling multiple clients to connect to a single MCP server over the network. This is ideal for team-shared tools, remote servers, and scenarios where the server runs on a different machine.
+          <strong>C &mdash; Auto-converts MCP tools to LangChain tools.</strong> The <code>MultiServerMCPClient</code> connects to MCP servers, discovers their tools, and exposes them as LangChain <code>Tool</code> objects that work seamlessly with <code>create_react_agent</code>.
+        </div>
+      </section>
+
+      <!-- Q5 Question -->
+      <section>
+        <div class="quiz-badge">Question 5 of 5</div>
+        <p class="quiz-question">What is the recommended enterprise security approach for MCP deployments?</p>
+        <div class="quiz-options">
+          <div class="quiz-option">
+            <span class="opt-letter">A</span>
+            <span>Give all users access to all MCP servers for maximum productivity</span>
+          </div>
+          <div class="quiz-option">
+            <span class="opt-letter">B</span>
+            <span>Only use MCP servers that run locally via stdio</span>
+          </div>
+          <div class="quiz-option">
+            <span class="opt-letter">C</span>
+            <span>Role-based server assignment, input validation, and comprehensive audit logging</span>
+          </div>
+          <div class="quiz-option">
+            <span class="opt-letter">D</span>
+            <span>Rely on the AI model to decide which tools are safe to use</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Q5 Answer -->
+      <section>
+        <div class="quiz-badge">Question 5 of 5</div>
+        <p class="quiz-question">What is the recommended enterprise security approach for MCP deployments?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Give all users access to all MCP servers for maximum productivity</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Only use MCP servers that run locally via stdio</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Role-based server assignment, input validation, and comprehensive audit logging</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Rely on the AI model to decide which tools are safe to use</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Defense in depth.</strong> Enterprise MCP requires role-based access (analysts get data servers, devs get code servers), input validation on all tool arguments, and audit logging of every tool call for compliance (SOC2, GDPR).
         </div>
       </section>
 
