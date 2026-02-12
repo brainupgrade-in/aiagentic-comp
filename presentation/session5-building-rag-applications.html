@@ -6,6 +6,7 @@
   <title>Session 5: Building RAG Applications</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="shared.css">
   <style>
     :root {
       --accent: #4fc3f7;
@@ -246,38 +247,6 @@
     .code-block .string { color: var(--accent2); }
     .code-block .func { color: var(--accent3); }
     .code-block .output { color: #aaa; font-style: italic; }
-    /* Code block wrapper + copy button */
-    .code-block-wrapper {
-      position: relative;
-      margin: 14px 0;
-    }
-    .code-block-wrapper .code-block {
-      margin: 0;
-    }
-    .copy-btn {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 4px;
-      color: #aaa;
-      font-size: 12px;
-      padding: 3px 10px;
-      cursor: pointer;
-      z-index: 10;
-      font-family: system-ui, -apple-system, sans-serif;
-      transition: all 0.2s;
-    }
-    .copy-btn:hover {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-    }
-    .copy-btn.copied {
-      background: rgba(129,199,132,0.3);
-      color: #81c784;
-      border-color: rgba(129,199,132,0.5);
-    }
 
     /* Prevent content overflow */
     .reveal .slides section { overflow: hidden; }
@@ -1607,52 +1576,6 @@
       }
     });
   </script>
-  <script>
-    // Wrap code blocks and add copy buttons
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.code-block').forEach(function(block) {
-        // Skip if already wrapped
-        if (block.parentElement.classList.contains('code-block-wrapper')) return;
-
-        var wrapper = document.createElement('div');
-        wrapper.className = 'code-block-wrapper';
-        block.parentNode.insertBefore(wrapper, block);
-        wrapper.appendChild(block);
-
-        var btn = document.createElement('button');
-        btn.className = 'copy-btn';
-        btn.textContent = 'Copy';
-        btn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          var text = block.innerText || block.textContent;
-          navigator.clipboard.writeText(text).then(function() {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(function() {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(function() {
-            // Fallback for non-HTTPS
-            var ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(function() {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          });
-        });
-        wrapper.appendChild(btn);
-      });
-    });
-  </script>
+  <script src="shared.js"></script>
 </body>
 </html>
