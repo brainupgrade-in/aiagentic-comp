@@ -239,7 +239,7 @@
       margin: 14px 0;
       overflow-x: auto;
       overflow-y: auto;
-      max-height: 420px;
+      max-height: 320px;
       line-height: 1.5;
       white-space: pre-wrap;
       word-wrap: break-word;
@@ -601,21 +601,19 @@
         <section>
           <h2>Connecting to an LLM</h2>
           <h3>Two lines of code to talk to an AI</h3>
-          <div class="code-block">
-            <span class="comment"># Using Ollama (local, free) - Day 1</span><br>
-            <span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama<br>
-            <br>
-            llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)<br>
-            response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)<br>
-            <span class="func">print</span>(response.content)<br>
-          </div>
-          <div class="code-block">
-            <span class="comment"># Using Groq (cloud, free) - Day 2 onwards</span><br>
-            <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-            <br>
-            llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)<br>
-            response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)<br>
-            <span class="func">print</span>(response.content)<br>
+          <div style="display:flex; gap:16px; margin-top:10px;">
+            <div class="code-block" style="flex:1; margin:0; font-size:0.52em;"><span class="comment"># Using Ollama (local, free) - Day 1</span>
+<span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
+
+llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
+response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)
+<span class="func">print</span>(response.content)</div>
+            <div class="code-block" style="flex:1; margin:0; font-size:0.52em;"><span class="comment"># Using Groq (cloud, free) - Day 2 onwards</span>
+<span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+
+llm = ChatGroq(model=<span class="string">"mixtral-8x7b-32768"</span>)
+response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)
+<span class="func">print</span>(response.content)</div>
           </div>
           <div class="takeaway">
             Notice: the <code>.invoke()</code> call is <strong>identical</strong>. Only the import and model name change.
