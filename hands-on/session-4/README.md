@@ -29,7 +29,7 @@ python -c "import langchain; print(f'LangChain {langchain.__version__}')"
 | 05 | Output Parsers | StrOutputParser, JsonOutputParser, PydanticOutputParser |
 | 06 | Streaming & Batch | `.stream()` for real-time output, `.batch()` for bulk processing |
 | 07 | Chain Composition | Connect multiple chains — output of one feeds into the next |
-| 08 | Challenge: Build a Mini App | Combine everything into a working application |
+| 08 | Challenge: Technical Knowledge Assistant | Combine everything into a working application |
 
 ## How to Run
 

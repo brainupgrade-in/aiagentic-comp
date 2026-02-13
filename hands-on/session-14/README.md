@@ -25,25 +25,40 @@ python --version  # 3.10+
 
 ## How to Run
 
-```bash
-cd hands-on/session-14
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run a lab (fill in the TODO sections)
-python lab01_prompt_injection_detection.py
-
-# Check the solution (all checks pass)
-python solutions/lab01_prompt_injection_detection.py
 ```
+hands-on/session-14/
+├── lab01_prompt_injection_detection.ipynb    ← Start here
+├── lab02_output_validation.ipynb
+├── lab03_jailbreak_resistance.ipynb
+├── lab04_input_sanitization.ipynb
+├── lab05_safety_monitoring.ipynb
+├── lab06_guardrails_integration.ipynb
+├── lab07_red_team_testing.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                              ← Completed versions
+    ├── lab01_prompt_injection_detection.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 
-- Look for `# TODO` markers -- that's where you write code
 - Labs 01-03 cover attack detection (injection, validation, jailbreaks)
 - Labs 04-06 cover defense mechanisms (sanitization, monitoring, guardrails)
 - Lab 07 covers red team testing methodology
 - Lab 08 is the comprehensive challenge integrating all safety patterns
+- **Read the markdown cells** — they explain safety concepts step by step
+- **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
+- **Run frequently** — don't wait until you've written everything; run after each TODO
 - Generated files appear in `/tmp/safety-lab-14-XX/` directories
-- Compare your work with `solutions/` when done
+- **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time
 
