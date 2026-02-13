@@ -24,19 +24,32 @@ python --version  # 3.10+
 
 ## How to Run
 
-```bash
-cd hands-on/session-2
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run a lab
-python lab01_coding_agent_anatomy.py
-
-# Check the solution
-python solutions/lab01_coding_agent_anatomy.py
 ```
+hands-on/session-2/
+├── lab01_coding_agent_anatomy.ipynb     ← Start here
+├── lab02_tool_calling_patterns.ipynb
+├── lab03_context_management.ipynb
+├── lab04_prompt_engineering_code.ipynb
+├── lab05_vibe_coding_simulation.ipynb
+├── lab06_agent_comparison.ipynb
+├── lab07_code_review_basics.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                           ← Completed versions
+    ├── lab01_coding_agent_anatomy.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 
-- Look for `# TODO` markers — that's where you write code
+- Look for `# TODO` markers and `"___"` placeholders — that's where you write code
 - Labs 01-03 cover agent internals
 - Labs 04-06 cover prompt engineering and vibe coding
 - Lab 07 covers code review
