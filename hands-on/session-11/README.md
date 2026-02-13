@@ -25,26 +25,41 @@ python --version  # 3.10+
 
 ## How to Run
 
-```bash
-cd hands-on/session-11
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run a lab
-python lab01_langfuse_fundamentals.py
-
-# Check the solution
-python solutions/lab01_langfuse_fundamentals.py
 ```
+hands-on/session-11/
+├── lab01_langfuse_fundamentals.ipynb        ← Start here
+├── lab02_langfuse_setup.ipynb
+├── lab03_langchain_integration.ipynb
+├── lab04_tracing_agents.ipynb
+├── lab05_feedback_evaluation.ipynb
+├── lab06_prompt_management.ipynb
+├── lab07_cost_analysis.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                               ← Completed versions
+    ├── lab01_langfuse_fundamentals.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 
 - All 8 labs work WITHOUT any running services
-- Look for `# TODO` markers — that's where you write code or YAML
+- **Read the markdown cells** — they explain LangFuse concepts step by step
+- **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
+- **Run frequently** — don't wait until you've written everything; run after each TODO
 - Labs 01-03 cover LangFuse setup and LangChain integration
 - Labs 04-06 cover tracing, feedback, and prompt management
 - Lab 07 covers cost analysis with LangFuse API
 - Lab 08 is the challenge combining all concepts
 - Generated files appear in `/tmp/k8s-lab-11-XX/` directories
-- Compare your work with `solutions/` when done
+- **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time
 
