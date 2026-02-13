@@ -505,21 +505,20 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         event_generator(),
         media_type=<span class="string">"text/event-stream"</span>
     )</div>
-          <br>
-          <div class="card-grid">
-            <div class="card card-accent">
+          <div class="card-grid" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>Why stream?</h4>
-              <ul>
-                <li>First token appears in ~200ms instead of waiting 5-30s</li>
+              <ul style="font-size:0.5em;">
+                <li>First token in ~200ms instead of waiting 5-30s</li>
                 <li>Users can read as output is generated</li>
                 <li>Can cancel mid-stream if wrong direction</li>
               </ul>
             </div>
-            <div class="card card-green">
+            <div class="card card-green" style="padding:10px;">
               <h4>Client-side (JavaScript)</h4>
-              <ul>
+              <ul style="font-size:0.5em;">
                 <li>Use <code>EventSource</code> or <code>fetch</code> with reader</li>
-                <li>Append each token to the UI progressively</li>
+                <li>Append each token to UI progressively</li>
                 <li>Handle <code>[DONE]</code> to finalize output</li>
               </ul>
             </div>
@@ -1122,39 +1121,39 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
       <!-- ==================== HANDS-ON LABS ==================== -->
       <section>
         <h2>Hands-On Labs</h2>
-        <h3>8 labs covering the full production pipeline</h3>
-        <div class="card-grid">
-          <div class="card card-accent">
+        <h3 style="margin-bottom:8px;">8 labs covering the full production pipeline</h3>
+        <div class="card-grid" style="gap:8px;">
+          <div class="card card-accent" style="padding:8px;">
             <h4>Lab 01: FastAPI Basics</h4>
-            <p>Build endpoints, Pydantic models, health checks, and TestClient validation</p>
+            <p style="font-size:0.5em;">Build endpoints, Pydantic models, health checks, TestClient</p>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:8px;">
             <h4>Lab 02: FastAPI + LangGraph</h4>
-            <p>Connect FastAPI endpoints to LangGraph multi-agent systems</p>
+            <p style="font-size:0.5em;">Connect FastAPI endpoints to LangGraph multi-agent systems</p>
           </div>
-          <div class="card card-orange">
+          <div class="card card-orange" style="padding:8px;">
             <h4>Lab 03: Health Probes</h4>
-            <p>Production-grade /health endpoint with async HealthChecker</p>
+            <p style="font-size:0.5em;">Production-grade /health endpoint with async HealthChecker</p>
           </div>
-          <div class="card card-red">
+          <div class="card card-red" style="padding:8px;">
             <h4>Lab 04: Streaming Responses</h4>
-            <p>SSE streaming for real-time LangGraph state updates</p>
+            <p style="font-size:0.5em;">SSE streaming for real-time LangGraph state updates</p>
           </div>
-          <div class="card card-accent">
+          <div class="card card-accent" style="padding:8px;">
             <h4>Lab 05: Secrets Management</h4>
-            <p>Secure API key handling with .env files and python-dotenv</p>
+            <p style="font-size:0.5em;">Secure API key handling with .env files and python-dotenv</p>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:8px;">
             <h4>Lab 06: Structured Logging</h4>
-            <p>JSON logging with trace_id correlation for AI applications</p>
+            <p style="font-size:0.5em;">JSON logging with trace_id correlation for AI applications</p>
           </div>
-          <div class="card card-orange">
+          <div class="card card-orange" style="padding:8px;">
             <h4>Lab 07: Production Checklist</h4>
-            <p>Production readiness checklist for deploying AI applications</p>
+            <p style="font-size:0.5em;">Production readiness checklist for deploying AI applications</p>
           </div>
-          <div class="card card-red">
+          <div class="card card-red" style="padding:8px;">
             <h4>Lab 08: Challenge</h4>
-            <p>Complete integration: endpoints, health, logging, secrets, and checklist</p>
+            <p style="font-size:0.5em;">Complete integration: endpoints, health, logging, secrets, checklist</p>
           </div>
         </div>
       </section>
