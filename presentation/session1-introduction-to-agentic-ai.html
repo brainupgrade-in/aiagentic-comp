@@ -288,11 +288,11 @@
         <div class="card-grid">
           <div class="card card-accent">
             <h4>1. What is Agentic AI?</h4>
-            <p>Definition, evolution, and why it matters now</p>
+            <p>Definition, the agent loop, and core capabilities</p>
           </div>
           <div class="card card-green">
-            <h4>2. Agents vs Traditional AI</h4>
-            <p>How agents differ from chatbots, RAG, and plain LLMs</p>
+            <h4>2. How We Got Here</h4>
+            <p>Evolution of AI, and how agents differ from chatbots and LLMs</p>
           </div>
           <div class="card card-orange">
             <h4>3. Architectural Patterns</h4>
@@ -310,7 +310,7 @@
         <section>
           <div class="section-number">01</div>
           <h2>What is Agentic AI?</h2>
-          <p class="subtitle">Definition &middot; Evolution &middot; Autonomous Decision-Making</p>
+          <p class="subtitle">Definition &middot; The Agent Loop &middot; Core Capabilities</p>
         </section>
 
         <!-- BEFORE AI -->
@@ -350,26 +350,136 @@
           </div>
         </section>
 
-        <!-- KEY CHARACTERISTICS -->
+        <!-- THE AGENT LOOP -->
         <section>
-          <h2>Key Characteristics</h2>
-          <div class="card-grid">
-            <div class="card card-accent">
-              <h4>Autonomous</h4>
-              <p>Makes decisions without step-by-step instructions from you</p>
+          <h2>The Agent Loop</h2>
+          <h3>This is what makes agents different</h3>
+          <div style="display:flex; justify-content:center; margin-top:12px;">
+            <div style="position:relative; width:500px; height:360px;">
+              <div class="box box-large" style="position:absolute; top:0; left:50%; transform:translateX(-50%);">
+                🧠 <strong>Think</strong><br><span style="font-size:0.8em;">What should I do next?</span>
+              </div>
+              <div class="box box-large box-orange" style="position:absolute; top:140px; right:0;">
+                ⚡ <strong>Act</strong><br><span style="font-size:0.8em;">Use a tool / take action</span>
+              </div>
+              <div class="box box-large box-green" style="position:absolute; top:140px; left:0;">
+                🔄 <strong>Observe</strong><br><span style="font-size:0.8em;">Check the result</span>
+              </div>
+              <div class="box box-large box-red" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%);">
+                ✅ <strong>Done?</strong><br><span style="font-size:0.8em;">Goal met or keep going?</span>
+              </div>
+              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;" viewBox="0 0 500 360">
+                <defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#888"/></marker></defs>
+                <path d="M300 50 L380 130" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M370 210 L300 280" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M200 280 L130 210" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M120 130 L200 50" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+              </svg>
             </div>
-            <div class="card card-green">
-              <h4>Goal-Oriented</h4>
-              <p>Works toward a defined objective, not just answering one question</p>
+          </div>
+          <p style="font-size:0.65em; color:#aaa; margin-top:16px;">
+            This <span class="highlight">Think &rarr; Act &rarr; Observe</span> loop repeats until the agent achieves its goal.
+          </p>
+        </section>
+
+        <!-- REAL WORLD EXAMPLE -->
+        <section>
+          <h2>Real-World Example</h2>
+          <h3>"Book me a good Italian restaurant for Saturday"</h3>
+          <table class="compare-table" style="margin-top:14px;">
+            <tr>
+              <th>System</th>
+              <th>What It Does</th>
+            </tr>
+            <tr>
+              <td><strong>Search Engine</strong></td>
+              <td>Shows you a list of links &mdash; you do the rest</td>
+            </tr>
+            <tr>
+              <td><strong>Chatbot</strong></td>
+              <td>Suggests restaurant names &mdash; you call and book</td>
+            </tr>
+            <tr>
+              <td><strong>LLM</strong></td>
+              <td>Writes a nice list with pros/cons &mdash; still you book</td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--accent);">AI Agent</strong></td>
+              <td>Searches reviews, checks availability, compares ratings,<br>books a table, and sends you a confirmation</td>
+            </tr>
+          </table>
+          <div class="takeaway" style="margin-top:12px;">
+            The agent doesn't just <em>know</em> things &mdash; it <strong>does</strong> things.
+          </div>
+        </section>
+
+        <!-- CORE CAPABILITIES -->
+        <section>
+          <h2>Three Core Capabilities of Agents</h2>
+          <div class="card-grid-3" style="margin-top:16px;">
+            <div class="card card-accent" style="text-align:center;">
+              <h4>Autonomy</h4>
+              <p style="font-size:1.2em; margin-bottom:8px;">🧭</p>
+              <p>Decides <em>what</em> to do and <em>how</em> to do it without being told each step</p>
             </div>
-            <div class="card card-orange">
-              <h4>Adaptive</h4>
-              <p>Adjusts its approach when something doesn't work</p>
+            <div class="card card-green" style="text-align:center;">
+              <h4>Problem Solving</h4>
+              <p style="font-size:1.2em; margin-bottom:8px;">🧩</p>
+              <p>Breaks complex problems into smaller pieces and solves them one by one</p>
             </div>
-            <div class="card card-red">
-              <h4>Tool-Using</h4>
-              <p>Can search the web, call APIs, read databases, write files</p>
+            <div class="card card-orange" style="text-align:center;">
+              <h4>Adaptability</h4>
+              <p style="font-size:1.2em; margin-bottom:8px;">🔄</p>
+              <p>When Plan A fails, it tries Plan B. Learns from each attempt.</p>
             </div>
+          </div>
+          <div class="takeaway" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
+            These three capabilities together are what separate an agent from every other AI system.
+            An LLM without these is just a very smart text generator.
+          </div>
+        </section>
+      </section>
+
+      <!-- ==================== PART 2: HOW WE GOT HERE ==================== -->
+      <section>
+        <section>
+          <div class="section-number">02</div>
+          <h2>How We Got Here</h2>
+          <p class="subtitle">LLM vs Agent &middot; The Evolution of AI &middot; From Chatbots to Agents</p>
+        </section>
+
+        <!-- LLM vs AGENT -->
+        <section>
+          <h2>LLM vs Agent</h2>
+          <h3>What's the difference?</h3>
+          <div class="card-grid" style="margin-top:16px;">
+            <div class="card card-orange" style="text-align:center; padding:14px;">
+              <h4>LLM (Large Language Model)</h4>
+              <p style="font-size:1.1em; margin-bottom:8px;">The <strong>Brain</strong></p>
+              <ul>
+                <li>Understands language</li>
+                <li>Generates text</li>
+                <li>One question &rarr; one answer</li>
+                <li>No memory between chats</li>
+                <li>Cannot take actions</li>
+              </ul>
+            </div>
+            <div class="card card-accent" style="text-align:center; padding:14px;">
+              <h4>AI Agent</h4>
+              <p style="font-size:1.1em; margin-bottom:8px;">Brain + <strong>Body</strong></p>
+              <ul>
+                <li>Uses an LLM as its brain</li>
+                <li>Plans multiple steps</li>
+                <li>Remembers previous context</li>
+                <li>Calls tools and APIs</li>
+                <li>Loops until the goal is met</li>
+              </ul>
+            </div>
+          </div>
+          <div class="analogy" style="margin-top:14px;">
+            An LLM is like a brilliant person sitting in a locked room &mdash; they can answer any question you
+            slide under the door, but they can't get up and do anything.
+            An agent gives that person legs, hands, a phone, and a computer.
           </div>
         </section>
 
@@ -444,137 +554,6 @@
           </table>
         </section>
 
-        <!-- CHAINING CONCEPT -->
-        <section>
-          <h2>The "Chaining" Capability</h2>
-          <h3>What makes agents powerful</h3>
-          <p style="font-size:0.7em; color:#ccc; margin-top:10px;">An agent doesn't just answer once. It chains multiple steps together:</p>
-          <div class="diagram">
-            <div class="box">Understand<br>the goal</div>
-            <span class="arrow">&rarr;</span>
-            <div class="box box-green">Break into<br>sub-tasks</div>
-            <span class="arrow">&rarr;</span>
-            <div class="box box-orange">Execute each<br>step</div>
-            <span class="arrow">&rarr;</span>
-            <div class="box box-red">Check<br>results</div>
-            <span class="arrow">&rarr;</span>
-            <div class="box">Deliver<br>output</div>
-          </div>
-          <div class="analogy" style="margin-top:12px;">
-            When you ask Google Maps for directions, it doesn't just say "go north."
-            It breaks the trip into turns, checks for traffic at each step, reroutes if needed,
-            and gets you to your destination. An agent does this for any task.
-          </div>
-        </section>
-
-        <!-- REAL WORLD EXAMPLE -->
-        <section>
-          <h2>Real-World Example</h2>
-          <h3>"Book me a good Italian restaurant for Saturday"</h3>
-          <table class="compare-table" style="margin-top:14px;">
-            <tr>
-              <th>System</th>
-              <th>What It Does</th>
-            </tr>
-            <tr>
-              <td><strong>Search Engine</strong></td>
-              <td>Shows you a list of links &mdash; you do the rest</td>
-            </tr>
-            <tr>
-              <td><strong>Chatbot</strong></td>
-              <td>Suggests restaurant names &mdash; you call and book</td>
-            </tr>
-            <tr>
-              <td><strong>LLM</strong></td>
-              <td>Writes a nice list with pros/cons &mdash; still you book</td>
-            </tr>
-            <tr>
-              <td><strong style="color:var(--accent);">AI Agent</strong></td>
-              <td>Searches reviews, checks availability, compares ratings,<br>books a table, and sends you a confirmation</td>
-            </tr>
-          </table>
-          <div class="takeaway" style="margin-top:12px;">
-            The agent doesn't just <em>know</em> things &mdash; it <strong>does</strong> things.
-          </div>
-        </section>
-      </section>
-
-      <!-- ==================== PART 2: AGENTS VS TRADITIONAL AI ==================== -->
-      <section>
-        <section>
-          <div class="section-number">02</div>
-          <h2>Agents vs Traditional AI</h2>
-          <p class="subtitle">LLM vs Agent &middot; Chatbots vs Agents &middot; Core Capabilities</p>
-        </section>
-
-        <!-- LLM vs AGENT -->
-        <section>
-          <h2>LLM vs Agent</h2>
-          <h3>What's the difference?</h3>
-          <div class="card-grid" style="margin-top:16px;">
-            <div class="card card-orange" style="text-align:center; padding:14px;">
-              <h4>LLM (Large Language Model)</h4>
-              <p style="font-size:1.1em; margin-bottom:8px;">The <strong>Brain</strong></p>
-              <ul>
-                <li>Understands language</li>
-                <li>Generates text</li>
-                <li>One question &rarr; one answer</li>
-                <li>No memory between chats</li>
-                <li>Cannot take actions</li>
-              </ul>
-            </div>
-            <div class="card card-accent" style="text-align:center; padding:14px;">
-              <h4>AI Agent</h4>
-              <p style="font-size:1.1em; margin-bottom:8px;">Brain + <strong>Body</strong></p>
-              <ul>
-                <li>Uses an LLM as its brain</li>
-                <li>Plans multiple steps</li>
-                <li>Remembers previous context</li>
-                <li>Calls tools and APIs</li>
-                <li>Loops until the goal is met</li>
-              </ul>
-            </div>
-          </div>
-          <div class="analogy" style="margin-top:14px;">
-            An LLM is like a brilliant person sitting in a locked room &mdash; they can answer any question you
-            slide under the door, but they can't get up and do anything.
-            An agent gives that person legs, hands, a phone, and a computer.
-          </div>
-        </section>
-
-        <!-- THE LOOP -->
-        <section>
-          <h2>The Agent Loop</h2>
-          <h3>This is what makes agents different</h3>
-          <div style="display:flex; justify-content:center; margin-top:12px;">
-            <div style="position:relative; width:500px; height:360px;">
-              <div class="box box-large" style="position:absolute; top:0; left:50%; transform:translateX(-50%);">
-                🧠 <strong>Think</strong><br><span style="font-size:0.8em;">What should I do next?</span>
-              </div>
-              <div class="box box-large box-orange" style="position:absolute; top:140px; right:0;">
-                ⚡ <strong>Act</strong><br><span style="font-size:0.8em;">Use a tool / take action</span>
-              </div>
-              <div class="box box-large box-green" style="position:absolute; top:140px; left:0;">
-                🔄 <strong>Observe</strong><br><span style="font-size:0.8em;">Check the result</span>
-              </div>
-              <div class="box box-large box-red" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%);">
-                ✅ <strong>Done?</strong><br><span style="font-size:0.8em;">Goal met or keep going?</span>
-              </div>
-              <!-- Arrows -->
-              <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;" viewBox="0 0 500 360">
-                <defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#888"/></marker></defs>
-                <path d="M300 50 L380 130" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M370 210 L300 280" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M200 280 L130 210" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M120 130 L200 50" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-              </svg>
-            </div>
-          </div>
-          <p style="font-size:0.65em; color:#aaa; margin-top:16px;">
-            This <span class="highlight">Think &rarr; Act &rarr; Observe</span> loop repeats until the agent achieves its goal.
-          </p>
-        </section>
-
         <!-- CHATBOT vs RAG vs AGENT -->
         <section>
           <h2 style="margin-bottom:10px;">Chatbot vs RAG vs Agent</h2>
@@ -620,32 +599,6 @@
             A <strong>chatbot</strong> is like a librarian who answers from memory.
             A <strong>RAG system</strong> is a librarian who looks things up in books first.
             An <strong>agent</strong> is a personal assistant who looks things up, makes calls, fills out forms, and follows up.
-          </div>
-        </section>
-
-        <!-- CORE CAPABILITIES -->
-        <section>
-          <h2>Three Core Capabilities of Agents</h2>
-          <div class="card-grid-3" style="margin-top:16px;">
-            <div class="card card-accent" style="text-align:center;">
-              <h4>Autonomy</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🧭</p>
-              <p>Decides <em>what</em> to do and <em>how</em> to do it without being told each step</p>
-            </div>
-            <div class="card card-green" style="text-align:center;">
-              <h4>Problem Solving</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🧩</p>
-              <p>Breaks complex problems into smaller pieces and solves them one by one</p>
-            </div>
-            <div class="card card-orange" style="text-align:center;">
-              <h4>Adaptability</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🔄</p>
-              <p>When Plan A fails, it tries Plan B. Learns from each attempt.</p>
-            </div>
-          </div>
-          <div class="takeaway" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
-            These three capabilities together are what separate an agent from every other AI system.
-            An LLM without these is just a very smart text generator.
           </div>
         </section>
       </section>
@@ -978,9 +931,9 @@
             <span class="highlight-red">Planning</span> coordinates everything.</p>
           </div>
           <div class="takeaway" style="margin-top:10px; padding:10px 16px; font-size:0.68em;">
-            In the next session, we'll dive into <em>how</em> the brain reasons
-            (ReAct, Chain-of-Thought) and in the labs, you'll build your first agent
-            with all four components using LangChain.
+            In the hands-on labs, you'll experience each component firsthand.
+            Next session introduces AI coding assistants, then Sessions 3&ndash;4
+            teach you to build agents from scratch with LangChain.
           </div>
         </section>
       </section>
@@ -996,9 +949,9 @@
               and adapt &mdash; autonomously</p>
             </div>
             <div class="card card-green">
-              <h4>Agents vs Others</h4>
-              <p>Unlike chatbots or RAG systems, agents have a think-act-observe loop
-              and can use tools to take real actions</p>
+              <h4>How We Got Here</h4>
+              <p>From rule-based to ML to LLMs to agents &mdash; each era
+              added a capability, and agents combine them all</p>
             </div>
             <div class="card card-orange">
               <h4>Architecture Patterns</h4>

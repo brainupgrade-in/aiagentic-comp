@@ -368,49 +368,49 @@
         </p>
       </section>
 
-      <!-- ==================== DAY 5 CONTEXT ==================== -->
+      <!-- ==================== DAY 4 CONTEXT ==================== -->
       <section>
-        <h2>Day 5: Observability &amp; Production Operations</h2>
+        <h2>Day 4: Observability &amp; Production</h2>
         <div class="card-grid-3">
-          <div class="card card-accent">
-            <h4>Session 1 (Now)</h4>
+          <div class="card card-accent" style="border-width:3px;">
+            <h4>Session 10 (Now)</h4>
             <p>Observability Fundamentals &mdash; three pillars, OpenTelemetry, instrumenting Python</p>
           </div>
           <div class="card card-green" style="opacity:0.5;">
-            <h4>Session 2</h4>
-            <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
+            <h4>Session 11</h4>
+            <p>LangFuse Observability &mdash; LLM tracing, cost tracking, agent debugging</p>
           </div>
           <div class="card card-orange" style="opacity:0.5;">
-            <h4>Session 3</h4>
-            <p>Capstone &amp; Production Readiness &mdash; complete deployment, production checklist</p>
+            <h4>Session 12</h4>
+            <p>Production Development &amp; Deployment &mdash; FastAPI, health probes, secrets, structured logging</p>
           </div>
         </div>
       </section>
 
       <!-- ==================== RECAP ==================== -->
       <section>
-        <h2>Session 12 Recap</h2>
-        <p class="subtitle">Building Custom AI Dev Tools</p>
+        <h2>Session 9 Recap</h2>
+        <p class="subtitle">Multi-Agent Systems</p>
         <div class="card-grid" style="margin-top:20px;">
           <div class="card card-accent">
-            <h4>MCP Servers &amp; Tool Building</h4>
+            <h4>Multi-Agent Architectures</h4>
             <ul>
-              <li>Built MCP servers for code quality, testing, docs</li>
-              <li>Implemented @tool, @resource, @prompt decorators</li>
-              <li>JSON-RPC 2.0 protocol and transport layers</li>
+              <li>Supervisor/Worker for task delegation</li>
+              <li>Peer-to-peer for agent collaboration</li>
+              <li>Handoff patterns for escalation</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Code Review &amp; Tool Registries</h4>
+            <h4>Collaboration &amp; Production</h4>
             <ul>
-              <li>LangGraph-based code review workflows</li>
-              <li>Tool registry for dynamic discovery and routing</li>
-              <li>Sandboxed execution with timeouts</li>
+              <li>Task decomposition and aggregation</li>
+              <li>Conflict resolution strategies</li>
+              <li>Production patterns for multi-agent systems</li>
             </ul>
           </div>
         </div>
         <div class="takeaway" style="margin-top:16px;">
-          Days 1&ndash;3 built AI agents and workflows. Day 4 connected them to developer tools via MCP. Now: how do we <em>see</em> what&rsquo;s happening inside?
+          Days 1&ndash;3 built AI agents, workflows, and multi-agent systems. Now on Day 4: how do we <em>observe</em> and <em>operate</em> them in production?
         </div>
       </section>
 
@@ -1483,9 +1483,9 @@ trace.set_tracer_provider(provider)
         </div>
       </section>
 
-      <!-- ==================== DAY 5 INTRO ==================== -->
+      <!-- ==================== DAY 4 INTRO ==================== -->
       <section>
-        <h2>Day 5 Journey: Observability</h2>
+        <h2>Day 4 Journey: Observability &amp; Production</h2>
         <div class="flow-step">
           <span class="flow-num">1</span>
           <div><strong style="color:var(--accent);">Observability Fundamentals</strong> (this session) &mdash; Three pillars, OpenTelemetry, Python instrumentation</div>
@@ -1496,7 +1496,7 @@ trace.set_tracer_provider(provider)
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-orange">3</span>
-          <div><strong style="color:var(--accent3);">Capstone &amp; Production Readiness</strong> &mdash; Complete deployment, production checklist</div>
+          <div><strong style="color:var(--accent3);">Production Development &amp; Deployment</strong> &mdash; FastAPI, health probes, secrets, structured logging</div>
         </div>
       </section>
 
@@ -1539,14 +1539,17 @@ trace.set_tracer_provider(provider)
         <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss observability concepts<br>before we move to LangFuse</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
-          <h4>Session 13 Complete</h4>
+          <h4>Session 10 Complete</h4>
           <p>Three Pillars &middot; OpenTelemetry &middot; Python Instrumentation</p>
         </div>
       </section>
 
-      <!-- ====================================================== -->
-      <!--                      Q&A SLIDES                        -->
-      <!-- ====================================================== -->
+      <!-- ==================== QUIZ: SESSION 10 SELF-CHECK ==================== -->
+      <section>
+        <section>
+          <h1 style="font-size:2.5em;">Session 10 Quiz</h1>
+          <p style="font-size:0.8em; color:#ccc;">5 questions to test your observability knowledge</p>
+        </section>
 
       <!-- Q1 -->
       <section>
@@ -1681,6 +1684,7 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>B &mdash; Processors.</strong> The Collector pipeline is: Receivers (accept data) &rarr; Processors (batch, filter, transform, sample) &rarr; Exporters (send to backends). Processors sit in the middle and modify or filter data in transit.
         </div>
+      </section>
       </section>
 
     </div>

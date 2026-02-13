@@ -229,6 +229,78 @@
       font-size: 0.9em;
     }
 
+    /* Quiz styles */
+    .quiz-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-weight: bold;
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 0.6em;
+      margin-bottom: 12px;
+    }
+    .quiz-question {
+      font-size: 1.05em;
+      color: #fff;
+      margin: 14px 0 20px 0;
+      line-height: 1.4;
+    }
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 850px;
+      margin: 0 auto;
+    }
+    .quiz-option {
+      background: var(--bg-card);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      font-size: 0.68em;
+      color: #ccc;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .quiz-option .opt-letter {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .quiz-option.correct {
+      border-color: var(--accent2);
+      background: rgba(129,199,132,0.12);
+    }
+    .quiz-option.correct .opt-letter {
+      background: var(--accent2);
+      color: #111;
+    }
+    .quiz-option.wrong {
+      border-color: rgba(255,255,255,0.06);
+      opacity: 0.5;
+    }
+    .answer-explain {
+      background: rgba(129,199,132,0.08);
+      border-left: 4px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-top: 16px;
+      font-size: 0.65em;
+      text-align: left;
+      color: #ccc;
+    }
+    .answer-explain strong { color: var(--accent2); }
+
     /* Fragment fade-in override for cleaner look */
     .reveal .slides section .fragment.visible { opacity: 1; }
   </style>
@@ -1072,36 +1144,36 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <h3>8 labs covering the full production pipeline</h3>
         <div class="card-grid">
           <div class="card card-accent">
-            <h4>Lab 01: FastAPI Agent Endpoint</h4>
-            <p>Build a POST /agent/invoke endpoint with Pydantic request/response models</p>
+            <h4>Lab 01: FastAPI Basics</h4>
+            <p>Build endpoints, Pydantic models, health checks, and TestClient validation</p>
           </div>
           <div class="card card-green">
-            <h4>Lab 02: Streaming Responses</h4>
-            <p>Implement SSE streaming for real-time agent output</p>
+            <h4>Lab 02: FastAPI + LangGraph</h4>
+            <p>Connect FastAPI endpoints to LangGraph multi-agent systems</p>
           </div>
           <div class="card card-orange">
-            <h4>Lab 03: Health Checks</h4>
-            <p>Add /health and /ready endpoints with dependency checks</p>
+            <h4>Lab 03: Health Probes</h4>
+            <p>Production-grade /health endpoint with async HealthChecker</p>
           </div>
           <div class="card card-red">
-            <h4>Lab 04: Error Handling</h4>
-            <p>Implement robust error handling with proper HTTP status codes</p>
+            <h4>Lab 04: Streaming Responses</h4>
+            <p>SSE streaming for real-time LangGraph state updates</p>
           </div>
           <div class="card card-accent">
-            <h4>Lab 05: Structured Logging</h4>
-            <p>Configure JSON logging with AI-specific fields and trace correlation</p>
+            <h4>Lab 05: Secrets Management</h4>
+            <p>Secure API key handling with .env files and python-dotenv</p>
           </div>
           <div class="card card-green">
-            <h4>Lab 06: Secrets & Config</h4>
-            <p>Manage API keys with environment variables and .env files</p>
+            <h4>Lab 06: Structured Logging</h4>
+            <p>JSON logging with trace_id correlation for AI applications</p>
           </div>
           <div class="card card-orange">
-            <h4>Lab 07: Testing AI Apps</h4>
-            <p>Write unit tests with mocked LLMs and integration tests</p>
+            <h4>Lab 07: Production Checklist</h4>
+            <p>Production readiness checklist for deploying AI applications</p>
           </div>
           <div class="card card-red">
-            <h4>Lab 08: Production Readiness</h4>
-            <p>Comprehensive challenge: combine all patterns into a deployment-ready app</p>
+            <h4>Lab 08: Challenge</h4>
+            <p>Complete integration: endpoints, health, logging, secrets, and checklist</p>
           </div>
         </div>
       </section>
@@ -1164,14 +1236,163 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1>Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
-            Production readiness is about discipline, not complexity.<br>
-            Ask anything before we move to labs.
-          </p>
+          <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss production deployment patterns<br>before we move to labs</p>
+          <br>
+          <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
+            <h4>Session 12 Complete</h4>
+            <p>FastAPI &middot; Health Probes &middot; Secrets &middot; Structured Logging &middot; Production Checklist</p>
+          </div>
         </section>
       </section>
+
+      <!-- ====================================================== -->
+      <!--            QUIZ: SESSION 12 SELF-CHECK                 -->
+      <!-- ====================================================== -->
+      <section>
+
+      <section>
+        <h1 style="font-size:2.5em;">Session 12 Quiz</h1>
+        <p style="font-size:1.1em; color:#ccc; margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
+      </section>
+
+      <!-- Q1 -->
+      <section>
+        <div class="quiz-badge">Question 1 of 5</div>
+        <p class="quiz-question">Why is FastAPI a good fit for serving AI agents?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>It has a built-in LLM inference engine</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>It is async-native, handles concurrent LLM calls without blocking, and integrates Pydantic for validation</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>It is the only Python framework that supports streaming</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>It automatically scales to multiple servers</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; Async + Pydantic.</strong> FastAPI&rsquo;s ASGI foundation handles concurrent LLM calls efficiently, and Pydantic integration validates requests before they reach your agent logic.
+        </div>
+      </section>
+
+      <!-- Q2 -->
+      <section>
+        <div class="quiz-badge">Question 2 of 5</div>
+        <p class="quiz-question">What is the difference between a liveness probe and a readiness probe?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Liveness checks if the model is loaded; readiness checks if the process is running</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>They are the same thing with different names</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Liveness checks if the process is alive (restart if stuck); readiness checks if it can serve traffic (don&rsquo;t route requests yet)</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Liveness runs once at startup; readiness runs continuously</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Alive vs. ready.</strong> Liveness answers &ldquo;should I restart this process?&rdquo; Readiness answers &ldquo;should I send traffic here?&rdquo; A process can be alive but not ready (e.g., still loading a model).
+        </div>
+      </section>
+
+      <!-- Q3 -->
+      <section>
+        <div class="quiz-badge">Question 3 of 5</div>
+        <p class="quiz-question">Why should API keys never be hardcoded in source code?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Hardcoded keys make the application run slower</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Python cannot read hardcoded strings at runtime</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>They get committed to version control and exposed; use .env files with .gitignore and python-dotenv instead</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>Hardcoded keys cannot be rotated without recompiling</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Security risk.</strong> Hardcoded keys in source code end up in git history and are nearly impossible to fully remove. Use <code>.env</code> files (in <code>.gitignore</code>) and load them via <code>python-dotenv</code>.
+        </div>
+      </section>
+
+      <!-- Q4 -->
+      <section>
+        <div class="quiz-badge">Question 4 of 5</div>
+        <p class="quiz-question">What advantage does structured JSON logging have over print() statements?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>JSON logs are smaller in file size than print output</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">B</span>
+            <span>JSON logs are machine-parseable, searchable, filterable, and can include trace_id, token counts, and cost fields</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">C</span>
+            <span>print() statements are not captured by any logging system</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>JSON logs automatically fix application errors</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>B &mdash; Machine-parseable with AI-specific fields.</strong> Structured logs let you search, filter, and aggregate in tools like LangFuse or ELK. Adding trace_id, model, tokens_in/out, and cost_usd fields answers critical production questions.
+        </div>
+      </section>
+
+      <!-- Q5 -->
+      <section>
+        <div class="quiz-badge">Question 5 of 5</div>
+        <p class="quiz-question">What is the correct deployment order for an AI application stack?</p>
+        <div class="quiz-options">
+          <div class="quiz-option wrong">
+            <span class="opt-letter">A</span>
+            <span>Application &rarr; Database &rarr; Config &rarr; Observability &rarr; Routing</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">B</span>
+            <span>Routing &rarr; Application &rarr; Config &rarr; Database &rarr; Observability</span>
+          </div>
+          <div class="quiz-option correct">
+            <span class="opt-letter">C</span>
+            <span>Config/Secrets &rarr; Databases &rarr; Observability &rarr; Application &rarr; Routing</span>
+          </div>
+          <div class="quiz-option wrong">
+            <span class="opt-letter">D</span>
+            <span>The order does not matter as long as everything is deployed</span>
+          </div>
+        </div>
+        <div class="answer-explain">
+          <strong>C &mdash; Dependencies first.</strong> Config and secrets must exist before anything reads them. Databases must be running before the app connects. Observability should be ready to capture the app&rsquo;s first logs. Only then do you expose the app via routing.
+        </div>
+      </section>
+
+      </section> <!-- end quiz wrapper -->
 
     </div>
   </div>

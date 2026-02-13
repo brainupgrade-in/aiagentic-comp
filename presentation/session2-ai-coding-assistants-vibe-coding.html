@@ -312,50 +312,50 @@
 
       <!-- ==================== DAY 4 CONTEXT ==================== -->
       <section>
-        <h2>Day 4: AI-Powered Development</h2>
+        <h2>Day 1: Foundations &amp; AI-Assisted Dev</h2>
         <div class="card-grid-3">
-          <div class="card card-accent">
-            <h4>Session 1 (Now)</h4>
-            <p>AI Coding Agents &amp; Vibe Coding &mdash; how AI coding tools work, landscape, prompt engineering</p>
+          <div class="card card-accent" style="opacity:0.5;">
+            <h4>Session 1</h4>
+            <p>Introduction to Agentic AI &mdash; definition, agent loop, architectures, components</p>
           </div>
-          <div class="card card-green" style="opacity:0.5;">
-            <h4>Session 2</h4>
-            <p>Model Context Protocol &mdash; MCP architecture, client-server model, building servers</p>
+          <div class="card card-green">
+            <h4>Session 2 (Now)</h4>
+            <p>AI Coding Agents &amp; Vibe Coding &mdash; how AI coding tools work, landscape, prompt engineering</p>
           </div>
           <div class="card card-orange" style="opacity:0.5;">
             <h4>Session 3</h4>
-            <p>Building Custom AI Dev Tools &mdash; Python SDK, FastMCP, real-world patterns</p>
+            <p>Reasoning, Planning &amp; Tool Use &mdash; ReAct, Chain-of-Thought, tool calling</p>
           </div>
         </div>
       </section>
 
       <!-- ==================== RECAP ==================== -->
       <section>
-        <h2>Session 9 Recap</h2>
-        <h3>Production Application Development</h3>
+        <h2>Session 1 Recap</h2>
+        <h3>Introduction to Agentic AI</h3>
         <div class="card-grid">
           <div class="card card-accent">
-            <h4>FastAPI &amp; Testing</h4>
+            <h4>What Are AI Agents?</h4>
             <ul>
-              <li>Built FastAPI endpoints for agents</li>
-              <li>Async patterns with run_in_executor</li>
-              <li>Structured error handling &amp; validation</li>
-              <li>pytest with mocked LLM responses</li>
+              <li>Autonomous systems that Think &rarr; Act &rarr; Observe</li>
+              <li>The Agent Loop: perceive, reason, act, learn</li>
+              <li>Four building blocks: brain, memory, tools, planning</li>
+              <li>From chatbots &rarr; RAG &rarr; fully autonomous agents</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Deployment Patterns</h4>
+            <h4>Agent Architectures</h4>
             <ul>
-              <li>Configuration management</li>
-              <li>Health checks &amp; monitoring</li>
-              <li>Environment variables &amp; secrets</li>
-              <li>Production-ready API structure</li>
+              <li>Single-agent, multi-agent, hierarchical patterns</li>
+              <li>Autonomy, problem solving, adaptability</li>
+              <li>Real-world examples: customer support, DevOps, coding</li>
+              <li>LLM limitations agents overcome: memory, tools, actions</li>
             </ul>
           </div>
         </div>
         <div class="takeaway">
-          Days 1-3 built the AI pipeline: agents, RAG, workflows, and production APIs.
-          Now: how do <strong>AI coding tools</strong> actually work under the hood?
+          Session 1 established <strong>what agents are and why they matter</strong>.
+          Now: how do <strong>AI coding assistants</strong> actually work under the hood?
         </div>
       </section>
 
@@ -724,21 +724,6 @@ TOOLS = {
           </div>
         </section>
 
-        <!-- SECTION 1 SUMMARY -->
-        <section>
-          <h2>Section 01 Summary</h2>
-          <div style="text-align:left; font-size:0.78em; margin-top:16px;">
-            <p><span class="highlight-green">1.</span> AI coding agents follow a <span class="highlight">Plan &rarr; Code &rarr; Test &rarr; Reflect</span> loop</p>
-            <p><span class="highlight-green">2.</span> Five core components: <span class="highlight">Context Engine, Planner, Code Generator, Tool Executor, Validator</span></p>
-            <p><span class="highlight-green">3.</span> <span class="highlight">Context management</span> is the hardest problem &mdash; millions of tokens, limited window</p>
-            <p><span class="highlight-green">4.</span> <span class="highlight">Token budgeting</span> prioritizes system prompt &gt; request &gt; files &gt; search &gt; history</p>
-            <p><span class="highlight-green">5.</span> Safety requires <span class="highlight">sandboxing and approval</span> for destructive commands</p>
-          </div>
-          <div class="takeaway">
-            Understanding how coding agents work internally helps you <strong>use them more effectively</strong>.
-            The better context you provide, the better code the agent produces.
-          </div>
-        </section>
       </section>
 
       <!-- =====================================================
@@ -898,28 +883,6 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           </table>
         </section>
 
-        <!-- SECTION 2 SUMMARY -->
-        <section>
-          <h2>Section 02 Summary</h2>
-          <div class="card-grid-3">
-            <div class="card card-accent">
-              <h4>Diverse Ecosystem</h4>
-              <p>From inline autocomplete (Copilot) to fully autonomous terminal agents (Claude Code)</p>
-            </div>
-            <div class="card card-green">
-              <h4>CLI vs IDE</h4>
-              <p>CLI agents have full shell access and are scriptable. IDE agents have visual integration and lower friction.</p>
-            </div>
-            <div class="card card-orange">
-              <h4>Persistent Context</h4>
-              <p>CLAUDE.md and similar files give agents project knowledge that persists across sessions.</p>
-            </div>
-          </div>
-          <div class="takeaway">
-            There's no single "best" tool. <strong>Use autocomplete for speed, IDE agents for visual work,
-            and CLI agents for autonomous tasks.</strong> Many developers use 2-3 tools together.
-          </div>
-        </section>
       </section>
 
       <!-- =====================================================
@@ -1096,60 +1059,13 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           </div>
         </section>
 
-        <!-- COMMON ANTI-PATTERNS -->
-        <section>
-          <h2>Prompt Anti-Patterns</h2>
-          <table class="compare-table">
-            <tr>
-              <th>Anti-Pattern</th>
-              <th>Problem</th>
-              <th>Better Approach</th>
-            </tr>
-            <tr>
-              <td><span class="highlight-red">"Fix it"</span></td>
-              <td>No context &mdash; agent guesses what's broken</td>
-              <td>"Fix the TypeError in auth.py:42 where user_id is None"</td>
-            </tr>
-            <tr>
-              <td><span class="highlight-red">"Make it better"</span></td>
-              <td>Subjective &mdash; agent can't know your definition of "better"</td>
-              <td>"Reduce response time by adding Redis caching for /api/users"</td>
-            </tr>
-            <tr>
-              <td><span class="highlight-red">"Rewrite everything"</span></td>
-              <td>Too broad &mdash; agent makes unnecessary changes</td>
-              <td>"Refactor the auth module to use dependency injection"</td>
-            </tr>
-            <tr>
-              <td><span class="highlight-red">Pasting entire stack traces</span></td>
-              <td>Noise drowns out the signal</td>
-              <td>Paste the relevant error + 2-3 lines of context</td>
-            </tr>
-          </table>
-        </section>
-
-        <!-- SECTION 3 SUMMARY -->
-        <section>
-          <h2>Section 03 Summary</h2>
-          <div style="text-align:left; font-size:0.78em; margin-top:16px;">
-            <p><span class="highlight-green">1.</span> <span class="highlight">Vibe coding</span> = describe in natural language, AI writes code, you review and guide</p>
-            <p><span class="highlight-green">2.</span> Works great for <span class="highlight-green">prototyping, boilerplate, CRUD</span> &mdash; not for <span class="highlight-red">security, performance, complex algorithms</span></p>
-            <p><span class="highlight-green">3.</span> Good prompts include <span class="highlight">file, error, expected behavior, and validation steps</span></p>
-            <p><span class="highlight-green">4.</span> Use the <span class="highlight">Task / Context / Expected / Validation</span> template for structured prompts</p>
-            <p><span class="highlight-green">5.</span> You are still the <span class="highlight">architect and reviewer</span> &mdash; AI is a force multiplier, not a replacement</p>
-          </div>
-          <div class="takeaway">
-            The developers who get the most out of AI coding tools are the ones who give the
-            <strong>clearest instructions</strong> and do the <strong>most thorough reviews</strong>.
-          </div>
-        </section>
       </section>
 
       <!-- =====================================================
            SESSION RECAP
            ===================================================== -->
       <section>
-        <h2>Session 10 Recap</h2>
+        <h2>Session 2 Recap</h2>
         <div class="card-grid-3">
           <div class="card card-accent">
             <h4>How AI Coding Agents Work</h4>
@@ -1210,7 +1126,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
 
       <!-- ==================== QUESTIONS ==================== -->
       <section>
-        <h2>Session 10 Complete</h2>
+        <h2>Session 2 Complete</h2>
         <br>
         <p style="color:#ccc; font-size:0.85em;">AI Coding Agents &middot; Vibe Coding &middot; Prompt Engineering</p>
         <br>
@@ -1231,7 +1147,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
-          Agentic AI: Comprehensive Course &middot; Day 4, Session 1
+          Agentic AI: Comprehensive Course &middot; Day 1, Session 2
         </p>
       </section>
 
