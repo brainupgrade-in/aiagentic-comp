@@ -24,25 +24,40 @@ python --version  # 3.10+
 
 ## How to Run
 
-```bash
-cd hands-on/session-13
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run a lab
-python lab01_mcp_architecture.py
-
-# Check the solution
-python solutions/lab01_mcp_architecture.py
 ```
+hands-on/session-13/
+├── lab01_mcp_architecture.ipynb             ← Start here
+├── lab02_enterprise_use_cases.ipynb
+├── lab03_ecosystem_discovery.ipynb
+├── lab04_mcp_client_config.ipynb
+├── lab05_mcp_client_workflows.ipynb
+├── lab06_langchain_bridge.ipynb
+├── lab07_security_governance.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                              ← Completed versions
+    ├── lab01_mcp_architecture.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 
-- Look for `# TODO` markers -- that's where you write code
 - Labs 01-03 cover MCP architecture and enterprise use cases
 - Labs 04-06 cover consuming MCP (config, workflows, LangChain bridge)
 - Lab 07 covers security and governance
 - Lab 08 is the comprehensive challenge combining all concepts
+- **Read the markdown cells** — they explain MCP concepts step by step
+- **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
+- **Run frequently** — don't wait until you've written everything; run after each TODO
 - Generated files appear in `/tmp/aidev-lab-13-XX/` directories
-- Compare your work with `solutions/` when done
+- **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time
 
