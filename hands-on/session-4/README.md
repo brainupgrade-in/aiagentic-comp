@@ -33,20 +33,33 @@ python -c "import langchain; print(f'LangChain {langchain.__version__}')"
 
 ## How to Run
 
-```bash
-cd hands-on/session-4
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run any lab
-python lab01_hello_langchain.py
-
-# Run with solutions to compare
-python solutions/lab01_hello_langchain.py
 ```
+hands-on/session-4/
+├── lab01_hello_langchain.ipynb          ← Start here
+├── lab02_message_types.ipynb
+├── lab03_prompt_templates.ipynb
+├── lab04_first_chain.ipynb
+├── lab05_output_parsers.ipynb
+├── lab06_streaming_and_batch.ipynb
+├── lab07_chain_composition.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                           ← Completed versions
+    ├── lab01_hello_langchain.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 
-- **Read the comments** — each lab file explains what's happening step by step
-- **Look for `# TODO` markers** — these are the parts you need to fill in
+- **Read the markdown cells** — each lab explains what's happening step by step
+- **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 - **Experiment!** — change prompts, try different inputs, break things on purpose
