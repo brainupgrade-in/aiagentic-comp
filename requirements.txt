@@ -39,5 +39,8 @@ mcp>=1.0
 # Resource monitoring
 psutil>=5.9
 
+# Jupyter notebooks
+ipykernel>=6.29
+
 # Utilities
 requests>=2.32
