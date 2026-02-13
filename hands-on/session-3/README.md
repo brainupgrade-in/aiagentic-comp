@@ -32,15 +32,27 @@ python -c "from langchain_ollama import ChatOllama; print('Ready')"
 
 ## How to Run
 
-```bash
-cd hands-on/session-3
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run any lab
-python lab01_chain_of_thought.py
-
-# Run with solutions to compare
-python solutions/lab01_chain_of_thought.py
 ```
+hands-on/session-3/
+├── lab01_chain_of_thought.ipynb         ← Start here
+├── lab02_react_pattern.ipynb
+├── lab03_tree_of_thought.ipynb
+├── lab04_reflection.ipynb
+├── lab05_tool_calling.ipynb
+├── lab06_memory.ipynb
+├── lab07_challenge.ipynb
+└── solutions/                           ← Completed versions
+    ├── lab01_chain_of_thought.ipynb
+    ├── ...
+    └── lab07_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## What Makes This Session Different
 
@@ -53,7 +65,8 @@ We use a local LLM (Ollama) to keep things simple and focused on the concepts, n
 - **Read the output carefully** — the key learning is seeing HOW the LLM responds differently with each pattern
 - **Compare with/without** — most labs show the "without" approach first, then the improved version
 - **Experiment with prompts** — small changes in prompts can dramatically change results
-- **Look for `# TODO` markers** — these are exercises for you to try
+- Look for `# TODO` markers and `"___"` placeholders — that's where you write code
+- Compare your work with `solutions/` when done
 
 ## Estimated Time
 
