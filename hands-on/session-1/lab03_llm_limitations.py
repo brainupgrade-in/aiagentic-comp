@@ -34,7 +34,7 @@ print(f"Message 2: 'What is my name and where do I live?'")
 print(f"AI: {r2.content}\n")
 
 print(">>> The AI forgot! Each message is completely independent.")
-print(">>> An AGENT solves this with MEMORY (Session 2, Component 2).\n")
+print(">>> An AGENT solves this with MEMORY (conversation history).\n")
 
 # ============================================================
 # Limitation 2: NO REAL-TIME INFORMATION

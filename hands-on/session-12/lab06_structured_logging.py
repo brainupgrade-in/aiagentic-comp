@@ -1,5 +1,5 @@
 """
-Lab 05: Structured Logging in Production
+Lab 06: Structured Logging in Production
 ===========================================
 Convert print statements to structured JSON logs
 with trace_id correlation for AI applications.
@@ -13,7 +13,7 @@ import json
 WORKDIR = "/tmp/prod-lab-12-06"
 
 print("=" * 50)
-print("  Lab 05: Structured Logging in Production")
+print("  Lab 06: Structured Logging in Production")
 print("=" * 50)
 
 if os.path.exists(WORKDIR):
@@ -240,7 +240,7 @@ print(f"\n  Score: {score2}/{len(quiz)}")
 # Summary
 # ============================================================
 
-print(f"\n\n--- Lab 05 Summary ---\n")
+print(f"\n\n--- Lab 06 Summary ---\n")
 print("  Key concepts:")
 print("    1. Use structured JSON logging, not print()")
 print("    2. Include trace_id for correlation with distributed traces")

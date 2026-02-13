@@ -1,7 +1,7 @@
 """
 Lab 08: Challenge — Build a Company Q&A Bot
 =============================================
-Goal: Combine everything from Session 4 into a complete RAG-powered
+Goal: Combine everything from Session 5 into a complete RAG-powered
       Q&A application.
 
 Your mission: Build a knowledge base from company documents, then create

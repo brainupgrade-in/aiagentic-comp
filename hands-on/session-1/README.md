@@ -14,7 +14,7 @@ ollama list
 # Activate virtual environment (if not already)
 source ~/.venv/bin/activate
 
-# Quick test — should print "Ready!"
+# Quick test — should print "Ready"
 python -c "from langchain_ollama import ChatOllama; print('Ready')"
 ```
 
@@ -43,7 +43,7 @@ python solutions/lab01_meet_your_llm.py
 
 ## Tips for First-Timers
 
-- **Don't worry about the code details yet** — Session 3 teaches the framework. For now, focus on *what the LLM does*, not how the code works.
+- **Don't worry about the code details yet** — Sessions 3-4 teach the patterns and framework. For now, focus on *what the LLM does*, not how the code works.
 - **The LLM is running locally** — your questions never leave your machine. Feel free to ask anything!
 - **Small model, big ideas** — we use `llama3.2:1b` (a small model). Larger models are even more capable, but this is enough to learn the concepts.
 - **Experiment!** — change the questions, try weird inputs, break things. That's how you learn.
