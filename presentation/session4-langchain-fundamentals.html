@@ -652,22 +652,20 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <!-- MESSAGE TYPES IN CODE -->
         <section>
           <h2>Messages in Code</h2>
-          <div class="code-block">
-            <span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> SystemMessage, HumanMessage<br>
-            <span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama<br>
-            <br>
-            llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)<br>
-            <br>
-            messages = [<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;HumanMessage(content=<span class="string">"What are the 3 largest oceans?"</span>)<br>
-            ]<br>
-            <br>
-            response = llm.<span class="func">invoke</span>(messages)<br>
-            <span class="func">print</span>(response.content)<br>
-            <br>
-            <span class="output"># Pacific Ocean, Atlantic Ocean, Indian Ocean</span>
-          </div>
+          <div class="code-block"><span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> SystemMessage, HumanMessage
+<span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
+
+llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
+
+messages = [
+    SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>),
+    HumanMessage(content=<span class="string">"What are the 3 largest oceans?"</span>)
+]
+
+response = llm.<span class="func">invoke</span>(messages)
+<span class="func">print</span>(response.content)
+
+<span class="output"># Pacific Ocean, Atlantic Ocean, Indian Ocean</span></div>
           <div class="analogy">
             The SystemMessage is like a job description you give to a new employee before they start working.
             It shapes <em>how</em> the LLM responds to every question that follows.
@@ -681,16 +679,12 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
           <div class="card-grid" style="margin-top:14px;">
             <div class="card card-red" style="padding:14px;">
               <h4>Hard-coded (bad)</h4>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;">
-                llm.invoke(<span class="string">"Translate 'hello'<br>to French"</span>)
-              </div>
+              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;">llm.invoke(<span class="string">"Translate 'hello'<br>to French"</span>)</div>
               <p style="margin-top:6px;">Can't reuse. Need a new string for every language.</p>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>Template (good)</h4>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;">
-                <span class="string">"Translate '{text}'<br>to {language}"</span>
-              </div>
+              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;"><span class="string">"Translate '{text}'<br>to {language}"</span></div>
               <p style="margin-top:6px;">Reusable! Pass any text and language.</p>
             </div>
           </div>
@@ -703,26 +697,24 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <!-- CHATPROMPTTEMPLATE CODE -->
         <section>
           <h2>ChatPromptTemplate</h2>
-          <div class="code-block">
-            <span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate<br>
-            <br>
-            <span class="comment"># Define the template with variables in {curly braces}</span><br>
-            prompt = ChatPromptTemplate.<span class="func">from_messages</span>([<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"system"</span>, <span class="string">"You are a translator. Translate accurately."</span>),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"human"</span>, <span class="string">"Translate '{text}' to {language}"</span>)<br>
-            ])<br>
-            <br>
-            <span class="comment"># Fill in the variables</span><br>
-            messages = prompt.<span class="func">invoke</span>({<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"text"</span>: <span class="string">"Good morning"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"language"</span>: <span class="string">"Japanese"</span><br>
-            })<br>
-            <br>
-            <span class="comment"># Send to LLM</span><br>
-            response = llm.<span class="func">invoke</span>(messages)<br>
-            <span class="func">print</span>(response.content)<br>
-            <span class="output"># おはようございます (Ohayou gozaimasu)</span>
-          </div>
+          <div class="code-block"><span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
+
+<span class="comment"># Define the template with variables in {curly braces}</span>
+prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
+    (<span class="string">"system"</span>, <span class="string">"You are a translator. Translate accurately."</span>),
+    (<span class="string">"human"</span>, <span class="string">"Translate '{text}' to {language}"</span>)
+])
+
+<span class="comment"># Fill in the variables</span>
+messages = prompt.<span class="func">invoke</span>({
+    <span class="string">"text"</span>: <span class="string">"Good morning"</span>,
+    <span class="string">"language"</span>: <span class="string">"Japanese"</span>
+})
+
+<span class="comment"># Send to LLM</span>
+response = llm.<span class="func">invoke</span>(messages)
+<span class="func">print</span>(response.content)
+<span class="output"># おはようございます (Ohayou gozaimasu)</span></div>
         </section>
       </section>
 
@@ -754,9 +746,7 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
               <span style="font-size:0.9em;">Format the output</span>
             </div>
           </div>
-          <div class="code-block" style="text-align:center; font-size:0.7em;">
-            chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> output_parser
-          </div>
+          <div class="code-block" style="text-align:center; font-size:0.7em;">chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> output_parser</div>
           <div class="analogy">
             A chain is like an assembly line in a factory. Raw materials (user input) enter one end,
             pass through stations (prompt, model, parser), and a finished product (structured output) comes out the other end.
@@ -778,18 +768,14 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
           <div class="card-grid" style="margin-top:14px;">
             <div class="card card-red" style="padding:14px;">
               <h4>Without LCEL (verbose)</h4>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">
-                msgs = prompt.invoke(input)<br>
-                resp = llm.invoke(msgs)<br>
-                out = parser.invoke(resp)
-              </div>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">msgs = prompt.invoke(input)
+resp = llm.invoke(msgs)
+out = parser.invoke(resp)</div>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>With LCEL (clean)</h4>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">
-                chain = prompt | llm | parser<br>
-                out = chain.invoke(input)
-              </div>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">chain = prompt | llm | parser
+out = chain.invoke(input)</div>
             </div>
           </div>
           <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
@@ -800,31 +786,29 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <!-- FIRST CHAIN -->
         <section>
           <h2>Your First Chain</h2>
-          <div class="code-block">
-            <span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama<br>
-            <span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate<br>
-            <span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> StrOutputParser<br>
-            <br>
-            <span class="comment"># 1. Prompt template</span><br>
-            prompt = ChatPromptTemplate.<span class="func">from_messages</span>([<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"system"</span>, <span class="string">"You are a helpful assistant. Be concise."</span>),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"human"</span>, <span class="string">"{question}"</span>)<br>
-            ])<br>
-            <br>
-            <span class="comment"># 2. LLM</span><br>
-            llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)<br>
-            <br>
-            <span class="comment"># 3. Output parser (extracts just the text)</span><br>
-            parser = StrOutputParser()<br>
-            <br>
-            <span class="comment"># 4. Chain them with LCEL pipe syntax</span><br>
-            chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser<br>
-            <br>
-            <span class="comment"># 5. Run it!</span><br>
-            result = chain.<span class="func">invoke</span>({<span class="string">"question"</span>: <span class="string">"What is Docker?"</span>})<br>
-            <span class="func">print</span>(result)<br>
-            <span class="output"># "Docker is a platform for containerizing applications..."</span>
-          </div>
+          <div class="code-block"><span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
+<span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
+<span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> StrOutputParser
+
+<span class="comment"># 1. Prompt template</span>
+prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
+    (<span class="string">"system"</span>, <span class="string">"You are a helpful assistant. Be concise."</span>),
+    (<span class="string">"human"</span>, <span class="string">"{question}"</span>)
+])
+
+<span class="comment"># 2. LLM</span>
+llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
+
+<span class="comment"># 3. Output parser (extracts just the text)</span>
+parser = StrOutputParser()
+
+<span class="comment"># 4. Chain them with LCEL pipe syntax</span>
+chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser
+
+<span class="comment"># 5. Run it!</span>
+result = chain.<span class="func">invoke</span>({<span class="string">"question"</span>: <span class="string">"What is Docker?"</span>})
+<span class="func">print</span>(result)
+<span class="output"># "Docker is a platform for containerizing applications..."</span></div>
         </section>
 
         <!-- DATA FLOW -->
@@ -872,23 +856,17 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
             <div class="card card-accent" style="padding:14px;">
               <h4>StrOutputParser</h4>
               <p>Extracts plain text from the response</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">
-                <span class="output">"Docker is..."</span>
-              </div>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;"><span class="output">"Docker is..."</span></div>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>JsonOutputParser</h4>
               <p>Parses JSON from the response</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">
-                {<span class="string">"name"</span>: <span class="string">"Docker"</span>}
-              </div>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">{<span class="string">"name"</span>: <span class="string">"Docker"</span>}</div>
             </div>
             <div class="card card-orange" style="padding:14px;">
               <h4>PydanticOutputParser</h4>
               <p>Validates into a Python class</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">
-                Tool(name=<span class="string">"Docker"</span>)
-              </div>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">Tool(name=<span class="string">"Docker"</span>)</div>
             </div>
           </div>
           <div class="analogy">
@@ -902,49 +880,45 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <section>
           <h2>Pydantic Output Parser</h2>
           <h3 style="margin-bottom:6px;">Get validated, typed Python objects from LLM output</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> PydanticOutputParser<br>
-            <span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">MovieReview</span>(BaseModel):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;title: <span class="keyword">str</span> = Field(description=<span class="string">"Movie title"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;rating: <span class="keyword">int</span> = Field(description=<span class="string">"Rating 1-10"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;summary: <span class="keyword">str</span> = Field(description=<span class="string">"One line summary"</span>)<br>
-            <br>
-            parser = PydanticOutputParser(pydantic_object=<span class="func">MovieReview</span>)<br>
-            prompt = ChatPromptTemplate.<span class="func">from_messages</span>([<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"system"</span>, <span class="string">"Review movies. {format_instructions}"</span>),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;(<span class="string">"human"</span>, <span class="string">"Review: {movie}"</span>)<br>
-            ])<br>
-            <br>
-            chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser<br>
-            review = chain.<span class="func">invoke</span>({<span class="string">"movie"</span>: <span class="string">"Inception"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"format_instructions"</span>: parser.get_format_instructions()})<br>
-            <br>
-            <span class="output"># review.title = "Inception"  |  review.rating = 9  |  review.summary = "A mind-bending..."</span>
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> PydanticOutputParser
+<span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field
+
+<span class="keyword">class</span> <span class="func">MovieReview</span>(BaseModel):
+    title: <span class="keyword">str</span> = Field(description=<span class="string">"Movie title"</span>)
+    rating: <span class="keyword">int</span> = Field(description=<span class="string">"Rating 1-10"</span>)
+    summary: <span class="keyword">str</span> = Field(description=<span class="string">"One line summary"</span>)
+
+parser = PydanticOutputParser(pydantic_object=<span class="func">MovieReview</span>)
+prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
+    (<span class="string">"system"</span>, <span class="string">"Review movies. {format_instructions}"</span>),
+    (<span class="string">"human"</span>, <span class="string">"Review: {movie}"</span>)
+])
+
+chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser
+review = chain.<span class="func">invoke</span>({<span class="string">"movie"</span>: <span class="string">"Inception"</span>,
+    <span class="string">"format_instructions"</span>: parser.get_format_instructions()})
+
+<span class="output"># review.title = "Inception"  |  review.rating = 9  |  review.summary = "A mind-bending..."</span></div>
         </section>
 
         <!-- CHAINING MULTIPLE STEPS -->
         <section>
           <h2>Chaining Multiple Steps</h2>
           <h3>Chains can feed into other chains</h3>
-          <div class="code-block">
-            <span class="comment"># Chain 1: Generate a topic</span><br>
-            topic_prompt = ChatPromptTemplate.<span class="func">from_template</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Give me one interesting topic about {subject}"</span><br>
-            )<br>
-            topic_chain = topic_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()<br>
-            <br>
-            <span class="comment"># Chain 2: Write about the topic</span><br>
-            write_prompt = ChatPromptTemplate.<span class="func">from_template</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"Write a 3-sentence explanation of: {topic}"</span><br>
-            )<br>
-            write_chain = write_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()<br>
-            <br>
-            <span class="comment"># Combined: topic output feeds into write input</span><br>
-            full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">lambda</span> topic: {<span class="string">"topic"</span>: topic}) <span class="keyword">|</span> write_chain
-          </div>
+          <div class="code-block"><span class="comment"># Chain 1: Generate a topic</span>
+topic_prompt = ChatPromptTemplate.<span class="func">from_template</span>(
+    <span class="string">"Give me one interesting topic about {subject}"</span>
+)
+topic_chain = topic_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
+
+<span class="comment"># Chain 2: Write about the topic</span>
+write_prompt = ChatPromptTemplate.<span class="func">from_template</span>(
+    <span class="string">"Write a 3-sentence explanation of: {topic}"</span>
+)
+write_chain = write_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
+
+<span class="comment"># Combined: topic output feeds into write input</span>
+full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">lambda</span> topic: {<span class="string">"topic"</span>: topic}) <span class="keyword">|</span> write_chain</div>
           <div class="takeaway">
             This is the "chaining" we talked about in Session 1 &mdash; now you see it in real code.
             Small, focused chains composed into larger workflows. This is how production agents are built.
@@ -958,27 +932,21 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
             <div class="card card-accent" style="padding:14px;">
               <h4>.invoke()</h4>
               <p>Run once, get complete result</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">
-                result = chain.invoke(<br>&nbsp;&nbsp;{"q": "hi"})<br>
-                <span class="comment"># waits for full response</span>
-              </div>
+              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">result = chain.invoke(<br>  {"q": "hi"})
+<span class="comment"># waits for full response</span></div>
               <p style="margin-top:6px;">Best for: scripts, APIs</p>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>.stream()</h4>
               <p>Get tokens as they're generated</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">
-                <span class="keyword">for</span> chunk <span class="keyword">in</span> chain.stream(<br>&nbsp;&nbsp;{"q": "hi"}):<br>
-                &nbsp;&nbsp;print(chunk, end=<span class="string">""</span>)
-              </div>
+              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;"><span class="keyword">for</span> chunk <span class="keyword">in</span> chain.stream(<br>  {"q": "hi"}):
+  print(chunk, end=<span class="string">""</span>)</div>
               <p style="margin-top:6px;">Best for: chat UIs</p>
             </div>
             <div class="card card-orange" style="padding:14px;">
               <h4>.batch()</h4>
               <p>Process multiple inputs at once</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">
-                results = chain.batch([<br>&nbsp;&nbsp;{"q": "hi"},<br>&nbsp;&nbsp;{"q": "bye"}<br>])
-              </div>
+              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">results = chain.batch([<br>  {"q": "hi"},<br>  {"q": "bye"}<br>])</div>
               <p style="margin-top:6px;">Best for: bulk processing</p>
             </div>
           </div>

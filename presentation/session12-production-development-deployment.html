@@ -413,8 +413,7 @@
         <!-- BASIC ENDPOINT PATTERN -->
         <section>
           <h2>Basic Agent Endpoint</h2>
-          <div class="code-block">
-<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+          <div class="code-block"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
 <span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
 
 app = FastAPI(title=<span class="string">"AI Agent API"</span>)
@@ -439,8 +438,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         sources=result.get(<span class="string">"sources"</span>, []),
         tokens_used=result[<span class="string">"token_count"</span>],
         latency_ms=result[<span class="string">"latency"</span>]
-    )
-          </div>
+    )</div>
         </section>
       </section>
 
@@ -456,8 +454,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <section>
           <h2>Pydantic for AI Applications</h2>
           <h3>Validate everything at the boundary</h3>
-          <div class="code-block">
-<span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field, field_validator
+          <div class="code-block"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field, field_validator
 
 <span class="keyword">class</span> <span class="function">ChatMessage</span>(BaseModel):
     role: str = Field(..., pattern=<span class="string">"^(user|assistant|system)$"</span>)
@@ -473,8 +470,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
     <span class="keyword">def</span> <span class="function">must_have_user_message</span>(cls, v):
         <span class="keyword">if not</span> any(m.role == <span class="string">"user"</span> <span class="keyword">for</span> m <span class="keyword">in</span> v):
             <span class="keyword">raise</span> ValueError(<span class="string">"Must include at least one user message"</span>)
-        <span class="keyword">return</span> v
-          </div>
+        <span class="keyword">return</span> v</div>
           <div class="takeaway">
             Pydantic catches malformed requests <strong>before</strong> they reach your agent.
             Invalid temperature? Missing messages? Rejected instantly with a clear error.
@@ -494,8 +490,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <section>
           <h2>SSE for Real-Time Agent Output</h2>
           <h3>Don't make users stare at a spinner for 30 seconds</h3>
-          <div class="code-block">
-<span class="keyword">from</span> fastapi.responses <span class="keyword">import</span> StreamingResponse
+          <div class="code-block"><span class="keyword">from</span> fastapi.responses <span class="keyword">import</span> StreamingResponse
 <span class="keyword">import</span> json
 
 <span class="decorator">@app.post</span>(<span class="string">"/agent/stream"</span>)
@@ -509,8 +504,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
     <span class="keyword">return</span> StreamingResponse(
         event_generator(),
         media_type=<span class="string">"text/event-stream"</span>
-    )
-          </div>
+    )</div>
           <br>
           <div class="card-grid">
             <div class="card card-accent">
@@ -544,8 +538,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <!-- HEALTH ENDPOINT -->
         <section>
           <h2>The /health Endpoint Pattern</h2>
-          <div class="code-block">
-<span class="decorator">@app.get</span>(<span class="string">"/health"</span>)
+          <div class="code-block"><span class="decorator">@app.get</span>(<span class="string">"/health"</span>)
 <span class="keyword">async def</span> <span class="function">health_check</span>():
     <span class="keyword">return</span> {
         <span class="string">"status"</span>: <span class="string">"healthy"</span>,
@@ -562,8 +555,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
     <span class="comment"># Only return 200 when the app can serve traffic</span>
     <span class="keyword">if not</span> model_loaded:
         <span class="keyword">raise</span> HTTPException(status_code=503, detail=<span class="string">"Model not loaded"</span>)
-    <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ready"</span>}
-          </div>
+    <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ready"</span>}</div>
           <br>
           <div class="card-grid-3">
             <div class="card card-accent">
@@ -584,8 +576,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <!-- PYTHON HEALTH MONITORING -->
         <section>
           <h2>Python Health Monitoring</h2>
-          <div class="code-block">
-<span class="comment"># health_monitor.py &mdash; async HealthChecker class</span>
+          <div class="code-block"><span class="comment"># health_monitor.py &mdash; async HealthChecker class</span>
 <span class="keyword">import</span> asyncio, signal, httpx, psutil
 
 <span class="keyword">class</span> <span class="function">HealthChecker</span>:
@@ -621,8 +612,7 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
             <span class="keyword">await</span> asyncio.sleep(self.interval)
 
 <span class="comment"># Graceful shutdown via signal handlers</span>
-signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.get_event_loop().stop())
-          </div>
+signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.get_event_loop().stop())</div>
           <div class="warning">
             AI apps can take minutes to load models. Use <code>start_delay</code> to give the application
             time to initialize before health checks begin counting failures.
@@ -674,8 +664,7 @@ signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.
             </tr>
           </table>
           <br>
-          <div class="code-block">
-<span class="comment"># .env.example (committed to repo &mdash; no real values)</span>
+          <div class="code-block"><span class="comment"># .env.example (committed to repo &mdash; no real values)</span>
 GROQ_API_KEY=your-groq-api-key-here
 LANGFUSE_SECRET_KEY=your-langfuse-secret-here
 LANGFUSE_PUBLIC_KEY=your-langfuse-public-here
@@ -688,8 +677,7 @@ LANGFUSE_SECRET_KEY=sk-lf-xyz...
 <span class="keyword">from</span> dotenv <span class="keyword">import</span> load_dotenv
 load_dotenv(<span class="string">".env"</span>)     <span class="comment"># loads into os.environ</span>
 <span class="keyword">import</span> os
-api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)
-          </div>
+api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)</div>
           <div class="warning">
             Never hardcode API keys in source code. Use <code>.env</code> files with
             <code>.gitignore</code> and <code>python-dotenv</code> for environment variable injection. Rotate keys regularly.
@@ -711,11 +699,9 @@ api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)
           <div class="card-grid">
             <div class="card card-red">
               <h4>Bad: print()</h4>
-              <div class="code-block" style="font-size:0.85em; margin-top:8px;">
-print("Agent called with query: " + query)
+              <div class="code-block" style="font-size:0.85em; margin-top:8px;">print("Agent called with query: " + query)
 print("Tokens used: 247")
-print("Error: rate limit exceeded")
-              </div>
+print("Error: rate limit exceeded")</div>
               <ul style="margin-top:8px;">
                 <li>No structure &mdash; hard to parse</li>
                 <li>No timestamps</li>
@@ -724,8 +710,7 @@ print("Error: rate limit exceeded")
             </div>
             <div class="card card-green">
               <h4>Good: Structured JSON</h4>
-              <div class="code-block" style="font-size:0.85em; margin-top:8px;">
-{"timestamp": "2026-02-12T10:30:00Z",
+              <div class="code-block" style="font-size:0.85em; margin-top:8px;">{"timestamp": "2026-02-12T10:30:00Z",
  "level": "INFO",
  "trace_id": "abc-123",
  "model": "llama-3.3-70b-versatile",
@@ -733,8 +718,7 @@ print("Error: rate limit exceeded")
  "tokens_out": 247,
  "cost_usd": 0.0003,
  "latency_ms": 1840,
- "message": "Agent invocation complete"}
-              </div>
+ "message": "Agent invocation complete"}</div>
               <ul style="margin-top:8px;">
                 <li>Machine-parseable</li>
                 <li>Searchable in LangFuse/ELK</li>
@@ -972,8 +956,7 @@ print("Error: rate limit exceeded")
         <!-- ERROR HANDLING CODE -->
         <section>
           <h2>Robust Error Handling</h2>
-          <div class="code-block">
-<span class="keyword">from</span> fastapi <span class="keyword">import</span> HTTPException
+          <div class="code-block"><span class="keyword">from</span> fastapi <span class="keyword">import</span> HTTPException
 <span class="keyword">import</span> logging
 
 logger = logging.getLogger(<span class="string">"ai_agent"</span>)
@@ -1001,8 +984,7 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <span class="keyword">raise</span> HTTPException(
             status_code=<span class="highlight-red">500</span>,
             detail=<span class="string">"Internal server error."</span>
-        )
-          </div>
+        )</div>
         </section>
 
         <!-- STATUS CODE REFERENCE -->
@@ -1111,8 +1093,7 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <!-- MOCK LLM EXAMPLE -->
         <section>
           <h2>Mocking LLMs in Tests</h2>
-          <div class="code-block">
-<span class="keyword">from</span> unittest.mock <span class="keyword">import</span> AsyncMock, patch
+          <div class="code-block"><span class="keyword">from</span> unittest.mock <span class="keyword">import</span> AsyncMock, patch
 <span class="keyword">from</span> httpx <span class="keyword">import</span> AsyncClient
 <span class="keyword">import</span> pytest
 
@@ -1131,8 +1112,7 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
 
         <span class="keyword">assert</span> resp.status_code == 200
         <span class="keyword">assert</span> <span class="string">"Paris"</span> <span class="keyword">in</span> resp.json()[<span class="string">"answer"</span>]
-        mock.assert_called_once()
-          </div>
+        mock.assert_called_once()</div>
           <div class="takeaway">
             Mock the LLM at the boundary. Test everything around it deterministically.
             Save real LLM calls for integration and evaluation tests.

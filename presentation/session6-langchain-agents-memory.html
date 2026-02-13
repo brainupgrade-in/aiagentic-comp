@@ -445,27 +445,25 @@
         <!-- REACT AGENT IN CODE -->
         <section>
           <h2>ReAct Agent in LangChain</h2>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-            <span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool<br>
-            <span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent<br>
-            <br>
-            <span class="comment"># Define tools</span><br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Get current weather for a city."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, 70% rain"</span>}.get(city, <span class="string">"Unknown"</span>)<br>
-            <br>
-            <span class="comment"># Create the agent</span><br>
-            llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)<br>
-            agent = <span class="func">create_react_agent</span>(llm, tools=[weather])<br>
-            <br>
-            <span class="comment"># Run it</span><br>
-            result = agent.<span class="func">invoke</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Bangalore?"</span>)]}<br>
-            )<br>
-            <span class="func">print</span>(result[<span class="string">"messages"</span>][-1].content)
-          </div>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+<span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+
+<span class="comment"># Define tools</span>
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Get current weather for a city."""</span>
+    <span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, 70% rain"</span>}.get(city, <span class="string">"Unknown"</span>)
+
+<span class="comment"># Create the agent</span>
+llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+agent = <span class="func">create_react_agent</span>(llm, tools=[weather])
+
+<span class="comment"># Run it</span>
+result = agent.<span class="func">invoke</span>(
+    {<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Bangalore?"</span>)]}
+)
+<span class="func">print</span>(result[<span class="string">"messages"</span>][-1].content)</div>
           <div class="takeaway">
             <code>create_react_agent</code> from <code>langgraph.prebuilt</code> is the modern way to build agents.
             You give it an LLM and tools &mdash; it handles the Think &rarr; Act &rarr; Observe loop automatically.
@@ -496,38 +494,34 @@
               </ul>
             </div>
           </div>
-          <div class="code-block" style="font-size:0.55em;">
-            <span class="comment"># LLM sees this tool description:</span><br>
-            <span class="comment"># {"name": "weather", "description": "Get weather for a city",</span><br>
-            <span class="comment">#  "parameters": {"city": {"type": "string"}}}</span><br>
-            <br>
-            <span class="comment"># LLM responds with structured call (not free text):</span><br>
-            <span class="comment"># {"tool": "weather", "args": {"city": "Bangalore"}}</span>
-          </div>
+          <div class="code-block" style="font-size:0.55em;"><span class="comment"># LLM sees this tool description:</span>
+<span class="comment"># {"name": "weather", "description": "Get weather for a city",</span>
+<span class="comment">#  "parameters": {"city": {"type": "string"}}}</span>
+
+<span class="comment"># LLM responds with structured call (not free text):</span>
+<span class="comment"># {"tool": "weather", "args": {"city": "Bangalore"}}</span></div>
         </section>
 
         <!-- BIND_TOOLS -->
         <section>
           <h2>Binding Tools to an LLM</h2>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-            <span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool<br>
-            <br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Calculate a math expression. Input: a math expression like '2 + 3'."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))<br>
-            <br>
-            llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)<br>
-            <br>
-            <span class="comment"># Bind tools — LLM now knows about calculator</span><br>
-            llm_with_tools = llm.<span class="func">bind_tools</span>([calculator])<br>
-            <br>
-            <span class="comment"># LLM decides to call the tool</span><br>
-            response = llm_with_tools.<span class="func">invoke</span>(<span class="string">"What is 17 * 28 + 55?"</span>)<br>
-            <span class="func">print</span>(response.tool_calls)<br>
-            <span class="output"># [{"name": "calculator", "args": {"expression": "17 * 28 + 55"}}]</span>
-          </div>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+<span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Calculate a math expression. Input: a math expression like '2 + 3'."""</span>
+    <span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))
+
+llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+
+<span class="comment"># Bind tools — LLM now knows about calculator</span>
+llm_with_tools = llm.<span class="func">bind_tools</span>([calculator])
+
+<span class="comment"># LLM decides to call the tool</span>
+response = llm_with_tools.<span class="func">invoke</span>(<span class="string">"What is 17 * 28 + 55?"</span>)
+<span class="func">print</span>(response.tool_calls)
+<span class="output"># [{"name": "calculator", "args": {"expression": "17 * 28 + 55"}}]</span></div>
           <div class="analogy">
             <code>bind_tools</code> is like handing a calculator to a student before an exam.
             The student (LLM) now <em>knows</em> the calculator is available and can choose to use it
@@ -611,21 +605,19 @@
         <section>
           <h2>Creating Tools with @tool</h2>
           <h3>The simplest way to define a tool</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool<br>
-            <br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">get_order_status</span>(order_id: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Check the status of a customer order. Input: order ID like 'ORD-001'."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;orders = {<span class="string">"ORD-001"</span>: <span class="string">"Shipped, arriving tomorrow"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"ORD-002"</span>: <span class="string">"Processing, 2 days"</span>}<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> orders.get(order_id, <span class="string">"Order not found"</span>)<br>
-            <br>
-            <span class="comment"># What the LLM sees:</span><br>
-            <span class="func">print</span>(get_order_status.name)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># "get_order_status"</span><br>
-            <span class="func">print</span>(get_order_status.description)&nbsp;&nbsp;<span class="output"># "Check the status of..."</span><br>
-            <span class="func">print</span>(get_order_status.args_schema)&nbsp;&nbsp;<span class="output"># {"order_id": {"type": "string"}}</span>
-          </div>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">get_order_status</span>(order_id: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Check the status of a customer order. Input: order ID like 'ORD-001'."""</span>
+    orders = {<span class="string">"ORD-001"</span>: <span class="string">"Shipped, arriving tomorrow"</span>,
+              <span class="string">"ORD-002"</span>: <span class="string">"Processing, 2 days"</span>}
+    <span class="keyword">return</span> orders.get(order_id, <span class="string">"Order not found"</span>)
+
+<span class="comment"># What the LLM sees:</span>
+<span class="func">print</span>(get_order_status.name)        <span class="output"># "get_order_status"</span>
+<span class="func">print</span>(get_order_status.description)  <span class="output"># "Check the status of..."</span>
+<span class="func">print</span>(get_order_status.args_schema)  <span class="output"># {"order_id": {"type": "string"}}</span></div>
           <div class="takeaway">
             The <strong>docstring is critical</strong> &mdash; it's how the LLM understands what the tool does.
             Write clear, specific descriptions. Include examples of valid inputs.
@@ -637,29 +629,27 @@
         <section>
           <h2>Multi-Tool Agent</h2>
           <h3>Agent with several tools to choose from</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool<br>
-            <span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent<br>
-            <br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Get current weather for a city."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, Rain"</span>, <span class="string">"Mumbai"</span>: <span class="string">"32&deg;C, Sunny"</span>}.get(city, <span class="string">"Unknown"</span>)<br>
-            <br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Calculate a math expression like '15 * 7 + 3'."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))<br>
-            <br>
-            @<span class="func">tool</span><br>
-            <span class="keyword">def</span> <span class="func">get_time</span>() -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Get the current date and time."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> datetime.now().strftime(<span class="string">"%A, %B %d at %I:%M %p"</span>)<br>
-            <br>
-            agent = create_react_agent(llm, tools=[weather, calculator, get_time])<br>
-            <span class="comment"># The agent picks the right tool for each question automatically!</span>
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Get current weather for a city."""</span>
+    <span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, Rain"</span>, <span class="string">"Mumbai"</span>: <span class="string">"32&deg;C, Sunny"</span>}.get(city, <span class="string">"Unknown"</span>)
+
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Calculate a math expression like '15 * 7 + 3'."""</span>
+    <span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))
+
+@<span class="func">tool</span>
+<span class="keyword">def</span> <span class="func">get_time</span>() -> <span class="keyword">str</span>:
+    <span class="string">"""Get the current date and time."""</span>
+    <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+    <span class="keyword">return</span> datetime.now().strftime(<span class="string">"%A, %B %d at %I:%M %p"</span>)
+
+agent = create_react_agent(llm, tools=[weather, calculator, get_time])
+<span class="comment"># The agent picks the right tool for each question automatically!</span></div>
         </section>
 
         <!-- TOOL ORCHESTRATION FLOW -->
@@ -727,22 +717,18 @@
           <div class="card-grid" style="margin-top:14px;">
             <div class="card card-red" style="padding:16px;">
               <h4>Without Memory</h4>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                User: My name is Raj<br>
-                Bot: Nice to meet you, Raj!<br><br>
-                User: What is my name?<br>
-                Bot: I don't know your name.
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">User: My name is Raj
+Bot: Nice to meet you, Raj!<br>
+User: What is my name?
+Bot: I don't know your name.</div>
               <p style="margin-top:6px;">Each call is independent. The LLM forgot everything.</p>
             </div>
             <div class="card card-green" style="padding:16px;">
               <h4>With Memory</h4>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                User: My name is Raj<br>
-                Bot: Nice to meet you, Raj!<br><br>
-                User: What is my name?<br>
-                Bot: Your name is Raj!
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">User: My name is Raj
+Bot: Nice to meet you, Raj!<br>
+User: What is my name?
+Bot: Your name is Raj!</div>
               <p style="margin-top:6px;">Previous messages are included in every call. Context preserved.</p>
             </div>
           </div>
@@ -782,25 +768,23 @@
         <section>
           <h2>Conversation Buffer Memory</h2>
           <h3>The simplest approach: store all messages</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-            <span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage<br>
-            <br>
-            llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)<br>
-            <br>
-            <span class="comment"># The "memory" is just a list of messages</span><br>
-            memory = [SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>)]<br>
-            <br>
-            <span class="keyword">def</span> <span class="func">chat</span>(user_msg):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;memory.append(HumanMessage(content=user_msg))<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;response = llm.<span class="func">invoke</span>(memory)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;memory.append(AIMessage(content=response.content))<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> response.content<br>
-            <br>
-            <span class="func">print</span>(chat(<span class="string">"My name is Raj"</span>))&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># "Nice to meet you, Raj!"</span><br>
-            <span class="func">print</span>(chat(<span class="string">"What is my name?"</span>))&nbsp;&nbsp;<span class="output"># "Your name is Raj!"</span><br>
-            <span class="func">print</span>(<span class="keyword">f</span><span class="string">"Messages in memory: {len(memory)}"</span>)&nbsp;&nbsp;<span class="output"># 5</span>
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage
+
+llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+
+<span class="comment"># The "memory" is just a list of messages</span>
+memory = [SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>)]
+
+<span class="keyword">def</span> <span class="func">chat</span>(user_msg):
+    memory.append(HumanMessage(content=user_msg))
+    response = llm.<span class="func">invoke</span>(memory)
+    memory.append(AIMessage(content=response.content))
+    <span class="keyword">return</span> response.content
+
+<span class="func">print</span>(chat(<span class="string">"My name is Raj"</span>))    <span class="output"># "Nice to meet you, Raj!"</span>
+<span class="func">print</span>(chat(<span class="string">"What is my name?"</span>))  <span class="output"># "Your name is Raj!"</span>
+<span class="func">print</span>(<span class="keyword">f</span><span class="string">"Messages in memory: {len(memory)}"</span>)  <span class="output"># 5</span></div>
           <div class="takeaway">
             At its core, memory is just <strong>appending messages to a list</strong> and passing the full list
             to the LLM every time. The LLM sees the entire conversation history and can reference
@@ -812,30 +796,28 @@
         <section>
           <h2>Conversation Summary Memory</h2>
           <h3>Summarize older messages to save tokens</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-            <span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage<br>
-            <br>
-            llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)<br>
-            MAX_MESSAGES = 6&nbsp;&nbsp;<span class="comment"># keep last 6 messages, summarize the rest</span><br>
-            <br>
-            <span class="keyword">def</span> <span class="func">summarize_old_messages</span>(messages):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Use the LLM to summarize older messages."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;old_text = <span class="string">"\n"</span>.join(m.content <span class="keyword">for</span> m <span class="keyword">in</span> messages)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;summary = llm.<span class="func">invoke</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">f</span><span class="string">"Summarize this conversation in 2 sentences:\n{old_text}"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> SystemMessage(content=<span class="keyword">f</span><span class="string">"Summary of earlier conversation: {summary.content}"</span>)<br>
-            <br>
-            <span class="keyword">def</span> <span class="func">chat_with_summary</span>(memory, user_msg):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;memory.append(HumanMessage(content=user_msg))<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="func">len</span>(memory) > MAX_MESSAGES:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;summary = summarize_old_messages(memory[1:-MAX_MESSAGES])<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memory[:] = [memory[0], summary] + memory[-MAX_MESSAGES:]<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;response = llm.<span class="func">invoke</span>(memory)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;memory.append(AIMessage(content=response.content))<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> response.content
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage
+
+llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+MAX_MESSAGES = 6  <span class="comment"># keep last 6 messages, summarize the rest</span>
+
+<span class="keyword">def</span> <span class="func">summarize_old_messages</span>(messages):
+    <span class="string">"""Use the LLM to summarize older messages."""</span>
+    old_text = <span class="string">"\n"</span>.join(m.content <span class="keyword">for</span> m <span class="keyword">in</span> messages)
+    summary = llm.<span class="func">invoke</span>(
+        <span class="keyword">f</span><span class="string">"Summarize this conversation in 2 sentences:\n{old_text}"</span>
+    )
+    <span class="keyword">return</span> SystemMessage(content=<span class="keyword">f</span><span class="string">"Summary of earlier conversation: {summary.content}"</span>)
+
+<span class="keyword">def</span> <span class="func">chat_with_summary</span>(memory, user_msg):
+    memory.append(HumanMessage(content=user_msg))
+    <span class="keyword">if</span> <span class="func">len</span>(memory) > MAX_MESSAGES:
+        summary = summarize_old_messages(memory[1:-MAX_MESSAGES])
+        memory[:] = [memory[0], summary] + memory[-MAX_MESSAGES:]
+    response = llm.<span class="func">invoke</span>(memory)
+    memory.append(AIMessage(content=response.content))
+    <span class="keyword">return</span> response.content</div>
         </section>
 
         <!-- SESSION PERSISTENCE -->
@@ -846,19 +828,15 @@
             <div class="card card-accent" style="padding:14px;">
               <h4>In-Memory (Lab/Dev)</h4>
               <p>Messages stored in a Python list. Lost when the process restarts.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                sessions = {}<br>
-                sessions[<span class="string">"user-1"</span>] = [msg1, msg2]
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">sessions = {}
+sessions[<span class="string">"user-1"</span>] = [msg1, msg2]</div>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>Persistent (Production)</h4>
               <p>Messages stored in a database. Survive restarts and scale to many users.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                <span class="comment"># LangGraph checkpoint</span><br>
-                SqliteSaver(db_path)<br>
-                PostgresSaver(conn_string)
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># LangGraph checkpoint</span>
+SqliteSaver(db_path)
+PostgresSaver(conn_string)</div>
             </div>
           </div>
           <div class="takeaway">
@@ -871,24 +849,22 @@
         <!-- MULTI-SESSION PATTERN -->
         <section>
           <h2>Multi-User Session Pattern</h2>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent<br>
-            <span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver<br>
-            <br>
-            <span class="comment"># Create agent with memory</span><br>
-            memory = MemorySaver()<br>
-            agent = create_react_agent(llm, tools=[weather], checkpointer=memory)<br>
-            <br>
-            <span class="comment"># User A's conversation</span><br>
-            config_a = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-A"</span>}}<br>
-            agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"I live in Bangalore"</span>)]}, config=config_a)<br>
-            agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"What's the weather here?"</span>)]}, config=config_a)<br>
-            <span class="comment"># ^ Agent remembers "here" = Bangalore from the previous message</span><br>
-            <br>
-            <span class="comment"># User B's separate conversation (isolated)</span><br>
-            config_b = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-B"</span>}}<br>
-            agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Mumbai?"</span>)]}, config=config_b)
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+<span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+
+<span class="comment"># Create agent with memory</span>
+memory = MemorySaver()
+agent = create_react_agent(llm, tools=[weather], checkpointer=memory)
+
+<span class="comment"># User A's conversation</span>
+config_a = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-A"</span>}}
+agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"I live in Bangalore"</span>)]}, config=config_a)
+agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"What's the weather here?"</span>)]}, config=config_a)
+<span class="comment"># ^ Agent remembers "here" = Bangalore from the previous message</span>
+
+<span class="comment"># User B's separate conversation (isolated)</span>
+config_b = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-B"</span>}}
+agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Mumbai?"</span>)]}, config=config_b)</div>
           <div class="takeaway">
             Each <code>thread_id</code> gets its own isolated conversation history.
             User A's messages are never seen by User B's agent. This is how production chatbots

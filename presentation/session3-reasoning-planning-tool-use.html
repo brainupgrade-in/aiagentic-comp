@@ -684,21 +684,19 @@
         <section>
           <h2>What Does a Tool Look Like in Code?</h2>
           <br>
-          <div class="code-block">
-            <span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool<br>
-            <br>
-            <span class="keyword">@tool</span><br>
-            <span class="keyword">def</span> <span class="func">calculate</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Calculate a math expression. Use this for any math question."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result = <span class="func">eval</span>(expression)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">str</span>(result)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"Error: Invalid expression"</span><br>
-            <br>
-            <span class="comment"># The agent reads the docstring to know WHEN to use this tool</span><br>
-            <span class="comment"># LangChain handles calling it and returning the result</span>
-          </div>
+          <div class="code-block"><span class="keyword">from</span> langchain.tools <span class="keyword">import</span> tool
+
+<span class="keyword">@tool</span>
+<span class="keyword">def</span> <span class="func">calculate</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
+    <span class="string">"""Calculate a math expression. Use this for any math question."""</span>
+    <span class="keyword">try</span>:
+        result = <span class="func">eval</span>(expression)
+        <span class="keyword">return</span> <span class="keyword">str</span>(result)
+    <span class="keyword">except</span>:
+        <span class="keyword">return</span> <span class="string">"Error: Invalid expression"</span>
+
+<span class="comment"># The agent reads the docstring to know WHEN to use this tool</span>
+<span class="comment"># LangChain handles calling it and returning the result</span></div>
           <br>
           <div class="card card-accent">
             <h4>Three things every tool needs</h4>

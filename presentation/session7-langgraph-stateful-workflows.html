@@ -476,20 +476,18 @@
         <section>
           <h2>Defining State with TypedDict</h2>
           <h3>The shared data structure for your workflow</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated<br>
-            <span class="keyword">from</span> operator <span class="keyword">import</span> add<br>
-            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph<br>
-            <br>
-            <span class="comment"># Define the state schema</span><br>
-            <span class="keyword">class</span> <span class="func">WorkflowState</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;messages: Annotated[<span class="keyword">list</span>, add]&nbsp;&nbsp;<span class="comment"># append new items to list</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;current_step: <span class="keyword">str</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># overwrite on update</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;approved: <span class="keyword">bool</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># overwrite on update</span><br>
-            <br>
-            <span class="comment"># Create the graph with this state</span><br>
-            graph = StateGraph(WorkflowState)
-          </div>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
+<span class="keyword">from</span> operator <span class="keyword">import</span> add
+<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph
+
+<span class="comment"># Define the state schema</span>
+<span class="keyword">class</span> <span class="func">WorkflowState</span>(TypedDict):
+    messages: Annotated[<span class="keyword">list</span>, add]  <span class="comment"># append new items to list</span>
+    current_step: <span class="keyword">str</span>             <span class="comment"># overwrite on update</span>
+    approved: <span class="keyword">bool</span>                <span class="comment"># overwrite on update</span>
+
+<span class="comment"># Create the graph with this state</span>
+graph = StateGraph(WorkflowState)</div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4>Regular Fields</h4>
@@ -505,29 +503,27 @@
         <!-- YOUR FIRST GRAPH -->
         <section>
           <h2>Your First LangGraph Workflow</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict<br>
-            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">State</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;name: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;greeting: <span class="keyword">str</span><br>
-            <br>
-            <span class="comment"># Node: a function that takes state and returns updates</span><br>
-            <span class="keyword">def</span> <span class="func">greet</span>(state: State) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"greeting"</span>: <span class="keyword">f</span><span class="string">"Hello, {state['name']}! Welcome to UniGPS."</span>}<br>
-            <br>
-            <span class="comment"># Build the graph</span><br>
-            graph = StateGraph(State)<br>
-            graph.<span class="func">add_node</span>(<span class="string">"greet"</span>, greet)<br>
-            graph.<span class="func">add_edge</span>(START, <span class="string">"greet"</span>)&nbsp;&nbsp;<span class="comment"># START → greet</span><br>
-            graph.<span class="func">add_edge</span>(<span class="string">"greet"</span>, END)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># greet → END</span><br>
-            <br>
-            <span class="comment"># Compile and run</span><br>
-            app = graph.<span class="func">compile</span>()<br>
-            result = app.<span class="func">invoke</span>({<span class="string">"name"</span>: <span class="string">"Priya"</span>})<br>
-            <span class="func">print</span>(result[<span class="string">"greeting"</span>])&nbsp;&nbsp;<span class="output"># "Hello, Priya! Welcome to UniGPS."</span>
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict
+<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END
+
+<span class="keyword">class</span> <span class="func">State</span>(TypedDict):
+    name: <span class="keyword">str</span>
+    greeting: <span class="keyword">str</span>
+
+<span class="comment"># Node: a function that takes state and returns updates</span>
+<span class="keyword">def</span> <span class="func">greet</span>(state: State) -> <span class="keyword">dict</span>:
+    <span class="keyword">return</span> {<span class="string">"greeting"</span>: <span class="keyword">f</span><span class="string">"Hello, {state['name']}! Welcome to UniGPS."</span>}
+
+<span class="comment"># Build the graph</span>
+graph = StateGraph(State)
+graph.<span class="func">add_node</span>(<span class="string">"greet"</span>, greet)
+graph.<span class="func">add_edge</span>(START, <span class="string">"greet"</span>)  <span class="comment"># START → greet</span>
+graph.<span class="func">add_edge</span>(<span class="string">"greet"</span>, END)     <span class="comment"># greet → END</span>
+
+<span class="comment"># Compile and run</span>
+app = graph.<span class="func">compile</span>()
+result = app.<span class="func">invoke</span>({<span class="string">"name"</span>: <span class="string">"Priya"</span>})
+<span class="func">print</span>(result[<span class="string">"greeting"</span>])  <span class="output"># "Hello, Priya! Welcome to UniGPS."</span></div>
           <div class="takeaway">
             Every graph follows three steps: <strong>define state</strong> (TypedDict),
             <strong>add nodes</strong> (Python functions), <strong>connect with edges</strong> (START &rarr; nodes &rarr; END).
@@ -595,19 +591,17 @@
         <section>
           <h2>Nodes: Processing Steps</h2>
           <h3>Each node is a Python function that transforms state</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;">
-            <span class="comment"># A node receives the full state and returns updates</span><br>
-            <span class="keyword">def</span> <span class="func">classify_request</span>(state):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"""Classify whether a request is HR, Tech, or Finance."""</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;message = state[<span class="string">"message"</span>]<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"wfh"</span> <span class="keyword">in</span> message.lower():<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span>}<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> <span class="string">"deploy"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"database"</span> <span class="keyword">in</span> message.lower():<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"tech"</span>}<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"general"</span>}<br>
-            <br>
-            graph.<span class="func">add_node</span>(<span class="string">"classify"</span>, classify_request)
-          </div>
+          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="comment"># A node receives the full state and returns updates</span>
+<span class="keyword">def</span> <span class="func">classify_request</span>(state):
+    <span class="string">"""Classify whether a request is HR, Tech, or Finance."""</span>
+    message = state[<span class="string">"message"</span>]
+    <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"wfh"</span> <span class="keyword">in</span> message.lower():
+        <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span>}
+    <span class="keyword">elif</span> <span class="string">"deploy"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"database"</span> <span class="keyword">in</span> message.lower():
+        <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"tech"</span>}
+    <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"general"</span>}
+
+graph.<span class="func">add_node</span>(<span class="string">"classify"</span>, classify_request)</div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4>Node Rules</h4>
@@ -637,32 +631,26 @@
             <div class="card card-accent" style="padding:14px;">
               <h4>Normal Edge</h4>
               <p>Always go from A to B.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                graph.add_edge(<br>
-                &nbsp;&nbsp;<span class="string">"classify"</span>,<br>
-                &nbsp;&nbsp;<span class="string">"respond"</span><br>
-                )
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
+  <span class="string">"classify"</span>,
+  <span class="string">"respond"</span>
+)</div>
             </div>
             <div class="card card-green" style="padding:14px;">
               <h4>Entry Edge</h4>
               <p>Where the graph starts.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                graph.add_edge(<br>
-                &nbsp;&nbsp;START,<br>
-                &nbsp;&nbsp;<span class="string">"classify"</span><br>
-                )
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
+  START,
+  <span class="string">"classify"</span>
+)</div>
             </div>
             <div class="card card-orange" style="padding:14px;">
               <h4>Exit Edge</h4>
               <p>Where the graph ends.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                graph.add_edge(<br>
-                &nbsp;&nbsp;<span class="string">"respond"</span>,<br>
-                &nbsp;&nbsp;END<br>
-                )
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
+  <span class="string">"respond"</span>,
+  END
+)</div>
             </div>
           </div>
           <div class="pipe-flow" style="margin-top:16px;">
@@ -688,26 +676,24 @@
         <section>
           <h2>Conditional Edges</h2>
           <h3>Route to different nodes based on state</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># Routing function — reads state and returns next node name</span><br>
-            <span class="keyword">def</span> <span class="func">route_request</span>(state) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_hr"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">elif</span> state[<span class="string">"category"</span>] == <span class="string">"tech"</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_tech"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_general"</span><br>
-            <br>
-            <span class="comment"># Add conditional edge from "classify" node</span><br>
-            graph.<span class="func">add_conditional_edges</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"classify"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># source node</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;route_request,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># routing function</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># mapping: return value → node name</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_hr"</span>: <span class="string">"handle_hr"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_tech"</span>: <span class="string">"handle_tech"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_general"</span>: <span class="string">"handle_general"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-            )
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Routing function — reads state and returns next node name</span>
+<span class="keyword">def</span> <span class="func">route_request</span>(state) -> <span class="keyword">str</span>:
+    <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span>:
+        <span class="keyword">return</span> <span class="string">"handle_hr"</span>
+    <span class="keyword">elif</span> state[<span class="string">"category"</span>] == <span class="string">"tech"</span>:
+        <span class="keyword">return</span> <span class="string">"handle_tech"</span>
+    <span class="keyword">return</span> <span class="string">"handle_general"</span>
+
+<span class="comment"># Add conditional edge from "classify" node</span>
+graph.<span class="func">add_conditional_edges</span>(
+    <span class="string">"classify"</span>,              <span class="comment"># source node</span>
+    route_request,          <span class="comment"># routing function</span>
+    {                        <span class="comment"># mapping: return value → node name</span>
+        <span class="string">"handle_hr"</span>: <span class="string">"handle_hr"</span>,
+        <span class="string">"handle_tech"</span>: <span class="string">"handle_tech"</span>,
+        <span class="string">"handle_general"</span>: <span class="string">"handle_general"</span>,
+    }
+)</div>
           <div class="takeaway">
             Conditional edges let you build <strong>branching workflows</strong>. The routing function
             reads the current state and returns the name of the next node to execute.
@@ -718,34 +704,32 @@
         <!-- COMPLETE BRANCHING EXAMPLE -->
         <section>
           <h2>Complete Branching Workflow</h2>
-          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;">
-            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict<br>
-            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">State</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;message: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;category: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;response: <span class="keyword">str</span><br>
-            <br>
-            <span class="keyword">def</span> <span class="func">classify</span>(state): <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span> <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> state[<span class="string">"message"</span>] <span class="keyword">else</span> <span class="string">"tech"</span>}<br>
-            <span class="keyword">def</span> <span class="func">handle_hr</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"HR: You get 24 annual leave days."</span>}<br>
-            <span class="keyword">def</span> <span class="func">handle_tech</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"Tech: Use FastAPI for new services."</span>}<br>
-            <span class="keyword">def</span> <span class="func">route</span>(state): <span class="keyword">return</span> <span class="string">"hr_node"</span> <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span> <span class="keyword">else</span> <span class="string">"tech_node"</span><br>
-            <br>
-            graph = StateGraph(State)<br>
-            graph.add_node(<span class="string">"classify"</span>, classify)<br>
-            graph.add_node(<span class="string">"hr_node"</span>, handle_hr)<br>
-            graph.add_node(<span class="string">"tech_node"</span>, handle_tech)<br>
-            <br>
-            graph.add_edge(START, <span class="string">"classify"</span>)<br>
-            graph.add_conditional_edges(<span class="string">"classify"</span>, route, {<span class="string">"hr_node"</span>: <span class="string">"hr_node"</span>, <span class="string">"tech_node"</span>: <span class="string">"tech_node"</span>})<br>
-            graph.add_edge(<span class="string">"hr_node"</span>, END)<br>
-            graph.add_edge(<span class="string">"tech_node"</span>, END)<br>
-            <br>
-            app = graph.compile()<br>
-            result = app.invoke({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>})<br>
-            <span class="func">print</span>(result[<span class="string">"response"</span>])&nbsp;&nbsp;<span class="output"># "HR: You get 24 annual leave days."</span>
-          </div>
+          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict
+<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END
+
+<span class="keyword">class</span> <span class="func">State</span>(TypedDict):
+    message: <span class="keyword">str</span>
+    category: <span class="keyword">str</span>
+    response: <span class="keyword">str</span>
+
+<span class="keyword">def</span> <span class="func">classify</span>(state): <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span> <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> state[<span class="string">"message"</span>] <span class="keyword">else</span> <span class="string">"tech"</span>}
+<span class="keyword">def</span> <span class="func">handle_hr</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"HR: You get 24 annual leave days."</span>}
+<span class="keyword">def</span> <span class="func">handle_tech</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"Tech: Use FastAPI for new services."</span>}
+<span class="keyword">def</span> <span class="func">route</span>(state): <span class="keyword">return</span> <span class="string">"hr_node"</span> <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span> <span class="keyword">else</span> <span class="string">"tech_node"</span>
+
+graph = StateGraph(State)
+graph.add_node(<span class="string">"classify"</span>, classify)
+graph.add_node(<span class="string">"hr_node"</span>, handle_hr)
+graph.add_node(<span class="string">"tech_node"</span>, handle_tech)
+
+graph.add_edge(START, <span class="string">"classify"</span>)
+graph.add_conditional_edges(<span class="string">"classify"</span>, route, {<span class="string">"hr_node"</span>: <span class="string">"hr_node"</span>, <span class="string">"tech_node"</span>: <span class="string">"tech_node"</span>})
+graph.add_edge(<span class="string">"hr_node"</span>, END)
+graph.add_edge(<span class="string">"tech_node"</span>, END)
+
+app = graph.compile()
+result = app.invoke({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>})
+<span class="func">print</span>(result[<span class="string">"response"</span>])  <span class="output"># "HR: You get 24 annual leave days."</span></div>
         </section>
 
         <!-- CYCLES IN GRAPHS -->
@@ -776,19 +760,17 @@
           <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:4px;">
             If review fails &rarr; loop back to Draft (cycle!)
           </p>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">def</span> <span class="func">should_continue</span>(state) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"quality_score"</span>] >= 8:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"end"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Good enough, finish</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= 3:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"end"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Too many retries, stop</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"retry"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Loop back to draft</span><br>
-            <br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"review"</span>, should_continue, {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"end"</span>: END,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"retry"</span>: <span class="string">"draft"</span>,&nbsp;&nbsp;<span class="comment"># ← loop back!</span><br>
-            })
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">def</span> <span class="func">should_continue</span>(state) -> <span class="keyword">str</span>:
+    <span class="keyword">if</span> state[<span class="string">"quality_score"</span>] >= 8:
+        <span class="keyword">return</span> <span class="string">"end"</span>      <span class="comment"># Good enough, finish</span>
+    <span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= 3:
+        <span class="keyword">return</span> <span class="string">"end"</span>      <span class="comment"># Too many retries, stop</span>
+    <span class="keyword">return</span> <span class="string">"retry"</span>        <span class="comment"># Loop back to draft</span>
+
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"review"</span>, should_continue, {
+    <span class="string">"end"</span>: END,
+    <span class="string">"retry"</span>: <span class="string">"draft"</span>,  <span class="comment"># ← loop back!</span>
+})</div>
           <div class="takeaway">
             Unlike simple chains, LangGraph supports <strong>cycles</strong> &mdash; edges that go backward.
             This is powerful for retry logic, iterative refinement, and self-correcting workflows.
@@ -809,22 +791,20 @@
         <section>
           <h2>Checkpointing: Save & Resume State</h2>
           <h3>Persist workflow state at every step</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver<br>
-            <br>
-            <span class="comment"># Compile with a checkpointer</span><br>
-            memory = MemorySaver()<br>
-            app = graph.<span class="func">compile</span>(checkpointer=memory)<br>
-            <br>
-            <span class="comment"># Run with a thread_id — state is saved after each node</span><br>
-            config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"workflow-001"</span>}}<br>
-            result = app.<span class="func">invoke</span>({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>}, config)<br>
-            <br>
-            <span class="comment"># Later: inspect the saved state</span><br>
-            snapshot = app.<span class="func">get_state</span>(config)<br>
-            <span class="func">print</span>(snapshot.values)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># Full state at last checkpoint</span><br>
-            <span class="func">print</span>(snapshot.next)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># Which node runs next (or empty if done)</span>
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+
+<span class="comment"># Compile with a checkpointer</span>
+memory = MemorySaver()
+app = graph.<span class="func">compile</span>(checkpointer=memory)
+
+<span class="comment"># Run with a thread_id — state is saved after each node</span>
+config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"workflow-001"</span>}}
+result = app.<span class="func">invoke</span>({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>}, config)
+
+<span class="comment"># Later: inspect the saved state</span>
+snapshot = app.<span class="func">get_state</span>(config)
+<span class="func">print</span>(snapshot.values)      <span class="output"># Full state at last checkpoint</span>
+<span class="func">print</span>(snapshot.next)        <span class="output"># Which node runs next (or empty if done)</span></div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4>Development</h4>
@@ -840,22 +820,20 @@
         <!-- STATE INSPECTION -->
         <section>
           <h2>Inspecting Workflow State</h2>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="comment"># Get the current state snapshot</span><br>
-            snapshot = app.<span class="func">get_state</span>(config)<br>
-            <br>
-            <span class="comment"># What data is in the state?</span><br>
-            <span class="func">print</span>(snapshot.values)<br>
-            <span class="output"># {"message": "How many leave days?", "category": "hr", "response": "24 days"}</span><br>
-            <br>
-            <span class="comment"># Which node runs next? (empty tuple = workflow is done)</span><br>
-            <span class="func">print</span>(snapshot.next)<br>
-            <span class="output"># () &larr; empty means workflow completed</span><br>
-            <br>
-            <span class="comment"># You can even UPDATE the state manually</span><br>
-            app.<span class="func">update_state</span>(config, {<span class="string">"approved"</span>: <span class="keyword">True</span>})<br>
-            <span class="comment"># Then resume: app.invoke(None, config)</span>
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Get the current state snapshot</span>
+snapshot = app.<span class="func">get_state</span>(config)
+
+<span class="comment"># What data is in the state?</span>
+<span class="func">print</span>(snapshot.values)
+<span class="output"># {"message": "How many leave days?", "category": "hr", "response": "24 days"}</span>
+
+<span class="comment"># Which node runs next? (empty tuple = workflow is done)</span>
+<span class="func">print</span>(snapshot.next)
+<span class="output"># () &larr; empty means workflow completed</span>
+
+<span class="comment"># You can even UPDATE the state manually</span>
+app.<span class="func">update_state</span>(config, {<span class="string">"approved"</span>: <span class="keyword">True</span>})
+<span class="comment"># Then resume: app.invoke(None, config)</span></div>
           <div class="takeaway">
             Checkpointing gives you <strong>full visibility</strong> into your workflow.
             You can inspect the state at any point, see which node runs next,
@@ -885,44 +863,40 @@
               <strong>END</strong>
             </div>
           </div>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="comment"># Compile with interrupt_before — pauses BEFORE "send_email" runs</span><br>
-            app = graph.<span class="func">compile</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;checkpointer=MemorySaver(),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;interrupt_before=[<span class="string">"send_email"</span>]&nbsp;&nbsp;<span class="comment"># ← pause point</span><br>
-            )<br>
-            <br>
-            <span class="comment"># Run — stops before send_email</span><br>
-            result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft an email to the team"</span>}, config)<br>
-            <span class="comment"># Workflow paused! Human reviews the draft...</span><br>
-            <br>
-            <span class="comment"># Human approves → resume from where it paused</span><br>
-            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;<span class="comment"># ← None means "continue"</span><br>
-            <span class="comment"># send_email node now executes</span>
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Compile with interrupt_before — pauses BEFORE "send_email" runs</span>
+app = graph.<span class="func">compile</span>(
+    checkpointer=MemorySaver(),
+    interrupt_before=[<span class="string">"send_email"</span>]  <span class="comment"># ← pause point</span>
+)
+
+<span class="comment"># Run — stops before send_email</span>
+result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft an email to the team"</span>}, config)
+<span class="comment"># Workflow paused! Human reviews the draft...</span>
+
+<span class="comment"># Human approves → resume from where it paused</span>
+result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># ← None means "continue"</span>
+<span class="comment"># send_email node now executes</span></div>
         </section>
 
         <!-- HITL WITH STATE UPDATE -->
         <section>
           <h2>Human Edits Before Resuming</h2>
           <h3>The human can modify the state before approving</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># Step 1: Run until pause point</span><br>
-            result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft email to team about Friday lunch"</span>}, config)<br>
-            <br>
-            <span class="comment"># Step 2: Inspect what the draft node produced</span><br>
-            snapshot = app.<span class="func">get_state</span>(config)<br>
-            <span class="func">print</span>(snapshot.values[<span class="string">"draft"</span>])<br>
-            <span class="output"># "Hi team, lunch on Friday at 1 PM."</span><br>
-            <br>
-            <span class="comment"># Step 3: Human edits the draft</span><br>
-            app.<span class="func">update_state</span>(config, {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"draft"</span>: <span class="string">"Hi team, Friday lunch at 12:30 PM at the cafeteria. See you there!"</span><br>
-            })<br>
-            <br>
-            <span class="comment"># Step 4: Resume — sends the edited version</span><br>
-            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Step 1: Run until pause point</span>
+result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft email to team about Friday lunch"</span>}, config)
+
+<span class="comment"># Step 2: Inspect what the draft node produced</span>
+snapshot = app.<span class="func">get_state</span>(config)
+<span class="func">print</span>(snapshot.values[<span class="string">"draft"</span>])
+<span class="output"># "Hi team, lunch on Friday at 1 PM."</span>
+
+<span class="comment"># Step 3: Human edits the draft</span>
+app.<span class="func">update_state</span>(config, {
+    <span class="string">"draft"</span>: <span class="string">"Hi team, Friday lunch at 12:30 PM at the cafeteria. See you there!"</span>
+})
+
+<span class="comment"># Step 4: Resume — sends the edited version</span>
+result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)</div>
           <div class="takeaway">
             Human-in-the-loop isn't just approve/reject. The human can <strong>inspect the state</strong>,
             <strong>modify values</strong>, and <strong>resume</strong>. This is critical for production AI:
@@ -938,20 +912,16 @@
               <h4><code>interrupt_before</code></h4>
               <p>Pause <strong>before</strong> a node runs. Use when the human should review
               the state <em>before</em> an action happens.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                <span class="comment"># Pause before sending</span><br>
-                interrupt_before=[<span class="string">"send_email"</span>]
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># Pause before sending</span>
+interrupt_before=[<span class="string">"send_email"</span>]</div>
               <p style="margin-top:6px; font-size:0.85em;">Common: send emails, make payments, delete data</p>
             </div>
             <div class="card card-green" style="padding:16px;">
               <h4><code>interrupt_after</code></h4>
               <p>Pause <strong>after</strong> a node runs. Use when the human should review
               the <em>output</em> of a step.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">
-                <span class="comment"># Pause after drafting</span><br>
-                interrupt_after=[<span class="string">"draft_email"</span>]
-              </div>
+              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># Pause after drafting</span>
+interrupt_after=[<span class="string">"draft_email"</span>]</div>
               <p style="margin-top:6px; font-size:0.85em;">Common: review drafts, verify classifications, check data</p>
             </div>
           </div>
@@ -986,12 +956,10 @@
               <td>Multi-server production</td>
             </tr>
           </table>
-          <div class="code-block" style="font-size:0.52em; margin-top:12px;">
-            <span class="comment"># Switch from dev to production — just change the checkpointer!</span><br>
-            <span class="comment"># memory = MemorySaver()  ← development</span><br>
-            memory = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)&nbsp;&nbsp;<span class="comment"># ← production</span><br>
-            app = graph.<span class="func">compile</span>(checkpointer=memory)
-          </div>
+          <div class="code-block" style="font-size:0.52em; margin-top:12px;"><span class="comment"># Switch from dev to production — just change the checkpointer!</span>
+<span class="comment"># memory = MemorySaver()  ← development</span>
+memory = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)  <span class="comment"># ← production</span>
+app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
         </section>
       </section>
 

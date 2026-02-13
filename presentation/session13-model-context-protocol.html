@@ -859,8 +859,7 @@
         <div class="card-grid">
           <div class="card card-accent">
             <h4>Claude Desktop Config</h4>
-            <div class="code-block" style="font-size:0.55em;">
-{
+            <div class="code-block" style="font-size:0.55em;">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"postgres"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
@@ -869,13 +868,11 @@
         <span class="string">"postgresql://localhost/mydb"</span>]
     }
   }
-}
-            </div>
+}</div>
           </div>
           <div class="card card-green">
             <h4>Claude Code Config</h4>
-            <div class="code-block" style="font-size:0.55em;">
-{
+            <div class="code-block" style="font-size:0.55em;">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"github"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
@@ -886,8 +883,7 @@
       }
     }
   }
-}
-            </div>
+}</div>
           </div>
         </div>
         <div class="takeaway">
@@ -899,8 +895,7 @@
       <section>
         <h2>Multi-Server Configuration</h2>
         <p style="font-size:0.75em; color:#ccc;">Connect one agent to five MCP servers &mdash; each with its own scope and credentials</p>
-        <div class="code-block">
-{
+        <div class="code-block">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"postgres"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
@@ -924,16 +919,14 @@
       <span class="string">"url"</span>: <span class="string">"https://mcp-gateway.internal/confluence/sse"</span>
     }
   }
-}
-        </div>
+}</div>
       </section>
 
       <!-- BRIDGING MCP WITH LANGCHAIN -->
       <section>
         <h2>Bridging MCP with LangChain</h2>
         <p style="font-size:0.75em; color:#ccc;">Use <code>langchain-mcp-adapters</code> to bring MCP tools into LangChain agents</p>
-        <div class="code-block">
-<span class="comment"># pip install langchain-mcp-adapters</span>
+        <div class="code-block"><span class="comment"># pip install langchain-mcp-adapters</span>
 <span class="keyword">from</span> langchain_mcp_adapters.client <span class="keyword">import</span> MultiServerMCPClient
 <span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
 
@@ -947,8 +940,7 @@
     agent = create_react_agent(llm, tools)
     result = <span class="keyword">await</span> agent.ainvoke({
         <span class="string">"messages"</span>: [(<span class="string">"user"</span>, <span class="string">"What's 2+2 and weather in SF?"</span>)]
-    })
-        </div>
+    })</div>
         <div class="takeaway">
           <span class="highlight">MCP for tool standardization</span> + <span class="highlight-green">LangChain/LangGraph for orchestration</span>. The adapter bridges both worlds &mdash; MCP servers become LangChain tools automatically.
         </div>

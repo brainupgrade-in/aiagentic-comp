@@ -553,8 +553,7 @@
       <section>
         <h2><span class="signal-logs">LOGS</span> &mdash; Event Records</h2>
         <p style="font-size:0.75em; color:#ccc;">Rich, unstructured or structured text capturing discrete events</p>
-        <div class="code-block">
-<span class="comment"># Unstructured log (hard to parse)</span>
+        <div class="code-block"><span class="comment"># Unstructured log (hard to parse)</span>
 2025-01-15 14:32:01 ERROR Failed to connect to ChromaDB at localhost:8000
 
 <span class="comment"># Structured log (machine-parseable, preferred)</span>
@@ -566,8 +565,7 @@
   <span class="string">"target_host"</span>: <span class="string">"localhost:8000"</span>,
   <span class="string">"trace_id"</span>: <span class="string">"abc123def456"</span>,
   <span class="string">"retry_count"</span>: 3
-}
-        </div>
+}</div>
         <div class="card-grid">
           <div class="card card-green">
             <h4>Best Practices</h4>
@@ -857,13 +855,11 @@
             </ul>
           </div>
         </div>
-        <div class="code-block">
-<span class="comment"># Environment variables to configure OTLP export</span>
+        <div class="code-block"><span class="comment"># Environment variables to configure OTLP export</span>
 <span class="keyword">OTEL_EXPORTER_OTLP_ENDPOINT</span>=<span class="string">"http://otel-collector:4317"</span>
 <span class="keyword">OTEL_EXPORTER_OTLP_PROTOCOL</span>=<span class="string">"grpc"</span>          <span class="comment"># or "http/protobuf"</span>
 <span class="keyword">OTEL_SERVICE_NAME</span>=<span class="string">"agent-api"</span>
-<span class="keyword">OTEL_RESOURCE_ATTRIBUTES</span>=<span class="string">"deployment.environment=production,service.version=2.0"</span>
-        </div>
+<span class="keyword">OTEL_RESOURCE_ATTRIBUTES</span>=<span class="string">"deployment.environment=production,service.version=2.0"</span></div>
       </section>
 
       <!-- AUTO VS MANUAL INSTRUMENTATION -->
@@ -878,12 +874,10 @@
               <li>Covers HTTP endpoints, database calls, external requests</li>
               <li>Great starting point &mdash; get spans immediately</li>
             </ul>
-            <div class="code-block" style="margin-top:8px;">
-<span class="comment"># Run with auto-instrumentation</span>
+            <div class="code-block" style="margin-top:8px;"><span class="comment"># Run with auto-instrumentation</span>
 opentelemetry-instrument \
   --service_name agent-api \
-  python -m uvicorn main:app
-            </div>
+  python -m uvicorn main:app</div>
           </div>
           <div class="card card-green">
             <h4>Manual Instrumentation</h4>
@@ -893,13 +887,11 @@ opentelemetry-instrument \
               <li>Add custom attributes (tokens, model, cost)</li>
               <li>Full control over span names and hierarchy</li>
             </ul>
-            <div class="code-block" style="margin-top:8px;">
-<span class="comment"># Create custom span</span>
+            <div class="code-block" style="margin-top:8px;"><span class="comment"># Create custom span</span>
 <span class="keyword">with</span> tracer.start_as_current_span(
     <span class="string">"llm_call"</span>) <span class="keyword">as</span> span:
     span.set_attribute(<span class="string">"llm.model"</span>, <span class="string">"groq/llama3"</span>)
-    span.set_attribute(<span class="string">"llm.tokens"</span>, 1250)
-            </div>
+    span.set_attribute(<span class="string">"llm.tokens"</span>, 1250)</div>
           </div>
         </div>
         <div class="takeaway">
@@ -948,8 +940,7 @@ opentelemetry-instrument \
       <!-- OTEL COLLECTOR CONFIG -->
       <section>
         <h2>Collector Configuration</h2>
-        <div class="code-block">
-<span class="comment"># otel-collector-config.yaml</span>
+        <div class="code-block"><span class="comment"># otel-collector-config.yaml</span>
 <span class="keyword">receivers</span>:
   <span class="func">otlp</span>:
     protocols:
@@ -984,8 +975,7 @@ opentelemetry-instrument \
     <span class="func">metrics</span>:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/langfuse]
-        </div>
+      exporters: [otlp/langfuse]</div>
       </section>
 
       <!-- BACKEND OPTIONS -->
@@ -1076,8 +1066,7 @@ opentelemetry-instrument \
       <!-- PYTHON OTEL PACKAGES -->
       <section>
         <h2>Python OTel Packages</h2>
-        <div class="code-block">
-<span class="comment"># Core SDK</span>
+        <div class="code-block"><span class="comment"># Core SDK</span>
 pip install opentelemetry-api
 pip install opentelemetry-sdk
 
@@ -1095,8 +1084,7 @@ pip install opentelemetry-instrumentation-logging      <span class="comment"># L
 
 <span class="comment"># Or install everything at once</span>
 pip install opentelemetry-distro
-opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and install</span>
-        </div>
+opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and install</span></div>
         <div class="takeaway">
           <code>opentelemetry-distro</code> + <code>opentelemetry-bootstrap</code> automatically detects which libraries you use and installs the matching instrumentations.
         </div>
@@ -1105,8 +1093,7 @@ opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and ins
       <!-- SETUP TRACER -->
       <section>
         <h2>Setting Up the Tracer</h2>
-        <div class="code-block">
-<span class="comment"># tracing.py &mdash; OTel initialization</span>
+        <div class="code-block"><span class="comment"># tracing.py &mdash; OTel initialization</span>
 <span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
 <span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
 <span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> BatchSpanProcessor
@@ -1129,8 +1116,7 @@ provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
 
 <span class="comment"># 3. Get a tracer for your module</span>
-tracer = trace.get_tracer(<span class="string">"agent.api"</span>)
-        </div>
+tracer = trace.get_tracer(<span class="string">"agent.api"</span>)</div>
         <div style="font-size:0.65em; color:#aaa; margin-top:10px;">
           Resource attributes identify <em>which service</em> generated the telemetry. Every span carries these.
         </div>
@@ -1142,8 +1128,7 @@ tracer = trace.get_tracer(<span class="string">"agent.api"</span>)
         <div class="card-grid">
           <div class="card card-accent">
             <h4>Option A: Code-Based</h4>
-            <div class="code-block" style="margin-top:8px;">
-<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+            <div class="code-block" style="margin-top:8px;"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
 <span class="keyword">from</span> opentelemetry.instrumentation.fastapi \
     <span class="keyword">import</span> FastAPIInstrumentor
 
@@ -1159,13 +1144,11 @@ FastAPIInstrumentor.instrument_app(app)
 <span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
 <span class="keyword">async def</span> <span class="func">chat</span>(query: str):
     <span class="comment"># This endpoint auto-gets a span!</span>
-    <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"..."</span>}
-            </div>
+    <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"..."</span>}</div>
           </div>
           <div class="card card-green">
             <h4>Option B: Zero-Code</h4>
-            <div class="code-block" style="margin-top:8px;">
-<span class="comment"># No code changes needed!</span>
+            <div class="code-block" style="margin-top:8px;"><span class="comment"># No code changes needed!</span>
 <span class="comment"># Just run with the instrument wrapper:</span>
 
 opentelemetry-instrument \
@@ -1176,8 +1159,7 @@ opentelemetry-instrument \
     --host 0.0.0.0 --port 8000
 
 <span class="comment"># Every FastAPI endpoint now</span>
-<span class="comment"># produces spans automatically</span>
-            </div>
+<span class="comment"># produces spans automatically</span></div>
             <p style="margin-top:10px;">Spans include: HTTP method, path, status code, duration, headers</p>
           </div>
         </div>
@@ -1230,8 +1212,7 @@ opentelemetry-instrument \
       <!-- CUSTOM SPANS -->
       <section>
         <h2>Custom Spans for AI Logic</h2>
-        <div class="code-block">
-<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
+        <div class="code-block"><span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
 
 tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
 
@@ -1255,8 +1236,7 @@ tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
             llm_span.set_attribute(<span class="string">"llm.cost_usd"</span>, calculate_cost(response.usage))
 
         span.set_attribute(<span class="string">"agent.tools_used"</span>, 2)
-        <span class="keyword">return</span> response.content
-        </div>
+        <span class="keyword">return</span> response.content</div>
       </section>
 
       <!-- SPAN ATTRIBUTES FOR AI -->
@@ -1318,8 +1298,7 @@ tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
       <!-- CUSTOM METRICS -->
       <section>
         <h2>Custom Metrics in Python</h2>
-        <div class="code-block">
-<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> metrics
+        <div class="code-block"><span class="keyword">from</span> opentelemetry <span class="keyword">import</span> metrics
 <span class="keyword">from</span> opentelemetry.sdk.metrics <span class="keyword">import</span> MeterProvider
 <span class="keyword">from</span> opentelemetry.sdk.metrics.export <span class="keyword">import</span> PeriodicExportingMetricReader
 <span class="keyword">from</span> opentelemetry.exporter.otlp.proto.grpc.metric_exporter <span class="keyword">import</span> OTLPMetricExporter
@@ -1349,16 +1328,14 @@ latency_histogram = meter.create_histogram(
 <span class="comment"># Record metrics in your handlers</span>
 request_counter.add(1, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
 token_counter.add(1270, {<span class="string">"direction"</span>: <span class="string">"total"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
-latency_histogram.record(342.5, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>})
-        </div>
+latency_histogram.record(342.5, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>})</div>
       </section>
 
       <!-- LOG CORRELATION -->
       <section>
         <h2>Log Correlation with Trace IDs</h2>
         <p style="font-size:0.75em; color:#ccc;">Connect logs to traces so you can jump between them</p>
-        <div class="code-block">
-<span class="keyword">import</span> logging
+        <div class="code-block"><span class="keyword">import</span> logging
 <span class="keyword">from</span> opentelemetry.instrumentation.logging <span class="keyword">import</span> LoggingInstrumentor
 
 <span class="comment"># Enable trace context injection into logs</span>
@@ -1377,8 +1354,7 @@ logger = logging.getLogger(<span class="string">"agent"</span>)
 logger.info(<span class="string">"Processing query"</span>)
 <span class="comment"># Output:</span>
 <span class="comment"># 2025-01-15 14:32:01 INFO [agent]</span>
-<span class="comment"># [trace_id=abc123def456 span_id=789xyz] Processing query</span>
-        </div>
+<span class="comment"># [trace_id=abc123def456 span_id=789xyz] Processing query</span></div>
         <div class="diagram" style="margin-top:16px;">
           <div class="box" style="font-size:0.6em;">See error in<br><strong>LangFuse/Loki</strong><br>(logs)</div>
           <div class="arrow">&rarr;</div>
@@ -1393,8 +1369,7 @@ logger.info(<span class="string">"Processing query"</span>)
       <!-- PUTTING IT ALL TOGETHER -->
       <section>
         <h2>Complete FastAPI + OTel Setup</h2>
-        <div class="code-block">
-<span class="comment"># main.py &mdash; Production FastAPI with full OTel</span>
+        <div class="code-block"><span class="comment"># main.py &mdash; Production FastAPI with full OTel</span>
 <span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
 <span class="keyword">from</span> tracing <span class="keyword">import</span> tracer, setup_otel   <span class="comment"># our tracing.py module</span>
 <span class="keyword">from</span> opentelemetry.instrumentation.fastapi <span class="keyword">import</span> FastAPIInstrumentor
@@ -1420,15 +1395,13 @@ RedisInstrumentor().instrument()
         result = <span class="keyword">await</span> agent.process(query)
 
         span.set_attribute(<span class="string">"agent.response_length"</span>, len(result))
-        <span class="keyword">return</span> {<span class="string">"response"</span>: result}
-        </div>
+        <span class="keyword">return</span> {<span class="string">"response"</span>: result}</div>
       </section>
 
       <!-- PYTHON OTEL CONFIGURATION -->
       <section>
         <h2>Configuring OTel in Python</h2>
-        <div class="code-block">
-<span class="comment"># otel_config.py &mdash; Python OTel setup with ConsoleSpanExporter</span>
+        <div class="code-block"><span class="comment"># otel_config.py &mdash; Python OTel setup with ConsoleSpanExporter</span>
 <span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
 <span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
 <span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> (
@@ -1452,8 +1425,7 @@ provider.add_span_processor(
 )
 trace.set_tracer_provider(provider)
 
-<span class="comment"># Run with: uvicorn app:app --host 0.0.0.0 --port 8000</span>
-        </div>
+<span class="comment"># Run with: uvicorn app:app --host 0.0.0.0 --port 8000</span></div>
         <div class="warning">
           In production, use <strong>sampling</strong> (e.g., 10%) to avoid overwhelming your trace backend. Always sample 100% of errors regardless of the ratio.
         </div>

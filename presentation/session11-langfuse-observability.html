@@ -543,8 +543,7 @@
       <section>
         <h2>LangFuse SDK Setup (Mock Mode)</h2>
         <p style="font-size:0.75em; color:#ccc;">Learn real SDK patterns &mdash; data logged to local JSON files</p>
-        <div class="code-block">
-<span class="comment"># mock_langfuse.py &mdash; Mock LangFuse for local development</span>
+        <div class="code-block"><span class="comment"># mock_langfuse.py &mdash; Mock LangFuse for local development</span>
 <span class="keyword">import</span> json, time, uuid
 <span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
 
@@ -569,8 +568,7 @@
 
     <span class="keyword">def</span> <span class="func">flush</span>(self):
         path = self.output_dir / <span class="string">"traces.json"</span>
-        path.write_text(json.dumps(self.traces, indent=2))
-        </div>
+        path.write_text(json.dumps(self.traces, indent=2))</div>
         <div style="font-size:0.6em; color:#aaa; margin-top:8px;">
           SDK patterns are real &mdash; mock mode logs data to local JSON files for inspection
         </div>
@@ -613,17 +611,14 @@
       <!-- SETUP -->
       <section>
         <h2>Installation &amp; Setup</h2>
-        <div class="code-block">
-<span class="comment"># Install LangFuse SDK</span>
+        <div class="code-block"><span class="comment"># Install LangFuse SDK</span>
 pip install langfuse
 
 <span class="comment"># Environment variables</span>
 <span class="keyword">LANGFUSE_PUBLIC_KEY</span>=<span class="string">"pk-lf-..."</span>      <span class="comment"># From LangFuse project settings</span>
 <span class="keyword">LANGFUSE_SECRET_KEY</span>=<span class="string">"sk-lf-..."</span>      <span class="comment"># From LangFuse project settings</span>
-<span class="keyword">LANGFUSE_HOST</span>=<span class="string">"http://langfuse:3000"</span> <span class="comment"># Self-hosted URL</span>
-        </div>
-        <div class="code-block">
-<span class="comment"># Initialize LangFuse client</span>
+<span class="keyword">LANGFUSE_HOST</span>=<span class="string">"http://langfuse:3000"</span> <span class="comment"># Self-hosted URL</span></div>
+        <div class="code-block"><span class="comment"># Initialize LangFuse client</span>
 <span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
 
 langfuse = Langfuse(
@@ -633,16 +628,14 @@ langfuse = Langfuse(
 )
 
 <span class="comment"># Verify connection</span>
-langfuse.auth_check()  <span class="comment"># Returns True if connected</span>
-        </div>
+langfuse.auth_check()  <span class="comment"># Returns True if connected</span></div>
       </section>
 
       <!-- LANGCHAIN CALLBACK -->
       <section>
         <h2>LangChain Callback Handler</h2>
         <p style="font-size:0.75em; color:#ccc;">One line to trace entire LangChain workflows</p>
-        <div class="code-block">
-<span class="keyword">from</span> langfuse.callback <span class="keyword">import</span> CallbackHandler
+        <div class="code-block"><span class="keyword">from</span> langfuse.callback <span class="keyword">import</span> CallbackHandler
 
 <span class="comment"># Create handler for this request</span>
 handler = CallbackHandler(
@@ -665,15 +658,13 @@ result = chain.invoke(
 <span class="comment">#   - Every LLM call (input, output, model, tokens)</span>
 <span class="comment">#   - Every tool call (name, arguments, result)</span>
 <span class="comment">#   - Chain execution flow (parent → child spans)</span>
-<span class="comment">#   - Retriever calls (query, documents returned)</span>
-        </div>
+<span class="comment">#   - Retriever calls (query, documents returned)</span></div>
       </section>
 
       <!-- RAG EXAMPLE -->
       <section>
         <h2>Tracing a RAG Pipeline</h2>
-        <div class="code-block">
-<span class="keyword">from</span> langchain_community.vectorstores <span class="keyword">import</span> Chroma
+        <div class="code-block"><span class="keyword">from</span> langchain_community.vectorstores <span class="keyword">import</span> Chroma
 <span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
 <span class="keyword">from</span> langchain.chains <span class="keyword">import</span> RetrievalQA
 <span class="keyword">from</span> langfuse.callback <span class="keyword">import</span> CallbackHandler
@@ -700,8 +691,7 @@ handler = CallbackHandler(
 result = chain.invoke(
     {<span class="string">"query"</span>: <span class="string">"How do Python health checks work?"</span>},
     config={<span class="string">"callbacks"</span>: [handler]}
-)
-        </div>
+)</div>
       </section>
 
       <!-- WHAT GETS CAPTURED -->
@@ -729,8 +719,7 @@ result = chain.invoke(
       <!-- USER FEEDBACK -->
       <section>
         <h2>User Feedback Collection</h2>
-        <div class="code-block">
-<span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
+        <div class="code-block"><span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
 
 langfuse = Langfuse()
 
@@ -756,8 +745,7 @@ langfuse.score(
     name=<span class="string">"relevance"</span>,
     value=<span class="func">calculate_relevance_score</span>(query, response),
     comment=<span class="string">"Auto-evaluated by relevance model"</span>,
-)
-        </div>
+)</div>
         <div class="card-grid" style="margin-top:10px;">
           <div class="card card-accent">
             <h4>Manual Scores</h4>
@@ -774,8 +762,7 @@ langfuse.score(
       <section>
         <h2>Prompt Management</h2>
         <p style="font-size:0.75em; color:#ccc;">Version, compare, and rollback prompts without code changes</p>
-        <div class="code-block">
-<span class="comment"># Fetch a managed prompt from LangFuse</span>
+        <div class="code-block"><span class="comment"># Fetch a managed prompt from LangFuse</span>
 <span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
 
 langfuse = Langfuse()
@@ -792,8 +779,7 @@ template = ChatPromptTemplate.from_messages([
 ])
 
 <span class="comment"># The prompt is automatically linked to traces</span>
-<span class="comment"># You can see which prompt version produced which responses</span>
-        </div>
+<span class="comment"># You can see which prompt version produced which responses</span></div>
         <div class="card-grid" style="margin-top:10px;">
           <div class="card card-accent">
             <h4>Version Control</h4>

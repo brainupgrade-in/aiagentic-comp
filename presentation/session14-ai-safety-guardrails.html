@@ -598,8 +598,7 @@ Clean Input &rarr; LLM
             <td>4111-1111-1111-1111</td>
           </tr>
         </table>
-        <div class="code-block" style="margin-top:14px;">
-<span class="keyword">import</span> re
+        <div class="code-block" style="margin-top:14px;"><span class="keyword">import</span> re
 <span class="keyword">from</span> typing <span class="keyword">import</span> Dict, List
 
 PII_PATTERNS: Dict[str, str] = {
@@ -615,8 +614,7 @@ PII_PATTERNS: Dict[str, str] = {
     <span class="keyword">for</span> pii_type, pattern <span class="keyword">in</span> PII_PATTERNS.items():
         <span class="keyword">for</span> match <span class="keyword">in</span> re.finditer(pattern, text):
             findings.append({<span class="string">"type"</span>: pii_type, <span class="string">"match"</span>: match.group(), <span class="string">"pos"</span>: match.start()})
-    <span class="keyword">return</span> findings
-        </div>
+    <span class="keyword">return</span> findings</div>
       </section>
 
       <!-- ==================== SLIDE 8: JAILBREAK TECHNIQUES ==================== -->
@@ -770,8 +768,7 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
       <section>
         <h2>Building a Guard Pipeline</h2>
         <p style="font-size:0.75em; color:#ccc;">Composable guards that chain together for defense in depth</p>
-        <div class="code-block">
-<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+        <div class="code-block"><span class="keyword">from</span> typing <span class="keyword">import</span> Optional
 <span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
 
 <span class="keyword">@dataclass</span>
@@ -802,8 +799,7 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
                 <span class="keyword">return</span> result  <span class="comment"># Fail fast</span>
             <span class="keyword">if</span> result.modified_text:
                 text = result.modified_text  <span class="comment"># Pass modified text to next guard</span>
-        <span class="keyword">return</span> GuardResult(passed=<span class="keyword">True</span>, modified_text=text)
-        </div>
+        <span class="keyword">return</span> GuardResult(passed=<span class="keyword">True</span>, modified_text=text)</div>
         <div class="card-grid-3" style="margin-top:10px;">
           <div class="card card-accent">
             <h4>Topic Guard</h4>
@@ -1150,13 +1146,11 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
             <td>Full pipeline: input &rarr; guards &rarr; LLM &rarr; validation &rarr; monitoring</td>
           </tr>
         </table>
-        <div class="code-block" style="margin-top:12px;">
-<span class="comment"># Run a lab</span>
+        <div class="code-block" style="margin-top:12px;"><span class="comment"># Run a lab</span>
 <span class="keyword">cd</span> hands-on/session-14 && python lab01_prompt_injection_detection.py
 
 <span class="comment"># Run the solution</span>
-<span class="keyword">cd</span> hands-on/session-14 && python solutions/lab01_prompt_injection_detection.py
-        </div>
+<span class="keyword">cd</span> hands-on/session-14 && python solutions/lab01_prompt_injection_detection.py</div>
       </section>
 
       <!-- ==================== SLIDE 20: WHAT'S NEXT ==================== -->

@@ -523,8 +523,7 @@
         <section>
           <h2>Tool Architecture</h2>
           <div class="pattern-label">Pseudo-Python</div>
-          <div class="code-block">
-TOOLS = {
+          <div class="code-block">TOOLS = {
     <span class="string">"read_file"</span>:    read_file_contents,
     <span class="string">"write_file"</span>:   write_file_contents,
     <span class="string">"search_code"</span>:  grep_codebase,
@@ -538,8 +537,7 @@ TOOLS = {
         tool = select_tool(step)
         result = TOOLS[tool.name](**tool.args)
         <span class="keyword">if not</span> validate(result):
-            plan = llm.replan(task, result)  <span class="comment"># adapt on failure</span>
-          </div>
+            plan = llm.replan(task, result)  <span class="comment"># adapt on failure</span></div>
           <div class="card-grid-3">
             <div class="card card-accent">
               <h4>Read Tools</h4>
@@ -671,8 +669,7 @@ TOOLS = {
         <section>
           <h2>Plan-Code-Test in Action</h2>
           <h3>Example: "Add input validation to the login endpoint"</h3>
-          <div class="code-block">
-<span class="comment"># Agent's internal reasoning trace:</span>
+          <div class="code-block"><span class="comment"># Agent's internal reasoning trace:</span>
 
 <span class="keyword">1. PLAN:</span>
    - Search for login endpoint: <span class="func">grep</span> "def login" across codebase
@@ -691,8 +688,7 @@ TOOLS = {
 
 <span class="keyword">4. REFLECT:</span>
    - Fix: update status code from 400 to 422 in route
-   - Re-run: pytest tests/test_auth.py &mdash; ALL PASSED
-          </div>
+   - Re-run: pytest tests/test_auth.py &mdash; ALL PASSED</div>
         </section>
 
         <!-- SAFETY AND SANDBOXING -->
@@ -819,8 +815,7 @@ TOOLS = {
         <section>
           <h2>How CLAUDE.md Works</h2>
           <h3>Persistent project-level context for AI agents</h3>
-          <div class="code-block">
-<span class="comment"># CLAUDE.md &mdash; placed in project root</span>
+          <div class="code-block"><span class="comment"># CLAUDE.md &mdash; placed in project root</span>
 
 <span class="keyword">## Project Overview</span>
 This is a FastAPI microservice for order processing.
@@ -839,8 +834,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
 <span class="keyword">## Conventions</span>
 - snake_case for functions, PascalCase for classes
 - Every endpoint must have a docstring
-- Never commit .env files
-          </div>
+- Never commit .env files</div>
           <div class="takeaway">
             CLAUDE.md is loaded <strong>automatically</strong> at the start of every conversation.
             It gives the agent persistent context about your project without you repeating it every time.
@@ -973,8 +967,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
         <!-- STRUCTURED PROMPT TEMPLATE -->
         <section>
           <h2>Structured Prompt Template</h2>
-          <div class="code-block">
-<span class="keyword">## Task</span>
+          <div class="code-block"><span class="keyword">## Task</span>
 [What you want to accomplish]
 
 <span class="keyword">## Context</span>
@@ -992,8 +985,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
 [How to verify the fix: tests, commands, manual checks]
 - Run: pytest tests/test_auth.py -k test_expired_session
 - Run: curl -H "Cookie: session=expired" localhost:8000/api/me
-- Expected: HTTP 401 with JSON error body
-          </div>
+- Expected: HTTP 401 with JSON error body</div>
           <div class="analogy">
             This template is like a well-written Jira ticket. The developer (or agent)
             reading it knows exactly what to do, where to look, and how to verify the result

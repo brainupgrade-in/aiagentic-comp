@@ -610,8 +610,7 @@
         <section>
           <h2>Supervisor/Worker &mdash; Code</h2>
           <div class="pattern-label">LangGraph Implementation</div>
-          <div class="code-block">
-<span class="keyword">class</span> TeamState(TypedDict):
+          <div class="code-block"><span class="keyword">class</span> TeamState(TypedDict):
     request: <span class="func">str</span>
     assigned_to: <span class="func">str</span>
     worker_output: <span class="func">str</span>
@@ -632,8 +631,7 @@ graph.add_conditional_edges(<span class="string">"supervisor"</span>, route_to_w
     <span class="string">"hr"</span>: <span class="string">"hr_worker"</span>,
     <span class="string">"tech"</span>: <span class="string">"tech_worker"</span>,
     <span class="string">"finance"</span>: <span class="string">"finance_worker"</span>,
-})
-          </div>
+})</div>
         </section>
 
         <!-- SUPERVISOR WITH ITERATION -->
@@ -653,16 +651,14 @@ graph.add_conditional_edges(<span class="string">"supervisor"</span>, route_to_w
             <div class="arrow">&rarr;</div>
             <div class="box box-red">FINISH</div>
           </div>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">supervisor_decide</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">supervisor_decide</span>(state):
     <span class="comment"># Supervisor sees all previous worker outputs</span>
     <span class="comment"># Decides: send to another worker or FINISH</span>
     prompt = <span class="string">f"""You are a supervisor. Previous results: {state['history']}
 Original request: {state['request']}
 Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
     response = llm.invoke(prompt)
-    <span class="keyword">return</span> {<span class="string">"next_action"</span>: parse_action(response.content)}
-          </div>
+    <span class="keyword">return</span> {<span class="string">"next_action"</span>: parse_action(response.content)}</div>
           <div class="takeaway">
             The supervisor can invoke <strong>multiple workers sequentially</strong> for complex requests,
             checking results after each step before deciding the next action.
@@ -700,8 +696,7 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
         <section>
           <h2>Peer-to-Peer &mdash; Code</h2>
           <div class="pattern-label">Shared State + Turn Routing</div>
-          <div class="code-block">
-<span class="keyword">class</span> CollabState(TypedDict):
+          <div class="code-block"><span class="keyword">class</span> CollabState(TypedDict):
     topic: <span class="func">str</span>
     messages: Annotated[<span class="func">list</span>, add]  <span class="comment"># shared message board</span>
     current_turn: <span class="func">str</span>
@@ -716,8 +711,7 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
 
 <span class="keyword">def</span> <span class="func">route_turn</span>(state) -> <span class="func">str</span>:
     <span class="keyword">if</span> state[<span class="string">"turns_left"</span>] <= 0: <span class="keyword">return</span> <span class="string">"finish"</span>
-    <span class="keyword">return</span> state[<span class="string">"current_turn"</span>]  <span class="comment"># "researcher", "writer", "reviewer"</span>
-          </div>
+    <span class="keyword">return</span> state[<span class="string">"current_turn"</span>]  <span class="comment"># "researcher", "writer", "reviewer"</span></div>
         </section>
 
         <!-- AGENT HANDOFFS -->
@@ -750,8 +744,7 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
         <!-- HANDOFF CODE -->
         <section>
           <h2>Handoff &mdash; Code Pattern</h2>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">triage_agent</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">triage_agent</span>(state):
     prompt = <span class="string">f"""Analyze this request. Can you handle it?
 Request: {state['request']}
 Reply: HANDLE if simple, HANDOFF:specialist_name if complex"""</span>
@@ -772,8 +765,7 @@ graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff,
     <span class="string">"tech_specialist"</span>: <span class="string">"tech_agent"</span>,
     <span class="string">"hr_specialist"</span>: <span class="string">"hr_agent"</span>,
     <span class="string">"done"</span>: <span class="string">"finalize"</span>,
-})
-          </div>
+})</div>
         </section>
 
         <!-- SECTION 1 TAKEAWAY -->
@@ -838,16 +830,14 @@ graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff,
               <div class="box box-red" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 3</div>
             </div>
           </div>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">decompose_task</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">decompose_task</span>(state):
     prompt = <span class="string">f"""Break this request into sub-tasks.
 Request: {state['request']}
 Reply with a numbered list of sub-tasks."""</span>
     response = llm.invoke(prompt)
     subtasks = parse_subtasks(response.content)
     <span class="keyword">return</span> {<span class="string">"subtasks"</span>: subtasks,
-            <span class="string">"audit"</span>: [<span class="string">f"Decomposed into {len(subtasks)} sub-tasks"</span>]}
-          </div>
+            <span class="string">"audit"</span>: [<span class="string">f"Decomposed into {len(subtasks)} sub-tasks"</span>]}</div>
         </section>
 
         <!-- DECOMPOSITION STRATEGIES -->
@@ -946,13 +936,11 @@ Reply with a numbered list of sub-tasks."""</span>
               <td>Creative outputs, draft selection</td>
             </tr>
           </table>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">aggregate_results</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">aggregate_results</span>(state):
     all_results = <span class="string">"\n"</span>.join(state[<span class="string">"worker_outputs"</span>])
     prompt = <span class="string">f"Synthesize these worker results into one response:\n{all_results}"</span>
     response = llm.invoke(prompt)
-    <span class="keyword">return</span> {<span class="string">"final_response"</span>: response.content}
-          </div>
+    <span class="keyword">return</span> {<span class="string">"final_response"</span>: response.content}</div>
         </section>
 
         <!-- CONFLICT RESOLUTION -->
@@ -984,8 +972,7 @@ Reply with a numbered list of sub-tasks."""</span>
         <section>
           <h2>Conflict Resolution &mdash; Code</h2>
           <div class="pattern-label">Arbitrator Pattern</div>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">detect_conflict</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">detect_conflict</span>(state):
     outputs = state[<span class="string">"worker_outputs"</span>]
     <span class="comment"># Check if agents agree</span>
     categories = [o[<span class="string">"category"</span>] <span class="keyword">for</span> o <span class="keyword">in</span> outputs]
@@ -1002,8 +989,7 @@ Analyze both and pick the better answer with reasoning."""</span>
     <span class="keyword">return</span> {<span class="string">"final_response"</span>: response.content}
 
 <span class="keyword">def</span> <span class="func">route_conflict</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> <span class="string">"arbitrator"</span> <span class="keyword">if</span> state[<span class="string">"has_conflict"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span>
-          </div>
+    <span class="keyword">return</span> <span class="string">"arbitrator"</span> <span class="keyword">if</span> state[<span class="string">"has_conflict"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span></div>
         </section>
 
         <!-- COLLABORATION PATTERN: UniGPS EXAMPLE -->
@@ -1093,11 +1079,9 @@ Analyze both and pick the better answer with reasoning."""</span>
               </ul>
             </div>
           </div>
-          <div class="code-block">
-<span class="comment"># Different models for different agents</span>
+          <div class="code-block"><span class="comment"># Different models for different agents</span>
 fast_llm = ChatGroq(model=<span class="string">"llama-3.1-8b-instant"</span>)     <span class="comment"># triage (fast, cheap)</span>
-smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)  <span class="comment"># complex analysis</span>
-          </div>
+smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)  <span class="comment"># complex analysis</span></div>
         </section>
 
         <!-- AGENT ROLES TABLE -->
@@ -1149,22 +1133,18 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             <div class="card card-accent">
               <h4>Round-Robin</h4>
               <p>Distribute requests evenly across equivalent worker agents. Simple but effective for uniform workloads.</p>
-              <div class="code-block" style="margin-top:8px;">
-<span class="keyword">def</span> <span class="func">round_robin</span>(state):
+              <div class="code-block" style="margin-top:8px;"><span class="keyword">def</span> <span class="func">round_robin</span>(state):
     workers = [<span class="string">"w1"</span>, <span class="string">"w2"</span>, <span class="string">"w3"</span>]
     idx = state[<span class="string">"req_count"</span>] % len(workers)
-    <span class="keyword">return</span> {<span class="string">"assigned"</span>: workers[idx]}
-              </div>
+    <span class="keyword">return</span> {<span class="string">"assigned"</span>: workers[idx]}</div>
             </div>
             <div class="card card-green">
               <h4>Capability-Based</h4>
               <p>Route to the agent best equipped for the task. Different agents have different strengths.</p>
-              <div class="code-block" style="margin-top:8px;">
-<span class="keyword">def</span> <span class="func">capability_route</span>(state):
+              <div class="code-block" style="margin-top:8px;"><span class="keyword">def</span> <span class="func">capability_route</span>(state):
     <span class="keyword">if</span> state[<span class="string">"complexity"</span>] > 7:
         <span class="keyword">return</span> {<span class="string">"assigned"</span>: <span class="string">"expert"</span>}
-    <span class="keyword">return</span> {<span class="string">"assigned"</span>: <span class="string">"junior"</span>}
-              </div>
+    <span class="keyword">return</span> {<span class="string">"assigned"</span>: <span class="string">"junior"</span>}</div>
             </div>
           </div>
           <div class="takeaway">
@@ -1186,8 +1166,7 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             <div class="arrow" style="color:var(--accent4);">&mdash; fail &rarr;</div>
             <div class="box box-red">Template<br>Response</div>
           </div>
-          <div class="code-block">
-<span class="keyword">def</span> <span class="func">primary_agent</span>(state):
+          <div class="code-block"><span class="keyword">def</span> <span class="func">primary_agent</span>(state):
     <span class="keyword">try</span>:
         response = smart_llm.invoke(state[<span class="string">"request"</span>])
         <span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>}
@@ -1202,8 +1181,7 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
         <span class="keyword">return</span> {<span class="string">"error"</span>: str(e)}
 
 <span class="keyword">def</span> <span class="func">route_after_primary</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> <span class="string">"fallback"</span> <span class="keyword">if</span> state[<span class="string">"error"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span>
-          </div>
+    <span class="keyword">return</span> <span class="string">"fallback"</span> <span class="keyword">if</span> state[<span class="string">"error"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span></div>
         </section>
 
         <!-- PRODUCTION ARCHITECTURE DIAGRAM -->

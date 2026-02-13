@@ -522,20 +522,18 @@
         <!-- FAN-OUT CODE -->
         <section>
           <h2>Fan-Out &amp; Convergence</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># Fan-out: one node routes to many</span><br>
-            graph.<span class="func">add_conditional_edges</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"classify"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;route_fn,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"hr"</span>: <span class="string">"handle_hr"</span>, <span class="string">"tech"</span>: <span class="string">"handle_tech"</span>, <span class="string">"finance"</span>: <span class="string">"handle_finance"</span>}<br>
-            )<br>
-            <br>
-            <span class="comment"># Convergence: all branches lead to one node</span><br>
-            graph.<span class="func">add_edge</span>(<span class="string">"handle_hr"</span>, <span class="string">"format_response"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"handle_tech"</span>, <span class="string">"format_response"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"handle_finance"</span>, <span class="string">"format_response"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"format_response"</span>, END)
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Fan-out: one node routes to many</span>
+graph.<span class="func">add_conditional_edges</span>(
+    <span class="string">"classify"</span>,
+    route_fn,
+    {<span class="string">"hr"</span>: <span class="string">"handle_hr"</span>, <span class="string">"tech"</span>: <span class="string">"handle_tech"</span>, <span class="string">"finance"</span>: <span class="string">"handle_finance"</span>}
+)
+
+<span class="comment"># Convergence: all branches lead to one node</span>
+graph.<span class="func">add_edge</span>(<span class="string">"handle_hr"</span>, <span class="string">"format_response"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"handle_tech"</span>, <span class="string">"format_response"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"handle_finance"</span>, <span class="string">"format_response"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"format_response"</span>, END)</div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4>Fan-Out</h4>
@@ -569,17 +567,15 @@
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35;">
-            <span class="comment"># Send "input" to three parallel nodes</span><br>
-            graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_spam"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_sentiment"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_language"</span>)<br>
-            <br>
-            <span class="comment"># All three converge to "merge"</span><br>
-            graph.<span class="func">add_edge</span>(<span class="string">"check_spam"</span>, <span class="string">"merge_results"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"check_sentiment"</span>, <span class="string">"merge_results"</span>)<br>
-            graph.<span class="func">add_edge</span>(<span class="string">"check_language"</span>, <span class="string">"merge_results"</span>)
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.35;"><span class="comment"># Send "input" to three parallel nodes</span>
+graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_spam"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_sentiment"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_language"</span>)
+
+<span class="comment"># All three converge to "merge"</span>
+graph.<span class="func">add_edge</span>(<span class="string">"check_spam"</span>, <span class="string">"merge_results"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"check_sentiment"</span>, <span class="string">"merge_results"</span>)
+graph.<span class="func">add_edge</span>(<span class="string">"check_language"</span>, <span class="string">"merge_results"</span>)</div>
           <div class="takeaway">
             When multiple edges leave a node, LangGraph can execute them <strong>in parallel</strong>.
             Use <strong>reducers</strong> (Annotated[list, add]) in the merge node so results accumulate
@@ -590,25 +586,23 @@
         <!-- PARALLEL + REDUCER -->
         <section>
           <h2>Parallel + Reducer Pattern</h2>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated<br>
-            <span class="keyword">from</span> operator <span class="keyword">import</span> add<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">ReviewState</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;content: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;checks: Annotated[<span class="keyword">list</span>, add]&nbsp;&nbsp;<span class="comment"># ← reducer: each parallel node appends</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;approved: <span class="keyword">bool</span><br>
-            <br>
-            <span class="keyword">def</span> <span class="func">check_spam</span>(state) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"spam"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}<br>
-            <br>
-            <span class="keyword">def</span> <span class="func">check_sentiment</span>(state) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"sentiment"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}<br>
-            <br>
-            <span class="keyword">def</span> <span class="func">merge_results</span>(state) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;all_passed = <span class="func">all</span>(c[<span class="string">"passed"</span>] <span class="keyword">for</span> c <span class="keyword">in</span> state[<span class="string">"checks"</span>])<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"approved"</span>: all_passed}
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
+<span class="keyword">from</span> operator <span class="keyword">import</span> add
+
+<span class="keyword">class</span> <span class="func">ReviewState</span>(TypedDict):
+    content: <span class="keyword">str</span>
+    checks: Annotated[<span class="keyword">list</span>, add]  <span class="comment"># ← reducer: each parallel node appends</span>
+    approved: <span class="keyword">bool</span>
+
+<span class="keyword">def</span> <span class="func">check_spam</span>(state) -> <span class="keyword">dict</span>:
+    <span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"spam"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}
+
+<span class="keyword">def</span> <span class="func">check_sentiment</span>(state) -> <span class="keyword">dict</span>:
+    <span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"sentiment"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}
+
+<span class="keyword">def</span> <span class="func">merge_results</span>(state) -> <span class="keyword">dict</span>:
+    all_passed = <span class="func">all</span>(c[<span class="string">"passed"</span>] <span class="keyword">for</span> c <span class="keyword">in</span> state[<span class="string">"checks"</span>])
+    <span class="keyword">return</span> {<span class="string">"approved"</span>: all_passed}</div>
           <div class="error-callout">
             Without a reducer on <code>checks</code>, only the <em>last</em> parallel node's result would
             survive. Always use <code>Annotated[list, add]</code> for fields that receive parallel writes.
@@ -623,31 +617,25 @@
               <div class="pattern-label">Pattern 1</div>
               <h4>Priority Router</h4>
               <p>Check urgency first, then category. High-priority skips normal flow.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">if</span> state[<span class="string">"urgent"</span>]:<br>
-                &nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"escalate"</span><br>
-                <span class="keyword">return</span> state[<span class="string">"category"</span>]
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> state[<span class="string">"urgent"</span>]:
+  <span class="keyword">return</span> <span class="string">"escalate"</span>
+<span class="keyword">return</span> state[<span class="string">"category"</span>]</div>
             </div>
             <div class="card card-green" style="padding:14px;">
               <div class="pattern-label">Pattern 2</div>
               <h4>Multi-Condition</h4>
               <p>Combine multiple state fields into a routing decision.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">if</span> cat == <span class="string">"finance"</span><br>
-                &nbsp;&nbsp;<span class="keyword">and</span> amt > 5000:<br>
-                &nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"manager"</span>
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> cat == <span class="string">"finance"</span>
+  <span class="keyword">and</span> amt > 5000:
+  <span class="keyword">return</span> <span class="string">"manager"</span></div>
             </div>
             <div class="card card-orange" style="padding:14px;">
               <div class="pattern-label">Pattern 3</div>
               <h4>LLM Router</h4>
               <p>Let the LLM decide the route based on content analysis.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                resp = llm.invoke(<br>
-                &nbsp;&nbsp;<span class="string">"Route this..."</span>)<br>
-                <span class="keyword">return</span> resp.content
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">resp = llm.invoke(
+  <span class="string">"Route this..."</span>)
+<span class="keyword">return</span> resp.content</div>
             </div>
           </div>
         </section>
@@ -656,19 +644,17 @@
         <section>
           <h2>Nested Routing</h2>
           <h3>Multi-level decision trees</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># Level 1: Category routing</span><br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"classify"</span>, route_category,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"hr"</span>: <span class="string">"hr_triage"</span>, <span class="string">"tech"</span>: <span class="string">"tech_triage"</span>, <span class="string">"finance"</span>: <span class="string">"finance_triage"</span>})<br>
-            <br>
-            <span class="comment"># Level 2: Sub-routing within HR</span><br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"hr_triage"</span>, route_hr_type,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"leave"</span>: <span class="string">"handle_leave"</span>, <span class="string">"benefits"</span>: <span class="string">"handle_benefits"</span>, <span class="string">"other"</span>: <span class="string">"handle_hr_other"</span>})<br>
-            <br>
-            <span class="comment"># Level 2: Sub-routing within Tech</span><br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech_triage"</span>, route_tech_type,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"bug"</span>: <span class="string">"handle_bug"</span>, <span class="string">"deploy"</span>: <span class="string">"handle_deploy"</span>, <span class="string">"infra"</span>: <span class="string">"handle_infra"</span>})
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># Level 1: Category routing</span>
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"classify"</span>, route_category,
+    {<span class="string">"hr"</span>: <span class="string">"hr_triage"</span>, <span class="string">"tech"</span>: <span class="string">"tech_triage"</span>, <span class="string">"finance"</span>: <span class="string">"finance_triage"</span>})
+
+<span class="comment"># Level 2: Sub-routing within HR</span>
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"hr_triage"</span>, route_hr_type,
+    {<span class="string">"leave"</span>: <span class="string">"handle_leave"</span>, <span class="string">"benefits"</span>: <span class="string">"handle_benefits"</span>, <span class="string">"other"</span>: <span class="string">"handle_hr_other"</span>})
+
+<span class="comment"># Level 2: Sub-routing within Tech</span>
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech_triage"</span>, route_tech_type,
+    {<span class="string">"bug"</span>: <span class="string">"handle_bug"</span>, <span class="string">"deploy"</span>: <span class="string">"handle_deploy"</span>, <span class="string">"infra"</span>: <span class="string">"handle_infra"</span>})</div>
           <div class="analogy">
             A company phone system: "Press 1 for HR" &rarr; "Press 1 for leave, 2 for benefits."
             Each <code>add_conditional_edges()</code> is one level of the decision tree.
@@ -688,26 +674,24 @@
         <section>
           <h2>Beyond <code>operator.add</code></h2>
           <h3>Custom reducer functions</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated<br>
-            <br>
-            <span class="comment"># Custom reducer: keep only last N items</span><br>
-            <span class="keyword">def</span> <span class="func">keep_last_5</span>(current: <span class="keyword">list</span>, new: <span class="keyword">list</span>) -> <span class="keyword">list</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> (current + new)[-5:]<br>
-            <br>
-            <span class="comment"># Custom reducer: merge dictionaries</span><br>
-            <span class="keyword">def</span> <span class="func">merge_dicts</span>(current: <span class="keyword">dict</span>, new: <span class="keyword">dict</span>) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {**current, **new}<br>
-            <br>
-            <span class="comment"># Custom reducer: take maximum value</span><br>
-            <span class="keyword">def</span> <span class="func">take_max</span>(current: <span class="keyword">int</span>, new: <span class="keyword">int</span>) -> <span class="keyword">int</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="func">max</span>(current, new)<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">SmartState</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;messages: Annotated[<span class="keyword">list</span>, keep_last_5]&nbsp;&nbsp;<span class="comment"># Sliding window</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;metadata: Annotated[<span class="keyword">dict</span>, merge_dicts]&nbsp;&nbsp;<span class="comment"># Merge updates</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;max_score: Annotated[<span class="keyword">int</span>, take_max]&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Keep highest</span>
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
+
+<span class="comment"># Custom reducer: keep only last N items</span>
+<span class="keyword">def</span> <span class="func">keep_last_5</span>(current: <span class="keyword">list</span>, new: <span class="keyword">list</span>) -> <span class="keyword">list</span>:
+    <span class="keyword">return</span> (current + new)[-5:]
+
+<span class="comment"># Custom reducer: merge dictionaries</span>
+<span class="keyword">def</span> <span class="func">merge_dicts</span>(current: <span class="keyword">dict</span>, new: <span class="keyword">dict</span>) -> <span class="keyword">dict</span>:
+    <span class="keyword">return</span> {**current, **new}
+
+<span class="comment"># Custom reducer: take maximum value</span>
+<span class="keyword">def</span> <span class="func">take_max</span>(current: <span class="keyword">int</span>, new: <span class="keyword">int</span>) -> <span class="keyword">int</span>:
+    <span class="keyword">return</span> <span class="func">max</span>(current, new)
+
+<span class="keyword">class</span> <span class="func">SmartState</span>(TypedDict):
+    messages: Annotated[<span class="keyword">list</span>, keep_last_5]  <span class="comment"># Sliding window</span>
+    metadata: Annotated[<span class="keyword">dict</span>, merge_dicts]  <span class="comment"># Merge updates</span>
+    max_score: Annotated[<span class="keyword">int</span>, take_max]    <span class="comment"># Keep highest</span></div>
           <div class="takeaway">
             A reducer is any function <code>(old_value, new_value) &rarr; combined_value</code>.
             <code>operator.add</code> concatenates lists. You can write <strong>any logic</strong>:
@@ -719,22 +703,20 @@
         <section>
           <h2>Built-in: <code>add_messages</code> Reducer</h2>
           <h3>The standard way to handle chat history</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> <span class="func">add_messages</span><br>
-            <span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">ChatState</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;messages: Annotated[<span class="keyword">list</span>, add_messages]<br>
-            <br>
-            <span class="comment"># add_messages is smart:</span><br>
-            <span class="comment"># - Appends new messages to the list</span><br>
-            <span class="comment"># - Handles deduplication by message ID</span><br>
-            <span class="comment"># - Supports message replacement (same ID = update)</span><br>
-            <br>
-            <span class="keyword">def</span> <span class="func">chatbot</span>(state: ChatState) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;response = llm.<span class="func">invoke</span>(state[<span class="string">"messages"</span>])<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"messages"</span>: [response]}&nbsp;&nbsp;<span class="comment"># Appended, not replaced!</span>
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> <span class="func">add_messages</span>
+<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage
+
+<span class="keyword">class</span> <span class="func">ChatState</span>(TypedDict):
+    messages: Annotated[<span class="keyword">list</span>, add_messages]
+
+<span class="comment"># add_messages is smart:</span>
+<span class="comment"># - Appends new messages to the list</span>
+<span class="comment"># - Handles deduplication by message ID</span>
+<span class="comment"># - Supports message replacement (same ID = update)</span>
+
+<span class="keyword">def</span> <span class="func">chatbot</span>(state: ChatState) -> <span class="keyword">dict</span>:
+    response = llm.<span class="func">invoke</span>(state[<span class="string">"messages"</span>])
+    <span class="keyword">return</span> {<span class="string">"messages"</span>: [response]}  <span class="comment"># Appended, not replaced!</span></div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4><code>operator.add</code></h4>
@@ -777,42 +759,38 @@
               <td>Production, scaling</td>
             </tr>
           </table>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; margin-top:12px;">
-            <span class="comment"># Development</span><br>
-            <span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver<br>
-            checkpointer = MemorySaver()<br>
-            <br>
-            <span class="comment"># Production — just swap the checkpointer!</span><br>
-            <span class="keyword">from</span> langgraph.checkpoint.sqlite <span class="keyword">import</span> SqliteSaver<br>
-            checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)<br>
-            <br>
-            <span class="comment"># Same compile() call — zero code changes in your graph!</span><br>
-            app = graph.<span class="func">compile</span>(checkpointer=checkpointer)
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.4; margin-top:12px;"><span class="comment"># Development</span>
+<span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+checkpointer = MemorySaver()
+
+<span class="comment"># Production — just swap the checkpointer!</span>
+<span class="keyword">from</span> langgraph.checkpoint.sqlite <span class="keyword">import</span> SqliteSaver
+checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)
+
+<span class="comment"># Same compile() call — zero code changes in your graph!</span>
+app = graph.<span class="func">compile</span>(checkpointer=checkpointer)</div>
         </section>
 
         <!-- STATE RECOVERY -->
         <section>
           <h2>State Recovery &amp; Resumption</h2>
           <h3>Pick up exactly where you left off</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># Scenario: Server restarts mid-workflow</span><br>
-            <br>
-            <span class="comment"># 1. Before restart: workflow was running on thread "order-42"</span><br>
-            config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"order-42"</span>}}<br>
-            <br>
-            <span class="comment"># 2. After restart: reconnect to the same checkpointer</span><br>
-            checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)<br>
-            app = graph.<span class="func">compile</span>(checkpointer=checkpointer)<br>
-            <br>
-            <span class="comment"># 3. Check where we left off</span><br>
-            snapshot = app.<span class="func">get_state</span>(config)<br>
-            <span class="func">print</span>(snapshot.values)&nbsp;&nbsp;<span class="output"># Full state at last checkpoint</span><br>
-            <span class="func">print</span>(snapshot.next)&nbsp;&nbsp;&nbsp;&nbsp;<span class="output"># ("process_payment",) — next node to run</span><br>
-            <br>
-            <span class="comment"># 4. Resume from where it stopped</span><br>
-            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;<span class="comment"># ← continues from checkpoint</span>
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># Scenario: Server restarts mid-workflow</span>
+
+<span class="comment"># 1. Before restart: workflow was running on thread "order-42"</span>
+config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"order-42"</span>}}
+
+<span class="comment"># 2. After restart: reconnect to the same checkpointer</span>
+checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)
+app = graph.<span class="func">compile</span>(checkpointer=checkpointer)
+
+<span class="comment"># 3. Check where we left off</span>
+snapshot = app.<span class="func">get_state</span>(config)
+<span class="func">print</span>(snapshot.values)  <span class="output"># Full state at last checkpoint</span>
+<span class="func">print</span>(snapshot.next)    <span class="output"># ("process_payment",) — next node to run</span>
+
+<span class="comment"># 4. Resume from where it stopped</span>
+result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># ← continues from checkpoint</span></div>
           <div class="takeaway">
             With a persistent checkpointer, your workflows survive <strong>server restarts, deployments,
             and crashes</strong>. The state is safely stored in the database. Just reconnect with the
@@ -823,18 +801,16 @@
         <!-- STATE HISTORY -->
         <section>
           <h2>Time Travel with State History</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;">
-            <span class="comment"># Walk through every checkpoint in order</span><br>
-            <span class="keyword">for</span> state <span class="keyword">in</span> app.<span class="func">get_state_history</span>(config):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(f<span class="string">"Step: {state.next}"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(f<span class="string">"Values: {state.values}"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(f<span class="string">"Config: {state.config}"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="func">print</span>(<span class="string">"---"</span>)<br>
-            <br>
-            <span class="comment"># Replay from a specific checkpoint</span><br>
-            past_config = specific_checkpoint.config<br>
-            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, past_config)&nbsp;&nbsp;<span class="comment"># ← replay from that point!</span>
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="comment"># Walk through every checkpoint in order</span>
+<span class="keyword">for</span> state <span class="keyword">in</span> app.<span class="func">get_state_history</span>(config):
+    <span class="func">print</span>(f<span class="string">"Step: {state.next}"</span>)
+    <span class="func">print</span>(f<span class="string">"Values: {state.values}"</span>)
+    <span class="func">print</span>(f<span class="string">"Config: {state.config}"</span>)
+    <span class="func">print</span>(<span class="string">"---"</span>)
+
+<span class="comment"># Replay from a specific checkpoint</span>
+past_config = specific_checkpoint.config
+result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, past_config)  <span class="comment"># ← replay from that point!</span></div>
           <div class="card-grid" style="margin-top:10px;">
             <div class="card card-accent" style="padding:14px;">
               <h4>Debugging</h4>
@@ -860,22 +836,20 @@
         <section>
           <h2>Node-Level Error Handling</h2>
           <h3>Wrap nodes with try/except for graceful failures</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">def</span> <span class="func">call_llm</span>(state) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"response"</span>: response.content,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"error"</span>: <span class="keyword">None</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"audit"</span>: [<span class="string">"LLM call successful"</span>],<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span> Exception <span class="keyword">as</span> e:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"response"</span>: <span class="string">""</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"error"</span>: <span class="func">str</span>(e),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"audit"</span>: [f<span class="string">"LLM error: {e}"</span>],<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">def</span> <span class="func">call_llm</span>(state) -> <span class="keyword">dict</span>:
+    <span class="keyword">try</span>:
+        response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])
+        <span class="keyword">return</span> {
+            <span class="string">"response"</span>: response.content,
+            <span class="string">"error"</span>: <span class="keyword">None</span>,
+            <span class="string">"audit"</span>: [<span class="string">"LLM call successful"</span>],
+        }
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        <span class="keyword">return</span> {
+            <span class="string">"response"</span>: <span class="string">""</span>,
+            <span class="string">"error"</span>: <span class="func">str</span>(e),
+            <span class="string">"audit"</span>: [f<span class="string">"LLM error: {e}"</span>],
+        }</div>
           <div class="takeaway">
             Store errors <strong>in state</strong> rather than raising exceptions. This lets downstream
             nodes make decisions: retry, use a fallback, or escalate. The workflow stays alive.
@@ -886,17 +860,15 @@
         <section>
           <h2>Error-Aware Routing</h2>
           <h3>Route based on success or failure</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;">
-            <span class="keyword">def</span> <span class="func">check_error</span>(state) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"error"</span>]:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"handle_error"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"continue"</span><br>
-            <br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_llm"</span>, check_error, {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"handle_error"</span>: <span class="string">"fallback_node"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"continue"</span>: <span class="string">"next_step"</span>,<br>
-            })
-          </div>
+          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="keyword">def</span> <span class="func">check_error</span>(state) -> <span class="keyword">str</span>:
+    <span class="keyword">if</span> state[<span class="string">"error"</span>]:
+        <span class="keyword">return</span> <span class="string">"handle_error"</span>
+    <span class="keyword">return</span> <span class="string">"continue"</span>
+
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_llm"</span>, check_error, {
+    <span class="string">"handle_error"</span>: <span class="string">"fallback_node"</span>,
+    <span class="string">"continue"</span>: <span class="string">"next_step"</span>,
+})</div>
           <div class="pipe-flow" style="margin-top:12px;">
             <div class="pipe-box pipe-box-green"><strong>call_llm</strong></div>
             <span class="pipe-sym">&rarr;</span>
@@ -912,33 +884,31 @@
         <!-- RETRY PATTERN -->
         <section>
           <h2>Retry with Exponential Backoff</h2>
-          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;">
-            <span class="keyword">import</span> time<br>
-            <br>
-            <span class="keyword">class</span> <span class="func">RetryState</span>(TypedDict):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;message: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;response: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;error: <span class="keyword">str</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;attempts: <span class="keyword">int</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;max_attempts: <span class="keyword">int</span><br>
-            <br>
-            <span class="keyword">def</span> <span class="func">call_api</span>(state) -> <span class="keyword">dict</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;attempt = state[<span class="string">"attempts"</span>] + 1<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>, <span class="string">"attempts"</span>: attempt}<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">except</span> Exception <span class="keyword">as</span> e:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time.<span class="func">sleep</span>(2 ** attempt)&nbsp;&nbsp;<span class="comment"># Exponential backoff: 2s, 4s, 8s...</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"error"</span>: <span class="func">str</span>(e), <span class="string">"attempts"</span>: attempt}<br>
-            <br>
-            <span class="keyword">def</span> <span class="func">should_retry</span>(state) -> <span class="keyword">str</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> state[<span class="string">"error"</span>]: <span class="keyword">return</span> <span class="string">"success"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= state[<span class="string">"max_attempts"</span>]: <span class="keyword">return</span> <span class="string">"give_up"</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"retry"</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># ← cycle back!</span><br>
-            <br>
-            graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_api"</span>, should_retry,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;{<span class="string">"success"</span>: <span class="string">"process"</span>, <span class="string">"retry"</span>: <span class="string">"call_api"</span>, <span class="string">"give_up"</span>: <span class="string">"fallback"</span>})
-          </div>
+          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;"><span class="keyword">import</span> time
+
+<span class="keyword">class</span> <span class="func">RetryState</span>(TypedDict):
+    message: <span class="keyword">str</span>
+    response: <span class="keyword">str</span>
+    error: <span class="keyword">str</span>
+    attempts: <span class="keyword">int</span>
+    max_attempts: <span class="keyword">int</span>
+
+<span class="keyword">def</span> <span class="func">call_api</span>(state) -> <span class="keyword">dict</span>:
+    attempt = state[<span class="string">"attempts"</span>] + 1
+    <span class="keyword">try</span>:
+        response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])
+        <span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>, <span class="string">"attempts"</span>: attempt}
+    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+        time.<span class="func">sleep</span>(2 ** attempt)  <span class="comment"># Exponential backoff: 2s, 4s, 8s...</span>
+        <span class="keyword">return</span> {<span class="string">"error"</span>: <span class="func">str</span>(e), <span class="string">"attempts"</span>: attempt}
+
+<span class="keyword">def</span> <span class="func">should_retry</span>(state) -> <span class="keyword">str</span>:
+    <span class="keyword">if not</span> state[<span class="string">"error"</span>]: <span class="keyword">return</span> <span class="string">"success"</span>
+    <span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= state[<span class="string">"max_attempts"</span>]: <span class="keyword">return</span> <span class="string">"give_up"</span>
+    <span class="keyword">return</span> <span class="string">"retry"</span>    <span class="comment"># ← cycle back!</span>
+
+graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_api"</span>, should_retry,
+    {<span class="string">"success"</span>: <span class="string">"process"</span>, <span class="string">"retry"</span>: <span class="string">"call_api"</span>, <span class="string">"give_up"</span>: <span class="string">"fallback"</span>})</div>
         </section>
 
         <!-- FALLBACK STRATEGIES -->
@@ -948,34 +918,26 @@
             <div class="card card-accent" style="padding:16px;">
               <h4>LLM Fallback Chain</h4>
               <p>Primary LLM fails? Try a backup model.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">try</span>: llm_primary.invoke()<br>
-                <span class="keyword">except</span>: llm_backup.invoke()
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">try</span>: llm_primary.invoke()
+<span class="keyword">except</span>: llm_backup.invoke()</div>
             </div>
             <div class="card card-green" style="padding:16px;">
               <h4>Cached Response</h4>
               <p>API down? Return a cached or template response.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">if</span> error:<br>
-                &nbsp;&nbsp;<span class="keyword">return</span> CACHED[category]
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+  <span class="keyword">return</span> CACHED[category]</div>
             </div>
             <div class="card card-orange" style="padding:16px;">
               <h4>Graceful Degradation</h4>
               <p>Skip the failing step and continue with partial results.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">if</span> error:<br>
-                &nbsp;&nbsp;<span class="keyword">return</span> {<span class="string">"partial"</span>: <span class="keyword">True</span>}
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+  <span class="keyword">return</span> {<span class="string">"partial"</span>: <span class="keyword">True</span>}</div>
             </div>
             <div class="card card-red" style="padding:16px;">
               <h4>Human Escalation</h4>
               <p>Can't recover? Route to a human via interrupt.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">
-                <span class="keyword">if</span> error:<br>
-                &nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"escalate"</span>
-              </div>
+              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+  <span class="keyword">return</span> <span class="string">"escalate"</span></div>
             </div>
           </div>
         </section>
@@ -1008,48 +970,44 @@
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">
-            <span class="comment"># Multiple interrupt points</span><br>
-            app = graph.<span class="func">compile</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;checkpointer=MemorySaver(),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;interrupt_before=[<span class="string">"review"</span>, <span class="string">"send"</span>]&nbsp;&nbsp;<span class="comment"># ← TWO gates!</span><br>
-            )<br>
-            <br>
-            <span class="comment"># Gate 1: pause before review</span><br>
-            app.<span class="func">invoke</span>(initial_state, config)&nbsp;&nbsp;<span class="comment"># Pauses at "review"</span><br>
-            app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Resume, hits "send" gate</span><br>
-            <br>
-            <span class="comment"># Gate 2: pause before send</span><br>
-            app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Resume, completes workflow</span>
-          </div>
+          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Multiple interrupt points</span>
+app = graph.<span class="func">compile</span>(
+    checkpointer=MemorySaver(),
+    interrupt_before=[<span class="string">"review"</span>, <span class="string">"send"</span>]  <span class="comment"># ← TWO gates!</span>
+)
+
+<span class="comment"># Gate 1: pause before review</span>
+app.<span class="func">invoke</span>(initial_state, config)  <span class="comment"># Pauses at "review"</span>
+app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)             <span class="comment"># Resume, hits "send" gate</span>
+
+<span class="comment"># Gate 2: pause before send</span>
+app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)             <span class="comment"># Resume, completes workflow</span></div>
         </section>
 
         <!-- USER INPUT COLLECTION -->
         <section>
           <h2>Collecting User Input Mid-Workflow</h2>
           <h3>Pause, ask the user, inject their answer into state</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="comment"># 1. Workflow reaches "collect_input" and pauses</span><br>
-            app = graph.<span class="func">compile</span>(<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;checkpointer=MemorySaver(),<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;interrupt_before=[<span class="string">"process_answer"</span>]<br>
-            )<br>
-            <br>
-            <span class="comment"># 2. Run until pause — "ask_question" node sets state["question"]</span><br>
-            app.<span class="func">invoke</span>({<span class="string">"topic"</span>: <span class="string">"expense policy"</span>}, config)<br>
-            <br>
-            <span class="comment"># 3. Read the question from state</span><br>
-            snap = app.<span class="func">get_state</span>(config)<br>
-            question = snap.values[<span class="string">"question"</span>]<br>
-            <span class="func">print</span>(f<span class="string">"System asks: {question}"</span>)<br>
-            <br>
-            <span class="comment"># 4. User provides answer — inject it into state</span><br>
-            user_answer = <span class="func">input</span>(<span class="string">"Your answer: "</span>)<br>
-            app.<span class="func">update_state</span>(config, {<span class="string">"user_answer"</span>: user_answer})<br>
-            <br>
-            <span class="comment"># 5. Resume — "process_answer" now has the user's input</span><br>
-            result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># 1. Workflow reaches "collect_input" and pauses</span>
+app = graph.<span class="func">compile</span>(
+    checkpointer=MemorySaver(),
+    interrupt_before=[<span class="string">"process_answer"</span>]
+)
+
+<span class="comment"># 2. Run until pause — "ask_question" node sets state["question"]</span>
+app.<span class="func">invoke</span>({<span class="string">"topic"</span>: <span class="string">"expense policy"</span>}, config)
+
+<span class="comment"># 3. Read the question from state</span>
+snap = app.<span class="func">get_state</span>(config)
+question = snap.values[<span class="string">"question"</span>]
+<span class="func">print</span>(f<span class="string">"System asks: {question}"</span>)
+
+<span class="comment"># 4. User provides answer — inject it into state</span>
+user_answer = <span class="func">input</span>(<span class="string">"Your answer: "</span>)
+app.<span class="func">update_state</span>(config, {<span class="string">"user_answer"</span>: user_answer})
+
+<span class="comment"># 5. Resume — "process_answer" now has the user's input</span>
+result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)</div>
           <div class="takeaway">
             This pattern turns any LangGraph workflow into an <strong>interactive conversation</strong>.
             The graph pauses, the system asks a question, the user answers, and the workflow continues
@@ -1061,27 +1019,25 @@
         <section>
           <h2>Timeout &amp; Escalation</h2>
           <h3>What if the human doesn't respond?</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;">
-            <span class="keyword">import</span> time<br>
-            <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta<br>
-            <br>
-            <span class="comment"># Check if a paused workflow has timed out</span><br>
-            <span class="keyword">def</span> <span class="func">check_timeout</span>(config, app, timeout_minutes=30):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;snap = app.<span class="func">get_state</span>(config)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if not</span> snap.next:&nbsp;&nbsp;<span class="comment"># Not paused</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">False</span><br>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;paused_at = snap.values.get(<span class="string">"paused_at"</span>)<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> paused_at <span class="keyword">and</span> datetime.<span class="func">now</span>() - paused_at > timedelta(minutes=timeout_minutes):<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Auto-escalate: update state and resume</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app.<span class="func">update_state</span>(config, {<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"decision"</span>: <span class="string">"auto_escalated"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"reason"</span>: <span class="string">"Timeout: no response in 30 minutes"</span>,<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;})<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)&nbsp;&nbsp;<span class="comment"># Resume with auto-escalation</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">True</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">False</span>
-          </div>
+          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">import</span> time
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+
+<span class="comment"># Check if a paused workflow has timed out</span>
+<span class="keyword">def</span> <span class="func">check_timeout</span>(config, app, timeout_minutes=30):
+    snap = app.<span class="func">get_state</span>(config)
+    <span class="keyword">if not</span> snap.next:  <span class="comment"># Not paused</span>
+        <span class="keyword">return</span> <span class="keyword">False</span>
+
+    paused_at = snap.values.get(<span class="string">"paused_at"</span>)
+    <span class="keyword">if</span> paused_at <span class="keyword">and</span> datetime.<span class="func">now</span>() - paused_at > timedelta(minutes=timeout_minutes):
+        <span class="comment"># Auto-escalate: update state and resume</span>
+        app.<span class="func">update_state</span>(config, {
+            <span class="string">"decision"</span>: <span class="string">"auto_escalated"</span>,
+            <span class="string">"reason"</span>: <span class="string">"Timeout: no response in 30 minutes"</span>,
+        })
+        app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># Resume with auto-escalation</span>
+        <span class="keyword">return</span> <span class="keyword">True</span>
+    <span class="keyword">return</span> <span class="keyword">False</span></div>
         </section>
 
         <!-- HITL PATTERNS SUMMARY -->
