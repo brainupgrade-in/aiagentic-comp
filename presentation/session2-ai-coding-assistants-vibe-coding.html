@@ -538,18 +538,18 @@
         result = TOOLS[tool.name](**tool.args)
         <span class="keyword">if not</span> validate(result):
             plan = llm.replan(task, result)  <span class="comment"># adapt on failure</span></div>
-          <div class="card-grid-3">
-            <div class="card card-accent">
+          <div class="card-grid-3" style="margin-top:8px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>Read Tools</h4>
-              <p>File contents, grep results, directory listings, git history</p>
+              <p style="font-size:0.55em;">File contents, grep results, directory listings, git history</p>
             </div>
-            <div class="card card-green">
+            <div class="card card-green" style="padding:10px;">
               <h4>Write Tools</h4>
-              <p>Create files, edit files, apply diffs, delete files</p>
+              <p style="font-size:0.55em;">Create files, edit files, apply diffs, delete files</p>
             </div>
-            <div class="card card-orange">
+            <div class="card card-orange" style="padding:10px;">
               <h4>Execute Tools</h4>
-              <p>Run shell commands, tests, linters, build scripts</p>
+              <p style="font-size:0.55em;">Run shell commands, tests, linters, build scripts</p>
             </div>
           </div>
         </section>

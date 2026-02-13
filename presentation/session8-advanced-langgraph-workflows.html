@@ -612,8 +612,8 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
         <!-- ADVANCED ROUTING STRATEGIES -->
         <section>
           <h2>Advanced Routing Strategies</h2>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid-3" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <div class="pattern-label">Pattern 1</div>
               <h4>Priority Router</h4>
               <p>Check urgency first, then category. High-priority skips normal flow.</p>
@@ -621,7 +621,7 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
   <span class="keyword">return</span> <span class="string">"escalate"</span>
 <span class="keyword">return</span> state[<span class="string">"category"</span>]</div>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green" style="padding:10px;">
               <div class="pattern-label">Pattern 2</div>
               <h4>Multi-Condition</h4>
               <p>Combine multiple state fields into a routing decision.</p>
@@ -629,7 +629,7 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
   <span class="keyword">and</span> amt > 5000:
   <span class="keyword">return</span> <span class="string">"manager"</span></div>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange" style="padding:10px;">
               <div class="pattern-label">Pattern 3</div>
               <h4>LLM Router</h4>
               <p>Let the LLM decide the route based on content analysis.</p>
@@ -914,29 +914,29 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"call
         <!-- FALLBACK STRATEGIES -->
         <section>
           <h2>Fallback Strategies</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>LLM Fallback Chain</h4>
-              <p>Primary LLM fails? Try a backup model.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">try</span>: llm_primary.invoke()
+              <p style="font-size:0.55em; margin:4px 0;">Primary LLM fails? Try a backup model.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">try</span>: llm_primary.invoke()
 <span class="keyword">except</span>: llm_backup.invoke()</div>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green" style="padding:10px;">
               <h4>Cached Response</h4>
-              <p>API down? Return a cached or template response.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+              <p style="font-size:0.55em; margin:4px 0;">API down? Return a cached or template response.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
   <span class="keyword">return</span> CACHED[category]</div>
             </div>
-            <div class="card card-orange" style="padding:16px;">
+            <div class="card card-orange" style="padding:10px;">
               <h4>Graceful Degradation</h4>
-              <p>Skip the failing step and continue with partial results.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+              <p style="font-size:0.55em; margin:4px 0;">Skip failing step, continue with partial results.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
   <span class="keyword">return</span> {<span class="string">"partial"</span>: <span class="keyword">True</span>}</div>
             </div>
-            <div class="card card-red" style="padding:16px;">
+            <div class="card card-red" style="padding:10px;">
               <h4>Human Escalation</h4>
-              <p>Can't recover? Route to a human via interrupt.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
+              <p style="font-size:0.55em; margin:4px 0;">Can't recover? Route to a human via interrupt.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
   <span class="keyword">return</span> <span class="string">"escalate"</span></div>
             </div>
           </div>

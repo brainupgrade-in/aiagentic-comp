@@ -627,33 +627,27 @@ graph.<span class="func">add_node</span>(<span class="string">"classify"</span>,
         <!-- EDGES EXPLAINED -->
         <section>
           <h2>Edges: Connections Between Nodes</h2>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid-3" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>Normal Edge</h4>
-              <p>Always go from A to B.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
-  <span class="string">"classify"</span>,
-  <span class="string">"respond"</span>
-)</div>
+              <p style="margin:4px 0;">Always go from A to B.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
+  <span class="string">"classify"</span>, <span class="string">"respond"</span>)</div>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green" style="padding:10px;">
               <h4>Entry Edge</h4>
-              <p>Where the graph starts.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
-  START,
-  <span class="string">"classify"</span>
-)</div>
+              <p style="margin:4px 0;">Where the graph starts.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
+  START, <span class="string">"classify"</span>)</div>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange" style="padding:10px;">
               <h4>Exit Edge</h4>
-              <p>Where the graph ends.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">graph.add_edge(
-  <span class="string">"respond"</span>,
-  END
-)</div>
+              <p style="margin:4px 0;">Where the graph ends.</p>
+              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
+  <span class="string">"respond"</span>, END)</div>
             </div>
           </div>
-          <div class="pipe-flow" style="margin-top:16px;">
+          <div class="pipe-flow" style="margin-top:10px;">
             <div class="pipe-box" style="border-color:var(--accent);">
               <strong>START</strong>
             </div>

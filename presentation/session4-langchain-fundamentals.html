@@ -928,29 +928,34 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
         <!-- INVOKE vs STREAM vs BATCH -->
         <section>
           <h2>Three Ways to Run a Chain</h2>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid-3" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>.invoke()</h4>
-              <p>Run once, get complete result</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">result = chain.invoke(<br>  {"q": "hi"})
+              <p style="margin:4px 0;">Run once, get complete result</p>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;">result = chain.invoke(
+  {<span class="string">"q"</span>: <span class="string">"hi"</span>})
 <span class="comment"># waits for full response</span></div>
-              <p style="margin-top:6px;">Best for: scripts, APIs</p>
+              <p style="margin-top:4px; font-size:0.55em;">Best for: scripts, APIs</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green" style="padding:10px;">
               <h4>.stream()</h4>
-              <p>Get tokens as they're generated</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;"><span class="keyword">for</span> chunk <span class="keyword">in</span> chain.stream(<br>  {"q": "hi"}):
+              <p style="margin:4px 0;">Get tokens as they're generated</p>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;"><span class="keyword">for</span> chunk <span class="keyword">in</span> chain.stream(
+  {<span class="string">"q"</span>: <span class="string">"hi"</span>}):
   print(chunk, end=<span class="string">""</span>)</div>
-              <p style="margin-top:6px;">Best for: chat UIs</p>
+              <p style="margin-top:4px; font-size:0.55em;">Best for: chat UIs</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange" style="padding:10px;">
               <h4>.batch()</h4>
-              <p>Process multiple inputs at once</p>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.85em;">results = chain.batch([<br>  {"q": "hi"},<br>  {"q": "bye"}<br>])</div>
-              <p style="margin-top:6px;">Best for: bulk processing</p>
+              <p style="margin:4px 0;">Process multiple inputs at once</p>
+              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;">results = chain.batch([
+  {<span class="string">"q"</span>: <span class="string">"hi"</span>},
+  {<span class="string">"q"</span>: <span class="string">"bye"</span>}
+])</div>
+              <p style="margin-top:4px; font-size:0.55em;">Best for: bulk processing</p>
             </div>
           </div>
-          <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
+          <p style="font-size:0.55em; color:#aaa; text-align:center; margin-top:8px;">
             All three methods work on <strong>any</strong> LCEL chain automatically. No extra code needed.
           </p>
         </section>

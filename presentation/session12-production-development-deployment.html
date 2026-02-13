@@ -556,19 +556,18 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
     <span class="keyword">if not</span> model_loaded:
         <span class="keyword">raise</span> HTTPException(status_code=503, detail=<span class="string">"Model not loaded"</span>)
     <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ready"</span>}</div>
-          <br>
-          <div class="card-grid-3">
-            <div class="card card-accent">
+          <div class="card-grid-3" style="margin-top:10px;">
+            <div class="card card-accent" style="padding:10px;">
               <h4>Liveness</h4>
-              <p>Is the process alive?<br>"Restart me if I'm stuck."</p>
+              <p style="font-size:0.55em;">Is the process alive?<br>"Restart me if I'm stuck."</p>
             </div>
-            <div class="card card-green">
+            <div class="card card-green" style="padding:10px;">
               <h4>Readiness</h4>
-              <p>Can I serve traffic?<br>"Don't send requests yet."</p>
+              <p style="font-size:0.55em;">Can I serve traffic?<br>"Don't send requests yet."</p>
             </div>
-            <div class="card card-orange">
+            <div class="card card-orange" style="padding:10px;">
               <h4>Startup</h4>
-              <p>Has initial load finished?<br>"Give me time to warm up."</p>
+              <p style="font-size:0.55em;">Has initial load finished?<br>"Give me time to warm up."</p>
             </div>
           </div>
         </section>

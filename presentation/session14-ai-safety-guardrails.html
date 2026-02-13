@@ -767,8 +767,8 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
       <!-- ==================== SLIDE 12: BUILDING A GUARD PIPELINE ==================== -->
       <section>
         <h2>Building a Guard Pipeline</h2>
-        <p style="font-size:0.75em; color:#ccc;">Composable guards that chain together for defense in depth</p>
-        <div class="code-block"><span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+        <p style="font-size:0.7em; color:#ccc; margin-bottom:6px;">Composable guards that chain together for defense in depth</p>
+        <div class="code-block" style="font-size:0.44em; max-height:280px;"><span class="keyword">from</span> typing <span class="keyword">import</span> Optional
 <span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
 
 <span class="keyword">@dataclass</span>
@@ -781,7 +781,6 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
     <span class="string">"""Blocks queries outside allowed domains."""</span>
     <span class="keyword">def</span> <span class="func">check</span>(self, text: str) -> GuardResult:
         allowed = [<span class="string">"finance"</span>, <span class="string">"support"</span>, <span class="string">"product"</span>]
-        <span class="comment"># Use classifier to detect topic</span>
         topic = self.classify_topic(text)
         <span class="keyword">if</span> topic <span class="keyword">not in</span> allowed:
             <span class="keyword">return</span> GuardResult(passed=<span class="keyword">False</span>, reason=f<span class="string">"Off-topic: {topic}"</span>)
@@ -798,20 +797,20 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
             <span class="keyword">if not</span> result.passed:
                 <span class="keyword">return</span> result  <span class="comment"># Fail fast</span>
             <span class="keyword">if</span> result.modified_text:
-                text = result.modified_text  <span class="comment"># Pass modified text to next guard</span>
+                text = result.modified_text
         <span class="keyword">return</span> GuardResult(passed=<span class="keyword">True</span>, modified_text=text)</div>
-        <div class="card-grid-3" style="margin-top:10px;">
-          <div class="card card-accent">
+        <div class="card-grid-3" style="margin-top:8px;">
+          <div class="card card-accent" style="padding:10px;">
             <h4>Topic Guard</h4>
-            <p>Restricts queries to allowed business domains. Rejects off-topic requests.</p>
+            <p style="font-size:0.5em;">Restricts queries to allowed business domains.</p>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:10px;">
             <h4 style="color:var(--accent2);">Format Guard</h4>
-            <p>Validates output matches expected schema (JSON, markdown, plain text).</p>
+            <p style="font-size:0.5em;">Validates output matches expected schema.</p>
           </div>
-          <div class="card card-orange">
+          <div class="card card-orange" style="padding:10px;">
             <h4 style="color:var(--accent3);">Safety Guard</h4>
-            <p>Detects injection, PII, toxicity. Can modify text (redaction) or block entirely.</p>
+            <p style="font-size:0.5em;">Detects injection, PII, toxicity. Redacts or blocks.</p>
           </div>
         </div>
       </section>
@@ -871,34 +870,34 @@ User Input &rarr; [PRE-GUARD] &rarr; LLM / Agent &rarr; [POST-GUARD] &rarr; Safe
       <!-- ==================== SLIDE 14: SAFETY DASHBOARD ==================== -->
       <section>
         <h2>Safety Dashboard</h2>
-        <p style="font-size:0.75em; color:#ccc;">Four key panels for continuous safety monitoring in LangFuse dashboard</p>
+        <p style="font-size:0.7em; color:#ccc; margin-bottom:8px;">Four key panels for continuous safety monitoring in LangFuse dashboard</p>
         <div class="card-grid">
-          <div class="card card-accent">
+          <div class="card card-accent" style="padding:10px;">
             <h4>Attack Detection Rate</h4>
-            <p style="font-size:0.55em; color:#aaa;">Percentage of injection attempts successfully blocked</p>
-            <p style="font-size:2em; color:var(--accent); margin-top:6px; text-align:center;">99.2%</p>
-            <p style="font-size:0.55em; color:#aaa; text-align:center;">Target: &gt; 99% &middot; Alert if &lt; 95%</p>
+            <p style="font-size:0.5em; color:#aaa; margin:2px 0;">Injection attempts blocked</p>
+            <p style="font-size:1.6em; color:var(--accent); margin-top:4px; text-align:center;">99.2%</p>
+            <p style="font-size:0.5em; color:#aaa; text-align:center;">Target: &gt; 99% &middot; Alert &lt; 95%</p>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:10px;">
             <h4 style="color:var(--accent2);">PII Leak Prevention</h4>
-            <p style="font-size:0.55em; color:#aaa;">PII instances caught before reaching end users</p>
-            <p style="font-size:2em; color:var(--accent2); margin-top:6px; text-align:center;">100%</p>
-            <p style="font-size:0.55em; color:#aaa; text-align:center;">Target: 100% &middot; Zero tolerance policy</p>
+            <p style="font-size:0.5em; color:#aaa; margin:2px 0;">PII caught before reaching users</p>
+            <p style="font-size:1.6em; color:var(--accent2); margin-top:4px; text-align:center;">100%</p>
+            <p style="font-size:0.5em; color:#aaa; text-align:center;">Target: 100% &middot; Zero tolerance</p>
           </div>
-          <div class="card card-orange">
-            <h4 style="color:var(--accent3);">Jailbreak Resistance Score</h4>
-            <p style="font-size:0.55em; color:#aaa;">Percentage of red team jailbreak attempts that fail</p>
-            <p style="font-size:2em; color:var(--accent3); margin-top:6px; text-align:center;">97.5%</p>
-            <p style="font-size:0.55em; color:#aaa; text-align:center;">Target: &gt; 95% &middot; Re-test quarterly</p>
+          <div class="card card-orange" style="padding:10px;">
+            <h4 style="color:var(--accent3);">Jailbreak Resistance</h4>
+            <p style="font-size:0.5em; color:#aaa; margin:2px 0;">Red team attempts that fail</p>
+            <p style="font-size:1.6em; color:var(--accent3); margin-top:4px; text-align:center;">97.5%</p>
+            <p style="font-size:0.5em; color:#aaa; text-align:center;">Target: &gt; 95% &middot; Quarterly test</p>
           </div>
-          <div class="card card-red">
+          <div class="card card-red" style="padding:10px;">
             <h4 style="color:var(--accent4);">Safety Score Distribution</h4>
-            <p style="font-size:0.55em; color:#aaa;">p50 / p95 / p99 of response safety scores</p>
-            <p style="font-size:1.6em; color:var(--accent4); margin-top:6px; text-align:center;">0.96 / 0.91 / 0.84</p>
-            <p style="font-size:0.55em; color:#aaa; text-align:center;">Target: p99 &gt; 0.80 &middot; Alert if p50 &lt; 0.90</p>
+            <p style="font-size:0.5em; color:#aaa; margin:2px 0;">p50 / p95 / p99 safety scores</p>
+            <p style="font-size:1.4em; color:var(--accent4); margin-top:4px; text-align:center;">0.96 / 0.91 / 0.84</p>
+            <p style="font-size:0.5em; color:#aaa; text-align:center;">Target: p99 &gt; 0.80 &middot; Alert p50 &lt; 0.90</p>
           </div>
         </div>
-        <div class="takeaway">
+        <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
           A safety dashboard is not a nice-to-have &mdash; it is a <span class="highlight-red">production requirement</span>. If you cannot measure your safety posture, you cannot defend it.
         </div>
       </section>

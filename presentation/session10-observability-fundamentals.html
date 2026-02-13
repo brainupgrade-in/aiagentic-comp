@@ -1126,15 +1126,13 @@ tracer = trace.get_tracer(<span class="string">"agent.api"</span>)</div>
       <section>
         <h2>Auto-Instrumenting FastAPI</h2>
         <div class="card-grid">
-          <div class="card card-accent">
+          <div class="card card-accent" style="padding:12px;">
             <h4>Option A: Code-Based</h4>
-            <div class="code-block" style="margin-top:8px;"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+            <div class="code-block" style="margin-top:6px; font-size:0.48em; max-height:260px;"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
 <span class="keyword">from</span> opentelemetry.instrumentation.fastapi \
     <span class="keyword">import</span> FastAPIInstrumentor
 
 app = FastAPI()
-
-<span class="comment"># Add OTel instrumentation</span>
 FastAPIInstrumentor.instrument_app(app)
 
 <span class="keyword">@app.get</span>(<span class="string">"/health"</span>)
@@ -1143,14 +1141,11 @@ FastAPIInstrumentor.instrument_app(app)
 
 <span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
 <span class="keyword">async def</span> <span class="func">chat</span>(query: str):
-    <span class="comment"># This endpoint auto-gets a span!</span>
     <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"..."</span>}</div>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:12px;">
             <h4>Option B: Zero-Code</h4>
-            <div class="code-block" style="margin-top:8px;"><span class="comment"># No code changes needed!</span>
-<span class="comment"># Just run with the instrument wrapper:</span>
-
+            <div class="code-block" style="margin-top:6px; font-size:0.48em; max-height:260px;"><span class="comment"># No code changes needed!</span>
 opentelemetry-instrument \
   --service_name agent-api \
   --exporter_otlp_endpoint \
@@ -1158,13 +1153,13 @@ opentelemetry-instrument \
   python -m uvicorn main:app \
     --host 0.0.0.0 --port 8000
 
-<span class="comment"># Every FastAPI endpoint now</span>
-<span class="comment"># produces spans automatically</span></div>
-            <p style="margin-top:10px;">Spans include: HTTP method, path, status code, duration, headers</p>
+<span class="comment"># Every endpoint now produces</span>
+<span class="comment"># spans automatically</span></div>
+            <p style="margin-top:6px; font-size:0.55em;">Spans include: HTTP method, path, status code, duration, headers</p>
           </div>
         </div>
-        <div class="takeaway">
-          Auto-instrumentation creates spans for <em>every HTTP request</em>. You get endpoint latency, error rates, and request tracing with zero code changes.
+        <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
+          Auto-instrumentation creates spans for <em>every HTTP request</em>. Endpoint latency, error rates, and request tracing with zero code changes.
         </div>
       </section>
 

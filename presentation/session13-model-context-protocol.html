@@ -855,11 +855,11 @@
       <!-- CONFIGURING MCP CLIENTS -->
       <section>
         <h2>Configuring MCP Clients</h2>
-        <p style="font-size:0.75em; color:#ccc;">Most AI agents use a JSON config file to connect to MCP servers</p>
+        <p style="font-size:0.7em; color:#ccc; margin-bottom:8px;">Most AI agents use a JSON config file to connect to MCP servers</p>
         <div class="card-grid">
-          <div class="card card-accent">
+          <div class="card card-accent" style="padding:12px;">
             <h4>Claude Desktop Config</h4>
-            <div class="code-block" style="font-size:0.55em;">{
+            <div class="code-block" style="font-size:0.5em; margin-top:6px;">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"postgres"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
@@ -870,9 +870,9 @@
   }
 }</div>
           </div>
-          <div class="card card-green">
+          <div class="card card-green" style="padding:12px;">
             <h4>Claude Code Config</h4>
-            <div class="code-block" style="font-size:0.55em;">{
+            <div class="code-block" style="font-size:0.5em; margin-top:6px;">{
   <span class="string">"mcpServers"</span>: {
     <span class="string">"github"</span>: {
       <span class="string">"command"</span>: <span class="string">"npx"</span>,
@@ -886,7 +886,7 @@
 }</div>
           </div>
         </div>
-        <div class="takeaway">
+        <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
           <strong>Pattern:</strong> <code>command</code> + <code>args</code> = stdio transport (local). <code>url</code> = SSE transport (remote). <code>env</code> passes secrets without hardcoding.
         </div>
       </section>
