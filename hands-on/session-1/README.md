@@ -31,15 +31,26 @@ python -c "from langchain_ollama import ChatOllama; print('Ready')"
 
 ## How to Run
 
-```bash
-cd hands-on/session-1
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run any lab
-python lab01_meet_your_llm.py
-
-# Run with solutions to compare
-python solutions/lab01_meet_your_llm.py
 ```
+hands-on/session-1/
+├── lab01_meet_your_llm.ipynb          ← Start here
+├── lab02_llm_superpowers.ipynb
+├── lab03_llm_limitations.ipynb
+├── lab04_llm_vs_agent.ipynb
+├── lab05_building_blocks.ipynb
+├── lab06_challenge.ipynb
+└── solutions/                         ← Completed versions
+    ├── lab01_meet_your_llm.ipynb
+    ├── ...
+    └── lab06_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips for First-Timers
 
