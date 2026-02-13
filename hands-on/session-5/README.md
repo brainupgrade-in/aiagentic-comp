@@ -41,15 +41,28 @@ python -c "from langchain_community.embeddings import HuggingFaceEmbeddings; pri
 
 ## How to Run
 
-```bash
-cd hands-on/session-5
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run any lab
-python lab01_groq_setup.py
-
-# Run with solutions to compare
-python solutions/lab01_groq_setup.py
 ```
+hands-on/session-5/
+├── lab01_groq_setup.ipynb                 ← Start here
+├── lab02_embeddings.ipynb
+├── lab03_chromadb_basics.ipynb
+├── lab04_document_loading.ipynb
+├── lab05_vector_store_langchain.ipynb
+├── lab06_rag_chain.ipynb
+├── lab07_rag_citations.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                             ← Completed versions
+    ├── lab01_groq_setup.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the Python kernel (`~/.venv/bin/python`)
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Important: Groq API Key
 
@@ -63,8 +76,8 @@ echo $GROQ_API_KEY
 
 ## Tips
 
-- **Read the comments** — each lab file explains what's happening step by step
-- **Look for `# TODO` markers** — these are the parts you need to fill in
+- **Read the markdown cells** — each lab explains what's happening step by step
+- **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 - **Experiment!** — change queries, add your own documents, try different chunk sizes
