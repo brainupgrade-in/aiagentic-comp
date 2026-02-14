@@ -19,8 +19,6 @@
    Base Reveal.js Overrides
    ============================================================= */
 .reveal {
-  width: 100vw !important;
-  height: 100vh !important;
   font-size: 32px;
 }
 
@@ -95,12 +93,8 @@
    ============================================================= */
 
 /* Make all slides fill available height and use flexbox */
-/* Override Reveal.js default scaling — force full viewport usage */
 .reveal .slides {
-  width: 100% !important;
   height: 100% !important;
-  transform: none !important;
-  zoom: 1 !important;
 }
 
 .reveal .slides > section,
