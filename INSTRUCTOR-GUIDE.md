@@ -88,7 +88,7 @@
 |------|---------|--------|------|-------------|
 | A | Session 10: Observability Fundamentals | `session10-observability-fundamentals.html` | `session-10/` (8 labs) | `day4-setup.sh` |
 | B | Session 11: Production Development & Deployment | `session11-production-development-deployment.html` | `session-11/` (8 labs) | - |
-| C | Session 12: LangFuse Observability | `session12-langfuse-observability.html` | `session-12/` (9 labs) | `session12-langfuse-setup.sh` (optional) |
+| C | Session 12: LangFuse Observability | `session12-langfuse-observability.html` | `session-12/` (9 labs) | - |
 | D | Labs for Sessions 10-12 | - | All above + Lab 09 capstone | - |
 
 **Day 4 Setup:** Run `bash scripts/day4-setup.sh` (verifies OTel, LangFuse SDK, and FastAPI packages).
@@ -99,7 +99,7 @@
 - Session 11 (Production) bridges AI concepts with DevOps -- key for enterprise audiences. Build FastAPI app before instrumenting it.
 - Session 12 (LangFuse) uses mock mode with SDK patterns -- data logs to local JSON files. Better flow: build app (Session 11), then instrument it (Session 12).
 - **Session 12 Lab 09 is the capstone** -- integrates Session 11 production app with Session 12 LangFuse observability. This demonstrates the full Day 4 progression: theory → build → instrument.
-- Optional: Run `bash scripts/session12-langfuse-setup.sh` before Session 12 to verify LangFuse mock mode setup
+- All Session 12 labs are self-contained -- MockLangfuse is defined in each lab, no pre-setup needed
 - Day 4 is lightweight on infrastructure -- all Python in-process (~3-4 GB RAM)
 
 ### Day 5: MCP, Safety & Capstone

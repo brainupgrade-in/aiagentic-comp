@@ -122,9 +122,6 @@ Oracle/
     ├── day4-cleanup.sh                  Clean temp files
     ├── day5-setup.sh                    Install MCP SDK, verify env
     ├── day5-cleanup.sh                  Final cleanup
-    ├── session12-langfuse-setup.sh      Session 12 LangFuse mock setup (Bash)
-    ├── session12-langfuse-setup.ps1     Session 12 LangFuse mock setup (PowerShell)
-    ├── README-SESSION12.md              Session 12 setup documentation
     └── check-resources.sh               Memory/storage/process status monitor
 ```
 
