@@ -61,7 +61,7 @@
         </div>
         <div class="data-indicator"></div>
       </div>
-      <div class="scan-line"></div>
+      <!-- <div class="scan-line"></div> -->
     `;
 
     return header;

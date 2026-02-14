@@ -1290,7 +1290,8 @@
     inset 0 -1px 0 rgba(0, 255, 204, 0.1);
 }
 
-/* Animated scanline effect */
+/* Animated scanline effect - DISABLED for cleaner look */
+/*
 .reveal pre .scanline {
   position: absolute;
   top: 0;
@@ -1327,6 +1328,7 @@
     opacity: 0;
   }
 }
+*/
 
 /* Terminal Header Bar */
 .reveal pre .terminal-header {
@@ -2579,7 +2581,8 @@ table.comparison-alt tr:hover td {
   font-weight: 700;
 }
 
-/* Animated scanline in header */
+/* Animated scanline in header - DISABLED for cleaner look */
+/*
 @keyframes header-scan {
   0% {
     left: -100%;
@@ -2603,6 +2606,7 @@ table.comparison-alt tr:hover td {
   animation: header-scan 3s linear infinite;
   pointer-events: none;
 }
+*/
 
 /* Footer - Fixed HUD Display */
 .presentation-footer {

@@ -30,10 +30,10 @@
 
       pre.classList.add('enhanced');
 
-      // Add scanline effect
-      const scanline = document.createElement('div');
-      scanline.className = 'scanline';
-      pre.appendChild(scanline);
+      // Add scanline effect - DISABLED for cleaner look
+      // const scanline = document.createElement('div');
+      // scanline.className = 'scanline';
+      // pre.appendChild(scanline);
 
       // Create terminal header
       const header = createTerminalHeader(pre, index);
