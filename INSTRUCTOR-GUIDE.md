@@ -150,12 +150,12 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 
 ### Lab Format
 
-All 117 labs follow this pattern:
-- Student runs `python hands-on/session-NN/labXX_topic.py`
-- Lab prints instructions and has `# TODO` sections with `"___"` placeholders
-- Student fills in answers/code in the TODO sections
+All 117 labs are Jupyter notebooks (.ipynb). The pattern:
+- Student opens `hands-on/session-NN/labXX_topic.ipynb` in VS Code or JupyterLab
+- Lab has markdown instruction cells and code cells with `# TODO` sections and `"___"` placeholders
+- Student fills in answers/code in the TODO cells and runs them
 - Lab validates with `[PASS]/[FAIL]` checks and a score
-- Solution is in `hands-on/session-NN/solutions/labXX_topic.py`
+- Solution is in `hands-on/session-NN/solutions/labXX_topic.ipynb`
 
 ### Lab Pacing
 
