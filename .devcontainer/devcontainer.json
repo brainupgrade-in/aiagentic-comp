@@ -29,7 +29,7 @@
         "VisualStudioExptTeam.intellicode-api-usage-examples"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
         "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
@@ -37,8 +37,8 @@
 
   "containerEnv": {
     "PYTHONDONTWRITEBYTECODE": "1",
-    "VIRTUAL_ENV": "/home/vscode/.venv",
-    "PATH": "/home/vscode/.venv/bin:${localEnv:PATH}"
+    "VIRTUAL_ENV": "${containerWorkspaceFolder}/.venv",
+    "PATH": "${containerWorkspaceFolder}/.venv/bin:${localEnv:PATH}"
   },
 
   "forwardPorts": [

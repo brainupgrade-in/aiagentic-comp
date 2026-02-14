@@ -15,7 +15,7 @@ source ~/.venv/bin/activate
 export GROQ_API_KEY="your-key-here"
 
 # Or add it to your .env file
-echo 'GROQ_API_KEY=your-key-here' >> ~/workspace/.env
+echo 'GROQ_API_KEY=your-key-here' >> .env
 
 # Install sentence-transformers for embeddings (if not already installed)
 pip install sentence-transformers

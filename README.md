@@ -15,13 +15,10 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development -
 The Codespace auto-configures Python 3.13 and all dependencies. After launch:
 
 ```bash
-# 1. Copy environment template
-cp ~/workspace/.env.template ~/workspace/.env
+# 1. Add your Groq API key (https://console.groq.com)
+nano .env
 
-# 2. Add your Groq API key (https://console.groq.com)
-nano ~/workspace/.env
-
-# 3. Run day-specific setup
+# 2. Run day-specific setup
 bash scripts/day1-setup.sh
 ```
 
