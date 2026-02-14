@@ -576,13 +576,13 @@
         <section>
           <h2>How CLAUDE.md Works</h2>
           <h3>Persistent project-level context for AI agents</h3>
-          <pre><code class="language-python" data-trim data-noescape># CLAUDE.md &mdash; placed in project root
+          <pre data-lang="MARKDOWN"><code class="language-markdown" data-trim data-noescape># CLAUDE.md — placed in project root
 
-            ## Project Overview
-            This is a FastAPI microservice for order processing.
-            Uses PostgreSQL, Redis for caching, deployed on K8s.
+## Project Overview
+This is a FastAPI microservice for order processing.
+Uses PostgreSQL, Redis for caching, deployed on K8s.
 
-            ## Architecture Decisions
+## Architecture Decisions
             - All endpoints are async
             - Pydantic v2 for validation
             - Alembic for DB migrations
@@ -1293,6 +1293,7 @@
   <script src="shared.js"></script>
   <!-- Presentation Header & Footer -->
   <script src="presentation-header-footer.js"></script>
+  <script src="code-blocks-enhanced.js"></script>
 </body>
 
 </html>

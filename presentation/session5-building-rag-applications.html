@@ -56,11 +56,11 @@
             </ul>
           </div>
         </div>
-        <pre class="text-sm" style="text-align:center;"><code class="language-python" data-trim data-noescape># The only change in your code:
-<span class="color-dim" style="text-decoration:line-through;">from langchain_ollama import ChatOllama
+        <pre data-lang="PYTHON"><code class="language-python" data-trim data-noescape># The only change in your code:
+<span class="color-dim" style="text-decoration:line-through;">from langchain_ollama import ChatOllama</span>
 from langchain_groq import ChatGroq
 
-<span class="color-dim" style="text-decoration:line-through;">llm = ChatOllama(model="llama3.2:1b")
+<span class="color-dim" style="text-decoration:line-through;">llm = ChatOllama(model="llama3.2:1b")</span>
 llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
         <div class="takeaway">
           LangChain's model-agnostic design in action: <strong>two lines change, everything else stays the same.</strong>
@@ -1308,5 +1308,6 @@ rag_chain = (
   <script src="shared.js"></script>
   <!-- Presentation Header & Footer -->
   <script src="presentation-header-footer.js"></script>
+  <script src="code-blocks-enhanced.js"></script>
 </body>
 </html>

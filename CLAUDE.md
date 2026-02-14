@@ -232,6 +232,17 @@ All 15 session presentations use Reveal.js 4.6.1 with a custom **Cybernetic HUD 
 - `shared.js` — JavaScript enhancements (index link, keyboard shortcuts)
 - `reveal-init.js` — Standardized Reveal.js configuration
 - `presentation-header-footer.js` — Auto-updating HUD interface
+- `code-blocks-enhanced.js` — Cyberpunk terminal code block enhancements
+
+**Code Blocks - Cyberpunk Terminal Interface:**
+- HUD-style corner brackets with pulsing glow animations
+- Terminal header bar with language badges and status indicators
+- Animated scanlines creating CRT monitor effect
+- Enhanced syntax highlighting with electric glow effects
+- Production-grade copy buttons with success feedback
+- Holographic shimmer effects on hover
+- Auto-enhancement via JavaScript (runs on all presentations)
+- Fallback support for older browsers
 
 **Design System:**
 - Electric teal (#00ffcc) primary accent
@@ -258,6 +269,10 @@ firefox presentation/index.html
 
 # Open specific session
 firefox presentation/session1-introduction-to-agentic-ai.html
+
+# Apply code block enhancements (if needed)
+cd presentation/
+./apply-code-enhancements.sh
 ```
 
 ## Error Recovery (Constrained Environment)
