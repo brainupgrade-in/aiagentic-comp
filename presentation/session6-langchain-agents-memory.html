@@ -86,7 +86,7 @@
                 <li>No decision-making at runtime</li>
                 <li>Great for predictable workflows</li>
               </ul>
-              <p style="margin-top:8px; font-size:0.8em; color:var(--accent);">prompt | llm | parser</p>
+              <p class="text-080 color-accent" style="margin-top:8px;">prompt | llm | parser</p>
             </div>
             <div class="card card-green p-16">
               <h4>Agent (Today)</h4>
@@ -96,7 +96,7 @@
                 <li>Reasons about which action to take</li>
                 <li>Handles unexpected situations</li>
               </ul>
-              <p style="margin-top:8px; font-size:0.8em; color:var(--accent2);">Think &rarr; Act &rarr; Observe &rarr; Repeat</p>
+              <p class="text-080 color-green" style="margin-top:8px;">Think &rarr; Act &rarr; Observe &rarr; Repeat</p>
             </div>
           </div>
           <div class="analogy">
@@ -116,24 +116,24 @@
               <span class="text-085">What should I do?</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
-            <div class="cycle-box" style="border-color:var(--accent2);">
+            <div class="cycle-box border-green">
               <strong>Act</strong><br>
               <span class="text-085">Call a tool</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
-            <div class="cycle-box" style="border-color:var(--accent3);">
+            <div class="cycle-box border-orange">
               <strong>Observe</strong><br>
               <span class="text-085">Read the result</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
-            <div class="cycle-box" style="border-color:var(--accent4);">
+            <div class="cycle-box border-red">
               <strong>Decide</strong><br>
               <span class="text-085">Done or loop?</span>
             </div>
           </div>
           <div class="card card-accent" style="padding:16px; margin-top:10px;">
             <h4>Example: "What's the weather in Bangalore and should I carry an umbrella?"</h4>
-            <p style="font-size:0.72em;">
+            <p class="text-072">
               <strong class="color-accent">Think:</strong> I need weather data &rarr;
               <strong class="color-green">Act:</strong> Call weather_tool("Bangalore") &rarr;
               <strong class="color-orange">Observe:</strong> "24&deg;C, 70% rain chance" &rarr;
@@ -150,7 +150,7 @@
         <!-- REACT AGENT IN CODE -->
         <section>
           <h2>ReAct Agent in LangChain</h2>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 
@@ -210,7 +210,7 @@ print(result["messages"][-1].content)</code></pre>
         <!-- BIND_TOOLS -->
         <section>
           <h2>Binding Tools to an LLM</h2>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.tools import tool
 
 @tool
@@ -237,7 +237,7 @@ print(response.tool_calls)
         <!-- AGENT TYPES COMPARISON -->
         <section>
           <h2>Agent Types Compared</h2>
-          <table class="compare-table" style="margin-top:14px; font-size:0.52em;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Agent Type</th>
               <th>How It Decides</th>
@@ -316,7 +316,7 @@ print(response.tool_calls)
         <section>
           <h2>Creating Tools with @tool</h2>
           <h3>The simplest way to define a tool</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
 
 @tool
 def get_order_status(order_id: str) -> str:
@@ -340,7 +340,7 @@ print(get_order_status.args_schema)  # {"order_id": {"type": "string"}}</code></
         <section>
           <h2>Multi-Tool Agent</h2>
           <h3>Agent with several tools to choose from</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 
 @tool
@@ -369,7 +369,7 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
           <h3>The agent chains tool calls when needed</h3>
           <div class="card card-accent" style="padding:16px; margin-top:14px;">
             <h4>Query: "Is it warmer in Bangalore or Mumbai? Show the difference in Fahrenheit."</h4>
-            <p style="font-size:0.72em; margin-top:8px;">
+            <p class="text-072" style="margin-top:8px;">
               <strong class="color-accent">Step 1:</strong> Think &rarr; I need weather for both cities<br>
               <strong class="color-green">Step 2:</strong> Call weather("Bangalore") &rarr; "24&deg;C"<br>
               <strong class="color-green">Step 3:</strong> Call weather("Mumbai") &rarr; "32&deg;C"<br>
@@ -435,7 +435,7 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
           <div class="card-grid mt-14">
             <div class="card card-red p-16">
               <h4>Without Memory</h4>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
 Bot: Nice to meet you, Raj!
 
 User: What is my name?
@@ -444,7 +444,7 @@ Bot: I don't know your name.</code></pre>
             </div>
             <div class="card card-green p-16">
               <h4>With Memory</h4>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
 Bot: Nice to meet you, Raj!
 
 User: What is my name?
@@ -461,20 +461,20 @@ Bot: Your name is Raj!</code></pre>
             <div class="card card-accent p-14">
               <h4>Buffer Memory</h4>
               <p>Store the entire conversation history. Every message is kept and sent to the LLM each time.</p>
-              <p style="margin-top:8px; color:var(--accent);"><strong>Simple but grows fast</strong></p>
-              <p style="margin-top:4px; font-size:0.85em;">Best for: short conversations (5-10 turns)</p>
+              <p class="color-accent" style="margin-top:8px;"><strong>Simple but grows fast</strong></p>
+              <p class="text-085" style="margin-top:4px;">Best for: short conversations (5-10 turns)</p>
             </div>
             <div class="card card-green p-14">
               <h4>Summary Memory</h4>
               <p>Use an LLM to summarize older messages. Keeps recent messages + a summary of earlier ones.</p>
-              <p style="margin-top:8px; color:var(--accent2);"><strong>Token-efficient</strong></p>
-              <p style="margin-top:4px; font-size:0.85em;">Best for: long conversations (10+ turns)</p>
+              <p class="color-green" style="margin-top:8px;"><strong>Token-efficient</strong></p>
+              <p class="text-085" style="margin-top:4px;">Best for: long conversations (10+ turns)</p>
             </div>
             <div class="card card-orange p-14">
               <h4>Window Memory</h4>
               <p>Keep only the last N messages. Older messages are dropped entirely.</p>
-              <p style="margin-top:8px; color:var(--accent3);"><strong>Fixed size, simple</strong></p>
-              <p style="margin-top:4px; font-size:0.85em;">Best for: stateless tasks with brief context</p>
+              <p class="color-orange" style="margin-top:8px;"><strong>Fixed size, simple</strong></p>
+              <p class="text-085" style="margin-top:4px;">Best for: stateless tasks with brief context</p>
             </div>
           </div>
           <div class="analogy">
@@ -488,7 +488,7 @@ Bot: Your name is Raj!</code></pre>
         <section>
           <h2>Conversation Buffer Memory</h2>
           <h3>The simplest approach: store all messages</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 llm = ChatGroq(model="llama-3.3-70b-versatile")
@@ -516,7 +516,7 @@ print(f"Messages in memory: {len(memory)}")  # 5</code></pre>
         <section>
           <h2>Conversation Summary Memory</h2>
           <h3>Summarize older messages to save tokens</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
 llm = ChatGroq(model="llama-3.3-70b-versatile")
@@ -548,13 +548,13 @@ def chat_with_summary(memory, user_msg):
             <div class="card card-accent p-14">
               <h4>In-Memory (Lab/Dev)</h4>
               <p>Messages stored in a Python list. Lost when the process restarts.</p>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape>sessions = {}
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape>sessions = {}
 sessions["user-1"] = [msg1, msg2]</code></pre>
             </div>
             <div class="card card-green p-14">
               <h4>Persistent (Production)</h4>
               <p>Messages stored in a database. Survive restarts and scale to many users.</p>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># LangGraph checkpoint
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># LangGraph checkpoint
 SqliteSaver(db_path)
 PostgresSaver(conn_string)</code></pre>
             </div>
@@ -569,7 +569,7 @@ PostgresSaver(conn_string)</code></pre>
         <!-- MULTI-SESSION PATTERN -->
         <section>
           <h2>Multi-User Session Pattern</h2>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.prebuilt import create_react_agent
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
 
 # Create agent with memory
@@ -599,7 +599,7 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
           <h2>The Complete Picture</h2>
           <h3>Agent + Tools + Memory</h3>
           <div class="pipe-flow mt-16">
-            <div class="pipe-box" style="border-color:var(--accent); min-width:90px;">
+            <div class="pipe-box border-accent" style="min-width:90px;">
               <strong>User</strong><br>
               <span class="text-085">Question</span>
             </div>
@@ -652,7 +652,7 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
         <!-- QUICK REFERENCE -->
         <section>
           <h2>Agents & Memory Quick Reference</h2>
-          <table class="compare-table" style="font-size:0.52em;">
+          <table class="compare-table text-052">
             <tr>
               <th>What You Want</th>
               <th>LangChain API</th>
@@ -742,16 +742,16 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
               </div>
             </div>
           </div>
-          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+          <p class="text-070 color-muted" style="text-align:center; margin-top:16px;">
             From simple agents to complex, stateful, multi-step workflows.
           </p>
         </section>
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Ask about agents, tools, memory, or anything from today's sessions.
           </p>
         </section>
@@ -761,8 +761,8 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
       <section>
         <section>
           <h1 class="text-2xl">Session 6 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
         </section>
@@ -1097,35 +1097,19 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

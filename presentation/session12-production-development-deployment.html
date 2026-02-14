@@ -423,7 +423,7 @@ api_key = os.getenv("GROQ_API_KEY")</code></pre>
           <div class="card-grid">
             <div class="card card-red">
               <h4>Bad: print()</h4>
-              <pre style="font-size:0.85em; margin-top:8px;"><code class="language-python" data-trim data-noescape>print("Agent called with query: " + query)
+              <pre class="text-085" style="margin-top:8px;"><code class="language-python" data-trim data-noescape>print("Agent called with query: " + query)
 print("Tokens used: 247")
 print("Error: rate limit exceeded")</code></pre>
               <ul class="mt-8">
@@ -434,7 +434,7 @@ print("Error: rate limit exceeded")</code></pre>
             </div>
             <div class="card card-green">
               <h4>Good: Structured JSON</h4>
-              <pre style="font-size:0.85em; margin-top:8px;"><code class="language-json" data-trim data-noescape>{"timestamp": "2026-02-12T10:30:00Z",
+              <pre class="text-085" style="margin-top:8px;"><code class="language-json" data-trim data-noescape>{"timestamp": "2026-02-12T10:30:00Z",
  "level": "INFO",
  "trace_id": "abc-123",
  "model": "llama-3.3-70b-versatile",
@@ -552,7 +552,7 @@ print("Error: rate limit exceeded")</code></pre>
               </ul>
             </div>
             <div class="card" style="border-left:4px solid #ce93d8;">
-              <h4 style="color:#ce93d8;">Alerting</h4>
+              <h4 class="color-purple">Alerting</h4>
               <ul class="checklist">
                 <li>Error rate threshold alerts</li>
                 <li>Latency P99 alerts</li>
@@ -561,7 +561,7 @@ print("Error: rate limit exceeded")</code></pre>
               </ul>
             </div>
             <div class="card" style="border-left:4px solid #90caf9;">
-              <h4 style="color:#90caf9;">Backup &amp; Recovery</h4>
+              <h4 class="color-lightblue">Backup &amp; Recovery</h4>
               <ul class="checklist">
                 <li>Vector DB data backed up</li>
                 <li>Configuration versioned</li>
@@ -591,27 +591,27 @@ print("Error: rate limit exceeded")</code></pre>
           <div class="diagram-vertical" style="margin:14px 0;">
             <div class="box" style="width:80%; padding:12px 18px;">
               <strong>Step 1:</strong> ConfigMaps &amp; Secrets
-              <span style="float:right; color:var(--accent);">Configuration</span>
+              <span class="color-accent" style="float:right;">Configuration</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-green" style="width:80%; padding:12px 18px;">
               <strong>Step 2:</strong> Databases &amp; Vector Stores (local storage)
-              <span style="float:right; color:var(--accent2);">Data Layer</span>
+              <span class="color-green" style="float:right;">Data Layer</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-orange" style="width:80%; padding:12px 18px;">
               <strong>Step 3:</strong> LangFuse + Observability Stack
-              <span style="float:right; color:var(--accent3);">Observability</span>
+              <span class="color-orange" style="float:right;">Observability</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-red" style="width:80%; padding:12px 18px;">
               <strong>Step 4:</strong> AI Agent Application (uvicorn process)
-              <span style="float:right; color:var(--accent4);">Application</span>
+              <span class="color-red" style="float:right;">Application</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box" style="width:80%; padding:12px 18px;">
               <strong>Step 5:</strong> Port Mapping / Reverse Proxy
-              <span style="float:right; color:var(--accent);">Routing</span>
+              <span class="color-accent" style="float:right;">Routing</span>
             </div>
           </div>
           <div class="analogy">
@@ -972,7 +972,7 @@ async def <span class="function">test_agent_invoke():
 
       <section>
         <h1 class="text-2xl">Session 12 Quiz</h1>
-        <p style="font-size:1.1em; color:#ccc; margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
+        <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
       </section>
 
       <!-- Q1 -->
@@ -1130,35 +1130,19 @@ async def <span class="function">test_agent_invoke():
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

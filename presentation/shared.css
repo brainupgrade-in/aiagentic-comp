@@ -9,10 +9,18 @@
    ============================================================= */
 :root {
   --accent: #4fc3f7;
+  --accent-light: #80d8ff;
+  --accent-dark: #0091ea;
   --accent2: #81c784;
   --accent3: #ffb74d;
   --accent4: #e57373;
   --bg-card: rgba(255, 255, 255, 0.07);
+  --bg-dark: #0a0f1a;
+  --text-primary: #e0e6ed;
+  --text-muted: #8899aa;
+  --success: #26a69a;
+  --warning: #ffa726;
+  --danger: #ef5350;
 }
 
 /* =============================================================
@@ -20,25 +28,9 @@
    ============================================================= */
 .reveal {
   font-size: 28px;
-  /* Slightly smaller base font for better content fit */
-}
-
-@media (min-width: 1600px) {
-  .reveal {
-    font-size: 34px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .reveal {
-    font-size: 24px;
-  }
-}
-
-@media (max-width: 768px) {
-  .reveal {
-    font-size: 20px;
-  }
+  /* Reveal.js handles responsive scaling using 100% width/height.
+     Browser zoom now works naturally without transform conflicts.
+     We do NOT add media queries that change this base font-size. */
 }
 
 .reveal h1 {
@@ -46,22 +38,29 @@
   color: var(--accent);
   text-transform: none;
   font-weight: 800;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.15em;
 }
 
 .reveal h2 {
-  font-size: 1.5em;
+  font-size: 1.4em;
   color: var(--accent);
   text-transform: none;
   font-weight: 700;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.1em;
+}
+
+.reveal h2.with-border {
+  border-bottom: 3px solid var(--accent-dark);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .reveal h3 {
-  font-size: 1.1em;
+  font-size: 1em;
   color: var(--accent2);
   text-transform: none;
   font-weight: 600;
+  margin-bottom: 0.05em;
 }
 
 .reveal ul {
@@ -77,12 +76,12 @@
 .reveal .subtitle {
   color: #bbb;
   font-size: 0.65em;
-  margin-top: 0.4em;
+  margin-top: 0.1em;
 }
 
-/* Prevent content overflow on slides */
+/* Prevent slide scrollbars - only content within slides should scroll */
 .reveal .slides section {
-  overflow: auto;
+  overflow: hidden !important;
 }
 
 /* Fragment fade-in override for cleaner look */
@@ -99,9 +98,9 @@
 .reveal .slides section>section {
   display: flex !important;
   flex-direction: column !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   align-items: center !important;
-  padding: 4vh 6vw !important;
+  padding: 15px 40px !important;
   box-sizing: border-box !important;
 }
 
@@ -117,14 +116,15 @@
   width: 100%;
 }
 
-/* Main content area — fills middle */
+/* Main content area — fills middle, responsive sizing */
 .reveal .slides section>*:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br):not(aside) {
   flex: 1 1 auto;
   width: 100%;
-  margin: 0.8vh 0;
+  margin: 4px 0;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: 100%;
+  overflow-y: visible;
+  overflow-x: visible;
   display: block;
 }
 
@@ -158,8 +158,8 @@
 .reveal .slides section .analogy {
   flex: 0 0 auto;
   width: 100%;
-  max-width: 1000px;
-  margin: 1.5vh auto 0 auto !important;
+  max-width: 1600px;
+  margin: 8px auto 0 auto !important;
   text-align: left;
 }
 
@@ -176,41 +176,52 @@
 }
 
 /* =============================================================
+   Inline Code Styling
+   ============================================================= */
+.reveal code:not(pre code) {
+  background: rgba(79, 195, 247, 0.12);
+  color: var(--accent-light);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.88em;
+  font-family: 'Fira Code', 'Consolas', monospace;
+}
+
+/* =============================================================
    Cards & Layouts
    ============================================================= */
 .reveal .slides section .card-grid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1600px;
 }
 
 .reveal .slides section .card-grid-3 {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1600px;
 }
 
-@media (max-width: 1100px) {
-  .reveal .slides section .card-grid-3 {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+/* Alternative grid layout classes */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
 }
 
-@media (max-width: 768px) {
-
-  .reveal .slides section .card-grid,
-  .reveal .slides section .card-grid-3 {
-    grid-template-columns: 1fr !important;
-  }
-
-  .card {
-    padding: 12px;
-  }
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
 }
+
+/* No media queries for card grids — Reveal.js handles responsive scaling.
+   The grid stays 2-col / 3-col and scales proportionally with the viewport.
+   Browser zoom works naturally with the 100% width/height configuration. */
 
 .card {
   background: var(--bg-card);
@@ -390,7 +401,7 @@
 }
 
 /* =============================================================
-   Comparison Table
+   Comparison Table - With Scrolling Support
    ============================================================= */
 .reveal .slides section .compare-table,
 .compare-table {
@@ -400,6 +411,10 @@
   margin: 16px auto 0 auto !important;
   border-collapse: collapse;
   font-size: 0.6em;
+  display: block;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .compare-table th {
@@ -420,6 +435,26 @@
   background: rgba(79, 195, 247, 0.05);
 }
 
+/* Scrollbar for comparison tables */
+.compare-table::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.compare-table::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.compare-table::-webkit-scrollbar-thumb {
+  background: rgba(79, 195, 247, 0.4);
+  border-radius: 4px;
+}
+
+.compare-table::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 195, 247, 0.6);
+}
+
 /* =============================================================
    Callout Boxes
    ============================================================= */
@@ -429,8 +464,8 @@
   background: rgba(79, 195, 247, 0.08);
   border-left: 4px solid var(--accent);
   border-radius: 0 8px 8px 0;
-  padding: 16px 20px;
-  margin: 16px 0;
+  padding: 10px 16px;
+  margin: 8px 0;
   font-size: 0.75em;
   text-align: left;
 }
@@ -449,8 +484,8 @@
   background: rgba(129, 199, 132, 0.1);
   border: 1px solid var(--accent2);
   border-radius: 10px;
-  padding: 20px;
-  margin-top: 16px;
+  padding: 12px 16px;
+  margin-top: 8px;
   font-size: 0.75em;
   text-align: left;
 }
@@ -468,8 +503,8 @@
   background: rgba(129, 199, 132, 0.08);
   border-left: 4px solid var(--accent2);
   border-radius: 0 8px 8px 0;
-  padding: 14px 18px;
-  margin-top: 12px;
+  padding: 10px 14px;
+  margin-top: 6px;
   font-size: 0.68em;
   text-align: left;
 }
@@ -487,8 +522,8 @@
   background: rgba(255, 183, 77, 0.08);
   border-left: 4px solid var(--accent3);
   border-radius: 0 8px 8px 0;
-  padding: 14px 18px;
-  margin-top: 12px;
+  padding: 10px 14px;
+  margin-top: 6px;
   font-size: 0.68em;
   text-align: left;
 }
@@ -506,8 +541,8 @@
   background: rgba(79, 195, 247, 0.08);
   border-left: 4px solid var(--accent);
   border-radius: 0 8px 8px 0;
-  padding: 14px 18px;
-  margin-top: 12px;
+  padding: 10px 14px;
+  margin-top: 6px;
   font-size: 0.68em;
   text-align: left;
 }
@@ -525,8 +560,8 @@
   background: rgba(229, 115, 115, 0.1);
   border: 1px solid var(--accent4);
   border-radius: 10px;
-  padding: 14px 18px;
-  margin-top: 12px;
+  padding: 10px 14px;
+  margin-top: 6px;
   font-size: 0.68em;
   text-align: left;
 }
@@ -545,7 +580,7 @@
 
 /* Section divider */
 .section-number {
-  font-size: 4em;
+  font-size: 2.5em;
   color: var(--accent);
   opacity: 0.3;
   font-weight: bold;
@@ -585,8 +620,30 @@
   grid-template-columns: 1fr 1fr;
   gap: 14px;
   max-width: 100%;
+  max-height: 600px;
   margin: 0 auto;
   padding: 0 2vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar for quiz options */
+.quiz-options::-webkit-scrollbar {
+  width: 8px;
+}
+
+.quiz-options::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.quiz-options::-webkit-scrollbar-thumb {
+  background: rgba(79, 195, 247, 0.4);
+  border-radius: 4px;
+}
+
+.quiz-options::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 195, 247, 0.6);
 }
 
 .quiz-option {
@@ -662,45 +719,72 @@
 }
 
 /* =============================================================
-   Code Blocks
+   Code Blocks - High Visibility Styling
    ============================================================= */
 .code-block {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 16px 20px;
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.65em;
+  background: #000000;
+  border: 2px solid rgba(79, 195, 247, 0.4);
+  border-radius: 12px;
+  padding: 20px 24px;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 0.75em;
   text-align: left;
-  color: #e0e0e0;
-  margin: 0.4em 0;
+  color: #f5f5f5;
+  margin: 0.8em 0;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 45vh;
-  line-height: 1.5;
+  max-height: 600px;
+  line-height: 1.7;
   white-space: pre-wrap;
   word-wrap: break-word;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(79, 195, 247, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  font-variant-ligatures: common-ligatures;
+  text-rendering: optimizeLegibility;
+  font-weight: 500;
 }
 
 .code-block .comment {
-  color: #b0b0b0;   /* WCAG AA ~5.2:1 contrast on dark bg */
+  color: #9aa5b1;
+  font-style: italic;
+  font-weight: 400;
 }
 
 .code-block .keyword {
-  color: var(--accent);
+  color: #5fd4ff;
+  font-weight: 700;
 }
 
 .code-block .string {
-  color: var(--accent2);
+  color: #9ccc65;
+  font-weight: 500;
 }
 
 .code-block .func {
-  color: var(--accent3);
+  color: #64b5f6;
+  font-weight: 600;
+}
+
+.code-block .number {
+  color: #ffca28;
+  font-weight: 600;
+}
+
+.code-block .operator {
+  color: #80deea;
+  font-weight: 600;
 }
 
 .code-block .output {
-  color: #bbb;
+  color: #cfd8dc;
   font-style: italic;
+  font-weight: 400;
+}
+
+.code-block .variable {
+  color: #ff7043;
+  font-weight: 500;
 }
 
 /* Code block wrapper + copy button */
@@ -713,104 +797,248 @@
   margin: 0;
 }
 
+/* High-Visibility Copy Button */
 .copy-btn {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color: #aaa;
+  top: 10px;
+  right: 14px;
+  background: rgba(79, 195, 247, 0.2);
+  border: 1px solid rgba(79, 195, 247, 0.5);
+  border-radius: 6px;
+  color: #80d8ff;
   font-size: 12px;
-  padding: 3px 10px;
+  font-weight: 700;
+  padding: 7px 14px;
   cursor: pointer;
   z-index: 10;
   font-family: system-ui, -apple-system, sans-serif;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.7;
+  backdrop-filter: blur(4px);
+}
+
+.reveal pre:hover .copy-btn {
+  opacity: 1;
 }
 
 .copy-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
+  background: rgba(79, 195, 247, 0.35);
+  border-color: rgba(79, 195, 247, 0.7);
+  color: #ffffff;
+  transform: translateY(-1px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+}
+
+.copy-btn:active {
+  transform: translateY(0) scale(1);
 }
 
 .copy-btn.copied {
   background: rgba(129, 199, 132, 0.3);
-  color: #81c784;
-  border-color: rgba(129, 199, 132, 0.5);
+  color: #9ccc65;
+  border-color: rgba(129, 199, 132, 0.7);
 }
 
-/* Scrollbar styling for code blocks on dark backgrounds */
+.copy-btn.copied::before {
+  content: '✓ ';
+  font-size: 14px;
+}
+
+/* Copy icon */
+.copy-btn::after {
+  content: '⎘';
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* High-Visibility Scrollbar for code blocks */
 .code-block::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 .code-block::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
+  border-radius: 5px;
+  border: 1px solid rgba(79, 195, 247, 0.1);
 }
 
 .code-block::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  background: rgba(79, 195, 247, 0.5);
+  border-radius: 5px;
+  border: 1px solid rgba(79, 195, 247, 0.3);
 }
 
 .code-block::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(79, 195, 247, 0.7);
+  border-color: rgba(79, 195, 247, 0.5);
 }
 
 /* Firefox scrollbar */
 .code-block {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+  scrollbar-color: rgba(79, 195, 247, 0.5) rgba(255, 255, 255, 0.05);
 }
 
 /* =============================================================
-   Highlight.js Code Blocks (pre > code)
+   Highlight.js Code Blocks (pre > code) - High Visibility
    ============================================================= */
 .reveal pre {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  margin: 0.4em 0;
+  position: relative;
+  background: #000000;
+  border: 2px solid rgba(79, 195, 247, 0.4);
+  border-radius: 12px;
+  margin: 0.8em 0;
   width: 100%;
-  max-height: 45vh;
-  box-shadow: none;
+  max-height: 600px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(79, 195, 247, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Language badge */
+.reveal pre::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  left: 18px;
+  background: rgba(79, 195, 247, 0.25);
+  color: #80d8ff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-family: system-ui, -apple-system, sans-serif;
+  z-index: 5;
+  border: 1px solid rgba(79, 195, 247, 0.3);
+}
+
+.reveal pre[data-lang=""]::before {
+  display: none;
 }
 
 .reveal pre code {
-  font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.65em;
-  line-height: 1.5;
-  padding: 16px 20px;
-  max-height: 45vh;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+  font-size: 0.75em;
+  line-height: 1.7;
+  padding: 48px 24px 20px 24px;
+  max-height: 600px;
   overflow: auto;
+  display: block;
+  font-weight: 500;
+  font-variant-ligatures: common-ligatures;
+  text-rendering: optimizeLegibility;
+  color: #f5f5f5;
 }
 
-/* Scrollbar styling for highlight.js code blocks */
+/* High-Contrast Syntax Highlighting for Python and other languages */
+.reveal pre code .hljs-keyword,
+.reveal pre code .hljs-selector-tag,
+.reveal pre code .hljs-literal,
+.reveal pre code .hljs-title,
+.reveal pre code .hljs-section,
+.reveal pre code .hljs-doctag,
+.reveal pre code .hljs-type,
+.reveal pre code .hljs-name {
+  color: #5fd4ff;
+  font-weight: 700;
+}
+
+.reveal pre code .hljs-string,
+.reveal pre code .hljs-title.class_,
+.reveal pre code .hljs-title.class_.inherited__,
+.reveal pre code .hljs-attr {
+  color: #9ccc65;
+  font-weight: 500;
+}
+
+.reveal pre code .hljs-number,
+.reveal pre code .hljs-symbol,
+.reveal pre code .hljs-bullet,
+.reveal pre code .hljs-link,
+.reveal pre code .hljs-meta,
+.reveal pre code .hljs-selector-id,
+.reveal pre code .hljs-selector-class {
+  color: #ffca28;
+  font-weight: 600;
+}
+
+.reveal pre code .hljs-comment,
+.reveal pre code .hljs-quote {
+  color: #9aa5b1;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.reveal pre code .hljs-built_in,
+.reveal pre code .hljs-title.function_,
+.reveal pre code .hljs-params {
+  color: #64b5f6;
+  font-weight: 600;
+}
+
+.reveal pre code .hljs-variable,
+.reveal pre code .hljs-template-variable,
+.reveal pre code .hljs-attribute {
+  color: #ff7043;
+  font-weight: 500;
+}
+
+.reveal pre code .hljs-regexp,
+.reveal pre code .hljs-link {
+  color: #e1bee7;
+  font-weight: 500;
+}
+
+.reveal pre code .hljs-operator,
+.reveal pre code .hljs-selector-attr,
+.reveal pre code .hljs-selector-pseudo {
+  color: #80deea;
+  font-weight: 600;
+}
+
+.reveal pre code .hljs-emphasis {
+  font-style: italic;
+}
+
+.reveal pre code .hljs-strong {
+  font-weight: bold;
+  color: #fff;
+}
+
+/* High-Visibility Scrollbar for highlight.js code blocks */
 .reveal pre code::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 .reveal pre code::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 3px;
+  border-radius: 5px;
+  border: 1px solid rgba(79, 195, 247, 0.1);
 }
 
 .reveal pre code::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
+  background: rgba(79, 195, 247, 0.5);
+  border-radius: 5px;
+  border: 1px solid rgba(79, 195, 247, 0.3);
 }
 
 .reveal pre code::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(79, 195, 247, 0.7);
+  border-color: rgba(79, 195, 247, 0.5);
 }
 
 .reveal pre code {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+  scrollbar-color: rgba(79, 195, 247, 0.5) rgba(255, 255, 255, 0.05);
 }
 
 /* =============================================================
@@ -1014,6 +1242,160 @@
 }
 
 /* =============================================================
+   Tags / Badges
+   ============================================================= */
+.tag {
+  display: inline-block;
+  background: rgba(79, 195, 247, 0.15);
+  color: var(--accent-light);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.7em;
+  margin: 2px;
+  font-weight: 500;
+}
+
+.tag-green {
+  background: rgba(129, 199, 132, 0.15);
+  color: var(--accent2);
+}
+
+.tag-orange {
+  background: rgba(255, 183, 77, 0.15);
+  color: var(--accent3);
+}
+
+.tag-red {
+  background: rgba(229, 115, 115, 0.15);
+  color: var(--accent4);
+}
+
+.tag-success {
+  background: rgba(38, 166, 154, 0.15);
+  color: var(--success);
+}
+
+.tag-warning {
+  background: rgba(255, 167, 38, 0.15);
+  color: var(--warning);
+}
+
+.tag-danger {
+  background: rgba(239, 83, 80, 0.15);
+  color: var(--danger);
+}
+
+/* =============================================================
+   Title Slide Enhancements
+   ============================================================= */
+.title-slide {
+  text-align: center !important;
+}
+
+.title-slide h1 {
+  font-size: 2.6em;
+  margin-bottom: 10px;
+}
+
+.title-slide .duration {
+  color: var(--accent);
+  font-size: 1em;
+  margin-top: 30px;
+  font-weight: 600;
+}
+
+.title-slide .branding {
+  color: var(--text-muted);
+  font-size: 0.7em;
+  margin-top: 40px;
+}
+
+/* =============================================================
+   Diagram Boxes & Arrows (Additional Styles)
+   ============================================================= */
+.diagram-box {
+  background: var(--bg-card);
+  border: 2px solid var(--accent-dark);
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-align: center;
+  margin: 6px auto;
+  font-size: 0.85em;
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+.diagram-arrow {
+  text-align: center;
+  color: var(--accent);
+  font-size: 1.2em;
+  margin: 2px 0;
+}
+
+/* =============================================================
+   Special Slide Types
+   ============================================================= */
+.lab-slide h2 {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.lab-slide .highlight-box {
+  border-left-color: var(--success);
+  background: rgba(38, 166, 154, 0.08);
+}
+
+.quiz-slide h2 {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.center-slide {
+  text-align: center !important;
+}
+
+.center-slide h2 {
+  border-bottom: none;
+}
+
+/* =============================================================
+   Navigation Buttons
+   ============================================================= */
+.home-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+  background: rgba(10, 15, 26, 0.7);
+  border: 1px solid rgba(79, 195, 247, 0.2);
+  color: #8899aa;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  text-decoration: none;
+  font-family: system-ui, -apple-system, sans-serif;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.home-btn:hover {
+  background: rgba(79, 195, 247, 0.12);
+  color: #80d8ff;
+  border-color: rgba(79, 195, 247, 0.45);
+}
+
+.home-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* =============================================================
    Index Link
    ============================================================= */
 .index-link {
@@ -1033,76 +1415,6 @@
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* =============================================================
-   Utility Classes (reduce inline styles)
-   ============================================================= */
-.mt-sm {
-  margin-top: 8px;
-}
-
-.mt-md {
-  margin-top: 14px;
-}
-
-.mt-lg {
-  margin-top: 20px;
-}
-
-.mt-xl {
-  margin-top: 30px;
-}
-
-.mb-sm {
-  margin-bottom: 8px;
-}
-
-.mb-md {
-  margin-bottom: 14px;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.p-compact {
-  padding: 14px;
-}
-
-.p-md {
-  padding: 16px;
-}
-
-.p-lg {
-  padding: 20px;
-}
-
-.p-xl {
-  padding: 24px;
-}
-
-.font-sm {
-  font-size: 0.65em;
-}
-
-.font-md {
-  font-size: 0.7em;
-}
-
-.font-lg {
-  font-size: 0.85em;
-}
-
-.color-muted {
-  color: #aaa;
-}
-
-.color-light {
-  color: #ccc;
-}
 
 /* =============================================================
    Agent Hub Diagrams (Session 9: Multi-Agent Systems)
@@ -1349,62 +1661,251 @@
    ============================================================= */
 
 /* ── Typography ── */
-.text-xs   { font-size: 0.55em; }
 .text-052  { font-size: 0.52em; }
+.text-054  { font-size: 0.54em; }
+.text-xs   { font-size: 0.55em; }
+.text-060  { font-size: 0.6em; }
 .text-sm   { font-size: 0.65em; }
+.text-068  { font-size: 0.68em; }
+.text-070  { font-size: 0.7em; }
+.text-072  { font-size: 0.72em; }
 .text-base { font-size: 0.75em; }
+.text-078  { font-size: 0.78em; }
 .text-080  { font-size: 0.8em; }
+.text-082  { font-size: 0.82em; }
 .text-085  { font-size: 0.85em; }
 .text-lg   { font-size: 0.9em; }
+.text-100  { font-size: 1em; }
 .text-xl   { font-size: 1.05em; }
+.text-110  { font-size: 1.1em; }
+.text-120  { font-size: 1.2em; }
+.text-130  { font-size: 1.3em; }
+.text-140  { font-size: 1.4em; }
+.text-150  { font-size: 1.5em; }
+.text-160  { font-size: 1.6em; }
 .text-2xl  { font-size: 2.5em; }
+.text-280  { font-size: 2.8em; }
+.text-3xl  { font-size: 3em; }
 .text-center { text-align: center; }
-.text-left   { text-align: left; }
+.text-left { text-align: left; }
 
 /* ── Colors ── */
 .color-accent { color: var(--accent); }
-.color-green  { color: var(--accent2); }
+.color-green { color: var(--accent2); }
 .color-orange { color: var(--accent3); }
-.color-red    { color: var(--accent4); }
-.color-dim    { color: #999; }
-.color-muted2 { color: #aaa; }
-.color-light  { color: #ccc; }
-.color-white  { color: #fff; }
+.color-red { color: var(--accent4); }
+.color-purple { color: #ce93d8; }
+.color-lightblue { color: #90caf9; }
+.color-black { color: #111; }
+.color-dim { color: #999; }
+.color-muted { color: #aaa; }
+.color-light { color: #ccc; }
+.color-white { color: #fff; }
 
 /* ── Border colors ── */
 .border-accent { border-color: var(--accent); }
-.border-green  { border-color: var(--accent2); }
+.border-green { border-color: var(--accent2); }
 .border-orange { border-color: var(--accent3); }
-.border-red    { border-color: var(--accent4); }
+.border-red { border-color: var(--accent4); }
+.border-purple { border-color: #ce93d8; }
+.border-dim { border-color: #999; }
 
 /* ── Spacing — margins ── */
-.mt-0  { margin-top: 0; }
-.mt-6  { margin-top: 6px; }
-.mt-8  { margin-top: 8px; }
+.mt-0 { margin-top: 0; }
+.mt-6 { margin-top: 6px; }
+.mt-8 { margin-top: 8px; }
 .mt-10 { margin-top: 10px; }
 .mt-12 { margin-top: 12px; }
 .mt-14 { margin-top: 14px; }
 .mt-16 { margin-top: 16px; }
 .mt-20 { margin-top: 20px; }
-.mb-0  { margin-bottom: 0; }
-.mb-lg { margin-bottom: 20px; }
+.mt-30 { margin-top: 30px; }
+.mb-0 { margin-bottom: 0; }
+.mb-8 { margin-bottom: 8px; }
+.mb-14 { margin-bottom: 14px; }
+.mb-20 { margin-bottom: 20px; }
 .mx-auto { margin-left: auto; margin-right: auto; }
 
 /* ── Spacing — padding ── */
-.p-8  { padding: 8px; }
+.p-8 { padding: 8px; }
 .p-10 { padding: 10px; }
 .p-14 { padding: 14px; }
 .p-16 { padding: 16px; }
+.p-20 { padding: 20px; }
+.p-24 { padding: 24px; }
 
 /* ── Layout ── */
-.w-full    { width: 100%; }
+.w-full { width: 100%; }
 .max-w-500 { max-width: 500px; }
 .max-w-700 { max-width: 700px; }
-.gap-sm    { gap: 8px; }
+.gap-sm { gap: 8px; }
 .opacity-50 { opacity: 0.5; }
 .border-thick { border-width: 3px; }
 
 /* ── Compound utilities ── */
 .text-base-dim { font-size: 0.75em; color: #ccc; }
-.text-lg-dim   { font-size: 0.9em; color: #ccc; }
+.text-lg-dim { font-size: 0.9em; color: #ccc; }
+.text-080-dim { font-size: 0.8em; color: #999; }
 .text-080-muted { font-size: 0.8em; color: #aaa; }
+.text-080-light { font-size: 0.8em; color: #ccc; }
+.text-sm-muted { font-size: 0.65em; color: #aaa; }
+.text-sm-light { font-size: 0.65em; color: #ccc; }
+.text-070-dim { font-size: 0.7em; color: #999; }
+.text-070-light { font-size: 0.7em; color: #ccc; }
+.text-xs-muted { font-size: 0.55em; color: #aaa; }
+.text-060-muted { font-size: 0.6em; color: #aaa; }
+.text-110-accent { font-size: 1.1em; color: var(--accent); }
+.text-130-dim { font-size: 1.3em; color: #999; }
+/* =============================================================
+   Enhanced Table Comparison (Alternative Style)
+   ============================================================= */
+table.comparison-alt {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.72em;
+  margin-top: 10px;
+}
+
+table.comparison-alt th {
+  background: var(--accent-dark);
+  color: white;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+}
+
+table.comparison-alt td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: top;
+}
+
+table.comparison-alt tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+table.comparison-alt tr:hover td {
+  background: rgba(79, 195, 247, 0.05);
+}
+
+/* =============================================================
+   Slide Viewport - No Scrollbars (Content should fit the slide)
+   ============================================================= */
+.reveal .slides > section,
+.reveal .slides > section > section {
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  height: 100%;
+}
+
+/* Remove any scrollbar styling from slides */
+.reveal .slides section::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure scrollable content within slides */
+.reveal .slides section .step-flow,
+.reveal .slides section ul,
+.reveal .slides section ol {
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Step flow specific scrolling */
+.step-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar for scrollable content within slides */
+.step-flow::-webkit-scrollbar,
+.reveal .slides section ul::-webkit-scrollbar,
+.reveal .slides section ol::-webkit-scrollbar {
+  width: 8px;
+}
+
+.step-flow::-webkit-scrollbar-track,
+.reveal .slides section ul::-webkit-scrollbar-track,
+.reveal .slides section ol::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.step-flow::-webkit-scrollbar-thumb,
+.reveal .slides section ul::-webkit-scrollbar-thumb,
+.reveal .slides section ol::-webkit-scrollbar-thumb {
+  background: rgba(79, 195, 247, 0.4);
+  border-radius: 4px;
+}
+
+.step-flow::-webkit-scrollbar-thumb:hover,
+.reveal .slides section ul::-webkit-scrollbar-thumb:hover,
+.reveal .slides section ol::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 195, 247, 0.6);
+}
+
+/* =============================================================
+   Enhanced List Styling (Alternative)
+   ============================================================= */
+.reveal ul.styled-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.reveal ul.styled-list li {
+  padding: 6px 0;
+  padding-left: 24px;
+  position: relative;
+  font-size: 0.85em;
+  line-height: 1.5;
+}
+
+.reveal ul.styled-list li::before {
+  content: '\25B8';
+  color: var(--accent);
+  position: absolute;
+  left: 0;
+  font-size: 0.9em;
+}
+
+.reveal ul.styled-list ul li {
+  font-size: 0.8em;
+}
+
+.reveal ul.styled-list ul li::before {
+  content: '\25CB';
+  color: var(--accent-dark);
+}
+
+/* =============================================================
+   Highlight Box (Alternative Callout Style)
+   ============================================================= */
+.highlight-box {
+  background: rgba(79, 195, 247, 0.08);
+  border-left: 4px solid var(--accent);
+  padding: 14px 20px;
+  border-radius: 0 6px 6px 0;
+  margin: 12px 0;
+  font-size: 0.75em;
+}
+
+.highlight-box.success {
+  background: rgba(38, 166, 154, 0.08);
+  border-left-color: var(--success);
+}
+
+.highlight-box.warning {
+  background: rgba(255, 167, 38, 0.08);
+  border-left-color: var(--warning);
+}
+
+.highlight-box.danger {
+  background: rgba(239, 83, 80, 0.08);
+  border-left-color: var(--danger);
+}

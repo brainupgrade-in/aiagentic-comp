@@ -118,7 +118,7 @@
       <!-- WHY OBSERVABILITY -->
       <section>
         <h2>Why Observability?</h2>
-        <p style="font-size:0.8em; color:#ccc; margin-bottom:16px;">Monitoring tells you <em>something is wrong</em>. Observability tells you <em>why</em>.</p>
+        <p class="text-080-light" style="margin-bottom:16px;">Monitoring tells you <em>something is wrong</em>. Observability tells you <em>why</em>.</p>
         <div class="card-grid">
           <div class="card card-red">
             <h4>Without Observability</h4>
@@ -149,7 +149,7 @@
         <h2>The Three Pillars</h2>
         <div class="card-grid-3" style="margin-top:24px;">
           <div class="pillar">
-            <div class="pillar-icon"><span class="signal-metrics" style="font-size:0.6em; padding:6px 14px;">METRICS</span></div>
+            <div class="pillar-icon"><span class="signal-metrics text-060" style="padding:6px 14px;">METRICS</span></div>
             <h4>Quantitative Measurements</h4>
             <p>Numeric values over time. &ldquo;How many? How fast? How much?&rdquo;<br><br>
               <strong>Examples:</strong><br>
@@ -160,7 +160,7 @@
             </p>
           </div>
           <div class="pillar pillar-green">
-            <div class="pillar-icon"><span class="signal-logs" style="font-size:0.6em; padding:6px 14px;">LOGS</span></div>
+            <div class="pillar-icon"><span class="signal-logs text-060" style="padding:6px 14px;">LOGS</span></div>
             <h4>Discrete Events</h4>
             <p>Timestamped text records. &ldquo;What happened?&rdquo;<br><br>
               <strong>Examples:</strong><br>
@@ -171,7 +171,7 @@
             </p>
           </div>
           <div class="pillar pillar-orange">
-            <div class="pillar-icon"><span class="signal-traces" style="font-size:0.6em; padding:6px 14px;">TRACES</span></div>
+            <div class="pillar-icon"><span class="signal-traces text-060" style="padding:6px 14px;">TRACES</span></div>
             <h4>Request Flow</h4>
             <p>End-to-end path across services. &ldquo;Where did time go?&rdquo;<br><br>
               <strong>Examples:</strong><br>
@@ -265,27 +265,27 @@
         <p class="text-base-dim">A trace follows a single request across all services it touches</p>
 
         <div style="margin:20px 0;">
-          <div style="font-size:0.6em; color:#aaa; margin-bottom:8px;">Trace ID: <span class="highlight">abc-123-def-456</span> &mdash; Total: 480ms</div>
+          <div class="text-060-muted" style="margin-bottom:8px;">Trace ID: <span class="highlight">abc-123-def-456</span> &mdash; Total: 480ms</div>
           <div style="position:relative; padding-left:100px;">
             <div style="display:flex; align-items:center; margin:6px 0;">
-              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent);">API Gateway</span>
-              <div style="background:var(--accent); height:22px; border-radius:4px; width:96%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">480ms</div>
+              <span class="text-xs color-accent" style="position:absolute; left:0;">API Gateway</span>
+              <div class="text-xs color-black" style="background:var(--accent); height:22px; border-radius:4px; width:96%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-weight:bold;">480ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
-              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent2);">Agent</span>
-              <div style="background:var(--accent2); height:22px; border-radius:4px; width:85%; margin-left:4%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">420ms</div>
+              <span class="text-xs color-green" style="position:absolute; left:0;">Agent</span>
+              <div class="text-xs color-black" style="background:var(--accent2); height:22px; border-radius:4px; width:85%; margin-left:4%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-weight:bold;">420ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
-              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">LLM Call</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:60%; margin-left:8%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">320ms</div>
+              <span class="text-xs color-orange" style="position:absolute; left:0;">LLM Call</span>
+              <div class="text-xs color-black" style="background:var(--accent3); height:22px; border-radius:4px; width:60%; margin-left:8%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-weight:bold;">320ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
-              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">ChromaDB</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:12%; margin-left:6%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">45ms</div>
+              <span class="text-xs color-orange" style="position:absolute; left:0;">ChromaDB</span>
+              <div class="text-xs color-black" style="background:var(--accent3); height:22px; border-radius:4px; width:12%; margin-left:6%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-weight:bold;">45ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
-              <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">Redis</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:5%; margin-left:70%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">12ms</div>
+              <span class="text-xs color-orange" style="position:absolute; left:0;">Redis</span>
+              <div class="text-xs color-black" style="background:var(--accent3); height:22px; border-radius:4px; width:5%; margin-left:70%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-weight:bold;">12ms</div>
             </div>
           </div>
         </div>
@@ -415,7 +415,7 @@
       <!-- OTEL OVERVIEW -->
       <section>
         <h2>What is OpenTelemetry?</h2>
-        <p style="font-size:0.8em; color:#ccc;">A single framework for collecting all three observability signals</p>
+        <p class="text-080-light">A single framework for collecting all three observability signals</p>
         <div class="card-grid">
           <div class="card card-accent">
             <h4>OpenTelemetry (OTel)</h4>
@@ -449,23 +449,23 @@
         <div style="margin:16px 0;">
           <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box" style="min-width:130px;"><strong>Your App</strong><br><span style="font-size:0.8em; color:#aaa;">OTel SDK</span></div>
-              <div style="font-size:0.55em; color:#aaa;">Traces + Metrics + Logs</div>
+              <div class="box" style="min-width:130px;"><strong>Your App</strong><br><span class="text-080-muted">OTel SDK</span></div>
+              <div class="text-xs-muted">Traces + Metrics + Logs</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-green" style="min-width:130px;"><strong>OTLP</strong><br><span style="font-size:0.8em; color:#aaa;">Protocol</span></div>
-              <div style="font-size:0.55em; color:#aaa;">gRPC or HTTP</div>
+              <div class="box box-green" style="min-width:130px;"><strong>OTLP</strong><br><span class="text-080-muted">Protocol</span></div>
+              <div class="text-xs-muted">gRPC or HTTP</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-orange" style="min-width:130px;"><strong>OTel Collector</strong><br><span style="font-size:0.8em; color:#aaa;">Optional</span></div>
-              <div style="font-size:0.55em; color:#aaa;">Process &amp; route</div>
+              <div class="box box-orange" style="min-width:130px;"><strong>OTel Collector</strong><br><span class="text-080-muted">Optional</span></div>
+              <div class="text-xs-muted">Process &amp; route</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-red" style="min-width:130px;"><strong>Backend</strong><br><span style="font-size:0.8em; color:#aaa;">Any vendor</span></div>
-              <div style="font-size:0.55em; color:#aaa;">Jaeger, LangFuse, etc.</div>
+              <div class="box box-red" style="min-width:130px;"><strong>Backend</strong><br><span class="text-080-muted">Any vendor</span></div>
+              <div class="text-xs-muted">Jaeger, LangFuse, etc.</div>
             </div>
           </div>
         </div>
@@ -584,14 +584,14 @@ with tracer.start_as_current_span(
           <div class="box" style="min-width:90px;">App 2</div>
           <div class="box" style="min-width:90px;">App 3</div>
         </div>
-        <div style="text-align:center; font-size:1.2em; color:#999;">&darr; &darr; &darr;</div>
+        <div class="text-120 color-dim" style="text-align:center;">&darr; &darr; &darr;</div>
         <div style="text-align:center; margin:10px 0;">
           <div class="box box-orange box-large" style="display:inline-block;">
             <strong>OTel Collector</strong><br>
             <span class="text-080">Receivers &rarr; Processors &rarr; Exporters</span>
           </div>
         </div>
-        <div style="text-align:center; font-size:1.2em; color:#999;">&darr; &darr; &darr;</div>
+        <div class="text-120 color-dim" style="text-align:center;">&darr; &darr; &darr;</div>
         <div class="diagram">
           <div class="box box-green" style="min-width:90px;">Jaeger<br><span class="text-080">Traces</span></div>
           <div class="box box-green" style="min-width:90px;">LangFuse<br><span class="text-080">Traces &amp; Metrics</span></div>
@@ -799,7 +799,7 @@ trace.set_tracer_provider(provider)
 
 # 3. Get a tracer for your module
 tracer = trace.get_tracer("agent.api")</code></pre>
-        <div style="font-size:0.65em; color:#aaa; margin-top:10px;">
+        <div class="text-sm-muted" style="margin-top:10px;">
           Resource attributes identify <em>which service</em> generated the telemetry. Every span carries these.
         </div>
       </section>
@@ -810,7 +810,7 @@ tracer = trace.get_tracer("agent.api")</code></pre>
         <div class="card-grid">
           <div class="card card-accent" style="padding:12px;">
             <h4>Option A: Code-Based</h4>
-            <pre style="margin-top:6px; font-size:0.52em; max-height:260px;"><code class="language-python" data-trim data-noescape>from fastapi import FastAPI
+            <pre class="text-052" style="margin-top:6px; max-height:260px;"><code class="language-python" data-trim data-noescape>from fastapi import FastAPI
 from opentelemetry.instrumentation.fastapi \
     import FastAPIInstrumentor
 
@@ -827,7 +827,7 @@ async def chat(query: str):
           </div>
           <div class="card card-green" style="padding:12px;">
             <h4>Option B: Zero-Code</h4>
-            <pre style="margin-top:6px; font-size:0.52em; max-height:260px;"><code class="language-bash" data-trim data-noescape># No code changes needed!
+            <pre class="text-052" style="margin-top:6px; max-height:260px;"><code class="language-bash" data-trim data-noescape># No code changes needed!
 opentelemetry-instrument \
   --service_name agent-api \
   --exporter_otlp_endpoint \
@@ -837,10 +837,10 @@ opentelemetry-instrument \
 
 # Every endpoint now produces
 # spans automatically</code></pre>
-            <p style="margin-top:6px; font-size:0.55em;">Spans include: HTTP method, path, status code, duration, headers</p>
+            <p class="text-xs" style="margin-top:6px;">Spans include: HTTP method, path, status code, duration, headers</p>
           </div>
         </div>
-        <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
+        <div class="takeaway text-060" style="margin-top:10px;">
           Auto-instrumentation creates spans for <em>every HTTP request</em>. Endpoint latency, error rates, and request tracing with zero code changes.
         </div>
       </section>
@@ -1033,13 +1033,13 @@ logger.info("Processing query")
 # 2025-01-15 14:32:01 INFO [agent]
 # [trace_id=abc123def456 span_id=789xyz] Processing query</code></pre>
         <div class="diagram mt-16">
-          <div class="box" style="font-size:0.6em;">See error in<br><strong>LangFuse/Loki</strong><br>(logs)</div>
+          <div class="box text-060">See error in<br><strong>LangFuse/Loki</strong><br>(logs)</div>
           <div class="arrow">&rarr;</div>
-          <div class="box box-orange" style="font-size:0.6em;">Click<br><strong>trace_id</strong><br>link</div>
+          <div class="box box-orange text-060">Click<br><strong>trace_id</strong><br>link</div>
           <div class="arrow">&rarr;</div>
-          <div class="box box-green" style="font-size:0.6em;">Jump to<br><strong>Jaeger/Tempo</strong><br>(trace)</div>
+          <div class="box box-green text-060">Jump to<br><strong>Jaeger/Tempo</strong><br>(trace)</div>
           <div class="arrow">&rarr;</div>
-          <div class="box box-red" style="font-size:0.6em;">See exact<br><strong>span</strong> that<br>caused error</div>
+          <div class="box box-red text-060">See exact<br><strong>span</strong> that<br>caused error</div>
         </div>
       </section>
 
@@ -1199,7 +1199,7 @@ trace.set_tracer_provider(provider)
       <section>
         <section>
           <h1 class="text-2xl">Session 10 Quiz</h1>
-          <p style="font-size:0.8em; color:#ccc;">5 questions to test your observability knowledge</p>
+          <p class="text-080-light">5 questions to test your observability knowledge</p>
         </section>
 
       <!-- Q1 -->
@@ -1356,35 +1356,19 @@ trace.set_tracer_provider(provider)
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

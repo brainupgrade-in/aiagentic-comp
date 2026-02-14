@@ -85,7 +85,7 @@
                 <li>Wire up tool calling yourself</li>
                 <li>Handle errors, retries, parsing...</li>
               </ul>
-              <p style="margin-top:8px; color:var(--accent4);">Weeks of boilerplate before any real agent logic</p>
+              <p class="color-red" style="margin-top:8px;">Weeks of boilerplate before any real agent logic</p>
             </div>
             <div class="card card-green">
               <h4>With LangChain</h4>
@@ -96,7 +96,7 @@
                 <li>Tool calling handled automatically</li>
                 <li>Parsing, streaming, error handling included</li>
               </ul>
-              <p style="margin-top:8px; color:var(--accent2);">Focus on your agent's logic, not plumbing</p>
+              <p class="color-green" style="margin-top:8px;">Focus on your agent's logic, not plumbing</p>
             </div>
           </div>
         </section>
@@ -238,21 +238,21 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-accent text-center p-14">
               <h4>Models (LLMs)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🧠</p>
+              <p class="text-130" style="margin:6px 0;">🧠</p>
               <p>The AI brain. Connect to Ollama, Groq, OpenAI, or any provider.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent);"><code>ChatOllama</code><br><code>ChatGroq</code></p>
+              <p class="text-085 color-accent" style="margin-top:6px;"><code>ChatOllama</code><br><code>ChatGroq</code></p>
             </div>
             <div class="card card-accent text-center p-14">
               <h4>Prompts (Templates)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">📝</p>
+              <p class="text-130" style="margin:6px 0;">📝</p>
               <p>Structured instructions with variables. Reusable and consistent.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent);"><code>ChatPromptTemplate</code></p>
+              <p class="text-085 color-accent" style="margin-top:6px;"><code>ChatPromptTemplate</code></p>
             </div>
             <div class="card card-accent text-center p-14">
               <h4>Chains (Workflows)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🔗</p>
+              <p class="text-130" style="margin:6px 0;">🔗</p>
               <p>Connect components together: prompt &rarr; model &rarr; output.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent);"><code>LCEL pipe syntax</code></p>
+              <p class="text-085 color-accent" style="margin-top:6px;"><code>LCEL pipe syntax</code></p>
             </div>
           </div>
           <div class="takeaway">
@@ -268,24 +268,24 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-green text-center p-14">
               <h4>Memory (State)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">💾</p>
+              <p class="text-130" style="margin:6px 0;">💾</p>
               <p>Conversation history and persistent context.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent2);">Day 2</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Day 2</p>
             </div>
             <div class="card card-green text-center p-14">
               <h4>Tools (Actions)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🔧</p>
+              <p class="text-130" style="margin:6px 0;">🔧</p>
               <p>Functions the agent can call to interact with the world.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent2);">Day 2</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Day 2</p>
             </div>
             <div class="card card-green text-center p-14">
               <h4>Agents (Reasoning)</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🤖</p>
+              <p class="text-130" style="margin:6px 0;">🤖</p>
               <p>The ReAct loop that decides what to do next.</p>
-              <p style="margin-top:6px; font-size:0.85em; color:var(--accent2);">Day 2-3</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Day 2-3</p>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:12px;">
+          <p class="text-sm-muted" style="text-align:center; margin-top:12px;">
             We covered the concepts in Session 3. You'll implement these starting in Session 6.
           </p>
         </section>
@@ -297,21 +297,21 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-orange text-center p-14">
               <h4>Document Loaders</h4>
-              <p style="font-size:1.3em; margin:6px 0;">📄</p>
+              <p class="text-130" style="margin:6px 0;">📄</p>
               <p>Load PDFs, web pages, CSVs, databases into LangChain.</p>
             </div>
             <div class="card card-orange text-center p-14">
               <h4>Vector Stores</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🗄️</p>
+              <p class="text-130" style="margin:6px 0;">🗄️</p>
               <p>Store document embeddings for similarity search (ChromaDB).</p>
             </div>
             <div class="card card-orange text-center p-14">
               <h4>Retrievers</h4>
-              <p style="font-size:1.3em; margin:6px 0;">🔍</p>
+              <p class="text-130" style="margin:6px 0;">🔍</p>
               <p>Find relevant documents based on a query. Core of RAG.</p>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:12px;">
+          <p class="text-sm-muted" style="text-align:center; margin-top:12px;">
             This is the foundation of RAG (Retrieval-Augmented Generation) &mdash; covered in depth in Session 5.
           </p>
         </section>
@@ -336,13 +336,13 @@
           <h2>Connecting to an LLM</h2>
           <h3>Two lines of code to talk to an AI</h3>
           <div style="display:flex; gap:16px; margin-top:10px;">
-            <pre style="flex:1; margin:0; font-size:0.52em;"><code class="language-python" data-trim data-noescape># Using Ollama (local, free) - Day 1
+            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Ollama (local, free) - Day 1
 from langchain_ollama import ChatOllama
 
 llm = ChatOllama(model="llama3.2:1b")
 response = llm.invoke("What is Python?")
 print(response.content)</code></pre>
-            <pre style="flex:1; margin:0; font-size:0.52em;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - Day 2 onwards
+            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - Day 2 onwards
 from langchain_groq import ChatGroq
 
 llm = ChatGroq(model="mixtral-8x7b-32768")
@@ -413,13 +413,13 @@ print(response.content)
           <div class="card-grid mt-14">
             <div class="card card-red p-14">
               <h4>Hard-coded (bad)</h4>
-              <pre style="margin:8px 0 0 0; font-size:0.9em;"><code class="language-python" data-trim data-noescape>llm.invoke("Translate 'hello'
+              <pre class="text-lg" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape>llm.invoke("Translate 'hello'
 to French")</code></pre>
               <p class="mt-6">Can't reuse. Need a new string for every language.</p>
             </div>
             <div class="card card-green p-14">
               <h4>Template (good)</h4>
-              <pre style="margin:8px 0 0 0; font-size:0.9em;"><code class="language-python" data-trim data-noescape>"Translate '{text}'
+              <pre class="text-lg" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape>"Translate '{text}'
 to {language}"</code></pre>
               <p class="mt-6">Reusable! Pass any text and language.</p>
             </div>
@@ -488,7 +488,7 @@ print(response.content)
               <span class="text-lg">Format the output</span>
             </div>
           </div>
-          <pre style="text-align:center; font-size:0.7em;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | output_parser</code></pre>
+          <pre class="text-070" style="text-align:center;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | output_parser</code></pre>
           <div class="analogy">
             A chain is like an assembly line in a factory. Raw materials (user input) enter one end,
             pass through stations (prompt, model, parser), and a finished product (structured output) comes out the other end.
@@ -499,7 +499,7 @@ print(response.content)
         <!-- LCEL INTRO -->
         <section>
           <h2>LCEL: LangChain Expression Language</h2>
-          <h3>The pipe <code style="color:var(--accent3); font-size:1.1em;">|</code> operator</h3>
+          <h3>The pipe <code class="text-110 color-orange">|</code> operator</h3>
           <div class="card card-accent" style="text-align:center; padding:20px; margin-top:14px;">
             <p class="text-080">
               LCEL lets you compose chains using the <strong>pipe operator</strong> <code>|</code><br>
@@ -510,17 +510,17 @@ print(response.content)
           <div class="card-grid mt-14">
             <div class="card card-red p-14">
               <h4>Without LCEL (verbose)</h4>
-              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>msgs = prompt.invoke(input)
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>msgs = prompt.invoke(input)
 resp = llm.invoke(msgs)
 out = parser.invoke(resp)</code></pre>
             </div>
             <div class="card card-green p-14">
               <h4>With LCEL (clean)</h4>
-              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | parser
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | parser
 out = chain.invoke(input)</code></pre>
             </div>
           </div>
-          <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
+          <p class="text-060-muted" style="text-align:center; margin-top:10px;">
             Same result. LCEL is shorter, more readable, and gives you streaming + async for free.
           </p>
         </section>
@@ -557,7 +557,7 @@ print(result)
         <section>
           <h2>What Happens Inside the Chain?</h2>
           <h3>Data flows through each step automatically</h3>
-          <table class="compare-table" style="margin-top:14px; font-size:0.55em;">
+          <table class="compare-table text-xs" style="margin-top:14px;">
             <tr>
               <th>Step</th>
               <th>Component</th>
@@ -598,17 +598,17 @@ print(result)
             <div class="card card-accent p-14">
               <h4>StrOutputParser</h4>
               <p>Extracts plain text from the response</p>
-              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>"Docker is..."</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>"Docker is..."</code></pre>
             </div>
             <div class="card card-green p-14">
               <h4>JsonOutputParser</h4>
               <p>Parses JSON from the response</p>
-              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-json" data-trim data-noescape>{"name": "Docker"}</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-json" data-trim data-noescape>{"name": "Docker"}</code></pre>
             </div>
             <div class="card card-orange p-14">
               <h4>PydanticOutputParser</h4>
               <p>Validates into a Python class</p>
-              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>Tool(name="Docker")</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>Tool(name="Docker")</code></pre>
             </div>
           </div>
           <div class="analogy">
@@ -622,7 +622,7 @@ print(result)
         <section>
           <h2>Pydantic Output Parser</h2>
           <h3 style="margin-bottom:6px;">Get validated, typed Python objects from LLM output</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.output_parsers import PydanticOutputParser
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
 
 class MovieReview(BaseModel):
@@ -674,30 +674,30 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
             <div class="card card-accent p-10">
               <h4>.invoke()</h4>
               <p style="margin:4px 0;">Run once, get complete result</p>
-              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>result = chain.invoke(
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>result = chain.invoke(
   {"q": "hi"})
 # waits for full response</code></pre>
-              <p style="margin-top:4px; font-size:0.55em;">Best for: scripts, APIs</p>
+              <p class="text-xs" style="margin-top:4px;">Best for: scripts, APIs</p>
             </div>
             <div class="card card-green p-10">
               <h4>.stream()</h4>
               <p style="margin:4px 0;">Get tokens as they're generated</p>
-              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>for chunk in chain.stream(
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>for chunk in chain.stream(
   {"q": "hi"}):
   print(chunk, end="")</code></pre>
-              <p style="margin-top:4px; font-size:0.55em;">Best for: chat UIs</p>
+              <p class="text-xs" style="margin-top:4px;">Best for: chat UIs</p>
             </div>
             <div class="card card-orange p-10">
               <h4>.batch()</h4>
               <p style="margin:4px 0;">Process multiple inputs at once</p>
-              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>results = chain.batch([
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>results = chain.batch([
   {"q": "hi"},
   {"q": "bye"}
 ])</code></pre>
-              <p style="margin-top:4px; font-size:0.55em;">Best for: bulk processing</p>
+              <p class="text-xs" style="margin-top:4px;">Best for: bulk processing</p>
             </div>
           </div>
-          <p style="font-size:0.55em; color:#aaa; text-align:center; margin-top:8px;">
+          <p class="text-xs-muted" style="text-align:center; margin-top:8px;">
             All three methods work on <strong>any</strong> LCEL chain automatically. No extra code needed.
           </p>
         </section>
@@ -709,7 +709,7 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
           <h2>The Big Picture</h2>
           <h3>How today's concepts connect</h3>
           <div class="pipe-flow mt-20">
-            <div class="pipe-box" style="border-color:var(--accent); min-width:100px;">
+            <div class="pipe-box border-accent" style="min-width:100px;">
               📝 <strong>Template</strong><br>
               <span class="text-085">Structure input</span>
             </div>
@@ -751,7 +751,7 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
         <!-- CHEAT SHEET -->
         <section>
           <h2>LangChain Quick Reference</h2>
-          <table class="compare-table" style="font-size:0.52em;">
+          <table class="compare-table text-052">
             <tr>
               <th>What You Want</th>
               <th>LangChain Class</th>
@@ -793,7 +793,7 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
               <td>LCEL (built-in)</td>
             </tr>
           </table>
-          <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
+          <p class="text-060-muted" style="text-align:center; margin-top:10px;">
             Bookmark this slide &mdash; you'll use these imports in every lab.
           </p>
         </section>
@@ -845,16 +845,16 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
               </div>
             </div>
           </div>
-          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+          <p class="text-070 color-muted" style="text-align:center; margin-top:16px;">
             Now that you have the LangChain foundations, let's give your chains real data!
           </p>
         </section>
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Ask now or during the labs &mdash; the best learning happens hands-on.
           </p>
         </section>
@@ -864,8 +864,8 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
       <section>
         <section>
           <h1 class="text-2xl">Session 4 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
         </section>
@@ -1198,35 +1198,19 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

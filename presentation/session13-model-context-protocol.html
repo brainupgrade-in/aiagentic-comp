@@ -145,29 +145,29 @@
         <div style="margin:20px 0;">
           <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-large" style="min-width:140px;"><strong>Host</strong><br><span style="font-size:0.8em; color:#aaa;">AI Application</span></div>
+              <div class="box box-large" style="min-width:140px;"><strong>Host</strong><br><span class="text-080-muted">AI Application</span></div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-green" style="min-width:140px;"><strong>MCP Client</strong><br><span style="font-size:0.8em; color:#aaa;">Protocol Handler</span></div>
+              <div class="box box-green" style="min-width:140px;"><strong>MCP Client</strong><br><span class="text-080-muted">Protocol Handler</span></div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-orange" style="min-width:140px;"><strong>JSON-RPC 2.0</strong><br><span style="font-size:0.8em; color:#aaa;">Protocol Layer</span></div>
+              <div class="box box-orange" style="min-width:140px;"><strong>JSON-RPC 2.0</strong><br><span class="text-080-muted">Protocol Layer</span></div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
-              <div class="box box-red" style="min-width:140px;"><strong>MCP Server</strong><br><span style="font-size:0.8em; color:#aaa;">Tool Provider</span></div>
+              <div class="box box-red" style="min-width:140px;"><strong>MCP Server</strong><br><span class="text-080-muted">Tool Provider</span></div>
             </div>
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap;">
-          <div class="box" style="min-width:100px; font-size:0.6em; border-color:var(--accent4);">Files &amp;<br>Filesystem</div>
-          <div class="box" style="min-width:100px; font-size:0.6em; border-color:var(--accent4);">Database<br>Queries</div>
-          <div class="box" style="min-width:100px; font-size:0.6em; border-color:var(--accent4);">External<br>APIs</div>
-          <div class="box" style="min-width:100px; font-size:0.6em; border-color:var(--accent4);">Dev<br>Tools</div>
+          <div class="box text-060 border-red" style="min-width:100px;">Files &amp;<br>Filesystem</div>
+          <div class="box text-060 border-red" style="min-width:100px;">Database<br>Queries</div>
+          <div class="box text-060 border-red" style="min-width:100px;">External<br>APIs</div>
+          <div class="box text-060 border-red" style="min-width:100px;">Dev<br>Tools</div>
         </div>
-        <p style="font-size:0.55em; color:#aaa; margin-top:10px; text-align:center;">MCP Server connects to local resources: files, databases, APIs, dev tools</p>
+        <p class="text-xs-muted" style="margin-top:10px; text-align:center;">MCP Server connects to local resources: files, databases, APIs, dev tools</p>
       </section>
 
       <!-- THE THREE PRIMITIVES -->
@@ -213,7 +213,7 @@
       <!-- PROTOCOL ESSENTIALS -->
       <section>
         <h2>Protocol Essentials</h2>
-        <p style="font-size:0.7em; color:#ccc;">JSON-RPC 2.0 &middot; Transport &middot; Connection Lifecycle</p>
+        <p class="text-070-light">JSON-RPC 2.0 &middot; Transport &middot; Connection Lifecycle</p>
         <div class="card-grid-3 mt-16">
           <div class="card card-accent">
             <h4>JSON-RPC 2.0</h4>
@@ -431,20 +431,20 @@
         <div style="margin:20px 0;">
           <div style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:6px;">
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Postgres</div>
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">GitHub</div>
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Jira</div>
+              <div class="box text-060 border-red">Postgres</div>
+              <div class="box text-060 border-red">GitHub</div>
+              <div class="box text-060 border-red">Jira</div>
             </div>
             <div class="arrow">&larr;</div>
-            <div class="box box-large" style="border-color:var(--accent); min-width:160px;">
+            <div class="box box-large border-accent" style="min-width:160px;">
               <strong class="color-accent">AI Agent</strong><br>
-              <span style="font-size:0.8em; color:#aaa;">MCP Client</span>
+              <span class="text-080-muted">MCP Client</span>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:6px;">
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Confluence</div>
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Slack</div>
-              <div class="box" style="font-size:0.6em; border-color:var(--accent4);">Salesforce</div>
+              <div class="box text-060 border-red">Confluence</div>
+              <div class="box text-060 border-red">Slack</div>
+              <div class="box text-060 border-red">Salesforce</div>
             </div>
           </div>
         </div>
@@ -576,11 +576,11 @@
       <!-- CONFIGURING MCP CLIENTS -->
       <section>
         <h2>Configuring MCP Clients</h2>
-        <p style="font-size:0.7em; color:#ccc; margin-bottom:8px;">Most AI agents use a JSON config file to connect to MCP servers</p>
+        <p class="text-070-light" style="margin-bottom:8px;">Most AI agents use a JSON config file to connect to MCP servers</p>
         <div class="card-grid">
           <div class="card card-accent" style="padding:12px;">
             <h4>Claude Desktop Config</h4>
-            <pre style="font-size:0.55em; margin-top:6px;"><code class="language-json" data-trim data-noescape>{
+            <pre class="text-xs" style="margin-top:6px;"><code class="language-json" data-trim data-noescape>{
   "mcpServers": {
     "postgres": {
       "command": "npx",
@@ -593,7 +593,7 @@
           </div>
           <div class="card card-green" style="padding:12px;">
             <h4>Claude Code Config</h4>
-            <pre style="font-size:0.55em; margin-top:6px;"><code class="language-json" data-trim data-noescape>{
+            <pre class="text-xs" style="margin-top:6px;"><code class="language-json" data-trim data-noescape>{
   "mcpServers": {
     "github": {
       "command": "npx",
@@ -607,7 +607,7 @@
 }</code></pre>
           </div>
         </div>
-        <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
+        <div class="takeaway text-060" style="margin-top:10px;">
           <strong>Pattern:</strong> <code>command</code> + <code>args</code> = stdio transport (local). <code>url</code> = SSE transport (remote). <code>env</code> passes secrets without hardcoding.
         </div>
       </section>
@@ -1168,35 +1168,19 @@ async with MultiServerMCPClient({
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

@@ -141,7 +141,7 @@
           <h2>The Agent Loop</h2>
           <h3>Every AI coding agent follows this cycle</h3>
           <div class="diagram">
-            <div class="box" style="border-color:#999;">User Prompt</div>
+            <div class="box border-dim">User Prompt</div>
             <span class="arrow">&rarr;</span>
             <div class="box">Plan</div>
             <span class="arrow">&rarr;</span>
@@ -151,7 +151,7 @@
             <span class="arrow">&rarr;</span>
             <div class="box box-red">Reflect</div>
           </div>
-          <div style="text-align:center; font-size:0.7em; color:#999; margin-top:10px;">
+          <div class="text-070-dim" style="text-align:center; margin-top:10px;">
             <span class="arrow">&larr;</span>
             Loop back if tests fail or reflection finds issues
             <span class="arrow">&rarr;</span>
@@ -215,7 +215,7 @@
           <h3>Five components form a feedback loop</h3>
 
           <!-- Visual feedback loop diagram -->
-          <div class="diagram" style="margin: 20px auto; flex-wrap: wrap; justify-content: center;">
+          <div class="diagram" style="margin:20px auto; flex-wrap:wrap; justify-content:center;">
             <div class="box">&#x1F50D; <strong class="highlight">Context<br>Engine</strong></div>
             <span class="arrow">&rarr;</span>
             <div class="box box-green">&#x1F9E0; <strong class="highlight-green">Planner</strong></div>
@@ -224,10 +224,10 @@
             <span class="arrow">&rarr;</span>
             <div class="box box-red">&#x2699; <strong class="highlight-red">Tool<br>Executor</strong></div>
             <span class="arrow">&rarr;</span>
-            <div class="box" style="border-color:#ce93d8;">&#x2705; <strong class="highlight-purple">Validator</strong>
+            <div class="box border-purple">&#x2705; <strong class="highlight-purple">Validator</strong>
             </div>
           </div>
-          <div style="text-align:center; font-size:0.6em; color:#999; margin-top:-8px;">
+          <div class="text-060 color-dim" style="text-align:center; margin-top:-8px;">
             <span class="arrow">&larr;</span>
             Loop back until task is complete or human help needed
             <span class="arrow">&rarr;</span>
@@ -396,25 +396,25 @@
           <div class="diagram-vertical" style="margin:14px 0;">
             <div class="box" style="width:80%; padding:10px 18px;">
               <strong>Step 1:</strong> Read CLAUDE.md / project instructions
-              <span style="float:right; color:#999;">project rules</span>
+              <span class="color-dim" style="float:right;">project rules</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-green" style="width:80%; padding:10px 18px;">
               <strong>Step 2:</strong> Search codebase for relevant files
-              <span style="float:right; color:#999;">grep / glob</span>
+              <span class="color-dim" style="float:right;">grep / glob</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-orange" style="width:80%; padding:10px 18px;">
               <strong>Step 3:</strong> Read most relevant files fully
-              <span style="float:right; color:#999;">file read</span>
+              <span class="color-dim" style="float:right;">file read</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-red" style="width:80%; padding:10px 18px;">
               <strong>Step 4:</strong> Assemble context + generate plan + code
-              <span style="float:right; color:#999;">LLM call</span>
+              <span class="color-dim" style="float:right;">LLM call</span>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa;">
+          <p class="text-sm-muted">
             The agent makes multiple tool calls <em>before</em> writing any code.
             Better context gathering = better code generation.
           </p>
@@ -662,10 +662,10 @@
         <!-- WHAT IS VIBE CODING -->
         <section>
           <h2>What is Vibe Coding?</h2>
-          <div class="card card-accent" style="padding:24px; text-align:center; font-size:0.85em;">
+          <div class="card card-accent text-085" style="padding:24px; text-align:center;">
             <p><em>"You describe what you want in natural language,
                 the AI writes the code, you <span class="highlight">review and guide</span>."</em></p>
-            <p style="font-size:0.7em; color:#aaa; margin-top:8px;">&mdash; Andrej Karpathy (paraphrased)</p>
+            <p class="text-070 color-muted" style="margin-top:8px;">&mdash; Andrej Karpathy (paraphrased)</p>
           </div>
           <div class="card-grid mt-16">
             <div class="card card-green">
@@ -699,7 +699,7 @@
           <div class="card-grid-3">
             <div class="card card-red">
               <h4>Bad Prompt</h4>
-              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the bug"</em></p>
+              <p class="text-080" style="margin-top:8px;"><em>"Fix the bug"</em></p>
               <ul class="mt-8">
                 <li>No file or location</li>
                 <li>No expected behavior</li>
@@ -709,7 +709,7 @@
             </div>
             <div class="card card-orange">
               <h4>Good Prompt</h4>
-              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the TypeError in auth.py:42 &mdash; login() receives
+              <p class="text-080" style="margin-top:8px;"><em>"Fix the TypeError in auth.py:42 &mdash; login() receives
                   None for user_id when the session cookie is expired. Expected: redirect to /login"</em></p>
               <ul class="mt-8">
                 <li>Specific file and line</li>
@@ -719,7 +719,7 @@
             </div>
             <div class="card card-green">
               <h4>Great Prompt</h4>
-              <p style="font-size:0.8em; margin-top:8px;"><em>Same as good + "Run the test suite after fixing and ensure
+              <p class="text-080" style="margin-top:8px;"><em>Same as good + "Run the test suite after fixing and ensure
                   test_login_expired passes"</em></p>
               <ul class="mt-8">
                 <li>Everything from "good"</li>
@@ -893,7 +893,7 @@
       <section>
         <h2>Session 2 Complete</h2>
         <br>
-        <p style="color:#ccc; font-size:0.85em;">AI Coding Agents &middot; Vibe Coding &middot; Prompt Engineering</p>
+        <p class="text-085 color-light">AI Coding Agents &middot; Vibe Coding &middot; Prompt Engineering</p>
         <br>
         <div class="card-grid-3">
           <div class="card card-accent text-center">
@@ -922,7 +922,7 @@
       <section>
         <section>
           <h2>Quick Quiz</h2>
-          <p style="font-size:0.8em; color:#ccc;">5 questions on AI coding agents and vibe coding</p>
+          <p class="text-080-light">5 questions on AI coding agents and vibe coding</p>
           <br>
           <div class="card-grid-3">
             <div class="card card-accent text-center">
@@ -1277,35 +1277,19 @@
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 

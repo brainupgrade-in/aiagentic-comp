@@ -36,7 +36,7 @@
       <!-- ==================== COURSE JOURNEY RECAP ==================== -->
       <section>
         <h2>Your 5-Day Journey</h2>
-        <p style="font-size:0.7em; color:#ccc;">Everything you have learned leads to this moment</p>
+        <p class="text-070-light">Everything you have learned leads to this moment</p>
         <div class="evolution" style="margin-top:24px;">
           <div class="evo-step" style="border:2px solid var(--accent); border-radius:10px; padding:12px;">
             <span class="evo-icon">&#x1F9E0;</span>
@@ -62,10 +62,9 @@
             <span class="evo-year">Observability &amp; Production</span>
           </div>
           <span class="evo-arrow">&rarr;</span>
-          <div class="evo-step"
-            style="border:2px solid #fff; border-radius:10px; padding:12px; background:rgba(79,195,247,0.12);">
+          <div class="evo-step" style="border:2px solid #fff; border-radius:10px; padding:12px; background:rgba(79,195,247,0.12);">
             <span class="evo-icon">&#x1F3C6;</span>
-            <span class="evo-label" style="color:#fff;">Day 5</span>
+            <span class="evo-label color-white">Day 5</span>
             <span class="evo-year">MCP &amp; Capstone</span>
           </div>
         </div>
@@ -117,13 +116,12 @@
             &#x1F464; <strong>Client</strong><br>
             <span class="text-080">HTTP Requests</span>
           </div>
-          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
-          <div class="box box-large"
-            style="display:inline-block; min-width:320px; margin-bottom:8px; border-color:var(--accent);">
+          <div class="text-150 color-dim">&#x2193;</div>
+          <div class="box box-large border-accent" style="display:inline-block; min-width:320px; margin-bottom:8px;">
             &#x26A1; <strong>FastAPI Application</strong><br>
             <span class="text-080">REST API + Health Probes + Metrics</span>
           </div>
-          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
+          <div class="text-150 color-dim">&#x2193;</div>
           <div class="diagram" style="margin:8px 0;">
             <div class="box box-green" style="min-width:140px;">&#x1F504; <strong>LangGraph</strong><br><span class="text-080">Agent Orchestration</span></div>
             <span class="arrow">&harr;</span>
@@ -131,7 +129,7 @@
             <span class="arrow">&harr;</span>
             <div class="box" style="min-width:140px;">&#x1F4BE; <strong>ChromaDB</strong><br><span class="text-080">Vector Store</span></div>
           </div>
-          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
+          <div class="text-150 color-dim">&#x2193;</div>
           <div class="diagram" style="margin:8px 0;">
             <div class="box box-green" style="min-width:180px;">&#x1F50D; <strong>LangFuse</strong><br><span class="text-080">Traces, Metrics &amp; Dashboards</span></div>
             <div class="box box-orange" style="min-width:130px;">&#x1F4CB; <strong>Structured Logs</strong><br><span class="text-080">JSON Logging</span></div>
@@ -243,7 +241,7 @@
             </div>
           </div>
           <br>
-          <p style="font-size:0.65em; color:#aaa;">
+          <p class="text-sm-muted">
             Good architecture is the foundation. Spend time here &mdash; it saves debugging time later.
           </p>
         </section>
@@ -286,14 +284,14 @@
           </div>
           <br>
           <div class="diagram">
-            <div class="box" style="border-color:#999;">&#x1F916; Agent</div>
+            <div class="box border-dim">&#x1F916; Agent</div>
             <span class="arrow">&rarr;</span>
             <div class="box box-green" style="min-width:180px;">&#x1F527; <strong>MCP Server</strong><br><span class="text-080">JSON-RPC 2.0</span></div>
             <span class="arrow">&rarr;</span>
             <div style="display:flex; flex-direction:column; gap:6px;">
-              <div class="box" style="padding:8px 14px; font-size:0.6em;">Tool 1: Search</div>
-              <div class="box box-orange" style="padding:8px 14px; font-size:0.6em;">Tool 2: Calculate</div>
-              <div class="box box-red" style="padding:8px 14px; font-size:0.6em;">Tool 3: Generate</div>
+              <div class="box text-060" style="padding:8px 14px;">Tool 1: Search</div>
+              <div class="box box-orange text-060" style="padding:8px 14px;">Tool 2: Calculate</div>
+              <div class="box box-red text-060" style="padding:8px 14px;">Tool 3: Generate</div>
             </div>
           </div>
         </section>
@@ -534,7 +532,7 @@
           <h2>Testing Strategy</h2>
           <br>
           <div class="diagram-vertical">
-            <div class="box" style="width:70%; padding:12px 18px; border-color:var(--accent4);">
+            <div class="box border-red" style="width:70%; padding:12px 18px;">
               <strong>End-to-End Tests</strong><br>
               <span class="text-085">Full request through agent to response</span>
             </div>
@@ -592,33 +590,33 @@
           <div class="diagram">
             <div class="box box-large" style="min-width:160px;">
               &#x2705; Architecture<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 1</span>
+              <span class="text-080 color-green">Phase 1</span>
             </div>
             <span class="arrow">+</span>
             <div class="box box-large box-green" style="min-width:160px;">
               &#x2705; MCP Server<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 2</span>
+              <span class="text-080 color-green">Phase 2</span>
             </div>
             <span class="arrow">+</span>
             <div class="box box-large box-orange" style="min-width:160px;">
               &#x2705; FastAPI<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 3</span>
+              <span class="text-080 color-green">Phase 3</span>
             </div>
           </div>
           <div class="diagram mt-8">
             <div class="box box-large box-red" style="min-width:160px;">
               &#x2705; Traces<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 4</span>
+              <span class="text-080 color-green">Phase 4</span>
             </div>
             <span class="arrow">+</span>
             <div class="box box-large" style="min-width:160px;">
               &#x2705; Monitoring<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 5</span>
+              <span class="text-080 color-green">Phase 5</span>
             </div>
             <span class="arrow">+</span>
             <div class="box box-large box-green" style="min-width:160px;">
               &#x2705; Deploy<br>
-              <span style="font-size:0.8em; color:var(--accent2);">Phase 6</span>
+              <span class="text-080 color-green">Phase 6</span>
             </div>
           </div>
           <br>
@@ -674,7 +672,7 @@
           </tr>
         </table>
         <br>
-        <p style="font-size:0.65em; color:#aaa; text-align:center;">
+        <p class="text-sm-muted" style="text-align:center;">
           Total: <strong class="color-green">100 points</strong> &mdash; Focus on getting a working end-to-end
           system first, then optimize.
         </p>
@@ -683,7 +681,7 @@
       <!-- ==================== DEMO TIME ==================== -->
       <section>
         <h1 class="text-2xl">Demo Time</h1>
-        <p style="color:#ccc; font-size:0.85em;">Present your capstone to the group</p>
+        <p class="text-085 color-light">Present your capstone to the group</p>
         <br>
         <div class="card-grid">
           <div class="card card-accent">
@@ -720,7 +718,7 @@
           </div>
         </div>
         <br>
-        <p style="font-size:0.65em; color:#aaa;">
+        <p class="text-sm-muted">
           Each team gets <strong>5 minutes</strong> to present. Focus on the end-to-end flow, not individual code lines.
         </p>
       </section>
@@ -749,7 +747,7 @@
           </div>
         </div>
         <div class="card card-accent" style="text-align:center; margin-top:20px; border-left:4px solid #fff;">
-          <h4 style="color:#fff;">Day 5: MCP &amp; Capstone</h4>
+          <h4 class="color-white">Day 5: MCP &amp; Capstone</h4>
           <p>MCP standardizes tool integration; the capstone proves you can build production-ready AI systems</p>
         </div>
         <br>
@@ -796,7 +794,7 @@
         <br>
         <div class="card card-green" style="text-align:center; padding:18px;">
           <h4>Recommended Resources</h4>
-          <p style="font-size:0.7em;">
+          <p class="text-070">
             <strong>LangChain:</strong> python.langchain.com &nbsp;|&nbsp;
             <strong>LangGraph:</strong> langchain-ai.github.io/langgraph &nbsp;|&nbsp;
             <strong>MCP:</strong> modelcontextprotocol.io<br>
@@ -810,7 +808,7 @@
       <!-- ==================== THANK YOU ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.8em;">Thank You!</h1>
+          <h1 class="text-280">Thank You!</h1>
           <br>
           <p class="text-lg-dim">
             Congratulations on completing the<br>
@@ -818,7 +816,7 @@
           </p>
           <br>
           <div class="card card-accent" style="text-align:center; padding:24px; max-width:600px; margin:0 auto;">
-            <p style="font-size:0.85em; color:#fff;">
+            <p class="text-085 color-white">
               You started with <em>"What is an AI agent?"</em><br><br>
               You are leaving with the ability to <strong>design, build, instrument, test, and deploy</strong>
               production-ready AI agent systems.
@@ -833,7 +831,7 @@
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
           <div class="card card-accent" style="text-align:center; padding:14px 28px; display:inline-block;">
             <h4>Session 15 Complete</h4>
@@ -841,7 +839,7 @@
             </p>
           </div>
           <br><br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Final Q&amp;A &mdash; anything from any day, any topic.
           </p>
         </section>
@@ -850,35 +848,19 @@
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 

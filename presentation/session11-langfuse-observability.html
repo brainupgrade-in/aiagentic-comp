@@ -111,7 +111,7 @@
       <!-- WHY LANGFUSE -->
       <section>
         <h2>Why LangFuse?</h2>
-        <p style="font-size:0.8em; color:#ccc;">Traditional observability tells you &ldquo;latency is high&rdquo;. LangFuse tells you <em>which prompt caused it</em>.</p>
+        <p class="text-080-light">Traditional observability tells you &ldquo;latency is high&rdquo;. LangFuse tells you <em>which prompt caused it</em>.</p>
         <div class="card-grid">
           <div class="card card-accent">
             <h4>What Traditional Observability Can&rsquo;t Do</h4>
@@ -144,20 +144,20 @@
         <div class="diagram">
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <div class="box">Your LangChain App</div>
-            <div style="font-size:0.55em; color:#aaa;">LangFuse callback handler</div>
+            <div class="text-xs-muted">LangFuse callback handler</div>
           </div>
           <div class="arrow">&rarr;</div>
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <div class="box box-orange box-large">
               <strong>LangFuse Server</strong><br>
-              <span style="font-size:0.7em;">API + UI + Storage</span>
+              <span class="text-070">API + UI + Storage</span>
             </div>
-            <div style="font-size:0.55em; color:#aaa;">Self-hosted or Cloud</div>
+            <div class="text-xs-muted">Self-hosted or Cloud</div>
           </div>
           <div class="arrow">&rarr;</div>
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <div class="box box-green">PostgreSQL</div>
-            <div style="font-size:0.55em; color:#aaa;">Traces, prompts, scores</div>
+            <div class="text-xs-muted">Traces, prompts, scores</div>
           </div>
         </div>
         <div class="card-grid-3 mt-12">
@@ -287,7 +287,7 @@ class MockLangfuse:
     def flush(self):
         path = self.output_dir / "traces.json"
         path.write_text(json.dumps(self.traces, indent=2))</code></pre>
-        <div style="font-size:0.6em; color:#aaa; margin-top:8px;">
+        <div class="text-060-muted" style="margin-top:8px;">
           SDK patterns are real &mdash; mock mode logs data to local JSON files for inspection
         </div>
       </section>
@@ -656,37 +656,37 @@ template = ChatPromptTemplate.from_messages([
         <h2>Latency Breakdown</h2>
         <p class="text-base-dim">Identify where time is spent in your agent pipeline</p>
         <div style="margin:20px 0;">
-          <div style="font-size:0.6em; color:#aaa; margin-bottom:8px;">Typical AI Agent Request: 3.2 seconds total</div>
+          <div class="text-060-muted" style="margin-bottom:8px;">Typical AI Agent Request: 3.2 seconds total</div>
           <div style="padding-left:10px;">
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:var(--accent);">API Gateway</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-accent" style="min-width:120px;">API Gateway</span>
               <div style="background:var(--accent); height:20px; border-radius:3px; width:5%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">50ms (2%)</span>
+              <span class="color-muted" style="margin-left:8px;">50ms (2%)</span>
             </div>
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:var(--accent2);">RAG Retrieval</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-green" style="min-width:120px;">RAG Retrieval</span>
               <div style="background:var(--accent2); height:20px; border-radius:3px; width:10%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">250ms (8%)</span>
+              <span class="color-muted" style="margin-left:8px;">250ms (8%)</span>
             </div>
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:var(--accent3);">LLM Call #1</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-orange" style="min-width:120px;">LLM Call #1</span>
               <div style="background:var(--accent3); height:20px; border-radius:3px; width:50%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">1,800ms (56%)</span>
+              <span class="color-muted" style="margin-left:8px;">1,800ms (56%)</span>
             </div>
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:var(--accent2);">Tool Execution</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-green" style="min-width:120px;">Tool Execution</span>
               <div style="background:var(--accent2); height:20px; border-radius:3px; width:12%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">400ms (12%)</span>
+              <span class="color-muted" style="margin-left:8px;">400ms (12%)</span>
             </div>
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:var(--accent3);">LLM Call #2</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-orange" style="min-width:120px;">LLM Call #2</span>
               <div style="background:var(--accent3); height:20px; border-radius:3px; width:18%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">650ms (20%)</span>
+              <span class="color-muted" style="margin-left:8px;">650ms (20%)</span>
             </div>
-            <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
-              <span style="min-width:120px; color:#aaa;">Response</span>
+            <div class="text-060" style="display:flex; align-items:center; margin:6px 0;">
+              <span class="color-muted" style="min-width:120px;">Response</span>
               <div style="background:#999; height:20px; border-radius:3px; width:2%; opacity:0.7; margin-left:4px;"></div>
-              <span style="margin-left:8px; color:#aaa;">50ms (2%)</span>
+              <span class="color-muted" style="margin-left:8px;">50ms (2%)</span>
             </div>
           </div>
         </div>
@@ -804,7 +804,7 @@ template = ChatPromptTemplate.from_messages([
 
       <section>
         <h1 class="text-2xl">Session 11 Quiz</h1>
-        <p style="font-size:1.1em; color:#ccc; margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
+        <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
       </section>
 
       <!-- Q1 -->
@@ -962,35 +962,19 @@ template = ChatPromptTemplate.from_messages([
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

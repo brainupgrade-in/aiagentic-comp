@@ -85,7 +85,7 @@
       <section>
         <h2>Quick Recap: Session 7</h2>
         <h3>LangGraph Fundamentals</h3>
-        <table class="compare-table" style="font-size:0.55em; margin-top:14px;">
+        <table class="compare-table text-xs" style="margin-top:14px;">
           <tr>
             <th>Concept</th>
             <th>What You Learned</th>
@@ -122,7 +122,7 @@
             <td><code>interrupt_before=["node"]</code></td>
           </tr>
         </table>
-        <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:12px;">
+        <p class="text-060-muted" style="text-align:center; margin-top:12px;">
           Today: go deeper into each of these &rarr; production patterns
         </p>
       </section>
@@ -187,7 +187,7 @@
         <!-- FAN-OUT CODE -->
         <section>
           <h2>Fan-Out &amp; Convergence</h2>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Fan-out: one node routes to many
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Fan-out: one node routes to many
 graph.add_conditional_edges(
     "classify",
     route_fn,
@@ -232,7 +232,7 @@ graph.add_edge("format_response", END)</code></pre>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <pre style="font-size:0.52em; line-height:1.35;"><code class="language-python" data-trim data-noescape># Send "input" to three parallel nodes
+          <pre class="text-052" style="line-height:1.35;"><code class="language-python" data-trim data-noescape># Send "input" to three parallel nodes
 graph.add_edge("input", "check_spam")
 graph.add_edge("input", "check_sentiment")
 graph.add_edge("input", "check_language")
@@ -251,7 +251,7 @@ graph.add_edge("check_language", "merge_results")</code></pre>
         <!-- PARALLEL + REDUCER -->
         <section>
           <h2>Parallel + Reducer Pattern</h2>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
 from operator import add
 
 class ReviewState(TypedDict):
@@ -282,7 +282,7 @@ def merge_results(state) -> dict:
               <div class="pattern-label">Pattern 1</div>
               <h4>Priority Router</h4>
               <p>Check urgency first, then category. High-priority skips normal flow.</p>
-              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if state["urgent"]:
+              <pre class="text-082" style="margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if state["urgent"]:
   return "escalate"
 return state["category"]</code></pre>
             </div>
@@ -290,7 +290,7 @@ return state["category"]</code></pre>
               <div class="pattern-label">Pattern 2</div>
               <h4>Multi-Condition</h4>
               <p>Combine multiple state fields into a routing decision.</p>
-              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if cat == "finance"
+              <pre class="text-082" style="margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if cat == "finance"
   and amt > 5000:
   return "manager"</code></pre>
             </div>
@@ -298,7 +298,7 @@ return state["category"]</code></pre>
               <div class="pattern-label">Pattern 3</div>
               <h4>LLM Router</h4>
               <p>Let the LLM decide the route based on content analysis.</p>
-              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>resp = llm.invoke(
+              <pre class="text-082" style="margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>resp = llm.invoke(
   "Route this...")
 return resp.content</code></pre>
             </div>
@@ -309,7 +309,7 @@ return resp.content</code></pre>
         <section>
           <h2>Nested Routing</h2>
           <h3>Multi-level decision trees</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Level 1: Category routing
+          <pre class="text-base" style="line-height:1.6; padding:24px 32px; margin-top:30px;"><code class="language-python" data-trim data-noescape># Level 1: Category routing
 graph.add_conditional_edges("classify", route_category,
     {"hr": "hr_triage", "tech": "tech_triage", "finance": "finance_triage"})
 
@@ -320,7 +320,7 @@ graph.add_conditional_edges("hr_triage", route_hr_type,
 # Level 2: Sub-routing within Tech
 graph.add_conditional_edges("tech_triage", route_tech_type,
     {"bug": "handle_bug", "deploy": "handle_deploy", "infra": "handle_infra"})</code></pre>
-          <div class="analogy">
+          <div class="analogy text-085" style="margin-top:30px; padding:18px 24px; line-height:1.5;">
             A company phone system: "Press 1 for HR" &rarr; "Press 1 for leave, 2 for benefits."
             Each <code>add_conditional_edges()</code> is one level of the decision tree.
           </div>
@@ -345,7 +345,7 @@ graph.add_conditional_edges("tech_triage", route_tech_type,
         <section>
           <h2>Beyond <code>operator.add</code></h2>
           <h3>Custom reducer functions</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
 
 # Custom reducer: keep only last N items
 def keep_last_5(current: list, new: list) -> list:
@@ -374,7 +374,7 @@ class SmartState(TypedDict):
         <section>
           <h2>Built-in: <code>add_messages</code> Reducer</h2>
           <h3>The standard way to handle chat history</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.graph import add_messages
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.graph import add_messages
 from langchain_core.messages import HumanMessage, AIMessage
 
 class ChatState(TypedDict):
@@ -404,7 +404,7 @@ def chatbot(state: ChatState) -> dict:
         <section>
           <h2>Checkpoint Persistence Backends</h2>
           <h3>From development to production</h3>
-          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Backend</th>
               <th>Persistence</th>
@@ -430,7 +430,7 @@ def chatbot(state: ChatState) -> dict:
               <td>Production, scaling</td>
             </tr>
           </table>
-          <pre style="font-size:0.52em; line-height:1.4; margin-top:12px;"><code class="language-python" data-trim data-noescape># Development
+          <pre class="text-052" style="line-height:1.4; margin-top:12px;"><code class="language-python" data-trim data-noescape># Development
 from langgraph.checkpoint.memory import MemorySaver
 checkpointer = MemorySaver()
 
@@ -446,7 +446,7 @@ app = graph.compile(checkpointer=checkpointer)</code></pre>
         <section>
           <h2>State Recovery &amp; Resumption</h2>
           <h3>Pick up exactly where you left off</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Scenario: Server restarts mid-workflow
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Scenario: Server restarts mid-workflow
 
 # 1. Before restart: workflow was running on thread "order-42"
 config = {"configurable": {"thread_id": "order-42"}}
@@ -472,7 +472,7 @@ result = app.invoke(None, config)  # ← continues from checkpoint</code></pre>
         <!-- STATE HISTORY -->
         <section>
           <h2>Time Travel with State History</h2>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Walk through every checkpoint in order
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Walk through every checkpoint in order
 for state in app.get_state_history(config):
     print(f"Step: {state.next}")
     print(f"Values: {state.values}")
@@ -513,7 +513,7 @@ result = app.invoke(None, past_config)  # ← replay from that point!</code></pr
         <section>
           <h2>Node-Level Error Handling</h2>
           <h3>Wrap nodes with try/except for graceful failures</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def call_llm(state) -> dict:
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def call_llm(state) -> dict:
     try:
         response = llm.invoke(state["message"])
         return {
@@ -537,7 +537,7 @@ result = app.invoke(None, past_config)  # ← replay from that point!</code></pr
         <section>
           <h2>Error-Aware Routing</h2>
           <h3>Route based on success or failure</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def check_error(state) -> str:
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def check_error(state) -> str:
     if state["error"]:
         return "handle_error"
     return "continue"
@@ -561,7 +561,7 @@ graph.add_conditional_edges("call_llm", check_error, {
         <!-- RETRY PATTERN -->
         <section>
           <h2>Retry with Exponential Backoff</h2>
-          <pre style="font-size:0.52em; line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
+          <pre class="text-052" style="line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
 
 class RetryState(TypedDict):
     message: str
@@ -594,26 +594,26 @@ graph.add_conditional_edges("call_api", should_retry,
           <div class="card-grid mt-10">
             <div class="card card-accent p-10">
               <h4>LLM Fallback Chain</h4>
-              <p style="font-size:0.55em; margin:4px 0;">Primary LLM fails? Try a backup model.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-yaml" data-trim data-noescape>try: llm_primary.invoke()
+              <p class="text-xs" style="margin:4px 0;">Primary LLM fails? Try a backup model.</p>
+              <pre class="text-080" style="margin:6px 0 0 0; padding:8px;"><code class="language-yaml" data-trim data-noescape>try: llm_primary.invoke()
 except: llm_backup.invoke()</code></pre>
             </div>
             <div class="card card-green p-10">
               <h4>Cached Response</h4>
-              <p style="font-size:0.55em; margin:4px 0;">API down? Return a cached or template response.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+              <p class="text-xs" style="margin:4px 0;">API down? Return a cached or template response.</p>
+              <pre class="text-080" style="margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
   return CACHED[category]</code></pre>
             </div>
             <div class="card card-orange p-10">
               <h4>Graceful Degradation</h4>
-              <p style="font-size:0.55em; margin:4px 0;">Skip failing step, continue with partial results.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+              <p class="text-xs" style="margin:4px 0;">Skip failing step, continue with partial results.</p>
+              <pre class="text-080" style="margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
   return {"partial": True}</code></pre>
             </div>
             <div class="card card-red p-10">
               <h4>Human Escalation</h4>
-              <p style="font-size:0.55em; margin:4px 0;">Can't recover? Route to a human via interrupt.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+              <p class="text-xs" style="margin:4px 0;">Can't recover? Route to a human via interrupt.</p>
+              <pre class="text-080" style="margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
   return "escalate"</code></pre>
             </div>
           </div>
@@ -653,7 +653,7 @@ except: llm_backup.invoke()</code></pre>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Multiple interrupt points
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Multiple interrupt points
 app = graph.compile(
     checkpointer=MemorySaver(),
     interrupt_before=["review", "send"]  # ← TWO gates!
@@ -671,7 +671,7 @@ app.invoke(None, config)             # Resume, completes workflow</code></pre>
         <section>
           <h2>Collecting User Input Mid-Workflow</h2>
           <h3>Pause, ask the user, inject their answer into state</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># 1. Workflow reaches "collect_input" and pauses
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># 1. Workflow reaches "collect_input" and pauses
 app = graph.compile(
     checkpointer=MemorySaver(),
     interrupt_before=["process_answer"]
@@ -702,7 +702,7 @@ result = app.invoke(None, config)</code></pre>
         <section>
           <h2>Timeout &amp; Escalation</h2>
           <h3>What if the human doesn't respond?</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
 from datetime import datetime, timedelta
 
 # Check if a paused workflow has timed out
@@ -726,7 +726,7 @@ def check_timeout(config, app, timeout_minutes=30):
         <!-- HITL PATTERNS SUMMARY -->
         <section>
           <h2>HITL Pattern Summary</h2>
-          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Pattern</th>
               <th>When to Use</th>
@@ -768,7 +768,7 @@ def check_timeout(config, app, timeout_minutes=30):
         <!-- REAL-WORLD EXAMPLE -->
         <section>
           <h2>Real-World: Expense Approval Workflow</h2>
-          <div class="pipe-flow" style="margin-top:12px; font-size:0.9em;">
+          <div class="pipe-flow text-lg" style="margin-top:12px;">
             <div class="pipe-box"><strong>submit</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green"><strong>validate</strong></div>
@@ -795,7 +795,7 @@ def check_timeout(config, app, timeout_minutes=30):
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <p style="font-size:0.55em; color:#aaa; text-align:center; margin-top:8px;">
+          <p class="text-xs-muted" style="text-align:center; margin-top:8px;">
             Combines: conditional routing + multi-gate HITL + reducers for audit trail + checkpointing
           </p>
         </section>
@@ -909,16 +909,16 @@ def check_timeout(config, app, timeout_minutes=30):
               </div>
             </div>
           </div>
-          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+          <p class="text-070 color-muted" style="text-align:center; margin-top:16px;">
             From single workflows to teams of collaborating agents.
           </p>
         </section>
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Ask about multi-branch graphs, custom reducers, error handling, or advanced HITL patterns.
           </p>
         </section>
@@ -928,8 +928,8 @@ def check_timeout(config, app, timeout_minutes=30):
       <section>
         <section>
           <h1 class="text-2xl">Session 8 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
         </section>
@@ -1268,35 +1268,19 @@ def check_timeout(config, app, timeout_minutes=30):
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

@@ -133,7 +133,7 @@
               </div>
             </div>
             <span class="graph-arrow">&rarr;</span>
-            <div class="graph-node" style="border-color:#999;">
+            <div class="graph-node border-dim">
               <strong>END</strong>
             </div>
           </div>
@@ -157,7 +157,7 @@
         <section>
           <h2>Defining State with TypedDict</h2>
           <h3>The shared data structure for your workflow</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
 from operator import add
 from langgraph.graph import StateGraph
 
@@ -184,7 +184,7 @@ graph = StateGraph(WorkflowState)</code></pre>
         <!-- YOUR FIRST GRAPH -->
         <section>
           <h2>Your First LangGraph Workflow</h2>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 
 class State(TypedDict):
@@ -215,7 +215,7 @@ print(result["greeting"])  # "Hello, Priya! Welcome to UniGPS."</code></pre>
         <!-- AGENTS vs GRAPHS -->
         <section>
           <h2>When to Use What?</h2>
-          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Feature</th>
               <th>ReAct Agent</th>
@@ -278,7 +278,7 @@ print(result["greeting"])  # "Hello, Priya! Welcome to UniGPS."</code></pre>
         <section>
           <h2>Nodes: Processing Steps</h2>
           <h3>Each node is a Python function that transforms state</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># A node receives the full state and returns updates
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># A node receives the full state and returns updates
 def classify_request(state):
     """Classify whether a request is HR, Tech, or Finance."""
     message = state["message"]
@@ -318,19 +318,19 @@ graph.add_node("classify", classify_request)</code></pre>
             <div class="card card-accent p-10">
               <h4>Normal Edge</h4>
               <p style="margin:4px 0;">Always go from A to B.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
   "classify", "respond")</code></pre>
             </div>
             <div class="card card-green p-10">
               <h4>Entry Edge</h4>
               <p style="margin:4px 0;">Where the graph starts.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
   START, "classify")</code></pre>
             </div>
             <div class="card card-orange p-10">
               <h4>Exit Edge</h4>
               <p style="margin:4px 0;">Where the graph ends.</p>
-              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+              <pre class="text-080" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
   "respond", END)</code></pre>
             </div>
           </div>
@@ -347,7 +347,7 @@ graph.add_node("classify", classify_request)</code></pre>
               <strong>respond</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#999;">
+            <div class="pipe-box border-dim">
               <strong>END</strong>
             </div>
           </div>
@@ -357,7 +357,7 @@ graph.add_node("classify", classify_request)</code></pre>
         <section>
           <h2>Conditional Edges</h2>
           <h3>Route to different nodes based on state</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Routing function — reads state and returns next node name
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Routing function — reads state and returns next node name
 def route_request(state) -> str:
     if state["category"] == "hr":
         return "handle_hr"
@@ -385,7 +385,7 @@ graph.add_conditional_edges(
         <!-- COMPLETE BRANCHING EXAMPLE -->
         <section>
           <h2>Complete Branching Workflow</h2>
-          <pre style="font-size:0.52em; line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
+          <pre class="text-052" style="line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
 from langgraph.graph import StateGraph, START, END
 
 class State(TypedDict):
@@ -434,14 +434,14 @@ print(result["response"])  # "HR: You get 24 annual leave days."</code></pre>
               <strong>Good?</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#999;">
+            <div class="pipe-box border-dim">
               <strong>END</strong>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:4px;">
+          <p class="text-sm-muted" style="text-align:center; margin-top:4px;">
             If review fails &rarr; loop back to Draft (cycle!)
           </p>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def should_continue(state) -> str:
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def should_continue(state) -> str:
     if state["quality_score"] >= 8:
         return "end"      # Good enough, finish
     if state["attempts"] >= 3:
@@ -478,7 +478,7 @@ graph.add_conditional_edges("review", should_continue, {
         <section>
           <h2>Checkpointing: Save & Resume State</h2>
           <h3>Persist workflow state at every step</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.checkpoint.memory import MemorySaver
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.checkpoint.memory import MemorySaver
 
 # Compile with a checkpointer
 memory = MemorySaver()
@@ -507,7 +507,7 @@ print(snapshot.next)        # Which node runs next (or empty if done)</code></pr
         <!-- STATE INSPECTION -->
         <section>
           <h2>Inspecting Workflow State</h2>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Get the current state snapshot
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Get the current state snapshot
 snapshot = app.get_state(config)
 
 # What data is in the state?
@@ -546,11 +546,11 @@ app.update_state(config, {"approved": True})
               <strong>Send</strong><br><span class="text-085">email</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#999;">
+            <div class="pipe-box border-dim">
               <strong>END</strong>
             </div>
           </div>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Compile with interrupt_before — pauses BEFORE "send_email" runs
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Compile with interrupt_before — pauses BEFORE "send_email" runs
 app = graph.compile(
     checkpointer=MemorySaver(),
     interrupt_before=["send_email"]  # ← pause point
@@ -569,7 +569,7 @@ result = app.invoke(None, config)  # ← None means "continue"
         <section>
           <h2>Human Edits Before Resuming</h2>
           <h3>The human can modify the state before approving</h3>
-          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Step 1: Run until pause point
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Step 1: Run until pause point
 result = app.invoke({"request": "Draft email to team about Friday lunch"}, config)
 
 # Step 2: Inspect what the draft node produced
@@ -599,17 +599,17 @@ result = app.invoke(None, config)</code></pre>
               <h4><code>interrupt_before</code></h4>
               <p>Pause <strong>before</strong> a node runs. Use when the human should review
               the state <em>before</em> an action happens.</p>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause before sending
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause before sending
 interrupt_before=["send_email"]</code></pre>
-              <p style="margin-top:6px; font-size:0.85em;">Common: send emails, make payments, delete data</p>
+              <p class="text-085" style="margin-top:6px;">Common: send emails, make payments, delete data</p>
             </div>
             <div class="card card-green p-16">
               <h4><code>interrupt_after</code></h4>
               <p>Pause <strong>after</strong> a node runs. Use when the human should review
               the <em>output</em> of a step.</p>
-              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause after drafting
+              <pre class="text-085" style="margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause after drafting
 interrupt_after=["draft_email"]</code></pre>
-              <p style="margin-top:6px; font-size:0.85em;">Common: review drafts, verify classifications, check data</p>
+              <p class="text-085" style="margin-top:6px;">Common: review drafts, verify classifications, check data</p>
             </div>
           </div>
         </section>
@@ -617,7 +617,7 @@ interrupt_after=["draft_email"]</code></pre>
         <!-- CHECKPOINTER BACKENDS -->
         <section>
           <h2>Checkpoint Backends</h2>
-          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Backend</th>
               <th>Import</th>
@@ -643,7 +643,7 @@ interrupt_after=["draft_email"]</code></pre>
               <td>Multi-server production</td>
             </tr>
           </table>
-          <pre style="font-size:0.52em; margin-top:12px;"><code class="language-python" data-trim data-noescape># Switch from dev to production — just change the checkpointer!
+          <pre class="text-052" style="margin-top:12px;"><code class="language-python" data-trim data-noescape># Switch from dev to production — just change the checkpointer!
 # memory = MemorySaver()  ← development
 memory = SqliteSaver.from_conn_string("checkpoints.db")  # ← production
 app = graph.compile(checkpointer=memory)</code></pre>
@@ -702,7 +702,7 @@ app = graph.compile(checkpointer=memory)</code></pre>
         <!-- QUICK REFERENCE -->
         <section>
           <h2>LangGraph Quick Reference</h2>
-          <table class="compare-table" style="font-size:0.52em;">
+          <table class="compare-table text-052">
             <tr>
               <th>What You Want</th>
               <th>LangGraph API</th>
@@ -802,16 +802,16 @@ app = graph.compile(checkpointer=memory)</code></pre>
               </div>
             </div>
           </div>
-          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+          <p class="text-070 color-muted" style="text-align:center; margin-top:16px;">
             From simple graphs to production-grade multi-agent systems.
           </p>
         </section>
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Ask about StateGraph, nodes, edges, checkpointing, or human-in-the-loop.
           </p>
         </section>
@@ -821,8 +821,8 @@ app = graph.compile(checkpointer=memory)</code></pre>
       <section>
         <section>
           <h1 class="text-2xl">Session 7 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
         </section>
@@ -1162,35 +1162,19 @@ app = graph.compile(checkpointer=memory)</code></pre>
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

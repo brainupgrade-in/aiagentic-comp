@@ -74,13 +74,13 @@
           <div class="card-grid">
             <div class="card card-red text-center">
               <h4>Without Reasoning</h4>
-              <p style="font-size:1.1em; margin-bottom:10px;">"What's 17 x 28?"</p>
+              <p class="text-110" style="margin-bottom:10px;">"What's 17 x 28?"</p>
               <p>LLM guesses: <strong class="color-red">"436"</strong></p>
-              <p style="margin-top:6px; color:#999;">(Confident but wrong. Actual: 476)</p>
+              <p class="color-dim" style="margin-top:6px;">(Confident but wrong. Actual: 476)</p>
             </div>
             <div class="card card-green text-center">
               <h4>With Reasoning</h4>
-              <p style="font-size:1.1em; margin-bottom:10px;">"What's 17 x 28?"</p>
+              <p class="text-110" style="margin-bottom:10px;">"What's 17 x 28?"</p>
               <p style="text-align:left;">
                 17 x 28<br>
                 = 17 x 30 - 17 x 2<br>
@@ -130,7 +130,7 @@
           <h2>ReAct Pattern</h2>
           <h3>Reasoning + Acting &mdash; The core agent pattern</h3>
           <br>
-          <p style="font-size:0.7em; color:#ccc;">
+          <p class="text-070-light">
             Chain-of-Thought makes LLMs think better. But thinking alone isn't enough &mdash;<br>
             agents also need to <strong>act</strong> and <strong>observe</strong> results.
             ReAct combines both.
@@ -152,7 +152,7 @@
               <span class="text-080">Read the result</span>
             </div>
           </div>
-          <div style="text-align:center; font-size:1.2em; color:var(--accent);">
+          <div class="text-120 color-accent" style="text-align:center;">
             ↻ Repeat until goal is achieved
           </div>
         </section>
@@ -199,13 +199,13 @@
           <h3>Explore multiple paths, pick the best one</h3>
           <div style="text-align:center; margin-top:14px;">
             <div class="box box-large" style="display:inline-block;">📋 Problem</div>
-            <div style="font-size:1.3em; color:#999; margin:4px 0;">↙ &nbsp;&nbsp; ↓ &nbsp;&nbsp; ↘</div>
+            <div class="text-130-dim" style="margin:4px 0;">↙ &nbsp;&nbsp; ↓ &nbsp;&nbsp; ↘</div>
             <div class="diagram" style="margin-top:0;">
               <div class="box box-green" style="min-width:160px;">
                 Path A<br><span class="text-085">Score: 6/10</span>
               </div>
-              <div class="box" style="min-width:160px; border-color:var(--accent2); border-width:3px;">
-                Path B<br><span style="font-size:0.85em; color:var(--accent2);">Score: 9/10 ✓</span>
+              <div class="box border-green" style="min-width:160px; border-width:3px;">
+                Path B<br><span class="text-085 color-green">Score: 9/10 ✓</span>
               </div>
               <div class="box box-red" style="min-width:160px;">
                 Path C<br><span class="text-085">Score: 3/10</span>
@@ -243,7 +243,7 @@
             </div>
             <div class="arrow-down color-accent">↻ Repeat if needed</div>
           </div>
-          <div class="analogy" style="margin-top:10px; font-size:0.7em;">
+          <div class="analogy text-070" style="margin-top:10px;">
             Like writing a first draft, then re-reading it with fresh eyes and fixing mistakes.
             Professional writers always edit their own work &mdash; reflection lets agents do the same.
           </div>
@@ -347,7 +347,7 @@
           <br>
           <div class="step-flow">
             <div class="step-row">
-              <div class="step-label" style="background:rgba(79,195,247,0.2); color:var(--accent);">1. User</div>
+              <div class="step-label color-accent" style="background:rgba(79,195,247,0.2);">1. User</div>
               <div class="step-content">"What's the weather in Mumbai right now?"</div>
             </div>
             <div class="step-row">
@@ -363,7 +363,7 @@
               <div class="step-content">The API returned 32°C, Partly Cloudy for Mumbai.</div>
             </div>
             <div class="step-row">
-              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2);">5. Response</div>
+              <div class="step-label color-green" style="background:rgba(129,199,132,0.2);">5. Response</div>
               <div class="step-content">"It's currently 32°C and partly cloudy in Mumbai."</div>
             </div>
           </div>
@@ -507,7 +507,7 @@ def calculate(expression: str) -> str:
             </div>
           </div>
           <br>
-          <p style="font-size:0.7em; color:#aaa; text-align:center;">
+          <p class="text-070 color-muted" style="text-align:center;">
             Memory = context. Without it, every message is a brand new conversation.
           </p>
         </section>
@@ -519,28 +519,28 @@ def calculate(expression: str) -> str:
           <div class="card-grid-3">
             <div class="card card-accent text-center">
               <h4>Short-Term Memory</h4>
-              <p style="font-size:1.5em; margin:8px 0;">💬</p>
+              <p class="text-150" style="margin:8px 0;">💬</p>
               <p><strong>Current conversation</strong></p>
               <p class="mt-8">Remembers what was said in this chat session</p>
-              <p style="margin-top:8px; color:var(--accent); font-size:0.9em;">
+              <p class="text-lg color-accent" style="margin-top:8px;">
                 Like your working memory during a meeting
               </p>
             </div>
             <div class="card card-green text-center">
               <h4>Long-Term Memory</h4>
-              <p style="font-size:1.5em; margin:8px 0;">🗄️</p>
+              <p class="text-150" style="margin:8px 0;">🗄️</p>
               <p><strong>Across sessions</strong></p>
               <p class="mt-8">Persists information between separate conversations</p>
-              <p style="margin-top:8px; color:var(--accent2); font-size:0.9em;">
+              <p class="text-lg color-green" style="margin-top:8px;">
                 Like notes you save in a file for later
               </p>
             </div>
             <div class="card card-orange text-center">
               <h4>Episodic Memory</h4>
-              <p style="font-size:1.5em; margin:8px 0;">📔</p>
+              <p class="text-150" style="margin:8px 0;">📔</p>
               <p><strong>Past experiences</strong></p>
               <p class="mt-8">Remembers what worked and what failed before</p>
-              <p style="margin-top:8px; color:var(--accent3); font-size:0.9em;">
+              <p class="text-lg color-orange" style="margin-top:8px;">
                 Like learning from past mistakes
               </p>
             </div>
@@ -551,25 +551,25 @@ def calculate(expression: str) -> str:
         <section>
           <h2>Short-Term Memory: Conversation Context</h2>
           <br>
-          <p style="font-size:0.7em; color:#ccc;">How does an agent "remember" what you just said?</p>
+          <p class="text-070-light">How does an agent "remember" what you just said?</p>
           <br>
           <div class="step-flow">
             <div class="step-row">
-              <div class="step-label" style="background:rgba(79,195,247,0.2); color:var(--accent); min-width:70px;">Turn 1</div>
+              <div class="step-label color-accent" style="background:rgba(79,195,247,0.2); min-width:70px;">Turn 1</div>
               <div class="step-content">
                 <strong>User:</strong> "I'm planning a trip to Japan in March."<br>
                 <strong>Agent:</strong> "Great choice! March is cherry blossom season."
               </div>
             </div>
             <div class="step-row">
-              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2); min-width:70px;">Turn 2</div>
+              <div class="step-label color-green" style="background:rgba(129,199,132,0.2); min-width:70px;">Turn 2</div>
               <div class="step-content">
                 <strong>User:</strong> "What should I pack?"<br>
                 <strong>Agent:</strong> "For <em>Japan in March</em>, pack layers &mdash; it's 8-15°C..."
               </div>
             </div>
             <div class="step-row">
-              <div class="step-label" style="background:rgba(255,183,77,0.2); color:var(--accent3); min-width:70px;">Turn 3</div>
+              <div class="step-label color-orange" style="background:rgba(255,183,77,0.2); min-width:70px;">Turn 3</div>
               <div class="step-content">
                 <strong>User:</strong> "And hotel recommendations?"<br>
                 <strong>Agent:</strong> "For <em>cherry blossom season in Japan</em>, consider Kyoto..."
@@ -638,7 +638,7 @@ def calculate(expression: str) -> str:
             This is episodic memory &mdash; the agent builds a library of <strong>what worked</strong>
             and <strong>what didn't</strong> for different situations.</p>
           </div>
-          <div class="analogy" style="margin-top:12px; font-size:0.7em;">
+          <div class="analogy text-070" style="margin-top:12px;">
             Like a delivery driver who remembers that Main Street is always jammed at 5 PM,
             so they automatically take the alternate route without being told.
           </div>
@@ -697,34 +697,34 @@ def calculate(expression: str) -> str:
 
         <section>
           <h2>The Complete Flow</h2>
-          <div class="step-flow" style="font-size:0.9em; gap:4px;">
+          <div class="step-flow text-lg" style="gap:4px;">
             <div class="step-row">
               <div class="step-label think">Think</div>
-              <div class="step-content">I need to: 1) Find flights, 2) Compare prices, 3) Send email. Let me start with flights. <span style="color:#999;">(Planning)</span></div>
+              <div class="step-content">I need to: 1) Find flights, 2) Compare prices, 3) Send email. Let me start with flights. <span class="color-dim">(Planning)</span></div>
             </div>
             <div class="step-row">
               <div class="step-label act">Act</div>
-              <div class="step-content">flight_search(from="DEL", to="TYO", date="next Friday") <span style="color:#999;">(Tool calling)</span></div>
+              <div class="step-content">flight_search(from="DEL", to="TYO", date="next Friday") <span class="color-dim">(Tool calling)</span></div>
             </div>
             <div class="step-row">
               <div class="step-label observe">Observe</div>
-              <div class="step-content">Found 5 flights. Cheapest is Air India at ₹38,500. <span style="color:#999;">(Reading result)</span></div>
+              <div class="step-content">Found 5 flights. Cheapest is Air India at ₹38,500. <span class="color-dim">(Reading result)</span></div>
             </div>
             <div class="step-row">
               <div class="step-label think">Think</div>
-              <div class="step-content">I have the cheapest option. Now I need to email the user. I remember their email from our last conversation. <span style="color:#999;">(Memory)</span></div>
+              <div class="step-content">I have the cheapest option. Now I need to email the user. I remember their email from our last conversation. <span class="color-dim">(Memory)</span></div>
             </div>
             <div class="step-row">
               <div class="step-label act">Act</div>
-              <div class="step-content">send_email(to="user@email.com", subject="Delhi-Tokyo Flight", body="...") <span style="color:#999;">(Tool calling)</span></div>
+              <div class="step-content">send_email(to="user@email.com", subject="Delhi-Tokyo Flight", body="...") <span class="color-dim">(Tool calling)</span></div>
             </div>
             <div class="step-row">
               <div class="step-label observe">Observe</div>
-              <div class="step-content">Email sent successfully. <span style="color:#999;">(Confirming)</span></div>
+              <div class="step-content">Email sent successfully. <span class="color-dim">(Confirming)</span></div>
             </div>
             <div class="step-row">
-              <div class="step-label" style="background:rgba(129,199,132,0.2); color:var(--accent2);">Done</div>
-              <div class="step-content">"I found the cheapest flight &mdash; Air India at ₹38,500 on Friday. I've emailed you the full details!" <span style="color:#999;">(ReAct complete)</span></div>
+              <div class="step-label color-green" style="background:rgba(129,199,132,0.2);">Done</div>
+              <div class="step-content">"I found the cheapest flight &mdash; Air India at ₹38,500 on Friday. I've emailed you the full details!" <span class="color-dim">(ReAct complete)</span></div>
             </div>
           </div>
         </section>
@@ -822,9 +822,9 @@ def calculate(expression: str) -> str:
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             We'll be implementing all of these patterns in the hands-on labs next.
           </p>
         </section>
@@ -834,8 +834,8 @@ def calculate(expression: str) -> str:
       <section>
         <section>
           <h1 class="text-2xl">Session 3 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             I'll show a question with 4 choices.<br>
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
@@ -1168,35 +1168,19 @@ def calculate(expression: str) -> str:
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

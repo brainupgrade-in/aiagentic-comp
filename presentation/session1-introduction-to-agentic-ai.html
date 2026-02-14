@@ -77,12 +77,12 @@
           <div class="card-grid mt-16">
             <div class="card card-accent text-center">
               <h4>Traditional Software</h4>
-              <p style="font-size:1.4em;">You tell it <strong>exactly</strong> what to do</p>
+              <p class="text-140">You tell it <strong>exactly</strong> what to do</p>
               <p class="mt-10"><em>"Sort this list alphabetically"</em></p>
             </div>
             <div class="card card-green text-center">
               <h4>AI Agent</h4>
-              <p style="font-size:1.4em;">You tell it <strong>what you want</strong></p>
+              <p class="text-140">You tell it <strong>what you want</strong></p>
               <p class="mt-10"><em>"Organize my messy notes into a report"</em></p>
             </div>
           </div>
@@ -91,7 +91,7 @@
         <!-- DEFINITION -->
         <section>
           <h2>What is an AI Agent?</h2>
-          <div class="card card-accent" style="padding:30px; text-align:center; font-size:0.9em; margin-top:16px;">
+          <div class="card card-accent text-lg" style="padding:30px; text-align:center; margin-top:16px;">
             <p>An AI Agent is a software system that can<br>
             <span class="highlight">understand a goal</span>,
             <span class="highlight-green">make a plan</span>,
@@ -134,7 +134,7 @@
               </svg>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; margin-top:16px;">
+          <p class="text-sm-muted" style="margin-top:16px;">
             This <span class="highlight">Think &rarr; Act &rarr; Observe</span> loop repeats until the agent achieves its goal.
           </p>
         </section>
@@ -176,21 +176,21 @@
           <div class="card-grid-3 mt-16">
             <div class="card card-accent text-center">
               <h4>Autonomy</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🧭</p>
+              <p class="text-120" style="margin-bottom:8px;">🧭</p>
               <p>Decides <em>what</em> to do and <em>how</em> to do it without being told each step</p>
             </div>
             <div class="card card-green text-center">
               <h4>Problem Solving</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🧩</p>
+              <p class="text-120" style="margin-bottom:8px;">🧩</p>
               <p>Breaks complex problems into smaller pieces and solves them one by one</p>
             </div>
             <div class="card card-orange text-center">
               <h4>Adaptability</h4>
-              <p style="font-size:1.2em; margin-bottom:8px;">🔄</p>
+              <p class="text-120" style="margin-bottom:8px;">🔄</p>
               <p>When Plan A fails, it tries Plan B. Learns from each attempt.</p>
             </div>
           </div>
-          <div class="takeaway" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
+          <div class="takeaway text-068" style="margin-top:12px; padding:10px 16px;">
             These three capabilities together are what separate an agent from every other AI system.
             An LLM without these is just a very smart text generator.
           </div>
@@ -217,7 +217,7 @@
           <div class="card-grid mt-16">
             <div class="card card-orange text-center p-14">
               <h4>LLM (Large Language Model)</h4>
-              <p style="font-size:1.1em; margin-bottom:8px;">The <strong>Brain</strong></p>
+              <p class="text-110" style="margin-bottom:8px;">The <strong>Brain</strong></p>
               <ul>
                 <li>Understands language</li>
                 <li>Generates text</li>
@@ -228,7 +228,7 @@
             </div>
             <div class="card card-accent text-center p-14">
               <h4>AI Agent</h4>
-              <p style="font-size:1.1em; margin-bottom:8px;">Brain + <strong>Body</strong></p>
+              <p class="text-110" style="margin-bottom:8px;">Brain + <strong>Body</strong></p>
               <ul>
                 <li>Uses an LLM as its brain</li>
                 <li>Plans multiple steps</li>
@@ -319,7 +319,7 @@
         <!-- CHATBOT vs RAG vs AGENT -->
         <section>
           <h2 style="margin-bottom:10px;">Chatbot vs RAG vs Agent</h2>
-          <table class="compare-table" style="font-size:0.55em; margin-top:8px;">
+          <table class="compare-table text-xs" style="margin-top:8px;">
             <tr>
               <th></th>
               <th>Chatbot</th>
@@ -357,7 +357,7 @@
               <td class="color-green">Yes &mdash; tries alternative approaches</td>
             </tr>
           </table>
-          <div class="analogy" style="margin-top:8px; margin-bottom:0; padding:12px 16px; font-size:0.65em;">
+          <div class="analogy text-sm" style="margin-top:8px; margin-bottom:0; padding:12px 16px;">
             A <strong>chatbot</strong> is like a librarian who answers from memory.
             A <strong>RAG system</strong> is a librarian who looks things up in books first.
             An <strong>agent</strong> is a personal assistant who looks things up, makes calls, fills out forms, and follows up.
@@ -383,7 +383,7 @@
           <h2>Pattern 1: Single Agent</h2>
           <h3>One agent does everything</h3>
           <div class="diagram" style="margin:12px 0;">
-            <div class="box" style="border-color:#999;">👤 User</div>
+            <div class="box border-dim">👤 User</div>
             <span class="arrow">&rarr;</span>
             <div class="box box-large" style="min-width:200px;">
               🤖 <strong>Agent</strong><br>
@@ -410,7 +410,7 @@
               </ul>
             </div>
           </div>
-          <div class="analogy" style="margin-top:10px; padding:10px 16px; font-size:0.68em;">
+          <div class="analogy text-068" style="margin-top:10px; padding:10px 16px;">
             Like a solo freelancer. Great for small projects, but can't build an entire
             skyscraper alone.
           </div>
@@ -421,7 +421,7 @@
           <h2>Pattern 2: Multi-Agent System</h2>
           <h3>Multiple specialized agents collaborate</h3>
           <div class="diagram" style="margin:12px 0;">
-            <div class="box" style="border-color:#999;">👤 User</div>
+            <div class="box border-dim">👤 User</div>
             <span class="arrow">&rarr;</span>
             <div style="display:flex; flex-direction:column; gap:10px;">
               <div class="box" style="min-width:160px;">🔍 <strong>Research</strong> Agent</div>
@@ -436,7 +436,7 @@
             <p>Each agent is an expert in its area. They pass work to each other,
             just like a team of specialists in a company.</p>
           </div>
-          <div class="analogy" style="margin-top:10px; padding:10px 16px; font-size:0.68em;">
+          <div class="analogy text-068" style="margin-top:10px; padding:10px 16px;">
             Like a newsroom: one reporter researches, another writes the story,
             an editor reviews it. Each does what they're best at.
           </div>
@@ -451,7 +451,7 @@
               👔 <strong>Supervisor Agent</strong><br>
               <span class="text-080">assigns tasks, collects results</span>
             </div>
-            <div style="font-size:1.3em; color:#999;">↙ &nbsp; ↓ &nbsp; ↘</div>
+            <div class="text-130-dim">↙ &nbsp; ↓ &nbsp; ↘</div>
             <div class="diagram" style="margin-top:4px;">
               <div class="box box-green">🔧 Worker 1<br><span class="text-080">Data lookup</span></div>
               <div class="box box-orange">🔧 Worker 2<br><span class="text-080">Calculation</span></div>
@@ -463,7 +463,7 @@
             <p>Supervisor handles planning and coordination.
             Workers handle execution. No one agent needs to know everything.</p>
           </div>
-          <div class="analogy" style="margin-top:8px; padding:10px 16px; font-size:0.68em;">
+          <div class="analogy text-068" style="margin-top:8px; padding:10px 16px;">
             Like a project manager who doesn't write code but knows who to assign each task to
             and how to combine their outputs into a final deliverable.
           </div>
@@ -539,7 +539,7 @@
               <p>Task decomposition and<br>execution strategy</p>
             </div>
           </div>
-          <div class="analogy" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
+          <div class="analogy text-068" style="margin-top:12px; padding:10px 16px;">
             Think of a human worker: they have a <strong>brain</strong> to think,
             <strong>memory</strong> to remember context,
             <strong>hands</strong> to use tools, and
@@ -571,7 +571,7 @@
               <strong>Day 2+:</strong> Groq API (cloud, free)</p>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; margin-top:12px;">
+          <p class="text-sm-muted" style="margin-top:12px;">
             The LLM is the most critical component. A better brain = a better agent.
             But a brain alone can't do much &mdash; it needs the other three components.
           </p>
@@ -597,7 +597,7 @@
               <p class="mt-8"><em>"Last time API X failed, API Y worked"</em></p>
             </div>
           </div>
-          <div class="takeaway" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
+          <div class="takeaway text-068" style="margin-top:12px; padding:10px 16px;">
             Without memory, every interaction starts from zero.
             Memory is what allows an agent to have <strong>context</strong>
             and get <strong>better over time</strong>.
@@ -642,7 +642,7 @@
               </ul>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa; margin-top:12px;">
+          <p class="text-sm-muted" style="margin-top:12px;">
             Tools are what transform an LLM from a "text-in, text-out" system
             into something that can actually <strong>do work</strong> in the real world.
           </p>
@@ -673,7 +673,7 @@
               <span style="float:right;">📄 document tool</span>
             </div>
           </div>
-          <p style="font-size:0.65em; color:#aaa;">
+          <p class="text-sm-muted">
             The agent breaks down a complex goal into an ordered sequence of actions,
             choosing the right tool for each step.
           </p>
@@ -684,7 +684,7 @@
           <h2>Putting It All Together</h2>
           <div style="text-align:center; margin-top:14px;">
             <div class="box box-large" style="display:inline-block; min-width:350px; padding:20px;">
-              <strong style="font-size:1.1em; color:var(--accent);">AI Agent</strong>
+              <strong class="text-110-accent">AI Agent</strong>
               <br><br>
               <div class="diagram" style="margin:0; justify-content:center;">
                 <div class="box text-085">🧠 LLM</div>
@@ -696,13 +696,13 @@
               </div>
             </div>
           </div>
-          <div style="font-size:0.7em; text-align:center; color:#ccc; margin-top:12px;">
+          <div class="text-070-light" style="text-align:center; margin-top:12px;">
             <p>The <span class="highlight">LLM</span> thinks.
             <span class="highlight-green">Memory</span> provides context.
             <span class="highlight-orange">Tools</span> take actions.
             <span class="highlight-red">Planning</span> coordinates everything.</p>
           </div>
-          <div class="takeaway" style="margin-top:10px; padding:10px 16px; font-size:0.68em;">
+          <div class="takeaway text-068" style="margin-top:10px; padding:10px 16px;">
             In the hands-on labs, you'll experience each component firsthand.
             Next session introduces AI coding assistants, then Sessions 3&ndash;4
             teach you to build agents from scratch with LangChain.
@@ -763,9 +763,9 @@
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             No question is too basic &mdash; we're all starting from scratch today.
           </p>
         </section>
@@ -775,8 +775,8 @@
       <section>
         <section>
           <h1 class="text-2xl">Session 1 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             I'll show a question with 4 choices.<br>
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
@@ -1111,35 +1111,19 @@
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

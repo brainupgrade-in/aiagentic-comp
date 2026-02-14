@@ -56,11 +56,11 @@
             </ul>
           </div>
         </div>
-        <pre style="text-align:center; font-size:0.65em;"><code class="language-python" data-trim data-noescape># The only change in your code:
-<span style="text-decoration:line-through; color:#999;">from langchain_ollama import ChatOllama
+        <pre class="text-sm" style="text-align:center;"><code class="language-python" data-trim data-noescape># The only change in your code:
+<span class="color-dim" style="text-decoration:line-through;">from langchain_ollama import ChatOllama
 from langchain_groq import ChatGroq
 
-<span style="text-decoration:line-through; color:#999;">llm = ChatOllama(model="llama3.2:1b")
+<span class="color-dim" style="text-decoration:line-through;">llm = ChatOllama(model="llama3.2:1b")
 llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
         <div class="takeaway">
           LangChain's model-agnostic design in action: <strong>two lines change, everything else stays the same.</strong>
@@ -118,7 +118,7 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
                 <li>Access your private PDFs, wikis, or databases</li>
                 <li>Reference specific page numbers or sources</li>
               </ul>
-              <p style="margin-top:8px; color:var(--accent4);">They hallucinate when they don't know</p>
+              <p class="color-red" style="margin-top:8px;">They hallucinate when they don't know</p>
             </div>
             <div class="card card-green p-16">
               <h4>What RAG Enables</h4>
@@ -128,7 +128,7 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
                 <li>Always up-to-date &mdash; just add new docs</li>
                 <li>Include citations: "According to page 5..."</li>
               </ul>
-              <p style="margin-top:8px; color:var(--accent2);">Grounded answers, not guesses</p>
+              <p class="color-green" style="margin-top:8px;">Grounded answers, not guesses</p>
             </div>
           </div>
         </section>
@@ -218,7 +218,7 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
           <div class="card-grid mt-14">
             <div class="card p-14">
               <h4>Example</h4>
-              <p style="font-size:0.7em;">
+              <p class="text-070">
                 "king" &rarr; [0.21, -0.45, 0.87, ...]<br>
                 "queen" &rarr; [0.19, -0.42, 0.85, ...]<br>
                 "bicycle" &rarr; [-0.76, 0.33, -0.12, ...]
@@ -269,21 +269,21 @@ print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
           <div class="card-grid-3 mt-14">
             <div class="card card-green text-center p-14">
               <h4>Score: 0.92</h4>
-              <p style="font-size:0.75em;">"refund policy" vs<br>"return procedure"</p>
-              <p style="margin-top:6px; color:var(--accent2); font-weight:bold;">Very similar</p>
+              <p class="text-base">"refund policy" vs<br>"return procedure"</p>
+              <p class="color-green" style="margin-top:6px; font-weight:bold;">Very similar</p>
             </div>
             <div class="card card-orange text-center p-14">
               <h4>Score: 0.54</h4>
-              <p style="font-size:0.75em;">"refund policy" vs<br>"customer support hours"</p>
-              <p style="margin-top:6px; color:var(--accent3); font-weight:bold;">Somewhat related</p>
+              <p class="text-base">"refund policy" vs<br>"customer support hours"</p>
+              <p class="color-orange" style="margin-top:6px; font-weight:bold;">Somewhat related</p>
             </div>
             <div class="card card-red text-center p-14">
               <h4>Score: 0.12</h4>
-              <p style="font-size:0.75em;">"refund policy" vs<br>"company picnic schedule"</p>
-              <p style="margin-top:6px; color:var(--accent4); font-weight:bold;">Not related</p>
+              <p class="text-base">"refund policy" vs<br>"company picnic schedule"</p>
+              <p class="color-red" style="margin-top:6px; font-weight:bold;">Not related</p>
             </div>
           </div>
-          <table class="compare-table" style="margin-top:14px; font-size:0.55em;">
+          <table class="compare-table text-xs" style="margin-top:14px;">
             <tr>
               <th>Method</th>
               <th>How It Works</th>
@@ -334,7 +334,7 @@ print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
                 <li>Exact match: <code>WHERE name = 'Raj'</code></li>
                 <li>Can't search by meaning</li>
               </ul>
-              <p style="margin-top:6px; font-size:0.75em; color:var(--accent4);">"Find rows where city = Mumbai"</p>
+              <p class="text-base color-red" style="margin-top:6px;">"Find rows where city = Mumbai"</p>
             </div>
             <div class="card card-green p-16">
               <h4>Vector Database (ChromaDB)</h4>
@@ -343,7 +343,7 @@ print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
                 <li>Similarity search: "find similar meaning"</li>
                 <li>Returns ranked results by relevance</li>
               </ul>
-              <p style="margin-top:6px; font-size:0.75em; color:var(--accent2);">"Find docs about Indian cities"</p>
+              <p class="text-base color-green" style="margin-top:6px;">"Find docs about Indian cities"</p>
             </div>
           </div>
           <div class="analogy">
@@ -374,7 +374,7 @@ print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
               <p>Combine similarity search with metadata filters for precise results.</p>
             </div>
           </div>
-          <table class="compare-table" style="margin-top:14px; font-size:0.52em;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Vector Store</th>
               <th>Type</th>
@@ -444,7 +444,7 @@ print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
         <!-- COLLECTIONS AND METADATA -->
         <section>
           <h2>Collections & Metadata</h2>
-          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape>import chromadb
+          <pre class="text-054" style="line-height:1.45;"><code class="language-python" data-trim data-noescape>import chromadb
 
 # Create a persistent ChromaDB client
 client = chromadb.PersistentClient(path="./chroma_db")
@@ -470,7 +470,7 @@ collection.add(
         <!-- SIMILARITY SEARCH CODE -->
         <section>
           <h2>Querying ChromaDB</h2>
-          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape># Basic similarity search
+          <pre class="text-054" style="line-height:1.45;"><code class="language-python" data-trim data-noescape># Basic similarity search
 results = collection.query(
     query_texts=["How do I return a product?"],
     n_results=3
@@ -486,7 +486,7 @@ results = collection.query(
     n_results=3,
     where={"source": "policy.pdf"}
 )</code></pre>
-          <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
+          <p class="text-060-muted" style="text-align:center; margin-top:10px;">
             Notice: you searched with <em>"How do I return a product?"</em> and it found <em>"Refund within 30 days"</em> &mdash;
             different words, same meaning. That's the power of embeddings.
           </p>
@@ -543,7 +543,7 @@ results = collection.query(
         <section>
           <h2>Text Splitting: Why and How</h2>
           <h3>Documents are too long to fit in one embedding</h3>
-          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape>from langchain_text_splitters import RecursiveCharacterTextSplitter
+          <pre class="text-054" style="line-height:1.45;"><code class="language-python" data-trim data-noescape>from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,      # max characters per chunk
@@ -588,7 +588,7 @@ print(len(chunks))  # Number of chunks created</code></pre>
         <section>
           <h2>LangChain + ChromaDB</h2>
           <h3>The complete ingestion pipeline in code</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_community.document_loaders import PyPDFLoader
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
@@ -640,7 +640,7 @@ for doc in docs:
         <section>
           <h2>The RAG Chain</h2>
           <h3>Combining retrieval with generation</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -667,7 +667,7 @@ print(answer)</code></pre>
         <!-- DATA FLOW INSIDE RAG CHAIN -->
         <section>
           <h2>What Happens Inside the RAG Chain?</h2>
-          <table class="compare-table" style="margin-top:14px; font-size:0.52em;">
+          <table class="compare-table text-052" style="margin-top:14px;">
             <tr>
               <th>Step</th>
               <th>Component</th>
@@ -716,7 +716,7 @@ print(answer)</code></pre>
         <section>
           <h2>Response Generation with Citations</h2>
           <h3>Tell the user <em>where</em> the answer came from</h3>
-          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>prompt = ChatPromptTemplate.from_template("""Answer using ONLY the context below.
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>prompt = ChatPromptTemplate.from_template("""Answer using ONLY the context below.
 Include the source and page number for each fact you cite.
 
 Context:
@@ -756,7 +756,7 @@ rag_chain = (
                 <li>Find top-k similar chunks</li>
                 <li>Pass to LLM</li>
               </ul>
-              <p style="margin-top:6px; color:var(--accent);">What we're building today</p>
+              <p class="color-accent" style="margin-top:6px;">What we're building today</p>
             </div>
             <div class="card card-green p-16">
               <h4>Advanced RAG</h4>
@@ -766,7 +766,7 @@ rag_chain = (
                 <li>Re-ranking retrieved docs</li>
                 <li>Hybrid search (keyword + semantic)</li>
               </ul>
-              <p style="margin-top:6px; color:var(--accent2);">Covered in later sessions</p>
+              <p class="color-green" style="margin-top:6px;">Covered in later sessions</p>
             </div>
             <div class="card card-orange p-16">
               <h4>Modular RAG</h4>
@@ -776,7 +776,7 @@ rag_chain = (
                 <li>Multiple vector stores</li>
                 <li>Routing based on query type</li>
               </ul>
-              <p style="margin-top:6px; color:var(--accent3);">Production pattern</p>
+              <p class="color-orange" style="margin-top:6px;">Production pattern</p>
             </div>
             <div class="card card-red p-16">
               <h4>Agentic RAG</h4>
@@ -786,7 +786,7 @@ rag_chain = (
                 <li>Agent plans multi-step retrieval</li>
                 <li>Self-corrects if context is insufficient</li>
               </ul>
-              <p style="margin-top:6px; color:var(--accent4);">Day 3 topic</p>
+              <p class="color-red" style="margin-top:6px;">Day 3 topic</p>
             </div>
           </div>
         </section>
@@ -840,7 +840,7 @@ rag_chain = (
         <!-- QUICK REFERENCE -->
         <section>
           <h2>RAG Quick Reference</h2>
-          <table class="compare-table" style="font-size:0.52em;">
+          <table class="compare-table text-052">
             <tr>
               <th>What You Want</th>
               <th>LangChain Class</th>
@@ -882,7 +882,7 @@ rag_chain = (
               <td><code>langchain_groq</code></td>
             </tr>
           </table>
-          <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
+          <p class="text-060-muted" style="text-align:center; margin-top:10px;">
             Bookmark this slide &mdash; you'll use these imports in every RAG lab.
           </p>
         </section>
@@ -938,16 +938,16 @@ rag_chain = (
               </div>
             </div>
           </div>
-          <p style="font-size:0.7em; color:#aaa; text-align:center; margin-top:16px;">
+          <p class="text-070 color-muted" style="text-align:center; margin-top:16px;">
             From retrieving documents to building agents that can reason, act, and remember.
           </p>
         </section>
 
         <!-- QUESTIONS -->
         <section>
-          <h1 style="font-size:3em;">Questions?</h1>
+          <h1 class="text-3xl">Questions?</h1>
           <br>
-          <p style="color:#aaa; font-size:0.7em;">
+          <p class="text-070 color-muted">
             Ask about RAG, embeddings, ChromaDB, or anything from today's session.
           </p>
         </section>
@@ -957,8 +957,8 @@ rag_chain = (
       <section>
         <section>
           <h1 class="text-2xl">Session 5 Quiz</h1>
-          <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
-          <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
+          <p class="text-080-light">5 questions to check your understanding</p>
+          <p class="text-sm-muted" style="margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
           </p>
         </section>
@@ -1292,35 +1292,19 @@ rag_chain = (
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>

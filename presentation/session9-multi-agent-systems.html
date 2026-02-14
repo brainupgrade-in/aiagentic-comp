@@ -130,7 +130,7 @@
         <!-- WHY MULTI-AGENT? -->
         <section>
           <h2>Why Multi-Agent?</h2>
-          <p style="font-size:0.75em; color:#ccc; margin-bottom:18px;">Single agents hit limits &mdash; multi-agent systems scale intelligence</p>
+          <p class="text-base-dim" style="margin-bottom:18px;">Single agents hit limits &mdash; multi-agent systems scale intelligence</p>
           <div class="card-grid">
             <div class="card card-accent">
               <h4>Single Agent</h4>
@@ -214,9 +214,9 @@
               <div class="agent-worker agent-worker-orange">Tech<br>Worker</div>
               <div class="agent-worker agent-worker-red">Finance<br>Worker</div>
             </div>
-            <div style="color:#999; margin-top:6px;">&uarr; results returned to supervisor &uarr;</div>
+            <div class="color-dim" style="margin-top:6px;">&uarr; results returned to supervisor &uarr;</div>
           </div>
-          <ul style="font-size:0.68em;">
+          <ul class="text-068">
             <li><span class="highlight">Supervisor</span> analyzes the request and picks the right worker</li>
             <li><span class="highlight-green">Workers</span> are independent &mdash; each has its own tools &amp; prompt</li>
             <li>Supervisor <span class="highlight-orange">aggregates</span> results and decides next steps</li>
@@ -448,9 +448,9 @@ graph.add_conditional_edges("triage", route_handoff, {
             <div class="box border-accent">Supervisor<br>Decomposes</div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px;">
-              <div class="box box-green" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 1</div>
-              <div class="box box-orange" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 2</div>
-              <div class="box box-red" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 3</div>
+              <div class="box box-green text-060" style="padding:8px 16px; min-width:auto;">Sub-task 1</div>
+              <div class="box box-orange text-060" style="padding:8px 16px; min-width:auto;">Sub-task 2</div>
+              <div class="box box-red text-060" style="padding:8px 16px; min-width:auto;">Sub-task 3</div>
             </div>
           </div>
           <pre><code class="language-python" data-trim data-noescape>def decompose_task(state):
@@ -520,10 +520,10 @@ Reply with a numbered list of sub-tasks."""
               <div class="agent-worker agent-worker-orange">Tech<br>result</div>
               <div class="agent-worker agent-worker-red">Finance<br>result</div>
             </div>
-            <div style="color:#999; font-size:1.4em;">&darr; &darr; &darr;</div>
+            <div class="text-140 color-dim">&darr; &darr; &darr;</div>
             <div class="agent-supervisor">Aggregator / Supervisor</div>
-            <div style="color:#999; font-size:1.4em;">&darr;</div>
-            <div style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:10px 24px; font-size:0.9em;">
+            <div class="text-140 color-dim">&darr;</div>
+            <div class="text-lg" style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:10px 24px;">
               Final Response
             </div>
           </div>
@@ -620,10 +620,10 @@ def route_conflict(state) -> str:
           <h2>UniGPS Example: Employee Onboarding</h2>
           <div class="pattern-label">Supervisor + Parallel Workers + Aggregation</div>
           <div class="agent-hub">
-            <div style="background:rgba(79,195,247,0.1); border:2px solid var(--accent); border-radius:10px; padding:10px 20px; font-size:0.7em;">
+            <div class="text-070" style="background:rgba(79,195,247,0.1); border:2px solid var(--accent); border-radius:10px; padding:10px 20px;">
               "Onboard Priya Sharma as Senior Developer"
             </div>
-            <div style="color:#999; font-size:1.2em;">&darr;</div>
+            <div class="text-120 color-dim">&darr;</div>
             <div class="agent-supervisor">Onboarding Supervisor</div>
             <div class="agent-arrows">
               <span>&darr;</span>
@@ -635,10 +635,10 @@ def route_conflict(state) -> str:
               <div class="agent-worker text-085">HR<br><span class="text-080-muted">Create record</span></div>
               <div class="agent-worker agent-worker-orange text-085">IT<br><span class="text-080-muted">Setup laptop</span></div>
               <div class="agent-worker agent-worker-red text-085">Finance<br><span class="text-080-muted">Add payroll</span></div>
-              <div class="agent-worker" style="border-color:#ce93d8; font-size:0.85em;">Facilities<br><span class="text-080-muted">Assign desk</span></div>
+              <div class="agent-worker text-085 border-purple">Facilities<br><span class="text-080-muted">Assign desk</span></div>
             </div>
-            <div style="color:#999; font-size:1em; margin-top:4px;">&darr; all results merged via reducer &darr;</div>
-            <div style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:8px 20px; font-size:0.7em;">
+            <div class="text-100 color-dim" style="margin-top:4px;">&darr; all results merged via reducer &darr;</div>
+            <div class="text-070" style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:8px 20px;">
               Onboarding Complete &mdash; welcome email sent
             </div>
           </div>
@@ -776,7 +776,7 @@ smart_llm = ChatGroq(model="llama-3.3-70b-versatile")  # complex analysis</code>
     return {"assigned": "junior"}</code></pre>
             </div>
           </div>
-          <div class="takeaway" style="margin-top:8px; font-size:0.6em;">
+          <div class="takeaway text-060" style="margin-top:8px;">
             In LangGraph, load balancing happens in the <strong>routing function</strong> &mdash; the same conditional edge mechanism you already know, just with smarter assignment logic.
           </div>
         </section>
@@ -821,12 +821,12 @@ def route_after_primary(state) -> str:
               <div style="background:rgba(255,255,255,0.05); border:2px solid #999; border-radius:10px; padding:10px 16px;">
                 User Request
               </div>
-              <span style="color:#999; font-size:1.4em;">&rarr;</span>
+              <span class="text-140 color-dim">&rarr;</span>
               <div style="background:rgba(79,195,247,0.1); border:2px solid var(--accent); border-radius:10px; padding:10px 16px;">
                 Router<br><span class="text-080-muted">fast model</span>
               </div>
             </div>
-            <div style="color:#999; font-size:1.4em;">&darr;</div>
+            <div class="text-140 color-dim">&darr;</div>
             <div class="agent-workers" style="gap:10px;">
               <div class="agent-worker text-lg">
                 HR Agent<br><span class="text-080-muted">leave, policies</span>
@@ -837,16 +837,16 @@ def route_after_primary(state) -> str:
               <div class="agent-worker agent-worker-red text-lg">
                 Finance Agent<br><span class="text-080-muted">expenses, payroll</span>
               </div>
-              <div class="agent-worker" style="border-color:#ce93d8; font-size:0.9em;">
+              <div class="agent-worker text-lg border-purple">
                 Facilities Agent<br><span class="text-080-muted">desk, access</span>
               </div>
             </div>
-            <div style="color:#999; font-size:1.2em;">&darr;</div>
+            <div class="text-120 color-dim">&darr;</div>
             <div style="display:flex; gap:10px; align-items:center;">
               <div style="background:rgba(129,199,132,0.1); border:2px solid var(--accent2); border-radius:10px; padding:10px 16px;">
                 QA / Reviewer<br><span class="text-080-muted">validates response</span>
               </div>
-              <span style="color:#999; font-size:1.4em;">&rarr;</span>
+              <span class="text-140 color-dim">&rarr;</span>
               <div style="background:rgba(255,183,77,0.1); border:2px solid var(--accent3); border-radius:10px; padding:10px 16px;">
                 Response<br><span class="text-080-muted">+ audit trail</span>
               </div>
@@ -937,7 +937,7 @@ def route_after_primary(state) -> str:
         <!-- SECTION 3 TAKEAWAY -->
         <section>
           <h2>Production Checklist</h2>
-          <div style="text-align:left; font-size:0.78em; margin-top:16px;">
+          <div class="text-078" style="text-align:left; margin-top:16px;">
             <p><span class="highlight-green">1.</span> Each agent has a <span class="highlight">single responsibility</span> with a focused prompt</p>
             <p><span class="highlight-green">2.</span> Use the <span class="highlight">right-sized model</span> for each agent role</p>
             <p><span class="highlight-green">3.</span> Implement <span class="highlight">fallback chains</span> &mdash; primary &rarr; fallback &rarr; template</p>
@@ -1030,7 +1030,7 @@ def route_after_primary(state) -> str:
       <section>
         <section>
           <h1 class="text-2xl">Session 9 Quiz</h1>
-          <p style="font-size:0.8em; color:#ccc;">5 questions to test your multi-agent knowledge</p>
+          <p class="text-080-light">5 questions to test your multi-agent knowledge</p>
           <br>
           <div class="card-grid-3">
             <div class="card card-accent text-center">
@@ -1379,35 +1379,19 @@ def route_after_primary(state) -> str:
     </div>
   </div>
 
+  <!-- Reveal.js Core -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+
+  <!-- Reveal.js Plugins -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
-  <script>
-    Reveal.initialize({
-      hash: true,
-      slideNumber: 'c/t',
-      showSlideNumber: 'all',
-      transition: 'slide',
-      transitionSpeed: 'default',
-      center: false,
-      progress: true,
-      width: 1920,
-      height: 1080,
-      margin: 0.02,
-      keyboard: {
-        70: function() {
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen();
-          } else {
-            document.exitFullscreen();
-          }
-        }
-      },
-      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
-    });
-  </script>
+
+  <!-- Reveal.js Initialization -->
+  <script src="reveal-init.js"></script>
+
+  <!-- Custom Enhancements -->
   <script src="shared.js"></script>
 </body>
 </html>
