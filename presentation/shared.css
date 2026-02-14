@@ -75,3 +75,126 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.2) rgba(255,255,255,0.05);
 }
+
+/* =============================================================
+   15-70-15 Vertical Layout — Optimize viewport space utilization
+   Top 15%: Slide title and subtitle
+   Middle 70%: Main content (diagrams, code, lists, cards)
+   Bottom 15%: Takeaways, tips, warnings, notes
+   ============================================================= */
+
+/* Make all slides fill available height and use flexbox */
+.reveal .slides {
+  height: 100% !important;
+}
+
+.reveal .slides > section,
+.reveal .slides section > section {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  padding: 2vh 3vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Header area — constrained to top ~15% */
+.reveal .slides > section > h1,
+.reveal .slides > section > h2,
+.reveal .slides > section > h3,
+.reveal .slides section > section > h1,
+.reveal .slides section > section > h2,
+.reveal .slides section > section > h3 {
+  flex: 0 0 auto;
+  max-height: 12vh;
+  margin: 0 0 0.3em 0;
+  overflow: hidden;
+}
+
+.reveal .slides > section > .subtitle,
+.reveal .slides section > section > .subtitle {
+  flex: 0 0 auto;
+  margin: 0.2em 0 0.5em 0;
+}
+
+.reveal .slides > section > .section-number,
+.reveal .slides section > section > .section-number {
+  flex: 0 0 auto;
+  margin: 0 0 0.4em 0;
+}
+
+.reveal .slides > section > p.subtitle,
+.reveal .slides section > section > p.subtitle {
+  flex: 0 0 auto;
+  margin: 0.2em 0 0.5em 0;
+}
+
+/* Trainer info and other header paragraph elements */
+.reveal .slides > section > .trainer-info,
+.reveal .slides section > section > .trainer-info {
+  flex: 0 0 auto;
+  margin: 0.3em 0;
+}
+
+/* Main content area — fills middle ~70% */
+.reveal .slides > section > *:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br),
+.reveal .slides section > section > *:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br) {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0.4em 0;
+  min-height: 0;
+}
+
+/* Analogy boxes are part of footer */
+.reveal .slides > section > .analogy,
+.reveal .slides section > section > .analogy {
+  flex: 0 0 auto;
+  max-height: 12vh;
+  overflow-y: auto;
+  margin: 0.5em 0 0 0;
+}
+
+/* Footer area — constrained to bottom ~15% */
+.reveal .slides > section > .takeaway,
+.reveal .slides > section > .tip-callout,
+.reveal .slides > section > .warning-callout,
+.reveal .slides > section > .note-callout,
+.reveal .slides > section > .error-callout,
+.reveal .slides > section > .answer-explain,
+.reveal .slides section > section > .takeaway,
+.reveal .slides section > section > .tip-callout,
+.reveal .slides section > section > .warning-callout,
+.reveal .slides section > section > .note-callout,
+.reveal .slides section > section > .error-callout,
+.reveal .slides section > section > .answer-explain {
+  flex: 0 0 auto;
+  max-height: 12vh;
+  overflow-y: auto;
+  margin: 0.5em 0 0 0;
+}
+
+/* Reduce excessive spacing in lists and paragraphs */
+.reveal ul, .reveal ol {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.reveal li {
+  margin-bottom: 0.2em;
+}
+
+.reveal p {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+/* Ensure diagrams and grids fit within content area */
+.card-grid, .card-grid-3, .diagram, .branch-diagram, .pipe-flow, .layer-stack {
+  margin: 0.4em 0;
+}
+
+.code-block {
+  margin: 0.4em 0;
+  max-height: 45vh;
+}
