@@ -1,45 +1,44 @@
-# Session 12: Production Development & Deployment — Hands-on Labs
+# Session 12: AI-Specific Observability with LangFuse — Hands-on Labs
 
 ## Prerequisites
 
 - Python 3.10+ installed
-- FastAPI and dependencies: `pip install fastapi uvicorn httpx python-dotenv`
-- GROQ_API_KEY for labs 02 and 04
+- No infrastructure needed — labs generate config files and validate YAML
 
 ```bash
-pip install fastapi uvicorn httpx python-dotenv
+# No pip packages needed — these labs generate configs and validate answers
 python --version  # 3.10+
 ```
 
 ## Labs Overview
 
-| Lab | Topic | What You'll Learn | Needs API Key? |
-|-----|-------|-------------------|----------------|
-| 01 | FastAPI Basics | Pydantic models, REST endpoints, error handling, TestClient | No |
-| 02 | FastAPI + LangGraph Agent | Exposing LangGraph via REST, async handling | Yes |
-| 03 | Health Checks & Probes | /health endpoint, Python async HealthChecker, signal handlers | No |
-| 04 | Streaming Responses | SSE streaming, progress events, real-time agent output | Yes |
-| 05 | Secrets Management | .env files, python-dotenv load_dotenv(), environment variables | No |
-| 06 | Structured Logging | JSON logging, trace_id correlation, AI-specific fields | No |
-| 07 | Production Checklist | Readiness categories, deployment order, resource sizing | No |
-| 08 | **Challenge** | Complete production-ready API: FastAPI + health + logging + secrets | No |
+| Lab | Topic | What You'll Learn | Needs Infra? |
+|-----|-------|-------------------|--------------|
+| 01 | LangFuse Fundamentals | Architecture, trace hierarchy, mock LangFuse setup | No |
+| 02 | LangFuse Setup | SDK configuration, environment variables, mock mode | No |
+| 03 | LangChain Integration | CallbackHandler, RAG tracing, handler config | No |
+| 04 | Tracing Agents | Multi-step traces, bottleneck analysis, debugging | No |
+| 05 | Feedback & Evaluation | User scores, automated eval, quality tracking | No |
+| 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
+| 07 | Cost & Token Analysis | Cost tracking, LangFuse cost dashboard, token analytics | No |
+| 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
 
 ## How to Run
 
 Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
 ```
-hands-on/session-12/
-├── lab01_fastapi_basics.ipynb             ← Start here
-├── lab02_fastapi_langgraph.ipynb
-├── lab03_health_probes.ipynb
-├── lab04_streaming_responses.ipynb
-├── lab05_secrets_management.ipynb
-├── lab06_structured_logging.ipynb
-├── lab07_production_checklist.ipynb
+hands-on/session-11/
+├── lab01_langfuse_fundamentals.ipynb        ← Start here
+├── lab02_langfuse_setup.ipynb
+├── lab03_langchain_integration.ipynb
+├── lab04_tracing_agents.ipynb
+├── lab05_feedback_evaluation.ipynb
+├── lab06_prompt_management.ipynb
+├── lab07_cost_analysis.ipynb
 ├── lab08_challenge.ipynb
-└── solutions/                              ← Completed versions
-    ├── lab01_fastapi_basics.ipynb
+└── solutions/                               ← Completed versions
+    ├── lab01_langfuse_fundamentals.ipynb
     ├── ...
     └── lab08_challenge.ipynb
 ```
@@ -51,14 +50,15 @@ hands-on/session-12/
 
 ## Tips
 
-- Labs 01-02 cover FastAPI basics and agent integration
-- Labs 03-06 cover production patterns (health, secrets, logging)
-- Lab 07 is the production checklist
-- Lab 08 is the comprehensive challenge combining all patterns
-- **Read the markdown cells** — they explain production concepts step by step
+- All 8 labs work WITHOUT any running services
+- **Read the markdown cells** — they explain LangFuse concepts step by step
 - **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
-- Generated files appear in `/tmp/prod-lab-12-XX/` directories
+- Labs 01-03 cover LangFuse setup and LangChain integration
+- Labs 04-06 cover tracing, feedback, and prompt management
+- Lab 07 covers cost analysis with LangFuse API
+- Lab 08 is the challenge combining all concepts
+- Generated files appear in `/tmp/k8s-lab-11-XX/` directories
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time

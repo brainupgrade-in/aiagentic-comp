@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Session 11: LangFuse Observability</title>
+  <title>Session 12: LangFuse Observability</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
@@ -20,14 +20,14 @@
       <section>
         <h1>AI-Specific Observability<br>with LangFuse</h1>
         <p class="text-lg-dim">LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
-        <p class="subtitle">Session 11 &middot; Day 4, Slot B</p>
+        <p class="subtitle">Session 12 &middot; Day 4, Slot C</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
         <aside class="notes">
-          Welcome to Session 11 on AI-Specific Observability with LangFuse. This is Day 4, Slot B -- we have about 60-75 minutes. In Session 10 we covered general observability with OpenTelemetry. Now we go deeper into what makes AI systems unique: prompt tracing, token cost tracking, and agent debugging. By the end, you will know how to instrument a LangChain app with LangFuse and understand the trace hierarchy.
+          Welcome to Session 12 on AI-Specific Observability with LangFuse. This is Day 4, Slot C -- we have about 60-75 minutes. In Session 10 we covered general observability with OpenTelemetry. In Session 11 we built production-ready FastAPI applications. Now we add AI-specific instrumentation: prompt tracing, token cost tracking, and agent debugging. By the end, you will know how to instrument the FastAPI app from Session 11 with LangFuse and understand the trace hierarchy.
         </aside>
       </section>
 
@@ -39,13 +39,13 @@
             <h4>Session 10 (Done)</h4>
             <p>Observability Fundamentals &mdash; three pillars, OpenTelemetry, Python instrumentation</p>
           </div>
-          <div class="card card-green">
-            <h4>Session 11 (Now)</h4>
-            <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
-          </div>
-          <div class="card card-orange" style="opacity:0.5;">
-            <h4>Session 12</h4>
+          <div class="card card-accent" style="opacity:0.5;">
+            <h4>Session 11 (Done)</h4>
             <p>Production Development &amp; Deployment &mdash; FastAPI, health probes, secrets, structured logging</p>
+          </div>
+          <div class="card card-green">
+            <h4>Session 12 (Now)</h4>
+            <p>AI-Specific Observability with LangFuse &mdash; LLM tracing, cost tracking</p>
           </div>
         </div>
       </section>
@@ -762,24 +762,24 @@ template = ChatPromptTemplate.from_messages([
       <!-- ==================== WHAT'S NEXT ==================== -->
       <section>
         <h2>What&rsquo;s Next</h2>
-        <h3>Session 12: Production Development &amp; Deployment</h3>
+        <h3>Session 13: Model Context Protocol</h3>
         <div class="card-grid mt-20">
           <div class="card card-accent">
-            <h4>FastAPI + Agents</h4>
+            <h4>MCP Architecture</h4>
             <ul>
-              <li>REST APIs for LangGraph agents</li>
-              <li>Streaming responses</li>
-              <li>Health checks and probes</li>
-              <li>Structured logging</li>
+              <li>Tool/resource protocol for AI agents</li>
+              <li>Enterprise use cases</li>
+              <li>Client configuration</li>
+              <li>LangChain bridge</li>
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Production Readiness</h4>
+            <h4>AI Safety &amp; Capstone</h4>
             <ul>
-              <li>Secrets management</li>
-              <li>Production checklist</li>
-              <li>Deployment configuration</li>
-              <li>End-to-end testing</li>
+              <li>Session 14: AI Safety &amp; Guardrails</li>
+              <li>Session 15: Capstone Project</li>
+              <li>Integrating all 5 days</li>
+              <li>Production deployment</li>
             </ul>
           </div>
         </div>
@@ -792,7 +792,7 @@ template = ChatPromptTemplate.from_messages([
         <p class="text-lg-dim">Let&rsquo;s discuss LangFuse, LLM tracing,<br>and AI observability before the capstone</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
-          <h4>Session 11 Complete</h4>
+          <h4>Session 12 Complete</h4>
           <p>LangFuse &middot; LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
         </div>
       </section>
@@ -803,7 +803,7 @@ template = ChatPromptTemplate.from_messages([
       <section>
 
         <section>
-          <h1 class="text-2xl">Session 11 Quiz</h1>
+          <h1 class="text-2xl">Session 12 Quiz</h1>
           <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
         </section>
 

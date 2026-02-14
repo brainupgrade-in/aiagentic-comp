@@ -87,8 +87,8 @@
 | Slot | Session | Slides | Labs | Setup Script |
 |------|---------|--------|------|-------------|
 | A | Session 10: Observability Fundamentals | `session10-observability-fundamentals.html` | `session-10/` (8 labs) | `day4-setup.sh` |
-| B | Session 11: LangFuse Observability | `session11-langfuse-observability.html` | `session-11/` (8 labs) | - |
-| C | Session 12: Production Development & Deployment | `session12-production-development-deployment.html` | `session-12/` (8 labs) | - |
+| B | Session 11: Production Development & Deployment | `session11-production-development-deployment.html` | `session-11/` (8 labs) | - |
+| C | Session 12: LangFuse Observability | `session12-langfuse-observability.html` | `session-12/` (8 labs) | - |
 | D | Labs for Sessions 10-12 | - | All above | - |
 
 **Day 4 Setup:** Run `bash scripts/day4-setup.sh` (verifies OTel, LangFuse SDK, and FastAPI packages).
@@ -96,8 +96,8 @@
 
 **Teaching Notes:**
 - Session 10 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
-- Session 11 (LangFuse) uses mock mode with SDK patterns -- data logs to local JSON files
-- Session 12 (Production) bridges AI concepts with DevOps -- key for enterprise audiences
+- Session 11 (Production) bridges AI concepts with DevOps -- key for enterprise audiences. Build FastAPI app before instrumenting it.
+- Session 12 (LangFuse) uses mock mode with SDK patterns -- data logs to local JSON files. Better flow: build app (Session 11), then instrument it (Session 12).
 - Day 4 is lightweight on infrastructure -- all Python in-process (~3-4 GB RAM)
 
 ### Day 5: MCP, Safety & Capstone

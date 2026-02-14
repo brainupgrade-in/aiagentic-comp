@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Session 12: Production Development & Deployment</title>
+  <title>Session 11: Production Development & Deployment</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
@@ -20,20 +20,20 @@
       <section>
         <h1>Production Development<br>& Deployment</h1>
         <p class="text-lg-dim">From FastAPI to Production-Ready AI Applications</p>
-        <p class="subtitle">Session 12 &middot; Day 4, Slot C</p>
+        <p class="subtitle">Session 11 &middot; Day 4, Slot B</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
         <aside class="notes">
-          Welcome to Session 12, the final slot of Day 4. We have about 60-75 minutes. In Sessions 10 and 11 we learned how to observe AI systems with OTel and LangFuse. Now we make them production-ready -- FastAPI serving, health probes, secrets management, structured logging, and a comprehensive deployment checklist. By the end of this session, you will know what it takes to ship an AI application to production.
+          Welcome to Session 11, the second slot of Day 4. We have about 60-75 minutes. In Session 10 we learned how to observe systems with OpenTelemetry. Now we build production-ready AI applications -- FastAPI serving, health probes, secrets management, structured logging, and a comprehensive deployment checklist. In Session 12 we will add LangFuse-specific instrumentation to this foundation. By the end of this session, you will know what it takes to ship an AI application to production.
         </aside>
       </section>
 
       <!-- ==================== PREVIOUS SESSION RECAP ==================== -->
       <section>
-        <h2>Quick Recap: Sessions 10&ndash;11</h2>
+        <h2>Quick Recap: Session 10</h2>
         <div class="card-grid">
           <div class="card card-accent">
             <h4>Session 10: Observability Fundamentals</h4>
@@ -45,11 +45,11 @@
             </ul>
           </div>
           <div class="card card-green">
-            <h4>Session 11: LangFuse Observability</h4>
+            <h4>Next: Session 12</h4>
             <ul>
-              <li>Trace hierarchy: traces &rarr; spans &rarr; generations</li>
+              <li>LangFuse-specific observability</li>
+              <li>Trace hierarchy for LLM calls</li>
               <li>CallbackHandler for LangChain</li>
-              <li>User feedback collection</li>
               <li>Token cost tracking</li>
             </ul>
           </div>
@@ -947,7 +947,7 @@ async def <span class="function">test_agent_invoke():
           <p class="text-lg-dim">Let&rsquo;s discuss production deployment patterns<br>before we move to labs</p>
           <br>
           <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
-            <h4>Session 12 Complete</h4>
+            <h4>Session 11 Complete</h4>
             <p>FastAPI &middot; Health Probes &middot; Secrets &middot; Structured Logging &middot; Production Checklist</p>
           </div>
         </section>
@@ -959,7 +959,7 @@ async def <span class="function">test_agent_invoke():
       <section>
 
         <section>
-          <h1 class="text-2xl">Session 12 Quiz</h1>
+          <h1 class="text-2xl">Session 11 Quiz</h1>
           <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
         </section>
 

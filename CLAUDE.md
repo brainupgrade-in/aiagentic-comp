@@ -122,9 +122,9 @@ Oracle/
     ├── day4-cleanup.sh                  Clean temp files
     ├── day5-setup.sh                    Install MCP SDK, verify env
     ├── day5-cleanup.sh                  Final cleanup
-    ├── session11-langfuse-setup.sh      Session 11 LangFuse mock setup (Bash)
-    ├── session11-langfuse-setup.ps1     Session 11 LangFuse mock setup (PowerShell)
-    ├── README-SESSION11.md              Session 11 setup documentation
+    ├── session12-langfuse-setup.sh      Session 12 LangFuse mock setup (Bash)
+    ├── session12-langfuse-setup.ps1     Session 12 LangFuse mock setup (PowerShell)
+    ├── README-SESSION12.md              Session 12 setup documentation
     └── check-resources.sh               Memory/storage/process status monitor
 ```
 
@@ -152,8 +152,8 @@ Oracle/
 | 8 | Advanced LangGraph Workflows | 8 | Human-in-the-loop, subgraphs, parallel execution |
 | 9 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
 | 10 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
-| 11 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
-| 12 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
+| 11 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
+| 12 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
 | 13 | Model Context Protocol (MCP) | 8 | MCP architecture, enterprise use cases, ecosystem discovery, client config, LangChain bridge, security & governance |
 | 14 | AI Safety & Guardrails | 8 | Prompt injection, output validation, jailbreak defense, guardrails, red teaming |
 | 15 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
@@ -217,9 +217,9 @@ hands-on/session-NN/solutions/labXX_topic.ipynb
 - TODO sections with `"___"` placeholders for answers in code cells
 - Validation with `[PASS]/[FAIL]` string matching and scoring
 - Generated files saved to:
-  - `/tmp/k8s-lab-NN-XX/` (sessions 1, 3-11)
+  - `/tmp/k8s-lab-NN-XX/` (sessions 1, 3-10, 12)
   - `/tmp/aidev-lab-NN-XX/` (sessions 2, 13)
-  - `/tmp/prod-lab-12-XX/` (session 12)
+  - `/tmp/prod-lab-11-XX/` (session 11)
   - `/tmp/safety-lab-14-XX/` (session 14)
   - `/tmp/capstone-lab-15-XX/` (session 15)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge

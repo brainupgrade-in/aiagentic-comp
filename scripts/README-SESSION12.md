@@ -1,23 +1,23 @@
-# Session 11: LangFuse Setup Scripts
+# Session 12: LangFuse Setup Scripts
 
-This directory contains setup scripts for Session 11 (LangFuse Observability) labs.
+This directory contains setup scripts for Session 12 (LangFuse Observability) labs.
 
 ## Overview
 
-Session 11 introduces LangFuse observability patterns using **mock mode** — all traces are logged to local JSON files instead of requiring a LangFuse server. This keeps resource usage low on the 2-core/8GB Codespace environment.
+Session 12 introduces LangFuse observability patterns using **mock mode** — all traces are logged to local JSON files instead of requiring a LangFuse server. This keeps resource usage low on the 2-core/8GB Codespace environment.
 
 ## Scripts
 
 ### Bash (Linux/macOS/Codespaces)
 
 ```bash
-bash scripts/session11-langfuse-setup.sh
+bash scripts/session12-langfuse-setup.sh
 ```
 
 ### PowerShell (Windows)
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/session11-langfuse-setup.ps1
+powershell -ExecutionPolicy Bypass -File scripts/session12-langfuse-setup.ps1
 ```
 
 ## What the Scripts Do
@@ -122,7 +122,7 @@ Each trace contains:
 }
 ```
 
-## Session 11 Labs
+## Session 12 Labs
 
 After running the setup script, proceed with these labs:
 
@@ -225,7 +225,7 @@ This fits comfortably within the 2-core/8GB/32GB Codespace limits.
 - [LangFuse Documentation](https://langfuse.com/docs)
 - [LangFuse Python SDK](https://github.com/langfuse/langfuse-python)
 - [LangChain Callbacks](https://python.langchain.com/docs/modules/callbacks/)
-- [Course presentation](../presentation/session11-langfuse-observability.html)
+- [Course presentation](../presentation/session12-langfuse-observability.html)
 
 ---
 
