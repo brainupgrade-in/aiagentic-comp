@@ -22,13 +22,14 @@ python --version  # 3.10+
 | 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
 | 07 | Cost & Token Analysis | Cost tracking, LangFuse cost dashboard, token analytics | No |
 | 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
+| 09 | **Production Integration** | FastAPI + LangGraph + LangFuse (Session 11 + 12) | No |
 
 ## How to Run
 
 Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
 ```
-hands-on/session-11/
+hands-on/session-12/
 ├── lab01_langfuse_fundamentals.ipynb        ← Start here
 ├── lab02_langfuse_setup.ipynb
 ├── lab03_langchain_integration.ipynb
@@ -37,10 +38,12 @@ hands-on/session-11/
 ├── lab06_prompt_management.ipynb
 ├── lab07_cost_analysis.ipynb
 ├── lab08_challenge.ipynb
+├── lab09_production_observability.ipynb     ← Production capstone
 └── solutions/                               ← Completed versions
     ├── lab01_langfuse_fundamentals.ipynb
     ├── ...
-    └── lab08_challenge.ipynb
+    ├── lab08_challenge.ipynb
+    └── lab09_production_observability.ipynb
 ```
 
 1. Open the notebook in VS Code
@@ -50,7 +53,7 @@ hands-on/session-11/
 
 ## Tips
 
-- All 8 labs work WITHOUT any running services
+- All 9 labs work WITHOUT any running services (use MockLangfuse)
 - **Read the markdown cells** — they explain LangFuse concepts step by step
 - **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
@@ -58,9 +61,12 @@ hands-on/session-11/
 - Labs 04-06 cover tracing, feedback, and prompt management
 - Lab 07 covers cost analysis with LangFuse API
 - Lab 08 is the challenge combining all concepts
-- Generated files appear in `/tmp/k8s-lab-11-XX/` directories
+- **Lab 09 is the production capstone** — integrates Session 11 FastAPI app with LangFuse
+- Generated files appear in `/tmp/k8s-lab-12-XX/` or `/tmp/prod-lab-12-XX/` directories
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time
 
-~60-75 minutes for all labs (including the challenge)
+- Labs 01-08: ~60-75 minutes
+- Lab 09 (Production Integration): ~30-40 minutes
+- **Total:** ~90-115 minutes for all labs
