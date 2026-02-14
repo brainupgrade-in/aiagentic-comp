@@ -8,7 +8,7 @@
 **Duration:** 5 days (15 sessions, ~3 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
 **Slides:** 15 HTML presentations in `presentation/`
-**Hands-on:** 117 labs + 117 solutions in `hands-on/session-1/` through `session-15/`
+**Hands-on:** 118 labs + 118 solutions in `hands-on/session-1/` through `session-15/`
 
 ## Lab Environment
 
@@ -153,7 +153,7 @@ Oracle/
 | 9 | Multi-Agent Systems | 8 | Supervisor pattern, agent collaboration, orchestration |
 | 10 | Observability Fundamentals | 8 | Three pillars, metric types, structured logging, OTel |
 | 11 | Production Development & Deployment | 8 | FastAPI, health probes, secrets, structured logging, production checklist |
-| 12 | LangFuse Observability | 8 | Trace hierarchy, CallbackHandler, feedback, cost tracking |
+| 12 | LangFuse Observability | 9 | Trace hierarchy, CallbackHandler, feedback, cost tracking, **production integration (Lab 09)** |
 | 13 | Model Context Protocol (MCP) | 8 | MCP architecture, enterprise use cases, ecosystem discovery, client config, LangChain bridge, security & governance |
 | 14 | AI Safety & Guardrails | 8 | Prompt injection, output validation, jailbreak defense, guardrails, red teaming |
 | 15 | Capstone Project | 8 | Architecture design, integration, deployment, testing (2 time slots) |
@@ -187,7 +187,7 @@ Oracle/
 
 Strengths identified:
 - Strong logical 5-day progression (foundations → LangChain → LangGraph → observability+production → MCP+capstone)
-- 117 labs + 15 challenge labs across 15 sessions
+- 118 labs + 15 challenge labs across 15 sessions
 - Production-focused with observability and capstone
 - All open-source/free tooling — no vendor lock-in
 - Vibe coding on Day 1 means students use AI assistants for 4 more days
@@ -224,7 +224,7 @@ hands-on/session-NN/solutions/labXX_topic.ipynb
   - `/tmp/capstone-lab-15-XX/` (session 15)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15)
+**Totals:** 118 labs + 118 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15, session 12 now ~90-115 min with Lab 09)
 
 ## Presentation System
 
