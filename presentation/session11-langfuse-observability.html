@@ -6,6 +6,10 @@
   <title>Session 11: LangFuse Observability</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,16 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>AI-Specific Observability<br>with LangFuse</h1>
-        <p style="font-size:0.9em; color:#ccc;">LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
+        <p class="text-lg-dim">LLM Tracing &middot; Cost Tracking &middot; Agent Debugging</p>
         <p class="subtitle">Session 11 &middot; Day 4, Slot B</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 11 on AI-Specific Observability with LangFuse. This is Day 4, Slot B -- we have about 60-75 minutes. In Session 10 we covered general observability with OpenTelemetry. Now we go deeper into what makes AI systems unique: prompt tracing, token cost tracking, and agent debugging. By the end, you will know how to instrument a LangChain app with LangFuse and understand the trace hierarchy.
+        </aside>
       </section>
 
       <!-- ==================== DAY 4 CONTEXT ==================== -->
@@ -47,7 +54,7 @@
       <section>
         <h2>Session 10 Recap</h2>
         <p class="subtitle">Observability Fundamentals</p>
-        <div class="card-grid" style="margin-top:20px;">
+        <div class="card-grid mt-20">
           <div class="card card-accent">
             <h4>Three Pillars</h4>
             <ul>
@@ -65,7 +72,7 @@
             </ul>
           </div>
         </div>
-        <div class="takeaway" style="margin-top:16px;">
+        <div class="takeaway mt-16">
           OpenTelemetry gives us <span class="highlight">infrastructure and request metrics</span>. But AI applications need <span class="highlight-orange">deeper visibility</span> into LLM calls, prompt versions, token costs, and agent reasoning. That&rsquo;s where LangFuse comes in.
         </div>
       </section>
@@ -96,6 +103,9 @@
         <div class="section-number">01</div>
         <h2>LangFuse Overview</h2>
         <p class="subtitle">Open-Source LLM Observability</p>
+        <aside class="notes">
+          Start by asking the class: "What gaps did you notice in Session 10's OTel tracing when applied to LLM calls?" Key teaching point: traditional observability cannot capture prompt text, token counts, or cost per call. LangFuse fills exactly that gap. Emphasize that LangFuse is open-source and self-hostable, which matters for enterprise data privacy.
+        </aside>
       </section>
 
       <!-- WHY LANGFUSE -->
@@ -134,7 +144,7 @@
         <div class="diagram">
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <div class="box">Your LangChain App</div>
-            <div style="font-size:0.5em; color:#aaa;">LangFuse callback handler</div>
+            <div style="font-size:0.55em; color:#aaa;">LangFuse callback handler</div>
           </div>
           <div class="arrow">&rarr;</div>
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
@@ -142,15 +152,15 @@
               <strong>LangFuse Server</strong><br>
               <span style="font-size:0.7em;">API + UI + Storage</span>
             </div>
-            <div style="font-size:0.5em; color:#aaa;">Self-hosted or Cloud</div>
+            <div style="font-size:0.55em; color:#aaa;">Self-hosted or Cloud</div>
           </div>
           <div class="arrow">&rarr;</div>
           <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
             <div class="box box-green">PostgreSQL</div>
-            <div style="font-size:0.5em; color:#aaa;">Traces, prompts, scores</div>
+            <div style="font-size:0.55em; color:#aaa;">Traces, prompts, scores</div>
           </div>
         </div>
-        <div class="card-grid-3" style="margin-top:12px;">
+        <div class="card-grid-3 mt-12">
           <div class="card card-accent">
             <h4>SDK / Integration</h4>
             <p>Python SDK, LangChain callback handler, OpenAI wrapper. Minimal code changes.</p>
@@ -169,7 +179,7 @@
       <!-- TRACE HIERARCHY -->
       <section>
         <h2>LangFuse Trace Hierarchy</h2>
-        <p style="font-size:0.75em; color:#ccc;">Three levels of nesting for complete visibility</p>
+        <p class="text-base-dim">Three levels of nesting for complete visibility</p>
         <div class="trace-tree">
           <span class="trace-root">TRACE</span> <span class="trace-meta">chat_session_42 &mdash; user: alice &mdash; total: 2.1s</span><br>
           &nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">agent_workflow</span> <span class="trace-time">[0ms &rarr; 2100ms]</span><br>
@@ -182,7 +192,7 @@
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">tool_execution</span> <span class="trace-time">[1800ms &rarr; 2050ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-gen">GENERATION</span> <span class="trace-meta">tool_call_result</span> <span class="trace-time">[1810ms &rarr; 2040ms]</span><br>
         </div>
-        <div class="card-grid-3" style="margin-top:10px;">
+        <div class="card-grid-3 mt-10">
           <div class="card card-accent">
             <h4>Trace</h4>
             <p>Top-level: one per user request. Carries metadata (user, session, tags).</p>
@@ -239,7 +249,7 @@
           </tr>
           <tr>
             <td>Use together?</td>
-            <td colspan="2" style="text-align:center;"><span class="highlight-green">Yes! OTel for infrastructure + LangFuse for AI logic</span></td>
+            <td colspan="2" class="text-center"><span class="highlight-green">Yes! OTel for infrastructure + LangFuse for AI logic</span></td>
           </tr>
         </table>
         <div class="takeaway">
@@ -250,33 +260,33 @@
       <!-- LANGFUSE SDK SETUP (MOCK MODE) -->
       <section>
         <h2>LangFuse SDK Setup (Mock Mode)</h2>
-        <p style="font-size:0.75em; color:#ccc;">Learn real SDK patterns &mdash; data logged to local JSON files</p>
-        <div class="code-block"><span class="comment"># mock_langfuse.py &mdash; Mock LangFuse for local development</span>
-<span class="keyword">import</span> json, time, uuid
-<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+        <p class="text-base-dim">Learn real SDK patterns &mdash; data logged to local JSON files</p>
+        <pre><code class="language-python" data-trim data-noescape># mock_langfuse.py &mdash; Mock LangFuse for local development
+import json, time, uuid
+from pathlib import Path
 
-<span class="keyword">class</span> <span class="func">MockLangfuse</span>:
-    <span class="string">"""Mock LangFuse client &mdash; same API, logs to local JSON."""</span>
+class MockLangfuse:
+    """Mock LangFuse client &mdash; same API, logs to local JSON."""
 
-    <span class="keyword">def</span> <span class="func">__init__</span>(self, output_dir=<span class="string">"/tmp/langfuse-traces"</span>):
+    def __init__(self, output_dir="/tmp/langfuse-traces"):
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(parents=<span class="keyword">True</span>, exist_ok=<span class="keyword">True</span>)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.traces = []
 
-    <span class="keyword">def</span> <span class="func">trace</span>(self, name, user_id=<span class="keyword">None</span>, session_id=<span class="keyword">None</span>, **kwargs):
+    def trace(self, name, user_id=None, session_id=None, **kwargs):
         trace_data = {
-            <span class="string">"id"</span>: str(uuid.uuid4()),
-            <span class="string">"name"</span>: name,
-            <span class="string">"user_id"</span>: user_id,
-            <span class="string">"session_id"</span>: session_id,
-            <span class="string">"timestamp"</span>: time.time(),
+            "id": str(uuid.uuid4()),
+            "name": name,
+            "user_id": user_id,
+            "session_id": session_id,
+            "timestamp": time.time(),
         }
         self.traces.append(trace_data)
-        <span class="keyword">return</span> trace_data
+        return trace_data
 
-    <span class="keyword">def</span> <span class="func">flush</span>(self):
-        path = self.output_dir / <span class="string">"traces.json"</span>
-        path.write_text(json.dumps(self.traces, indent=2))</div>
+    def flush(self):
+        path = self.output_dir / "traces.json"
+        path.write_text(json.dumps(self.traces, indent=2))</code></pre>
         <div style="font-size:0.6em; color:#aaa; margin-top:8px;">
           SDK patterns are real &mdash; mock mode logs data to local JSON files for inspection
         </div>
@@ -314,92 +324,95 @@
         <div class="section-number">02</div>
         <h2>Instrumenting LangChain with LangFuse</h2>
         <p class="subtitle">Callback Handler &middot; Trace Hierarchy &middot; Feedback</p>
+        <aside class="notes">
+          This section is the practical heart of the session. Ask: "How many lines of code do you think it takes to add full LLM tracing to a LangChain app?" The answer is essentially one line -- the CallbackHandler. Stress that LangFuse hooks into LangChain's existing callback system, so there is zero change to your chain logic. Walk through the RAG tracing example carefully since students will replicate this pattern in the labs.
+        </aside>
       </section>
 
       <!-- SETUP -->
       <section>
         <h2>Installation &amp; Setup</h2>
-        <div class="code-block"><span class="comment"># Install LangFuse SDK</span>
+        <pre><code class="language-bash" data-trim data-noescape># Install LangFuse SDK
 pip install langfuse
 
-<span class="comment"># Environment variables</span>
-<span class="keyword">LANGFUSE_PUBLIC_KEY</span>=<span class="string">"pk-lf-..."</span>      <span class="comment"># From LangFuse project settings</span>
-<span class="keyword">LANGFUSE_SECRET_KEY</span>=<span class="string">"sk-lf-..."</span>      <span class="comment"># From LangFuse project settings</span>
-<span class="keyword">LANGFUSE_HOST</span>=<span class="string">"http://langfuse:3000"</span> <span class="comment"># Self-hosted URL</span></div>
-        <div class="code-block"><span class="comment"># Initialize LangFuse client</span>
-<span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
+# Environment variables
+LANGFUSE_PUBLIC_KEY="pk-lf-..."      # From LangFuse project settings
+LANGFUSE_SECRET_KEY="sk-lf-..."      # From LangFuse project settings
+LANGFUSE_HOST="http://langfuse:3000" # Self-hosted URL</code></pre>
+        <pre><code class="language-python" data-trim data-noescape># Initialize LangFuse client
+from langfuse import Langfuse
 
 langfuse = Langfuse(
-    public_key=<span class="string">"pk-lf-..."</span>,
-    secret_key=<span class="string">"sk-lf-..."</span>,
-    host=<span class="string">"http://langfuse:3000"</span>,
+    public_key="pk-lf-...",
+    secret_key="sk-lf-...",
+    host="http://langfuse:3000",
 )
 
-<span class="comment"># Verify connection</span>
-langfuse.auth_check()  <span class="comment"># Returns True if connected</span></div>
+# Verify connection
+langfuse.auth_check()  # Returns True if connected</code></pre>
       </section>
 
       <!-- LANGCHAIN CALLBACK -->
       <section>
         <h2>LangChain Callback Handler</h2>
-        <p style="font-size:0.75em; color:#ccc;">One line to trace entire LangChain workflows</p>
-        <div class="code-block"><span class="keyword">from</span> langfuse.callback <span class="keyword">import</span> CallbackHandler
+        <p class="text-base-dim">One line to trace entire LangChain workflows</p>
+        <pre><code class="language-python" data-trim data-noescape>from langfuse.callback import CallbackHandler
 
-<span class="comment"># Create handler for this request</span>
+# Create handler for this request
 handler = CallbackHandler(
-    public_key=<span class="string">"pk-lf-..."</span>,
-    secret_key=<span class="string">"sk-lf-..."</span>,
-    host=<span class="string">"http://langfuse:3000"</span>,
-    <span class="comment"># Metadata for this trace</span>
-    user_id=<span class="string">"alice"</span>,
-    session_id=<span class="string">"chat_42"</span>,
-    tags=[<span class="string">"production"</span>, <span class="string">"v2.0"</span>],
+    public_key="pk-lf-...",
+    secret_key="sk-lf-...",
+    host="http://langfuse:3000",
+    # Metadata for this trace
+    user_id="alice",
+    session_id="chat_42",
+    tags=["production", "v2.0"],
 )
 
-<span class="comment"># Use with any LangChain component</span>
+# Use with any LangChain component
 result = chain.invoke(
-    {<span class="string">"question"</span>: <span class="string">"What is RAG?"</span>},
-    config={<span class="string">"callbacks"</span>: [handler]}
+    {"question": "What is RAG?"},
+    config={"callbacks": [handler]}
 )
 
-<span class="comment"># LangFuse automatically captures:</span>
-<span class="comment">#   - Every LLM call (input, output, model, tokens)</span>
-<span class="comment">#   - Every tool call (name, arguments, result)</span>
-<span class="comment">#   - Chain execution flow (parent → child spans)</span>
-<span class="comment">#   - Retriever calls (query, documents returned)</span></div>
+# LangFuse automatically captures:
+#   - Every LLM call (input, output, model, tokens)
+#   - Every tool call (name, arguments, result)
+#   - Chain execution flow (parent → child spans)
+#   - Retriever calls (query, documents returned)</code></pre>
       </section>
 
       <!-- RAG EXAMPLE -->
       <section>
         <h2>Tracing a RAG Pipeline</h2>
-        <div class="code-block"><span class="keyword">from</span> langchain_community.vectorstores <span class="keyword">import</span> Chroma
-<span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain.chains <span class="keyword">import</span> RetrievalQA
-<span class="keyword">from</span> langfuse.callback <span class="keyword">import</span> CallbackHandler
+        <pre><code class="language-python" data-trim data-noescape>from langchain_community.vectorstores import Chroma
+from langchain_groq import ChatGroq
+from langchain.chains import RetrievalQA
+from langfuse.callback import CallbackHandler
 
-<span class="comment"># Setup RAG chain</span>
-vectorstore = Chroma(persist_directory=<span class="string">"./chroma_db"</span>)
-retriever = vectorstore.as_retriever(search_kwargs={<span class="string">"k"</span>: 5})
-llm = ChatGroq(model=<span class="string">"llama3-70b-8192"</span>)
+# Setup RAG chain
+vectorstore = Chroma(persist_directory="./chroma_db")
+retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
+llm = ChatGroq(model="llama3-70b-8192")
 
 chain = RetrievalQA.from_chain_type(
     llm=llm,
     retriever=retriever,
-    return_source_documents=<span class="keyword">True</span>,
+    return_source_documents=True,
 )
 
-<span class="comment"># Create LangFuse handler</span>
+# Create LangFuse handler
 handler = CallbackHandler(
-    user_id=<span class="string">"alice"</span>,
-    session_id=<span class="string">"session_123"</span>,
-    metadata={<span class="string">"pipeline"</span>: <span class="string">"rag_v2"</span>},
+    user_id="alice",
+    session_id="session_123",
+    metadata={"pipeline": "rag_v2"},
 )
 
-<span class="comment"># Invoke with tracing</span>
+# Invoke with tracing
 result = chain.invoke(
-    {<span class="string">"query"</span>: <span class="string">"How do Python health checks work?"</span>},
-    config={<span class="string">"callbacks"</span>: [handler]}
-)</div>
+    {"query": "How do Python health checks work?"},
+    config={"callbacks": [handler]}
+)</code></pre>
       </section>
 
       <!-- WHAT GETS CAPTURED -->
@@ -427,34 +440,34 @@ result = chain.invoke(
       <!-- USER FEEDBACK -->
       <section>
         <h2>User Feedback Collection</h2>
-        <div class="code-block"><span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
+        <pre><code class="language-python" data-trim data-noescape>from langfuse import Langfuse
 
 langfuse = Langfuse()
 
-<span class="comment"># After the user rates the response (e.g., thumbs up)</span>
+# After the user rates the response (e.g., thumbs up)
 langfuse.score(
     trace_id=handler.get_trace_id(),
-    name=<span class="string">"user_feedback"</span>,
-    value=1,           <span class="comment"># 1 = positive, 0 = negative</span>
-    comment=<span class="string">"Accurate and helpful response"</span>,
+    name="user_feedback",
+    value=1,           # 1 = positive, 0 = negative
+    comment="Accurate and helpful response",
 )
 
-<span class="comment"># Or a numeric score (1-5 stars)</span>
+# Or a numeric score (1-5 stars)
 langfuse.score(
     trace_id=handler.get_trace_id(),
-    name=<span class="string">"quality"</span>,
+    name="quality",
     value=4.5,
-    comment=<span class="string">"Good answer but slightly verbose"</span>,
+    comment="Good answer but slightly verbose",
 )
 
-<span class="comment"># Automated quality scoring</span>
+# Automated quality scoring
 langfuse.score(
     trace_id=handler.get_trace_id(),
-    name=<span class="string">"relevance"</span>,
-    value=<span class="func">calculate_relevance_score</span>(query, response),
-    comment=<span class="string">"Auto-evaluated by relevance model"</span>,
-)</div>
-        <div class="card-grid" style="margin-top:10px;">
+    name="relevance",
+    value=calculate_relevance_score(query, response),
+    comment="Auto-evaluated by relevance model",
+)</code></pre>
+        <div class="card-grid mt-10">
           <div class="card card-accent">
             <h4>Manual Scores</h4>
             <p>User thumbs up/down, star ratings, free-text feedback collected in the UI or via API.</p>
@@ -469,33 +482,33 @@ langfuse.score(
       <!-- PROMPT MANAGEMENT -->
       <section>
         <h2>Prompt Management</h2>
-        <p style="font-size:0.75em; color:#ccc;">Version, compare, and rollback prompts without code changes</p>
-        <div class="code-block"><span class="comment"># Fetch a managed prompt from LangFuse</span>
-<span class="keyword">from</span> langfuse <span class="keyword">import</span> Langfuse
+        <p class="text-base-dim">Version, compare, and rollback prompts without code changes</p>
+        <pre><code class="language-python" data-trim data-noescape># Fetch a managed prompt from LangFuse
+from langfuse import Langfuse
 
 langfuse = Langfuse()
 
-<span class="comment"># Get the latest production prompt</span>
-prompt = langfuse.get_prompt(<span class="string">"rag_system_prompt"</span>)
+# Get the latest production prompt
+prompt = langfuse.get_prompt("rag_system_prompt")
 
-<span class="comment"># Use in LangChain</span>
-<span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
+# Use in LangChain
+from langchain_core.prompts import ChatPromptTemplate
 
 template = ChatPromptTemplate.from_messages([
-    (<span class="string">"system"</span>, prompt.prompt),    <span class="comment"># Fetched from LangFuse</span>
-    (<span class="string">"human"</span>, <span class="string">"{question}"</span>),
+    ("system", prompt.prompt),    # Fetched from LangFuse
+    ("human", "{question}"),
 ])
 
-<span class="comment"># The prompt is automatically linked to traces</span>
-<span class="comment"># You can see which prompt version produced which responses</span></div>
-        <div class="card-grid" style="margin-top:8px;">
-          <div class="card card-accent" style="padding:10px;">
+# The prompt is automatically linked to traces
+# You can see which prompt version produced which responses</code></pre>
+        <div class="card-grid mt-8">
+          <div class="card card-accent p-10">
             <h4>Version Control</h4>
-            <p style="font-size:0.55em;">Each prompt edit creates a new version. Roll back to any previous version instantly.</p>
+            <p class="text-xs">Each prompt edit creates a new version. Roll back to any previous version instantly.</p>
           </div>
-          <div class="card card-orange" style="padding:10px;">
+          <div class="card card-orange p-10">
             <h4>A/B Testing</h4>
-            <p style="font-size:0.55em;">Label versions as &ldquo;production&rdquo; or &ldquo;staging&rdquo;. Route % of traffic to test new prompts before rollout.</p>
+            <p class="text-xs">Label versions as &ldquo;production&rdquo; or &ldquo;staging&rdquo;. Route % of traffic to test new prompts before rollout.</p>
           </div>
         </div>
       </section>
@@ -538,12 +551,15 @@ template = ChatPromptTemplate.from_messages([
         <div class="section-number">03</div>
         <h2>Debugging AI Agents</h2>
         <p class="subtitle">Reasoning Steps &middot; Tool Calls &middot; Cost Analysis</p>
+        <aside class="notes">
+          Ask: "Has anyone experienced an agent that ran up a large bill or got stuck in a loop?" This section connects directly to real production pain points. The four debugging scenarios (infinite loop, wrong tool, high latency, hallucination) are patterns every AI engineer will encounter. Emphasize that LangFuse makes these visible after the fact, which is critical for post-incident analysis.
+        </aside>
       </section>
 
       <!-- AGENT TRACE EXAMPLE -->
       <section>
         <h2>Tracing Agent Reasoning</h2>
-        <p style="font-size:0.75em; color:#ccc;">See every step the agent takes to answer a question</p>
+        <p class="text-base-dim">See every step the agent takes to answer a question</p>
         <div class="trace-tree">
           <span class="trace-root">TRACE</span> <span class="trace-meta">"What is the weather in Paris and how should I dress?"</span><br>
           &nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">AgentExecutor</span> <span class="trace-time">[0ms &rarr; 4200ms]</span><br>
@@ -597,7 +613,7 @@ template = ChatPromptTemplate.from_messages([
       <!-- TOKEN ANALYSIS -->
       <section>
         <h2>Token &amp; Cost Analysis</h2>
-        <p style="font-size:0.75em; color:#ccc;">LangFuse dashboard shows cost breakdown at every level</p>
+        <p class="text-base-dim">LangFuse dashboard shows cost breakdown at every level</p>
         <table class="compare-table">
           <tr>
             <th>Analysis Level</th>
@@ -638,7 +654,7 @@ template = ChatPromptTemplate.from_messages([
       <!-- LATENCY BREAKDOWN -->
       <section>
         <h2>Latency Breakdown</h2>
-        <p style="font-size:0.75em; color:#ccc;">Identify where time is spent in your agent pipeline</p>
+        <p class="text-base-dim">Identify where time is spent in your agent pipeline</p>
         <div style="margin:20px 0;">
           <div style="font-size:0.6em; color:#aaa; margin-bottom:8px;">Typical AI Agent Request: 3.2 seconds total</div>
           <div style="padding-left:10px;">
@@ -669,7 +685,7 @@ template = ChatPromptTemplate.from_messages([
             </div>
             <div style="display:flex; align-items:center; margin:6px 0; font-size:0.6em;">
               <span style="min-width:120px; color:#aaa;">Response</span>
-              <div style="background:#888; height:20px; border-radius:3px; width:2%; opacity:0.7; margin-left:4px;"></div>
+              <div style="background:#999; height:20px; border-radius:3px; width:2%; opacity:0.7; margin-left:4px;"></div>
               <span style="margin-left:8px; color:#aaa;">50ms (2%)</span>
             </div>
           </div>
@@ -682,7 +698,7 @@ template = ChatPromptTemplate.from_messages([
       <!-- COMPLETE OBSERVABILITY STACK -->
       <section>
         <h2>Complete AI Observability Stack</h2>
-        <p style="font-size:0.75em; color:#ccc;">Everything working together</p>
+        <p class="text-base-dim">Everything working together</p>
         <table class="compare-table">
           <tr>
             <th>Layer</th>
@@ -747,7 +763,7 @@ template = ChatPromptTemplate.from_messages([
       <section>
         <h2>What&rsquo;s Next</h2>
         <h3>Session 12: Production Development &amp; Deployment</h3>
-        <div class="card-grid" style="margin-top:20px;">
+        <div class="card-grid mt-20">
           <div class="card card-accent">
             <h4>FastAPI + Agents</h4>
             <ul>
@@ -773,7 +789,7 @@ template = ChatPromptTemplate.from_messages([
       <section>
         <h1>Questions?</h1>
         <br>
-        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss LangFuse, LLM tracing,<br>and AI observability before the capstone</p>
+        <p class="text-lg-dim">Let&rsquo;s discuss LangFuse, LLM tracing,<br>and AI observability before the capstone</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
           <h4>Session 11 Complete</h4>
@@ -787,7 +803,7 @@ template = ChatPromptTemplate.from_messages([
       <section>
 
       <section>
-        <h1 style="font-size:2.5em;">Session 11 Quiz</h1>
+        <h1 class="text-2xl">Session 11 Quiz</h1>
         <p style="font-size:1.1em; color:#ccc; margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
       </section>
 
@@ -816,6 +832,9 @@ template = ChatPromptTemplate.from_messages([
         <div class="answer-explain">
           <strong>B &mdash; AI-specific features.</strong> LangFuse captures what OTel can&rsquo;t: the actual prompt text sent to LLMs, the full completion, automatic cost calculation, prompt version management, and user feedback scoring.
         </div>
+        <aside class="notes">
+          Correct answer: B. LangFuse complements OTel by capturing AI-specific data -- full prompt/completion text, automatic cost calculation, prompt versioning, and user feedback. OTel handles infrastructure tracing; LangFuse handles AI-layer tracing. They work together, not as replacements.
+        </aside>
       </section>
 
       <!-- Q2 -->
@@ -843,6 +862,9 @@ template = ChatPromptTemplate.from_messages([
         <div class="answer-explain">
           <strong>C &mdash; Generation.</strong> In LangFuse&rsquo;s hierarchy: Trace (per request) &rarr; Span (logical grouping) &rarr; Generation (actual LLM call with model, input, output, tokens, cost). Generations are the leaf nodes that represent real API calls.
         </div>
+        <aside class="notes">
+          Correct answer: C -- Generation. The hierarchy is Trace (one per user request) containing Spans (logical groupings like "rag_retrieval") containing Generations (actual LLM API calls). Generations capture the model name, input/output tokens, cost, and latency. This three-level nesting gives complete visibility into complex agent workflows.
+        </aside>
       </section>
 
       <!-- Q3 -->
@@ -870,6 +892,9 @@ template = ChatPromptTemplate.from_messages([
         <div class="answer-explain">
           <strong>B &mdash; CallbackHandler.</strong> LangChain&rsquo;s callback system makes integration minimal: create a <code>CallbackHandler</code> and pass it via <code>config={"callbacks": [handler]}</code>. LangFuse automatically captures all chain, retriever, and LLM operations.
         </div>
+        <aside class="notes">
+          Correct answer: B -- CallbackHandler. The integration is minimal: create a CallbackHandler with your LangFuse credentials and pass it in the config parameter of chain.invoke(). LangFuse then automatically captures every LLM call, retriever query, and tool invocation without changing any of your chain logic.
+        </aside>
       </section>
 
       <!-- Q4 -->
@@ -897,6 +922,9 @@ template = ChatPromptTemplate.from_messages([
         <div class="answer-explain">
           <strong>C &mdash; Infinite loop.</strong> 15 generations in one trace is a classic sign of an agent stuck in a loop. The fix: set <code>max_iterations</code>, improve tool descriptions so the agent picks the right tool, or add a &ldquo;stop condition&rdquo; in the system prompt.
         </div>
+        <aside class="notes">
+          Correct answer: C -- the agent entered an infinite loop. 15 generations in a single trace with $0.45 cost is a telltale sign. The fix involves setting max_iterations on the agent, improving tool descriptions, and adding explicit stop conditions. LangFuse makes this pattern visible because you can see the repeated tool calls in the trace timeline.
+        </aside>
       </section>
 
       <!-- Q5 -->
@@ -924,6 +952,9 @@ template = ChatPromptTemplate.from_messages([
         <div class="answer-explain">
           <strong>C &mdash; Version control without code deploys.</strong> LangFuse prompt management lets you iterate on prompts independently of code releases. You can A/B test prompt versions, see which produces better user feedback scores, and rollback instantly if quality drops.
         </div>
+        <aside class="notes">
+          Correct answer: C -- version, compare, A/B test, and rollback prompts without deploying code. LangFuse prompt management decouples prompt iteration from code releases. You can update a prompt in the LangFuse UI, A/B test it against the previous version, and rollback instantly if quality drops -- all without touching your application code.
+        </aside>
       </section>
 
       </section> <!-- end quiz wrapper -->
@@ -932,6 +963,10 @@ template = ChatPromptTemplate.from_messages([
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -939,10 +974,21 @@ template = ChatPromptTemplate.from_messages([
       showSlideNumber: 'all',
       transition: 'slide',
       transitionSpeed: 'default',
-      width: "100%",
-      height: "100%",
-      margin: 0.02,
       center: false,
+      progress: true,
+      width: 1920,
+      height: 1080,
+      margin: 0.02,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

@@ -6,6 +6,10 @@
   <title>Session 1: Introduction to Agentic AI</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,19 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Agentic AI</h1>
-        <p style="font-size:0.9em; color:#ccc;">Introduction to the World of AI Agents</p>
+        <p class="text-lg-dim">Introduction to the World of AI Agents</p>
         <p class="subtitle">Session 1 &middot; Day 1</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 1 — Introduction to Agentic AI. This is the opening session of Day 1.
+          We will cover: what agentic AI is and how it differs from plain LLMs, the evolution from chatbots to autonomous agents,
+          key architectural patterns (single-agent, multi-agent, supervisor/worker), and the four core components every agent needs.
+          Approximate timing: 60-75 minutes including the quiz. Set the stage by asking the audience what they think an "AI agent" is.
+        </aside>
       </section>
 
       <!-- ==================== AGENDA ==================== -->
@@ -53,22 +63,27 @@
           <div class="section-number">01</div>
           <h2>What is Agentic AI?</h2>
           <p class="subtitle">Definition &middot; The Agent Loop &middot; Core Capabilities</p>
+          <aside class="notes">
+            Key teaching points: Define agentic AI clearly — an AI system that can perceive, reason, act, and learn autonomously.
+            Walk through the agent loop (Perceive → Reason → Act → Observe → Repeat). Emphasize that the loop is what makes agents different from one-shot LLM calls.
+            Ask the audience: "What tasks do you do daily that could benefit from an autonomous agent?"
+          </aside>
         </section>
 
         <!-- BEFORE AI -->
         <section>
           <h2>Let's Start Simple</h2>
           <h3>How do you get things done with software today?</h3>
-          <div class="card-grid" style="margin-top:16px;">
-            <div class="card card-accent" style="text-align:center;">
+          <div class="card-grid mt-16">
+            <div class="card card-accent text-center">
               <h4>Traditional Software</h4>
               <p style="font-size:1.4em;">You tell it <strong>exactly</strong> what to do</p>
-              <p style="margin-top:10px;"><em>"Sort this list alphabetically"</em></p>
+              <p class="mt-10"><em>"Sort this list alphabetically"</em></p>
             </div>
-            <div class="card card-green" style="text-align:center;">
+            <div class="card card-green text-center">
               <h4>AI Agent</h4>
               <p style="font-size:1.4em;">You tell it <strong>what you want</strong></p>
-              <p style="margin-top:10px;"><em>"Organize my messy notes into a report"</em></p>
+              <p class="mt-10"><em>"Organize my messy notes into a report"</em></p>
             </div>
           </div>
         </section>
@@ -84,7 +99,7 @@
             <span class="highlight-red">adapt based on results</span><br>
             &mdash; all on its own.</p>
           </div>
-          <div class="analogy" style="margin-top:14px;">
+          <div class="analogy mt-14">
             You hire a new employee. You don't tell them every keystroke &mdash; you say
             <em>"Research our competitors and write a summary."</em>
             They figure out where to look, what to read, and how to write it up.
@@ -99,23 +114,23 @@
           <div style="display:flex; justify-content:center; margin-top:12px;">
             <div style="position:relative; width:500px; height:360px;">
               <div class="box box-large" style="position:absolute; top:0; left:50%; transform:translateX(-50%);">
-                🧠 <strong>Think</strong><br><span style="font-size:0.8em;">What should I do next?</span>
+                🧠 <strong>Think</strong><br><span class="text-080">What should I do next?</span>
               </div>
               <div class="box box-large box-orange" style="position:absolute; top:140px; right:0;">
-                ⚡ <strong>Act</strong><br><span style="font-size:0.8em;">Use a tool / take action</span>
+                ⚡ <strong>Act</strong><br><span class="text-080">Use a tool / take action</span>
               </div>
               <div class="box box-large box-green" style="position:absolute; top:140px; left:0;">
-                🔄 <strong>Observe</strong><br><span style="font-size:0.8em;">Check the result</span>
+                🔄 <strong>Observe</strong><br><span class="text-080">Check the result</span>
               </div>
               <div class="box box-large box-red" style="position:absolute; bottom:0; left:50%; transform:translateX(-50%);">
-                ✅ <strong>Done?</strong><br><span style="font-size:0.8em;">Goal met or keep going?</span>
+                ✅ <strong>Done?</strong><br><span class="text-080">Goal met or keep going?</span>
               </div>
               <svg style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;" viewBox="0 0 500 360">
-                <defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#888"/></marker></defs>
-                <path d="M300 50 L380 130" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M370 210 L300 280" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M200 280 L130 210" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
-                <path d="M120 130 L200 50" stroke="#888" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <defs><marker id="ah" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#999"/></marker></defs>
+                <path d="M300 50 L380 130" stroke="#999" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M370 210 L300 280" stroke="#999" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M200 280 L130 210" stroke="#999" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+                <path d="M120 130 L200 50" stroke="#999" stroke-width="2" fill="none" marker-end="url(#ah)"/>
               </svg>
             </div>
           </div>
@@ -128,7 +143,7 @@
         <section>
           <h2>Real-World Example</h2>
           <h3>"Book me a good Italian restaurant for Saturday"</h3>
-          <table class="compare-table" style="margin-top:14px;">
+          <table class="compare-table mt-14">
             <tr>
               <th>System</th>
               <th>What It Does</th>
@@ -146,11 +161,11 @@
               <td>Writes a nice list with pros/cons &mdash; still you book</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">AI Agent</strong></td>
+              <td><strong class="color-accent">AI Agent</strong></td>
               <td>Searches reviews, checks availability, compares ratings,<br>books a table, and sends you a confirmation</td>
             </tr>
           </table>
-          <div class="takeaway" style="margin-top:12px;">
+          <div class="takeaway mt-12">
             The agent doesn't just <em>know</em> things &mdash; it <strong>does</strong> things.
           </div>
         </section>
@@ -158,18 +173,18 @@
         <!-- CORE CAPABILITIES -->
         <section>
           <h2>Three Core Capabilities of Agents</h2>
-          <div class="card-grid-3" style="margin-top:16px;">
-            <div class="card card-accent" style="text-align:center;">
+          <div class="card-grid-3 mt-16">
+            <div class="card card-accent text-center">
               <h4>Autonomy</h4>
               <p style="font-size:1.2em; margin-bottom:8px;">🧭</p>
               <p>Decides <em>what</em> to do and <em>how</em> to do it without being told each step</p>
             </div>
-            <div class="card card-green" style="text-align:center;">
+            <div class="card card-green text-center">
               <h4>Problem Solving</h4>
               <p style="font-size:1.2em; margin-bottom:8px;">🧩</p>
               <p>Breaks complex problems into smaller pieces and solves them one by one</p>
             </div>
-            <div class="card card-orange" style="text-align:center;">
+            <div class="card card-orange text-center">
               <h4>Adaptability</h4>
               <p style="font-size:1.2em; margin-bottom:8px;">🔄</p>
               <p>When Plan A fails, it tries Plan B. Learns from each attempt.</p>
@@ -188,14 +203,19 @@
           <div class="section-number">02</div>
           <h2>How We Got Here</h2>
           <p class="subtitle">LLM vs Agent &middot; The Evolution of AI &middot; From Chatbots to Agents</p>
+          <aside class="notes">
+            Key teaching points: Contrast LLMs (stateless, single-turn) with agents (stateful, multi-step, tool-using).
+            Walk through the timeline: rule-based systems → ML classifiers → LLMs → agents. Highlight that agents are the application layer built on top of LLMs.
+            Ask the audience: "Have you used ChatGPT or Copilot? What limitations did you hit that an agent could solve?"
+          </aside>
         </section>
 
         <!-- LLM vs AGENT -->
         <section>
           <h2>LLM vs Agent</h2>
           <h3>What's the difference?</h3>
-          <div class="card-grid" style="margin-top:16px;">
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+          <div class="card-grid mt-16">
+            <div class="card card-orange text-center p-14">
               <h4>LLM (Large Language Model)</h4>
               <p style="font-size:1.1em; margin-bottom:8px;">The <strong>Brain</strong></p>
               <ul>
@@ -206,7 +226,7 @@
                 <li>Cannot take actions</li>
               </ul>
             </div>
-            <div class="card card-accent" style="text-align:center; padding:14px;">
+            <div class="card card-accent text-center p-14">
               <h4>AI Agent</h4>
               <p style="font-size:1.1em; margin-bottom:8px;">Brain + <strong>Body</strong></p>
               <ul>
@@ -218,7 +238,7 @@
               </ul>
             </div>
           </div>
-          <div class="analogy" style="margin-top:14px;">
+          <div class="analogy mt-14">
             An LLM is like a brilliant person sitting in a locked room &mdash; they can answer any question you
             slide under the door, but they can't get up and do anything.
             An agent gives that person legs, hands, a phone, and a computer.
@@ -249,11 +269,11 @@
             <span class="evo-arrow">&rarr;</span>
             <div class="evo-step" style="border:2px solid var(--accent); border-radius:10px; padding:14px;">
               <span class="evo-icon">🤖</span>
-              <span class="evo-label" style="color:var(--accent);">AI Agents</span>
+              <span class="evo-label color-accent">AI Agents</span>
               <span class="evo-year">thinks + acts</span>
             </div>
           </div>
-          <div class="takeaway" style="margin-top:12px;">
+          <div class="takeaway mt-12">
             Each step added a new capability. Agents combine <em>all</em> of them:
             rules + learning + language understanding + <strong>autonomous action</strong>.
           </div>
@@ -288,7 +308,7 @@
               <td>Just talks &mdash; can't take actions or use tools</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">Agents</strong></td>
+              <td><strong class="color-accent">Agents</strong></td>
               <td>Reasons, plans, uses tools, adapts</td>
               <td>AI that researches, books, and plans your entire trip</td>
               <td>Still evolving &mdash; that's why you're here!</td>
@@ -299,12 +319,12 @@
         <!-- CHATBOT vs RAG vs AGENT -->
         <section>
           <h2 style="margin-bottom:10px;">Chatbot vs RAG vs Agent</h2>
-          <table class="compare-table" style="font-size:0.5em; margin-top:8px;">
+          <table class="compare-table" style="font-size:0.55em; margin-top:8px;">
             <tr>
               <th></th>
               <th>Chatbot</th>
               <th>RAG System</th>
-              <th style="color:var(--accent);">AI Agent</th>
+              <th class="color-accent">AI Agent</th>
             </tr>
             <tr>
               <td><strong>What it does</strong></td>
@@ -320,21 +340,21 @@
             </tr>
             <tr>
               <td><strong>Can take actions?</strong></td>
-              <td style="color:var(--accent4);">No</td>
-              <td style="color:var(--accent4);">No</td>
-              <td style="color:var(--accent2);">Yes &mdash; calls APIs, writes files, etc.</td>
+              <td class="color-red">No</td>
+              <td class="color-red">No</td>
+              <td class="color-green">Yes &mdash; calls APIs, writes files, etc.</td>
             </tr>
             <tr>
               <td><strong>Multi-step?</strong></td>
-              <td style="color:var(--accent4);">No &mdash; single turn</td>
-              <td style="color:var(--accent3);">Partially &mdash; retrieve + generate</td>
-              <td style="color:var(--accent2);">Yes &mdash; chains many steps</td>
+              <td class="color-red">No &mdash; single turn</td>
+              <td class="color-orange">Partially &mdash; retrieve + generate</td>
+              <td class="color-green">Yes &mdash; chains many steps</td>
             </tr>
             <tr>
               <td><strong>Adapts if stuck?</strong></td>
-              <td style="color:var(--accent4);">No</td>
-              <td style="color:var(--accent4);">No</td>
-              <td style="color:var(--accent2);">Yes &mdash; tries alternative approaches</td>
+              <td class="color-red">No</td>
+              <td class="color-red">No</td>
+              <td class="color-green">Yes &mdash; tries alternative approaches</td>
             </tr>
           </table>
           <div class="analogy" style="margin-top:8px; margin-bottom:0; padding:12px 16px; font-size:0.65em;">
@@ -351,6 +371,11 @@
           <div class="section-number">03</div>
           <h2>Architectural Patterns</h2>
           <p class="subtitle">Single Agent &middot; Multi-Agent &middot; Supervisor/Worker</p>
+          <aside class="notes">
+            Key teaching points: Cover the three main architectural patterns. Single agent handles everything in one loop.
+            Multi-agent has specialized peers collaborating. Supervisor/Worker has a coordinator delegating to specialized workers.
+            Ask the audience: "Think of a complex workflow at your organization — would a single agent or multiple specialized agents work better?"
+          </aside>
         </section>
 
         <!-- SINGLE AGENT -->
@@ -358,11 +383,11 @@
           <h2>Pattern 1: Single Agent</h2>
           <h3>One agent does everything</h3>
           <div class="diagram" style="margin:12px 0;">
-            <div class="box" style="border-color:#888;">👤 User</div>
+            <div class="box" style="border-color:#999;">👤 User</div>
             <span class="arrow">&rarr;</span>
             <div class="box box-large" style="min-width:200px;">
               🤖 <strong>Agent</strong><br>
-              <span style="font-size:0.8em;">thinks + plans + acts</span>
+              <span class="text-080">thinks + plans + acts</span>
             </div>
             <span class="arrow">&rarr;</span>
             <div class="box box-green">🔧 Tools</div>
@@ -396,7 +421,7 @@
           <h2>Pattern 2: Multi-Agent System</h2>
           <h3>Multiple specialized agents collaborate</h3>
           <div class="diagram" style="margin:12px 0;">
-            <div class="box" style="border-color:#888;">👤 User</div>
+            <div class="box" style="border-color:#999;">👤 User</div>
             <span class="arrow">&rarr;</span>
             <div style="display:flex; flex-direction:column; gap:10px;">
               <div class="box" style="min-width:160px;">🔍 <strong>Research</strong> Agent</div>
@@ -424,13 +449,13 @@
           <div style="text-align:center; margin-top:10px;">
             <div class="box box-large" style="display:inline-block; min-width:220px; margin-bottom:4px; padding:14px 30px;">
               👔 <strong>Supervisor Agent</strong><br>
-              <span style="font-size:0.8em;">assigns tasks, collects results</span>
+              <span class="text-080">assigns tasks, collects results</span>
             </div>
-            <div style="font-size:1.3em; color:#888;">↙ &nbsp; ↓ &nbsp; ↘</div>
+            <div style="font-size:1.3em; color:#999;">↙ &nbsp; ↓ &nbsp; ↘</div>
             <div class="diagram" style="margin-top:4px;">
-              <div class="box box-green">🔧 Worker 1<br><span style="font-size:0.8em;">Data lookup</span></div>
-              <div class="box box-orange">🔧 Worker 2<br><span style="font-size:0.8em;">Calculation</span></div>
-              <div class="box box-red">🔧 Worker 3<br><span style="font-size:0.8em;">Report writing</span></div>
+              <div class="box box-green">🔧 Worker 1<br><span class="text-080">Data lookup</span></div>
+              <div class="box box-orange">🔧 Worker 2<br><span class="text-080">Calculation</span></div>
+              <div class="box box-red">🔧 Worker 3<br><span class="text-080">Report writing</span></div>
             </div>
           </div>
           <div class="card card-accent" style="text-align:center; margin-top:10px; padding:14px;">
@@ -457,23 +482,23 @@
             <tr>
               <td><strong>Single Agent</strong></td>
               <td>Simple tasks, one skill area</td>
-              <td style="color:var(--accent2);">Low</td>
+              <td class="color-green">Low</td>
               <td>Q&A bot, calculator agent</td>
             </tr>
             <tr>
               <td><strong>Multi-Agent</strong></td>
               <td>Tasks needing diverse expertise</td>
-              <td style="color:var(--accent3);">Medium</td>
+              <td class="color-orange">Medium</td>
               <td>Content creation pipeline</td>
             </tr>
             <tr>
               <td><strong>Supervisor/Worker</strong></td>
               <td>Complex tasks with coordination</td>
-              <td style="color:var(--accent4);">High</td>
+              <td class="color-red">High</td>
               <td>Customer support with specialists</td>
             </tr>
           </table>
-          <div class="takeaway" style="margin-top:12px;">
+          <div class="takeaway mt-12">
             Start simple. Use a single agent first. Add more agents only when you
             hit the limits of what one agent can handle. You'll build all three patterns in this course.
           </div>
@@ -486,25 +511,30 @@
           <div class="section-number">04</div>
           <h2>Agent Components</h2>
           <p class="subtitle">The Four Building Blocks of Every Agent</p>
+          <aside class="notes">
+            Key teaching points: Every agent has four components — LLM (the brain), Memory (state persistence), Tools (actions it can take), and Planning (orchestration logic).
+            Stress that removing any one of these degrades the agent significantly. The LLM alone is not an agent without tools and memory.
+            Ask the audience: "Which of these four components do you think is hardest to get right in production?"
+          </aside>
         </section>
 
         <!-- OVERVIEW -->
         <section>
           <h2>Four Building Blocks</h2>
-          <div class="card-grid" style="margin-top:16px;">
-            <div class="card card-accent" style="text-align:center;">
+          <div class="card-grid mt-16">
+            <div class="card card-accent text-center">
               <h4>🧠 LLM (Brain)</h4>
               <p>Core reasoning and<br>language understanding</p>
             </div>
-            <div class="card card-green" style="text-align:center;">
+            <div class="card card-green text-center">
               <h4>💾 Memory (State)</h4>
               <p>Maintains context and<br>conversation history</p>
             </div>
-            <div class="card card-orange" style="text-align:center;">
+            <div class="card card-orange text-center">
               <h4>🔧 Tools (Actions)</h4>
               <p>External capabilities like<br>APIs, databases, web</p>
             </div>
-            <div class="card card-red" style="text-align:center;">
+            <div class="card card-red text-center">
               <h4>📋 Planning (Orchestration)</h4>
               <p>Task decomposition and<br>execution strategy</p>
             </div>
@@ -521,7 +551,7 @@
         <!-- LLM (BRAIN) -->
         <section>
           <h2>🧠 Component 1: LLM (The Brain)</h2>
-          <div class="card card-accent" style="margin-top:14px;">
+          <div class="card card-accent mt-14">
             <h4>What it does</h4>
             <ul>
               <li>Understands user requests in natural language</li>
@@ -530,12 +560,12 @@
               <li>Generates human-readable responses</li>
             </ul>
           </div>
-          <div class="card-grid" style="margin-top:12px;">
-            <div class="card" style="text-align:center;">
+          <div class="card-grid mt-12">
+            <div class="card text-center">
               <h4>Examples</h4>
               <p>GPT-4, Claude, Llama, Gemini, Groq-hosted models</p>
             </div>
-            <div class="card" style="text-align:center;">
+            <div class="card text-center">
               <h4>In This Course</h4>
               <p><strong>Day 1:</strong> Ollama + Llama 3.2 (local)<br>
               <strong>Day 2+:</strong> Groq API (cloud, free)</p>
@@ -550,21 +580,21 @@
         <!-- MEMORY -->
         <section>
           <h2>💾 Component 2: Memory (The State)</h2>
-          <div class="card-grid-3" style="margin-top:16px;">
+          <div class="card-grid-3 mt-16">
             <div class="card card-accent">
               <h4>Short-Term Memory</h4>
               <p>Current conversation context</p>
-              <p style="margin-top:8px;"><em>"The user just asked about flights to Paris"</em></p>
+              <p class="mt-8"><em>"The user just asked about flights to Paris"</em></p>
             </div>
             <div class="card card-green">
               <h4>Long-Term Memory</h4>
               <p>Persistent knowledge across sessions</p>
-              <p style="margin-top:8px;"><em>"This user prefers window seats"</em></p>
+              <p class="mt-8"><em>"This user prefers window seats"</em></p>
             </div>
             <div class="card card-orange">
               <h4>Episodic Memory</h4>
               <p>Past experiences and outcomes</p>
-              <p style="margin-top:8px;"><em>"Last time API X failed, API Y worked"</em></p>
+              <p class="mt-8"><em>"Last time API X failed, API Y worked"</em></p>
             </div>
           </div>
           <div class="takeaway" style="margin-top:12px; padding:10px 16px; font-size:0.68em;">
@@ -578,7 +608,7 @@
         <section>
           <h2>🔧 Component 3: Tools (The Hands)</h2>
           <h3>How agents interact with the real world</h3>
-          <div class="card-grid" style="margin-top:12px;">
+          <div class="card-grid mt-12">
             <div class="card card-accent">
               <h4>Search & Retrieve</h4>
               <ul>
@@ -657,12 +687,12 @@
               <strong style="font-size:1.1em; color:var(--accent);">AI Agent</strong>
               <br><br>
               <div class="diagram" style="margin:0; justify-content:center;">
-                <div class="box" style="font-size:0.85em;">🧠 LLM</div>
-                <div class="box box-green" style="font-size:0.85em;">💾 Memory</div>
+                <div class="box text-085">🧠 LLM</div>
+                <div class="box box-green text-085">💾 Memory</div>
               </div>
               <div class="diagram" style="margin:8px 0 0 0; justify-content:center;">
-                <div class="box box-orange" style="font-size:0.85em;">🔧 Tools</div>
-                <div class="box box-red" style="font-size:0.85em;">📋 Planning</div>
+                <div class="box box-orange text-085">🔧 Tools</div>
+                <div class="box box-red text-085">📋 Planning</div>
               </div>
             </div>
           </div>
@@ -684,7 +714,7 @@
       <section>
         <section>
           <h2>Session 1 Recap</h2>
-          <div class="card-grid" style="margin-top:16px;">
+          <div class="card-grid mt-16">
             <div class="card card-accent">
               <h4>What is Agentic AI?</h4>
               <p>AI systems that can understand goals, make plans, take actions,
@@ -713,8 +743,8 @@
           <h2>What's Next?</h2>
           <div class="card card-accent" style="text-align:center; padding:18px; margin-top:14px;">
             <h4>Session 2: AI Coding Assistants &amp; Vibe Coding</h4>
-            <p style="margin-top:10px;">Put AI agents to work <em>right now</em> &mdash; your coding assistant for the rest of the course!</p>
-            <div class="card-grid-3" style="margin-top:12px;">
+            <p class="mt-10">Put AI agents to work <em>right now</em> &mdash; your coding assistant for the rest of the course!</p>
+            <div class="card-grid-3 mt-12">
               <div class="card">
                 <h4>AI Coding Agents</h4>
                 <p>How Claude Code, Copilot &amp; Cursor work</p>
@@ -744,7 +774,7 @@
       <!-- ==================== QUIZ: SESSION 1 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 1 Quiz</h1>
+          <h1 class="text-2xl">Session 1 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             I'll show a question with 4 choices.<br>
@@ -776,6 +806,10 @@
               <span>An agent doesn't need an LLM at all &mdash; it works on pure logic</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — An agent can take actions, use tools, and work in a loop until a goal is met.
+            This is the defining characteristic that separates agents from plain LLMs. Agents don't just generate text; they act, observe results, and iterate.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -833,6 +867,10 @@
               <span>RAG pipeline pattern</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — Supervisor / Worker pattern.
+            In this pattern, a supervisor agent coordinates and delegates tasks to specialized worker agents. It is the most structured multi-agent architecture, ideal for complex enterprise workflows.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -890,6 +928,10 @@
               <span>Data Collection, Training, Inference, Deployment</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — LLM (Brain), Memory (State), Tools (Actions), Planning (Orchestration).
+            These are the four building blocks we just covered. Option D describes the ML lifecycle, not agent components. Option C describes software architecture layers.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -949,6 +991,10 @@
               <span>Search its own memory for the last known weather</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — Call a live weather API to get the current, real-time temperature.
+            This demonstrates tool use, a core agent capability. An agent recognizes it needs real-time data and calls an external API rather than guessing or refusing.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1006,6 +1052,10 @@
               <span>Adapts &mdash; tries an alternative booking site or informs the user with options</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: D — Adapts — tries an alternative booking site or informs the user with options.
+            This highlights the adaptive, autonomous nature of agents. Unlike a simple script that would crash, an agent reasons about the failure and finds an alternative path to achieve the goal.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1041,17 +1091,17 @@
         <!-- QUIZ SCORE -->
         <section>
           <h2>How Did You Do?</h2>
-          <div class="card-grid-3" style="margin-top:16px;">
+          <div class="card-grid-3 mt-16">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>No worries! These concepts are new. Session 2 will reinforce everything.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Great foundation! You've grasped the key ideas.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>Excellent! Ready to dive deeper into reasoning and tool use.</p>
             </div>
           </div>
@@ -1062,6 +1112,10 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1070,12 +1124,11 @@
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
-      // Keyboard shortcuts
       keyboard: {
-        // Use 'f' for fullscreen
         70: function() {
           if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -1083,7 +1136,8 @@
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

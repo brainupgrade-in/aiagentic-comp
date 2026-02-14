@@ -6,6 +6,10 @@
   <title>Session 7: LangGraph — Stateful Workflows</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,21 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>LangGraph: Stateful Workflows</h1>
-        <p style="font-size:0.9em; color:#ccc;">Beyond Agents &mdash; Building Complex, Controllable Workflows</p>
+        <p class="text-lg-dim">Beyond Agents &mdash; Building Complex, Controllable Workflows</p>
         <p class="subtitle">Session 7 &middot; Day 3, Slot A</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 7 — LangGraph Stateful Workflows. This is Day 3, Slot A, approximately 60-75 minutes.
+          We move beyond simple agents into graph-based workflows with explicit state management.
+          Three sections: (1) StateGraph Fundamentals — what LangGraph is and why graphs;
+          (2) Nodes and Edges — processing steps, connections, conditional routing;
+          (3) Checkpointing and Human-in-the-Loop — persistence, interrupts, resume, approval gates.
+          LangGraph gives us the control that free-form agents lack.
+        </aside>
       </section>
 
       <!-- ==================== AGENDA ==================== -->
@@ -53,14 +65,20 @@
           <div class="section-number">01</div>
           <h2>StateGraph Fundamentals</h2>
           <p class="subtitle">What is LangGraph &middot; Why Graphs &middot; Defining State</p>
+          <aside class="notes">
+            Key teaching points: LangGraph models workflows as directed graphs. State is a TypedDict that flows through nodes.
+            Contrast with LangChain agents: agents decide freely, graphs give you explicit control over flow.
+            Ask the audience: "When would you want a fixed graph workflow instead of letting an agent decide freely?"
+            Answer: when you need predictability, auditability, or regulatory compliance.
+          </aside>
         </section>
 
         <!-- WHY LANGGRAPH -->
         <section>
           <h2>Why LangGraph?</h2>
           <h3>When agents aren't enough</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4>ReAct Agent (Session 6)</h4>
               <ul>
                 <li>LLM decides everything at runtime</li>
@@ -70,7 +88,7 @@
                 <li>Limited control over execution flow</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>LangGraph (Today)</h4>
               <ul>
                 <li>YOU define the workflow structure</li>
@@ -92,14 +110,14 @@
         <section>
           <h2>What is a StateGraph?</h2>
           <h3>A workflow defined as nodes + edges + state</h3>
-          <div class="graph-flow" style="margin-top:20px;">
-            <div class="graph-node" style="border-color:var(--accent);">
+          <div class="graph-flow mt-20">
+            <div class="graph-node border-accent">
               <strong>START</strong>
             </div>
             <span class="graph-arrow">&rarr;</span>
             <div class="graph-node graph-node-green">
               <strong>Classify</strong><br>
-              <span style="font-size:0.85em;">Node</span>
+              <span class="text-085">Node</span>
             </div>
             <span class="graph-arrow">&rarr;</span>
             <div class="graph-diamond">
@@ -115,11 +133,11 @@
               </div>
             </div>
             <span class="graph-arrow">&rarr;</span>
-            <div class="graph-node" style="border-color:#888;">
+            <div class="graph-node" style="border-color:#999;">
               <strong>END</strong>
             </div>
           </div>
-          <div class="card-grid-3" style="margin-top:14px;">
+          <div class="card-grid-3 mt-14">
             <div class="card card-accent" style="padding:12px;">
               <h4>State</h4>
               <p>A shared data dictionary that flows through the graph. Each node reads and updates it.</p>
@@ -139,24 +157,24 @@
         <section>
           <h2>Defining State with TypedDict</h2>
           <h3>The shared data structure for your workflow</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
-<span class="keyword">from</span> operator <span class="keyword">import</span> add
-<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
+from operator import add
+from langgraph.graph import StateGraph
 
-<span class="comment"># Define the state schema</span>
-<span class="keyword">class</span> <span class="func">WorkflowState</span>(TypedDict):
-    messages: Annotated[<span class="keyword">list</span>, add]  <span class="comment"># append new items to list</span>
-    current_step: <span class="keyword">str</span>             <span class="comment"># overwrite on update</span>
-    approved: <span class="keyword">bool</span>                <span class="comment"># overwrite on update</span>
+# Define the state schema
+class WorkflowState(TypedDict):
+    messages: Annotated[list, add]  # append new items to list
+    current_step: str             # overwrite on update
+    approved: bool                # overwrite on update
 
-<span class="comment"># Create the graph with this state</span>
-graph = StateGraph(WorkflowState)</div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+# Create the graph with this state
+graph = StateGraph(WorkflowState)</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>Regular Fields</h4>
               <p>Fields like <code>str</code>, <code>bool</code>, <code>int</code> get <strong>overwritten</strong> when a node returns a new value. Last write wins.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Annotated Fields (Reducers)</h4>
               <p><code>Annotated[list, add]</code> means new values are <strong>appended</strong> to the list, not replaced. This is perfect for message history.</p>
             </div>
@@ -166,27 +184,27 @@ graph = StateGraph(WorkflowState)</div>
         <!-- YOUR FIRST GRAPH -->
         <section>
           <h2>Your First LangGraph Workflow</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict
-<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
 
-<span class="keyword">class</span> <span class="func">State</span>(TypedDict):
-    name: <span class="keyword">str</span>
-    greeting: <span class="keyword">str</span>
+class State(TypedDict):
+    name: str
+    greeting: str
 
-<span class="comment"># Node: a function that takes state and returns updates</span>
-<span class="keyword">def</span> <span class="func">greet</span>(state: State) -> <span class="keyword">dict</span>:
-    <span class="keyword">return</span> {<span class="string">"greeting"</span>: <span class="keyword">f</span><span class="string">"Hello, {state['name']}! Welcome to UniGPS."</span>}
+# Node: a function that takes state and returns updates
+def greet(state: State) -> dict:
+    return {"greeting": f"Hello, {state['name']}! Welcome to UniGPS."}
 
-<span class="comment"># Build the graph</span>
+# Build the graph
 graph = StateGraph(State)
-graph.<span class="func">add_node</span>(<span class="string">"greet"</span>, greet)
-graph.<span class="func">add_edge</span>(START, <span class="string">"greet"</span>)  <span class="comment"># START → greet</span>
-graph.<span class="func">add_edge</span>(<span class="string">"greet"</span>, END)     <span class="comment"># greet → END</span>
+graph.add_node("greet", greet)
+graph.add_edge(START, "greet")  # START → greet
+graph.add_edge("greet", END)     # greet → END
 
-<span class="comment"># Compile and run</span>
-app = graph.<span class="func">compile</span>()
-result = app.<span class="func">invoke</span>({<span class="string">"name"</span>: <span class="string">"Priya"</span>})
-<span class="func">print</span>(result[<span class="string">"greeting"</span>])  <span class="output"># "Hello, Priya! Welcome to UniGPS."</span></div>
+# Compile and run
+app = graph.compile()
+result = app.invoke({"name": "Priya"})
+print(result["greeting"])  # "Hello, Priya! Welcome to UniGPS."</code></pre>
           <div class="takeaway">
             Every graph follows three steps: <strong>define state</strong> (TypedDict),
             <strong>add nodes</strong> (Python functions), <strong>connect with edges</strong> (START &rarr; nodes &rarr; END).
@@ -248,25 +266,31 @@ result = app.<span class="func">invoke</span>({<span class="string">"name"</span
           <div class="section-number">02</div>
           <h2>Nodes & Edges</h2>
           <p class="subtitle">Processing Steps &middot; Connections &middot; Conditional Routing</p>
+          <aside class="notes">
+            Key teaching points: Nodes are Python functions that receive state and return partial updates.
+            Edges connect nodes — fixed edges always go to one destination, conditional edges use a routing function.
+            Ask the audience: "Think of a real workflow with branching — how would you model 'if approved, proceed; if rejected, notify'?"
+            Emphasize add_conditional_edges() as the primary mechanism for dynamic routing.
+          </aside>
         </section>
 
         <!-- NODES EXPLAINED -->
         <section>
           <h2>Nodes: Processing Steps</h2>
           <h3>Each node is a Python function that transforms state</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="comment"># A node receives the full state and returns updates</span>
-<span class="keyword">def</span> <span class="func">classify_request</span>(state):
-    <span class="string">"""Classify whether a request is HR, Tech, or Finance."""</span>
-    message = state[<span class="string">"message"</span>]
-    <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"wfh"</span> <span class="keyword">in</span> message.lower():
-        <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span>}
-    <span class="keyword">elif</span> <span class="string">"deploy"</span> <span class="keyword">in</span> message.lower() <span class="keyword">or</span> <span class="string">"database"</span> <span class="keyword">in</span> message.lower():
-        <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"tech"</span>}
-    <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"general"</span>}
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># A node receives the full state and returns updates
+def classify_request(state):
+    """Classify whether a request is HR, Tech, or Finance."""
+    message = state["message"]
+    if "leave" in message.lower() or "wfh" in message.lower():
+        return {"category": "hr"}
+    elif "deploy" in message.lower() or "database" in message.lower():
+        return {"category": "tech"}
+    return {"category": "general"}
 
-graph.<span class="func">add_node</span>(<span class="string">"classify"</span>, classify_request)</div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+graph.add_node("classify", classify_request)</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>Node Rules</h4>
               <ul>
                 <li>Takes the <strong>full state</strong> as input</li>
@@ -275,7 +299,7 @@ graph.<span class="func">add_node</span>(<span class="string">"classify"</span>,
                 <li>Non-returned keys stay unchanged</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Node Types</h4>
               <ul>
                 <li><strong>Pure logic:</strong> classify, validate, transform</li>
@@ -290,28 +314,28 @@ graph.<span class="func">add_node</span>(<span class="string">"classify"</span>,
         <!-- EDGES EXPLAINED -->
         <section>
           <h2>Edges: Connections Between Nodes</h2>
-          <div class="card-grid-3" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+          <div class="card-grid-3 mt-10">
+            <div class="card card-accent p-10">
               <h4>Normal Edge</h4>
               <p style="margin:4px 0;">Always go from A to B.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
-  <span class="string">"classify"</span>, <span class="string">"respond"</span>)</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+  "classify", "respond")</code></pre>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>Entry Edge</h4>
               <p style="margin:4px 0;">Where the graph starts.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
-  START, <span class="string">"classify"</span>)</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+  START, "classify")</code></pre>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <h4>Exit Edge</h4>
               <p style="margin:4px 0;">Where the graph ends.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0;">graph.add_edge(
-  <span class="string">"respond"</span>, END)</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>graph.add_edge(
+  "respond", END)</code></pre>
             </div>
           </div>
-          <div class="pipe-flow" style="margin-top:10px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-10">
+            <div class="pipe-box border-accent">
               <strong>START</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
@@ -323,7 +347,7 @@ graph.<span class="func">add_node</span>(<span class="string">"classify"</span>,
               <strong>respond</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#888;">
+            <div class="pipe-box" style="border-color:#999;">
               <strong>END</strong>
             </div>
           </div>
@@ -333,24 +357,24 @@ graph.<span class="func">add_node</span>(<span class="string">"classify"</span>,
         <section>
           <h2>Conditional Edges</h2>
           <h3>Route to different nodes based on state</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Routing function — reads state and returns next node name</span>
-<span class="keyword">def</span> <span class="func">route_request</span>(state) -> <span class="keyword">str</span>:
-    <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span>:
-        <span class="keyword">return</span> <span class="string">"handle_hr"</span>
-    <span class="keyword">elif</span> state[<span class="string">"category"</span>] == <span class="string">"tech"</span>:
-        <span class="keyword">return</span> <span class="string">"handle_tech"</span>
-    <span class="keyword">return</span> <span class="string">"handle_general"</span>
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Routing function — reads state and returns next node name
+def route_request(state) -> str:
+    if state["category"] == "hr":
+        return "handle_hr"
+    elif state["category"] == "tech":
+        return "handle_tech"
+    return "handle_general"
 
-<span class="comment"># Add conditional edge from "classify" node</span>
-graph.<span class="func">add_conditional_edges</span>(
-    <span class="string">"classify"</span>,              <span class="comment"># source node</span>
-    route_request,          <span class="comment"># routing function</span>
-    {                        <span class="comment"># mapping: return value → node name</span>
-        <span class="string">"handle_hr"</span>: <span class="string">"handle_hr"</span>,
-        <span class="string">"handle_tech"</span>: <span class="string">"handle_tech"</span>,
-        <span class="string">"handle_general"</span>: <span class="string">"handle_general"</span>,
+# Add conditional edge from "classify" node
+graph.add_conditional_edges(
+    "classify",              # source node
+    route_request,          # routing function
+    {                        # mapping: return value → node name
+        "handle_hr": "handle_hr",
+        "handle_tech": "handle_tech",
+        "handle_general": "handle_general",
     }
-)</div>
+)</code></pre>
           <div class="takeaway">
             Conditional edges let you build <strong>branching workflows</strong>. The routing function
             reads the current state and returns the name of the next node to execute.
@@ -361,40 +385,40 @@ graph.<span class="func">add_conditional_edges</span>(
         <!-- COMPLETE BRANCHING EXAMPLE -->
         <section>
           <h2>Complete Branching Workflow</h2>
-          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict
-<span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> StateGraph, START, END
+          <pre style="font-size:0.52em; line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict
+from langgraph.graph import StateGraph, START, END
 
-<span class="keyword">class</span> <span class="func">State</span>(TypedDict):
-    message: <span class="keyword">str</span>
-    category: <span class="keyword">str</span>
-    response: <span class="keyword">str</span>
+class State(TypedDict):
+    message: str
+    category: str
+    response: str
 
-<span class="keyword">def</span> <span class="func">classify</span>(state): <span class="keyword">return</span> {<span class="string">"category"</span>: <span class="string">"hr"</span> <span class="keyword">if</span> <span class="string">"leave"</span> <span class="keyword">in</span> state[<span class="string">"message"</span>] <span class="keyword">else</span> <span class="string">"tech"</span>}
-<span class="keyword">def</span> <span class="func">handle_hr</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"HR: You get 24 annual leave days."</span>}
-<span class="keyword">def</span> <span class="func">handle_tech</span>(state): <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"Tech: Use FastAPI for new services."</span>}
-<span class="keyword">def</span> <span class="func">route</span>(state): <span class="keyword">return</span> <span class="string">"hr_node"</span> <span class="keyword">if</span> state[<span class="string">"category"</span>] == <span class="string">"hr"</span> <span class="keyword">else</span> <span class="string">"tech_node"</span>
+def classify(state): return {"category": "hr" if "leave" in state["message"] else "tech"}
+def handle_hr(state): return {"response": "HR: You get 24 annual leave days."}
+def handle_tech(state): return {"response": "Tech: Use FastAPI for new services."}
+def route(state): return "hr_node" if state["category"] == "hr" else "tech_node"
 
 graph = StateGraph(State)
-graph.add_node(<span class="string">"classify"</span>, classify)
-graph.add_node(<span class="string">"hr_node"</span>, handle_hr)
-graph.add_node(<span class="string">"tech_node"</span>, handle_tech)
+graph.add_node("classify", classify)
+graph.add_node("hr_node", handle_hr)
+graph.add_node("tech_node", handle_tech)
 
-graph.add_edge(START, <span class="string">"classify"</span>)
-graph.add_conditional_edges(<span class="string">"classify"</span>, route, {<span class="string">"hr_node"</span>: <span class="string">"hr_node"</span>, <span class="string">"tech_node"</span>: <span class="string">"tech_node"</span>})
-graph.add_edge(<span class="string">"hr_node"</span>, END)
-graph.add_edge(<span class="string">"tech_node"</span>, END)
+graph.add_edge(START, "classify")
+graph.add_conditional_edges("classify", route, {"hr_node": "hr_node", "tech_node": "tech_node"})
+graph.add_edge("hr_node", END)
+graph.add_edge("tech_node", END)
 
 app = graph.compile()
-result = app.invoke({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>})
-<span class="func">print</span>(result[<span class="string">"response"</span>])  <span class="output"># "HR: You get 24 annual leave days."</span></div>
+result = app.invoke({"message": "How many leave days?"})
+print(result["response"])  # "HR: You get 24 annual leave days."</code></pre>
         </section>
 
         <!-- CYCLES IN GRAPHS -->
         <section>
           <h2>Cycles: Looping Back</h2>
           <h3>Edges can create loops for retry or refinement</h3>
-          <div class="pipe-flow" style="margin-top:16px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-16">
+            <div class="pipe-box border-accent">
               <strong>START</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
@@ -410,24 +434,24 @@ result = app.invoke({<span class="string">"message"</span>: <span class="string"
               <strong>Good?</strong>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#888;">
+            <div class="pipe-box" style="border-color:#999;">
               <strong>END</strong>
             </div>
           </div>
           <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:4px;">
             If review fails &rarr; loop back to Draft (cycle!)
           </p>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">def</span> <span class="func">should_continue</span>(state) -> <span class="keyword">str</span>:
-    <span class="keyword">if</span> state[<span class="string">"quality_score"</span>] >= 8:
-        <span class="keyword">return</span> <span class="string">"end"</span>      <span class="comment"># Good enough, finish</span>
-    <span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= 3:
-        <span class="keyword">return</span> <span class="string">"end"</span>      <span class="comment"># Too many retries, stop</span>
-    <span class="keyword">return</span> <span class="string">"retry"</span>        <span class="comment"># Loop back to draft</span>
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def should_continue(state) -> str:
+    if state["quality_score"] >= 8:
+        return "end"      # Good enough, finish
+    if state["attempts"] >= 3:
+        return "end"      # Too many retries, stop
+    return "retry"        # Loop back to draft
 
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"review"</span>, should_continue, {
-    <span class="string">"end"</span>: END,
-    <span class="string">"retry"</span>: <span class="string">"draft"</span>,  <span class="comment"># ← loop back!</span>
-})</div>
+graph.add_conditional_edges("review", should_continue, {
+    "end": END,
+    "retry": "draft",  # ← loop back!
+})</code></pre>
           <div class="takeaway">
             Unlike simple chains, LangGraph supports <strong>cycles</strong> &mdash; edges that go backward.
             This is powerful for retry logic, iterative refinement, and self-correcting workflows.
@@ -442,32 +466,38 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"revi
           <div class="section-number">03</div>
           <h2>Checkpointing & Human-in-the-Loop</h2>
           <p class="subtitle">State Persistence &middot; Interrupt &middot; Resume &middot; Approval Gates</p>
+          <aside class="notes">
+            Key teaching points: Checkpointing saves the full state at every step — enables resume, replay, and debugging.
+            Human-in-the-loop uses interrupt_before/interrupt_after to pause before critical actions (e.g., sending email, making payment).
+            Ask the audience: "In your organization, what actions should an AI never take without human approval?"
+            This pattern is essential for production deployments where trust and compliance matter.
+          </aside>
         </section>
 
         <!-- CHECKPOINTING -->
         <section>
           <h2>Checkpointing: Save & Resume State</h2>
           <h3>Persist workflow state at every step</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.checkpoint.memory import MemorySaver
 
-<span class="comment"># Compile with a checkpointer</span>
+# Compile with a checkpointer
 memory = MemorySaver()
-app = graph.<span class="func">compile</span>(checkpointer=memory)
+app = graph.compile(checkpointer=memory)
 
-<span class="comment"># Run with a thread_id — state is saved after each node</span>
-config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"workflow-001"</span>}}
-result = app.<span class="func">invoke</span>({<span class="string">"message"</span>: <span class="string">"How many leave days?"</span>}, config)
+# Run with a thread_id — state is saved after each node
+config = {"configurable": {"thread_id": "workflow-001"}}
+result = app.invoke({"message": "How many leave days?"}, config)
 
-<span class="comment"># Later: inspect the saved state</span>
-snapshot = app.<span class="func">get_state</span>(config)
-<span class="func">print</span>(snapshot.values)      <span class="output"># Full state at last checkpoint</span>
-<span class="func">print</span>(snapshot.next)        <span class="output"># Which node runs next (or empty if done)</span></div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+# Later: inspect the saved state
+snapshot = app.get_state(config)
+print(snapshot.values)      # Full state at last checkpoint
+print(snapshot.next)        # Which node runs next (or empty if done)</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>Development</h4>
               <p><code>MemorySaver()</code> &mdash; in-memory, fast, lost on restart. Perfect for dev/testing.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Production</h4>
               <p><code>SqliteSaver(db_path)</code> or <code>PostgresSaver(conn)</code> &mdash; persistent, survives restarts, scales.</p>
             </div>
@@ -477,20 +507,20 @@ snapshot = app.<span class="func">get_state</span>(config)
         <!-- STATE INSPECTION -->
         <section>
           <h2>Inspecting Workflow State</h2>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Get the current state snapshot</span>
-snapshot = app.<span class="func">get_state</span>(config)
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Get the current state snapshot
+snapshot = app.get_state(config)
 
-<span class="comment"># What data is in the state?</span>
-<span class="func">print</span>(snapshot.values)
-<span class="output"># {"message": "How many leave days?", "category": "hr", "response": "24 days"}</span>
+# What data is in the state?
+print(snapshot.values)
+# {"message": "How many leave days?", "category": "hr", "response": "24 days"}
 
-<span class="comment"># Which node runs next? (empty tuple = workflow is done)</span>
-<span class="func">print</span>(snapshot.next)
-<span class="output"># () &larr; empty means workflow completed</span>
+# Which node runs next? (empty tuple = workflow is done)
+print(snapshot.next)
+# () &larr; empty means workflow completed
 
-<span class="comment"># You can even UPDATE the state manually</span>
-app.<span class="func">update_state</span>(config, {<span class="string">"approved"</span>: <span class="keyword">True</span>})
-<span class="comment"># Then resume: app.invoke(None, config)</span></div>
+# You can even UPDATE the state manually
+app.update_state(config, {"approved": True})
+# Then resume: app.invoke(None, config)</code></pre>
           <div class="takeaway">
             Checkpointing gives you <strong>full visibility</strong> into your workflow.
             You can inspect the state at any point, see which node runs next,
@@ -503,57 +533,57 @@ app.<span class="func">update_state</span>(config, {<span class="string">"approv
         <section>
           <h2>Human-in-the-Loop</h2>
           <h3>Pause the workflow for human approval</h3>
-          <div class="pipe-flow" style="margin-top:16px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
-              <strong>Draft</strong><br><span style="font-size:0.85em;">email</span>
+          <div class="pipe-flow mt-16">
+            <div class="pipe-box border-accent">
+              <strong>Draft</strong><br><span class="text-085">email</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange" style="border-width:3px;">
-              <strong>PAUSE</strong><br><span style="font-size:0.85em;">Human reviews</span>
+              <strong>PAUSE</strong><br><span class="text-085">Human reviews</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green">
-              <strong>Send</strong><br><span style="font-size:0.85em;">email</span>
+              <strong>Send</strong><br><span class="text-085">email</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
-            <div class="pipe-box" style="border-color:#888;">
+            <div class="pipe-box" style="border-color:#999;">
               <strong>END</strong>
             </div>
           </div>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Compile with interrupt_before — pauses BEFORE "send_email" runs</span>
-app = graph.<span class="func">compile</span>(
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Compile with interrupt_before — pauses BEFORE "send_email" runs
+app = graph.compile(
     checkpointer=MemorySaver(),
-    interrupt_before=[<span class="string">"send_email"</span>]  <span class="comment"># ← pause point</span>
+    interrupt_before=["send_email"]  # ← pause point
 )
 
-<span class="comment"># Run — stops before send_email</span>
-result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft an email to the team"</span>}, config)
-<span class="comment"># Workflow paused! Human reviews the draft...</span>
+# Run — stops before send_email
+result = app.invoke({"request": "Draft an email to the team"}, config)
+# Workflow paused! Human reviews the draft...
 
-<span class="comment"># Human approves → resume from where it paused</span>
-result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># ← None means "continue"</span>
-<span class="comment"># send_email node now executes</span></div>
+# Human approves → resume from where it paused
+result = app.invoke(None, config)  # ← None means "continue"
+# send_email node now executes</code></pre>
         </section>
 
         <!-- HITL WITH STATE UPDATE -->
         <section>
           <h2>Human Edits Before Resuming</h2>
           <h3>The human can modify the state before approving</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Step 1: Run until pause point</span>
-result = app.<span class="func">invoke</span>({<span class="string">"request"</span>: <span class="string">"Draft email to team about Friday lunch"</span>}, config)
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Step 1: Run until pause point
+result = app.invoke({"request": "Draft email to team about Friday lunch"}, config)
 
-<span class="comment"># Step 2: Inspect what the draft node produced</span>
-snapshot = app.<span class="func">get_state</span>(config)
-<span class="func">print</span>(snapshot.values[<span class="string">"draft"</span>])
-<span class="output"># "Hi team, lunch on Friday at 1 PM."</span>
+# Step 2: Inspect what the draft node produced
+snapshot = app.get_state(config)
+print(snapshot.values["draft"])
+# "Hi team, lunch on Friday at 1 PM."
 
-<span class="comment"># Step 3: Human edits the draft</span>
-app.<span class="func">update_state</span>(config, {
-    <span class="string">"draft"</span>: <span class="string">"Hi team, Friday lunch at 12:30 PM at the cafeteria. See you there!"</span>
+# Step 3: Human edits the draft
+app.update_state(config, {
+    "draft": "Hi team, Friday lunch at 12:30 PM at the cafeteria. See you there!"
 })
 
-<span class="comment"># Step 4: Resume — sends the edited version</span>
-result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)</div>
+# Step 4: Resume — sends the edited version
+result = app.invoke(None, config)</code></pre>
           <div class="takeaway">
             Human-in-the-loop isn't just approve/reject. The human can <strong>inspect the state</strong>,
             <strong>modify values</strong>, and <strong>resume</strong>. This is critical for production AI:
@@ -564,21 +594,21 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <!-- INTERRUPT OPTIONS -->
         <section>
           <h2>Interrupt Strategies</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4><code>interrupt_before</code></h4>
               <p>Pause <strong>before</strong> a node runs. Use when the human should review
               the state <em>before</em> an action happens.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># Pause before sending</span>
-interrupt_before=[<span class="string">"send_email"</span>]</div>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause before sending
+interrupt_before=["send_email"]</code></pre>
               <p style="margin-top:6px; font-size:0.85em;">Common: send emails, make payments, delete data</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4><code>interrupt_after</code></h4>
               <p>Pause <strong>after</strong> a node runs. Use when the human should review
               the <em>output</em> of a step.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># Pause after drafting</span>
-interrupt_after=[<span class="string">"draft_email"</span>]</div>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># Pause after drafting
+interrupt_after=["draft_email"]</code></pre>
               <p style="margin-top:6px; font-size:0.85em;">Common: review drafts, verify classifications, check data</p>
             </div>
           </div>
@@ -595,28 +625,28 @@ interrupt_after=[<span class="string">"draft_email"</span>]</div>
               <th>Use Case</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">MemorySaver</strong></td>
+              <td><strong class="color-accent">MemorySaver</strong></td>
               <td><code>langgraph.checkpoint.memory</code></td>
               <td>In-memory (lost on restart)</td>
               <td>Development, testing, demos</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">SqliteSaver</strong></td>
+              <td><strong class="color-green">SqliteSaver</strong></td>
               <td><code>langgraph.checkpoint.sqlite</code></td>
               <td>Local file (survives restart)</td>
               <td>Single-server production</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">PostgresSaver</strong></td>
+              <td><strong class="color-orange">PostgresSaver</strong></td>
               <td><code>langgraph.checkpoint.postgres</code></td>
               <td>Remote database (scalable)</td>
               <td>Multi-server production</td>
             </tr>
           </table>
-          <div class="code-block" style="font-size:0.52em; margin-top:12px;"><span class="comment"># Switch from dev to production — just change the checkpointer!</span>
-<span class="comment"># memory = MemorySaver()  ← development</span>
-memory = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)  <span class="comment"># ← production</span>
-app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
+          <pre style="font-size:0.52em; margin-top:12px;"><code class="language-python" data-trim data-noescape># Switch from dev to production — just change the checkpointer!
+# memory = MemorySaver()  ← development
+memory = SqliteSaver.from_conn_string("checkpoints.db")  # ← production
+app = graph.compile(checkpointer=memory)</code></pre>
         </section>
       </section>
 
@@ -625,26 +655,26 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
         <section>
           <h2>The Complete Picture</h2>
           <h3>LangGraph Workflow Architecture</h3>
-          <div class="layer-stack" style="margin-top:16px;">
+          <div class="layer-stack mt-16">
             <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:1px solid var(--accent);">
-              <span class="layer-title" style="color:var(--accent);">State (TypedDict)</span>
+              <span class="layer-title color-accent">State (TypedDict)</span>
               <span class="layer-items">Shared data flowing through the graph</span>
             </div>
             <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:1px solid var(--accent2);">
-              <span class="layer-title" style="color:var(--accent2);">Nodes (Functions)</span>
+              <span class="layer-title color-green">Nodes (Functions)</span>
               <span class="layer-items">classify &rarr; route &rarr; handle &rarr; respond</span>
             </div>
             <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:1px solid var(--accent3);">
-              <span class="layer-title" style="color:var(--accent3);">Edges (Routing)</span>
+              <span class="layer-title color-orange">Edges (Routing)</span>
               <span class="layer-items">Fixed edges + conditional branches + cycles</span>
             </div>
             <div class="layer-bar" style="background:rgba(229,115,115,0.15); border:1px solid var(--accent4);">
-              <span class="layer-title" style="color:var(--accent4);">Checkpointer (Persistence)</span>
+              <span class="layer-title color-red">Checkpointer (Persistence)</span>
               <span class="layer-items">MemorySaver / SqliteSaver + interrupt/resume</span>
             </div>
           </div>
-          <div class="card-grid" style="margin-top:12px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-12">
+            <div class="card card-accent p-14">
               <h4>What you learned today</h4>
               <ul>
                 <li>Why LangGraph vs plain agents</li>
@@ -655,7 +685,7 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
                 <li>Human-in-the-loop with interrupt/resume</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Key APIs</h4>
               <ul>
                 <li><code>StateGraph(State)</code> &rarr; create graph</li>
@@ -726,23 +756,23 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
       <section>
         <section>
           <h2>Session 7 Recap</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>StateGraph</h4>
               <p>Define workflows as graphs with typed state. Nodes are functions,
               edges are connections. More structured and predictable than agents.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Nodes & Edges</h4>
               <p>Nodes process state and return updates. Conditional edges enable branching.
               Cycles allow retry loops with max-attempt guards.</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>Checkpointing</h4>
               <p>MemorySaver for dev, SqliteSaver for production.
               Full state inspection with get_state() and update_state().</p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>Human-in-the-Loop</h4>
               <p>interrupt_before/after pauses the workflow. Humans can inspect, modify state,
               and resume. Critical for production AI systems.</p>
@@ -758,15 +788,15 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
             <h4>Session 8: Advanced LangGraph Workflows</h4>
             <br>
             <div class="card-grid-3" style="margin-top:0;">
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Subgraphs</h4>
                 <p>Nested graphs for modular, reusable workflow components</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Parallel Execution</h4>
                 <p>Run multiple branches simultaneously, merge results</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Error Handling</h4>
                 <p>Fallback nodes, retry strategies, graceful degradation</p>
               </div>
@@ -790,7 +820,7 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
       <!-- ==================== QUIZ: SESSION 7 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 7 Quiz</h1>
+          <h1 class="text-2xl">Session 7 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
@@ -821,6 +851,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
               <span>Embeddings, Vectors, Retriever</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — State, Nodes, Edges.
+            State is the TypedDict data schema, Nodes are Python functions that process state, Edges connect nodes (including conditional routing).
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -879,6 +913,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
               <span>It sorts the list automatically</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — It appends new values to the list instead of replacing it.
+            The Annotated type with operator.add defines a reducer. Without it, returning a new list overwrites the previous one. This is how message histories accumulate across nodes.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -937,6 +975,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
               <span>Create separate graphs for each branch</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: A — Use add_conditional_edges() with a routing function.
+            The routing function reads the current state and returns the name of the next node. A mapping dict maps return values to node names. add_edge() only supports a single fixed destination.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -995,6 +1037,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
               <span>It skips the "send_email" node entirely</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — It pauses the workflow before the node runs, waiting for human approval to continue.
+            interrupt_before creates a pause point. The human can inspect state, optionally modify it, then resume with invoke(None, config). The node is not skipped or deleted.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1053,6 +1099,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
               <span>Call <code>app.compile(resume=True)</code></span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Call app.invoke(None, config) with the same config/thread_id.
+            Passing None as input with the same thread_id tells LangGraph to load the checkpointed state and continue from where it paused. No need to recreate the graph.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1094,15 +1144,15 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the graph diagrams and code examples &mdash; the labs will reinforce these concepts.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Solid understanding of LangGraph! The hands-on labs will take you further.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>Graph master! You're ready to build complex workflows.</p>
             </div>
           </div>
@@ -1113,6 +1163,10 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1121,8 +1175,9 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1132,7 +1187,8 @@ app = graph.<span class="func">compile</span>(checkpointer=memory)</div>
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

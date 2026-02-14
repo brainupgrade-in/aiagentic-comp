@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Session 2: AI Coding Assistants &amp; Vibe Coding</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
+
 <body>
   <div class="reveal">
     <div class="slides">
@@ -15,13 +21,20 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>AI Coding Agents &amp;<br>Vibe Coding</h1>
-        <p style="font-size:0.9em; color:#ccc;">Plan-Code-Test Loops &middot; Context Management &middot; Prompt Engineering</p>
+        <p class="text-lg-dim">Plan-Code-Test Loops &middot; Context Management &middot; Prompt
+          Engineering</p>
         <p class="subtitle">Session 2 &middot; Day 1, Slot B</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 2 — AI Coding Assistants and Vibe Coding. This is Day 1, Slot B.
+          We will cover: how AI coding agents work (the Plan-Code-Test loop), the current landscape of AI coding tools,
+          and the art of vibe coding with effective prompt engineering. Approximate timing: 60-75 minutes including the quiz.
+          After the previous session on agentic AI fundamentals, this session connects those concepts to practical developer tooling.
+        </aside>
       </section>
 
       <!-- ==================== DAY 4 CONTEXT ==================== -->
@@ -115,6 +128,12 @@
           <div class="section-number">01</div>
           <h2>How AI Coding Agents Work</h2>
           <p class="subtitle">Plan-Code-Test Loop &middot; Tool Architecture &middot; Context Management</p>
+          <aside class="notes">
+            Key teaching points: Explain the Plan-Code-Test-Reflect loop that AI coding agents use internally.
+            Cover tool architecture — how agents use file reading, terminal commands, and code writing tools.
+            Context management is critical: codebases are millions of tokens but LLM windows are limited, so agents must be selective.
+            Ask the audience: "How many of you already use an AI coding assistant? Which one?"
+          </aside>
         </section>
 
         <!-- THE AGENT LOOP -->
@@ -122,7 +141,7 @@
           <h2>The Agent Loop</h2>
           <h3>Every AI coding agent follows this cycle</h3>
           <div class="diagram">
-            <div class="box" style="border-color:#888;">User Prompt</div>
+            <div class="box" style="border-color:#999;">User Prompt</div>
             <span class="arrow">&rarr;</span>
             <div class="box">Plan</div>
             <span class="arrow">&rarr;</span>
@@ -132,7 +151,7 @@
             <span class="arrow">&rarr;</span>
             <div class="box box-red">Reflect</div>
           </div>
-          <div style="text-align:center; font-size:0.7em; color:#888; margin-top:10px;">
+          <div style="text-align:center; font-size:0.7em; color:#999; margin-top:10px;">
             <span class="arrow">&larr;</span>
             Loop back if tests fail or reflection finds issues
             <span class="arrow">&rarr;</span>
@@ -193,7 +212,29 @@
         <!-- CORE ARCHITECTURE -->
         <section>
           <h2>Core Architecture</h2>
-          <table class="compare-table">
+          <h3>Five components form a feedback loop</h3>
+
+          <!-- Visual feedback loop diagram -->
+          <div class="diagram" style="margin: 20px auto; flex-wrap: wrap; justify-content: center;">
+            <div class="box">&#x1F50D; <strong class="highlight">Context<br>Engine</strong></div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-green">&#x1F9E0; <strong class="highlight-green">Planner</strong></div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-orange">&#x1F4BB; <strong class="highlight-orange">Code<br>Generator</strong></div>
+            <span class="arrow">&rarr;</span>
+            <div class="box box-red">&#x2699; <strong class="highlight-red">Tool<br>Executor</strong></div>
+            <span class="arrow">&rarr;</span>
+            <div class="box" style="border-color:#ce93d8;">&#x2705; <strong class="highlight-purple">Validator</strong>
+            </div>
+          </div>
+          <div style="text-align:center; font-size:0.6em; color:#999; margin-top:-8px;">
+            <span class="arrow">&larr;</span>
+            Loop back until task is complete or human help needed
+            <span class="arrow">&rarr;</span>
+          </div>
+
+          <!-- Compact role table -->
+          <table class="compare-table mt-20">
             <tr>
               <th>Component</th>
               <th>Role</th>
@@ -220,11 +261,12 @@
               <td>bash, pytest, linters, git, file read/write</td>
             </tr>
             <tr>
-              <td><strong style="color:#ce93d8;">Validator</strong></td>
+              <td><strong class="highlight-purple">Validator</strong></td>
               <td>Checks results and decides next step</td>
               <td>Parse test output, verify no errors, check types</td>
             </tr>
           </table>
+
           <div class="takeaway">
             These five components form a feedback loop. The agent keeps cycling through
             them until the task is complete or it decides to ask the human for help.
@@ -235,33 +277,34 @@
         <section>
           <h2>Tool Architecture</h2>
           <div class="pattern-label">Pseudo-Python</div>
-          <div class="code-block">TOOLS = {
-    <span class="string">"read_file"</span>:    read_file_contents,
-    <span class="string">"write_file"</span>:   write_file_contents,
-    <span class="string">"search_code"</span>:  grep_codebase,
-    <span class="string">"run_tests"</span>:    execute_pytest,
-    <span class="string">"run_command"</span>:  safe_bash_exec,
-}
+          <pre><code class="language-python" data-trim data-noescape>TOOLS = {
+            "read_file": read_file_contents,
+            "write_file": write_file_contents,
+            "search_code": grep_codebase,
+            "run_tests": execute_pytest,
+            "run_command": safe_bash_exec,
+            }
 
-<span class="keyword">def</span> <span class="func">agent_loop</span>(task):
-    plan = llm.plan(task, context)
-    <span class="keyword">for</span> step <span class="keyword">in</span> plan.steps:
-        tool = select_tool(step)
-        result = TOOLS[tool.name](**tool.args)
-        <span class="keyword">if not</span> validate(result):
-            plan = llm.replan(task, result)  <span class="comment"># adapt on failure</span></div>
-          <div class="card-grid-3" style="margin-top:8px;">
-            <div class="card card-accent" style="padding:10px;">
+            def agent_loop(task):
+            plan = llm.plan(task, context)
+            for step in plan.steps:
+            tool = select_tool(step)
+            result = TOOLS[tool.name](**tool.args)
+            if not validate(result):
+            plan = llm.replan(task, result) # adapt on failure
+          </code></pre>
+          <div class="card-grid-3 mt-8">
+            <div class="card card-accent p-10">
               <h4>Read Tools</h4>
-              <p style="font-size:0.55em;">File contents, grep results, directory listings, git history</p>
+              <p class="text-xs">File contents, grep results, directory listings, git history</p>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>Write Tools</h4>
-              <p style="font-size:0.55em;">Create files, edit files, apply diffs, delete files</p>
+              <p class="text-xs">Create files, edit files, apply diffs, delete files</p>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <h4>Execute Tools</h4>
-              <p style="font-size:0.55em;">Run shell commands, tests, linters, build scripts</p>
+              <p class="text-xs">Run shell commands, tests, linters, build scripts</p>
             </div>
           </div>
         </section>
@@ -353,22 +396,22 @@
           <div class="diagram-vertical" style="margin:14px 0;">
             <div class="box" style="width:80%; padding:10px 18px;">
               <strong>Step 1:</strong> Read CLAUDE.md / project instructions
-              <span style="float:right; color:#888;">project rules</span>
+              <span style="float:right; color:#999;">project rules</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-green" style="width:80%; padding:10px 18px;">
               <strong>Step 2:</strong> Search codebase for relevant files
-              <span style="float:right; color:#888;">grep / glob</span>
+              <span style="float:right; color:#999;">grep / glob</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-orange" style="width:80%; padding:10px 18px;">
               <strong>Step 3:</strong> Read most relevant files fully
-              <span style="float:right; color:#888;">file read</span>
+              <span style="float:right; color:#999;">file read</span>
             </div>
             <div class="arrow-down">&darr;</div>
             <div class="box box-red" style="width:80%; padding:10px 18px;">
               <strong>Step 4:</strong> Assemble context + generate plan + code
-              <span style="float:right; color:#888;">LLM call</span>
+              <span style="float:right; color:#999;">LLM call</span>
             </div>
           </div>
           <p style="font-size:0.65em; color:#aaa;">
@@ -381,26 +424,27 @@
         <section>
           <h2>Plan-Code-Test in Action</h2>
           <h3>Example: "Add input validation to the login endpoint"</h3>
-          <div class="code-block"><span class="comment"># Agent's internal reasoning trace:</span>
+          <pre><code class="language-python" data-trim data-noescape># Agent's internal reasoning trace:
 
-<span class="keyword">1. PLAN:</span>
-   - Search for login endpoint: <span class="func">grep</span> "def login" across codebase
-   - Found: auth/routes.py:42
-   - Read auth/routes.py and auth/models.py
-   - Need to: add Pydantic validation, update tests
+            1. PLAN:
+            - Search for login endpoint: grep "def login" across codebase
+            - Found: auth/routes.py:42
+            - Read auth/routes.py and auth/models.py
+            - Need to: add Pydantic validation, update tests
 
-<span class="keyword">2. CODE:</span>
-   - Edit auth/models.py: add LoginRequest(BaseModel) with field constraints
-   - Edit auth/routes.py: add request validation, proper error responses
-   - Edit tests/test_auth.py: add validation test cases
+            2. CODE:
+            - Edit auth/models.py: add LoginRequest(BaseModel) with field constraints
+            - Edit auth/routes.py: add request validation, proper error responses
+            - Edit tests/test_auth.py: add validation test cases
 
-<span class="keyword">3. TEST:</span>
-   - Run: pytest tests/test_auth.py
-   - Result: 1 failure &mdash; test_login_empty_email expected 422 got 400
+            3. TEST:
+            - Run: pytest tests/test_auth.py
+            - Result: 1 failure &mdash; test_login_empty_email expected 422 got 400
 
-<span class="keyword">4. REFLECT:</span>
-   - Fix: update status code from 400 to 422 in route
-   - Re-run: pytest tests/test_auth.py &mdash; ALL PASSED</div>
+            4. REFLECT:
+            - Fix: update status code from 400 to 422 in route
+            - Re-run: pytest tests/test_auth.py &mdash; ALL PASSED
+          </code></pre>
         </section>
 
         <!-- SAFETY AND SANDBOXING -->
@@ -444,12 +488,17 @@
           <div class="section-number">02</div>
           <h2>AI Coding Agent Landscape</h2>
           <p class="subtitle">Tools &middot; Paradigms &middot; Strengths &middot; Trade-offs</p>
+          <aside class="notes">
+            Key teaching points: Survey the current landscape — IDE-integrated (Copilot, Cursor), CLI-based (Claude Code, Aider), and cloud-based agents.
+            Compare paradigms: autocomplete vs. chat vs. autonomous agent. Each has different trade-offs for control, speed, and accuracy.
+            Ask the audience: "What's more important to you — speed of code generation or accuracy and safety?"
+          </aside>
         </section>
 
         <!-- THE CURRENT LANDSCAPE -->
         <section>
           <h2>The Current Landscape</h2>
-          <table class="compare-table" style="font-size:0.55em;">
+          <table class="compare-table text-xs">
             <tr>
               <th>Agent</th>
               <th>Paradigm</th>
@@ -469,7 +518,7 @@
               <td>Tied to Cursor editor, proprietary</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">Claude Code</strong></td>
+              <td><strong class="color-accent">Claude Code</strong></td>
               <td>CLI terminal agent</td>
               <td>Full codebase context, autonomous, tool use, CLAUDE.md</td>
               <td>Terminal-only, requires API key</td>
@@ -527,26 +576,27 @@
         <section>
           <h2>How CLAUDE.md Works</h2>
           <h3>Persistent project-level context for AI agents</h3>
-          <div class="code-block"><span class="comment"># CLAUDE.md &mdash; placed in project root</span>
+          <pre><code class="language-python" data-trim data-noescape># CLAUDE.md &mdash; placed in project root
 
-<span class="keyword">## Project Overview</span>
-This is a FastAPI microservice for order processing.
-Uses PostgreSQL, Redis for caching, deployed on K8s.
+            ## Project Overview
+            This is a FastAPI microservice for order processing.
+            Uses PostgreSQL, Redis for caching, deployed on K8s.
 
-<span class="keyword">## Architecture Decisions</span>
-- All endpoints are async
-- Pydantic v2 for validation
-- Alembic for DB migrations
+            ## Architecture Decisions
+            - All endpoints are async
+            - Pydantic v2 for validation
+            - Alembic for DB migrations
 
-<span class="keyword">## Commands</span>
-- Run tests: pytest tests/ -v
-- Start dev: uvicorn main:app --reload
-- Migrate DB: alembic upgrade head
+            ## Commands
+            - Run tests: pytest tests/ -v
+            - Start dev: uvicorn main:app --reload
+            - Migrate DB: alembic upgrade head
 
-<span class="keyword">## Conventions</span>
-- snake_case for functions, PascalCase for classes
-- Every endpoint must have a docstring
-- Never commit .env files</div>
+            ## Conventions
+            - snake_case for functions, PascalCase for classes
+            - Every endpoint must have a docstring
+            - Never commit .env files
+          </code></pre>
           <div class="takeaway">
             CLAUDE.md is loaded <strong>automatically</strong> at the start of every conversation.
             It gives the agent persistent context about your project without you repeating it every time.
@@ -601,6 +651,12 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           <div class="section-number">03</div>
           <h2>Vibe Coding &amp; Prompt Engineering</h2>
           <p class="subtitle">Natural Language to Code &middot; When to Use &middot; Prompt Craft</p>
+          <aside class="notes">
+            Key teaching points: Define vibe coding — describing what you want in natural language and letting the AI generate the code.
+            Cover when vibe coding is appropriate (prototyping, boilerplate, learning) vs. when human expertise is essential (security, complex architecture).
+            Prompt engineering for code: be specific about file paths, error messages, expected behavior, and validation steps.
+            Ask the audience: "Have you ever described a feature in plain English and had AI generate the entire implementation?"
+          </aside>
         </section>
 
         <!-- WHAT IS VIBE CODING -->
@@ -608,10 +664,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           <h2>What is Vibe Coding?</h2>
           <div class="card card-accent" style="padding:24px; text-align:center; font-size:0.85em;">
             <p><em>"You describe what you want in natural language,
-            the AI writes the code, you <span class="highlight">review and guide</span>."</em></p>
+                the AI writes the code, you <span class="highlight">review and guide</span>."</em></p>
             <p style="font-size:0.7em; color:#aaa; margin-top:8px;">&mdash; Andrej Karpathy (paraphrased)</p>
           </div>
-          <div class="card-grid" style="margin-top:16px;">
+          <div class="card-grid mt-16">
             <div class="card card-green">
               <h4>When Vibe Coding Works</h4>
               <ul>
@@ -644,7 +700,7 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             <div class="card card-red">
               <h4>Bad Prompt</h4>
               <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the bug"</em></p>
-              <ul style="margin-top:8px;">
+              <ul class="mt-8">
                 <li>No file or location</li>
                 <li>No expected behavior</li>
                 <li>No error information</li>
@@ -653,8 +709,9 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             </div>
             <div class="card card-orange">
               <h4>Good Prompt</h4>
-              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the TypeError in auth.py:42 &mdash; login() receives None for user_id when the session cookie is expired. Expected: redirect to /login"</em></p>
-              <ul style="margin-top:8px;">
+              <p style="font-size:0.8em; margin-top:8px;"><em>"Fix the TypeError in auth.py:42 &mdash; login() receives
+                  None for user_id when the session cookie is expired. Expected: redirect to /login"</em></p>
+              <ul class="mt-8">
                 <li>Specific file and line</li>
                 <li>Error type and cause</li>
                 <li>Expected behavior</li>
@@ -662,8 +719,9 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             </div>
             <div class="card card-green">
               <h4>Great Prompt</h4>
-              <p style="font-size:0.8em; margin-top:8px;"><em>Same as good + "Run the test suite after fixing and ensure test_login_expired passes"</em></p>
-              <ul style="margin-top:8px;">
+              <p style="font-size:0.8em; margin-top:8px;"><em>Same as good + "Run the test suite after fixing and ensure
+                  test_login_expired passes"</em></p>
+              <ul class="mt-8">
                 <li>Everything from "good"</li>
                 <li>Includes validation step</li>
                 <li>Agent can self-verify</li>
@@ -679,25 +737,26 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
         <!-- STRUCTURED PROMPT TEMPLATE -->
         <section>
           <h2>Structured Prompt Template</h2>
-          <div class="code-block"><span class="keyword">## Task</span>
-[What you want to accomplish]
+          <pre><code class="language-python" data-trim data-noescape>## Task
+            [What you want to accomplish]
 
-<span class="keyword">## Context</span>
-[Relevant files, current behavior, constraints]
-- File: src/auth/routes.py
-- Current behavior: returns 500 on expired session
-- Constraint: must be backwards-compatible with v2 API
+            ## Context
+            [Relevant files, current behavior, constraints]
+            - File: src/auth/routes.py
+            - Current behavior: returns 500 on expired session
+            - Constraint: must be backwards-compatible with v2 API
 
-<span class="keyword">## Expected Behavior</span>
-[What success looks like]
-- Return 401 with {error: "session_expired"} JSON body
-- Set WWW-Authenticate header
+            ## Expected Behavior
+            [What success looks like]
+            - Return 401 with {error: "session_expired"} JSON body
+            - Set WWW-Authenticate header
 
-<span class="keyword">## Validation</span>
-[How to verify the fix: tests, commands, manual checks]
-- Run: pytest tests/test_auth.py -k test_expired_session
-- Run: curl -H "Cookie: session=expired" localhost:8000/api/me
-- Expected: HTTP 401 with JSON error body</div>
+            ## Validation
+            [How to verify the fix: tests, commands, manual checks]
+            - Run: pytest tests/test_auth.py -k test_expired_session
+            - Run: curl -H "Cookie: session=expired" localhost:8000/api/me
+            - Expected: HTTP 401 with JSON error body
+          </code></pre>
           <div class="analogy">
             This template is like a well-written Jira ticket. The developer (or agent)
             reading it knows exactly what to do, where to look, and how to verify the result
@@ -837,15 +896,15 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
         <p style="color:#ccc; font-size:0.85em;">AI Coding Agents &middot; Vibe Coding &middot; Prompt Engineering</p>
         <br>
         <div class="card-grid-3">
-          <div class="card card-accent" style="text-align:center;">
+          <div class="card card-accent text-center">
             <h4>Agent Internals</h4>
             <p>Loop? Architecture?<br>Context? Tools?</p>
           </div>
-          <div class="card card-green" style="text-align:center;">
+          <div class="card card-green text-center">
             <h4>Tool Landscape</h4>
             <p>CLI vs IDE?<br>Which tool for what?</p>
           </div>
-          <div class="card card-orange" style="text-align:center;">
+          <div class="card card-orange text-center">
             <h4>Vibe Coding</h4>
             <p>Prompt craft?<br>When to use / not use?</p>
           </div>
@@ -866,15 +925,15 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           <p style="font-size:0.8em; color:#ccc;">5 questions on AI coding agents and vibe coding</p>
           <br>
           <div class="card-grid-3">
-            <div class="card card-accent" style="text-align:center;">
+            <div class="card card-accent text-center">
               <h4>Q1-Q2</h4>
               <p>Agent Internals</p>
             </div>
-            <div class="card card-green" style="text-align:center;">
+            <div class="card card-green text-center">
               <h4>Q3</h4>
               <p>CLI vs IDE</p>
             </div>
-            <div class="card card-orange" style="text-align:center;">
+            <div class="card card-orange text-center">
               <h4>Q4-Q5</h4>
               <p>Vibe Coding &amp; Prompts</p>
             </div>
@@ -905,6 +964,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
               <span>Parse &rarr; Compile &rarr; Run &rarr; Debug</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Plan, Code, Test, Reflect.
+            This is the core agent loop for AI coding assistants. The agent plans what to do, writes code, tests it, and reflects on the results before iterating. Option D describes a traditional compiler workflow, not an agent loop.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -932,7 +995,8 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             </div>
           </div>
           <div class="answer-explain">
-            <strong>Why B?</strong> AI coding agents follow a <strong>Plan &rarr; Code &rarr; Test &rarr; Reflect</strong> loop.
+            <strong>Why B?</strong> AI coding agents follow a <strong>Plan &rarr; Code &rarr; Test &rarr;
+              Reflect</strong> loop.
             At each step, the agent uses tools (file search, code generation, test execution) and loops back
             if tests fail or reflection identifies issues. This is what makes them agents, not just autocomplete.
           </div>
@@ -962,6 +1026,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
               <span>Context isn't important for code generation</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — Codebases have millions of tokens but LLM context windows are limited.
+            Context management is the #1 engineering challenge for AI coding agents. A real codebase can be millions of tokens, but even the largest LLM context windows are 100K-200K tokens. Agents must intelligently select which files and code snippets to include.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -990,7 +1058,8 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           </div>
           <div class="answer-explain">
             <strong>Why C?</strong> Even the largest context windows (200K tokens) can hold only a fraction
-            of a typical codebase. The agent must intelligently <strong>select the most relevant files and snippets</strong>
+            of a typical codebase. The agent must intelligently <strong>select the most relevant files and
+              snippets</strong>
             using strategies like file relevance scoring, AST extraction, and dependency graph traversal.
             Wrong context leads to wrong code.
           </div>
@@ -1020,6 +1089,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
               <span>CLI agents don't support conversation</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — CLI agents have full shell access and can run any command autonomously.
+            This is the key differentiator: CLI agents (like Claude Code, Aider) operate in the terminal with full shell access, meaning they can run tests, install packages, and execute arbitrary commands. IDE agents are sandboxed within the editor.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -1047,7 +1120,8 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             </div>
           </div>
           <div class="answer-explain">
-            <strong>Why B?</strong> CLI agents operate in the terminal with <strong>full shell access</strong> &mdash; they can run
+            <strong>Why B?</strong> CLI agents operate in the terminal with <strong>full shell access</strong> &mdash;
+            they can run
             tests (pytest), use git (commit, branch, diff), execute linters, install packages, and more.
             IDE agents are embedded in the editor and primarily work through the IDE's API.
             Both can read and edit files, but CLI agents have broader tool access.
@@ -1078,6 +1152,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
               <span>Learning a new framework</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — Security-critical authentication code.
+            Vibe coding is great for prototyping and boilerplate, but security-critical code (auth, encryption, access control) requires human expertise and careful review. AI-generated security code can have subtle vulnerabilities that are hard to catch.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1136,6 +1214,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
               <span>Using technical jargon to impress the AI</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Including specific file, error, expected behavior, and validation steps.
+            Effective prompts for AI coding agents are structured and specific. Include the file path, the exact error, what you expected, and how to validate the fix. Vague prompts lead to vague code.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1163,7 +1245,8 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             </div>
           </div>
           <div class="answer-explain">
-            <strong>Why B?</strong> A great prompt follows the <strong>Task / Context / Expected Behavior / Validation</strong>
+            <strong>Why B?</strong> A great prompt follows the <strong>Task / Context / Expected Behavior /
+              Validation</strong>
             template. Specific file paths, error messages, expected outcomes, and validation commands
             give the agent everything it needs to solve the problem in one pass.
             Brevity (A) often means missing context. Jargon (D) doesn't help &mdash; clarity does.
@@ -1176,15 +1259,15 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the agent loop and prompt patterns. The hands-on labs will make it click.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Good understanding! You're ready to use AI coding tools more effectively.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>Excellent! You understand how AI coding agents work under the hood.</p>
             </div>
           </div>
@@ -1195,6 +1278,10 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1203,8 +1290,9 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1214,9 +1302,11 @@ Uses PostgreSQL, Redis for caching, deployed on K8s.
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>
 </body>
+
 </html>

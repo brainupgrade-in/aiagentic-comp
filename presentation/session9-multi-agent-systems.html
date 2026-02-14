@@ -6,6 +6,10 @@
   <title>Session 9: Multi-Agent Systems</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,21 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Multi-Agent Systems</h1>
-        <p style="font-size:0.9em; color:#ccc;">Supervisor/Worker &middot; Collaboration &middot; Production Patterns</p>
+        <p class="text-lg-dim">Supervisor/Worker &middot; Collaboration &middot; Production Patterns</p>
         <p class="subtitle">Session 9 &middot; Day 3, Slot C</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 9 — Multi-Agent Systems. This is Day 3, Slot C, approximately 60-75 minutes.
+          We move from single-graph workflows to systems where multiple agents collaborate.
+          Three sections: (1) Multi-Agent Architectures — supervisor/worker, peer-to-peer, hierarchical;
+          (2) Agent Collaboration Patterns — task decomposition, handoffs, conflict resolution;
+          (3) Production Agent Patterns — specialization, model selection, scaling considerations.
+          This session brings together everything from Sessions 7-8 into real-world multi-agent designs.
+        </aside>
       </section>
 
       <!-- ==================== DAY 3 CONTEXT ==================== -->
@@ -108,6 +120,11 @@
           <div class="section-number">01</div>
           <h2>Multi-Agent Architectures</h2>
           <p class="subtitle">From single graphs to cooperating agent systems</p>
+          <aside class="notes">
+            Key teaching points: Three main architectures — Supervisor/Worker (centralized routing), Peer-to-Peer (agents hand off to each other), and Hierarchical (supervisors managing sub-supervisors).
+            Ask the audience: "In your organization, is decision-making centralized (like supervisor/worker) or distributed (like peer-to-peer)? How does that map to multi-agent design?"
+            The architecture choice depends on the problem: clear domain separation favors supervisor/worker, iterative collaboration favors peer-to-peer.
+          </aside>
         </section>
 
         <!-- WHY MULTI-AGENT? -->
@@ -175,7 +192,7 @@
               <td>Complex orgs, nested delegation</td>
             </tr>
           </table>
-          <div class="takeaway" style="margin-top:14px;">
+          <div class="takeaway mt-14">
             Choose based on <strong>task structure</strong>: known domains &rarr; Supervisor, creative tasks &rarr; Peer-to-Peer,
             sequential processes &rarr; Handoff.
           </div>
@@ -197,7 +214,7 @@
               <div class="agent-worker agent-worker-orange">Tech<br>Worker</div>
               <div class="agent-worker agent-worker-red">Finance<br>Worker</div>
             </div>
-            <div style="color:#888; margin-top:6px;">&uarr; results returned to supervisor &uarr;</div>
+            <div style="color:#999; margin-top:6px;">&uarr; results returned to supervisor &uarr;</div>
           </div>
           <ul style="font-size:0.68em;">
             <li><span class="highlight">Supervisor</span> analyzes the request and picks the right worker</li>
@@ -210,28 +227,28 @@
         <section>
           <h2>Supervisor/Worker &mdash; Code</h2>
           <div class="pattern-label">LangGraph Implementation</div>
-          <div class="code-block"><span class="keyword">class</span> TeamState(TypedDict):
-    request: <span class="func">str</span>
-    assigned_to: <span class="func">str</span>
-    worker_output: <span class="func">str</span>
-    final_response: <span class="func">str</span>
-    audit: Annotated[<span class="func">list</span>, add]
+          <pre><code class="language-python" data-trim data-noescape>class TeamState(TypedDict):
+    request: str
+    assigned_to: str
+    worker_output: str
+    final_response: str
+    audit: Annotated[list, add]
 
-<span class="keyword">def</span> <span class="func">supervisor</span>(state):
-    <span class="comment"># LLM decides which worker handles the request</span>
-    prompt = <span class="string">f"Route to: hr, tech, or finance\nRequest: {state['request']}"</span>
+def supervisor(state):
+    # LLM decides which worker handles the request
+    prompt = f"Route to: hr, tech, or finance\nRequest: {state['request']}"
     response = llm.invoke(prompt)
     worker = parse_worker(response.content)
-    <span class="keyword">return</span> {<span class="string">"assigned_to"</span>: worker, <span class="string">"audit"</span>: [<span class="string">f"Assigned to {worker}"</span>]}
+    return {"assigned_to": worker, "audit": [f"Assigned to {worker}"]}
 
-<span class="keyword">def</span> <span class="func">route_to_worker</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> state[<span class="string">"assigned_to"</span>]  <span class="comment"># "hr", "tech", or "finance"</span>
+def route_to_worker(state) -> str:
+    return state["assigned_to"]  # "hr", "tech", or "finance"
 
-graph.add_conditional_edges(<span class="string">"supervisor"</span>, route_to_worker, {
-    <span class="string">"hr"</span>: <span class="string">"hr_worker"</span>,
-    <span class="string">"tech"</span>: <span class="string">"tech_worker"</span>,
-    <span class="string">"finance"</span>: <span class="string">"finance_worker"</span>,
-})</div>
+graph.add_conditional_edges("supervisor", route_to_worker, {
+    "hr": "hr_worker",
+    "tech": "tech_worker",
+    "finance": "finance_worker",
+})</code></pre>
         </section>
 
         <!-- SUPERVISOR WITH ITERATION -->
@@ -251,14 +268,14 @@ graph.add_conditional_edges(<span class="string">"supervisor"</span>, route_to_w
             <div class="arrow">&rarr;</div>
             <div class="box box-red">FINISH</div>
           </div>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">supervisor_decide</span>(state):
-    <span class="comment"># Supervisor sees all previous worker outputs</span>
-    <span class="comment"># Decides: send to another worker or FINISH</span>
-    prompt = <span class="string">f"""You are a supervisor. Previous results: {state['history']}
+          <pre><code class="language-python" data-trim data-noescape>def supervisor_decide(state):
+    # Supervisor sees all previous worker outputs
+    # Decides: send to another worker or FINISH
+    prompt = f"""You are a supervisor. Previous results: {state['history']}
 Original request: {state['request']}
-Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
+Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""
     response = llm.invoke(prompt)
-    <span class="keyword">return</span> {<span class="string">"next_action"</span>: parse_action(response.content)}</div>
+    return {"next_action": parse_action(response.content)}</code></pre>
           <div class="takeaway">
             The supervisor can invoke <strong>multiple workers sequentially</strong> for complex requests,
             checking results after each step before deciding the next action.
@@ -270,7 +287,7 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
           <h2>Peer-to-Peer Communication</h2>
           <p class="subtitle">Agents communicate directly without a central controller</p>
           <div class="peer-ring">
-            <div class="peer-node" style="border-color:var(--accent);">Researcher<br>Agent</div>
+            <div class="peer-node border-accent">Researcher<br>Agent</div>
             <div class="peer-connector">&harr;</div>
             <div class="peer-node peer-node-green">Writer<br>Agent</div>
             <div class="peer-connector">&harr;</div>
@@ -296,22 +313,22 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
         <section>
           <h2>Peer-to-Peer &mdash; Code</h2>
           <div class="pattern-label">Shared State + Turn Routing</div>
-          <div class="code-block"><span class="keyword">class</span> CollabState(TypedDict):
-    topic: <span class="func">str</span>
-    messages: Annotated[<span class="func">list</span>, add]  <span class="comment"># shared message board</span>
-    current_turn: <span class="func">str</span>
-    turns_left: <span class="func">int</span>
+          <pre><code class="language-python" data-trim data-noescape>class CollabState(TypedDict):
+    topic: str
+    messages: Annotated[list, add]  # shared message board
+    current_turn: str
+    turns_left: int
 
-<span class="keyword">def</span> <span class="func">researcher</span>(state):
-    <span class="comment"># Read previous messages, add research findings</span>
-    context = <span class="string">"\n"</span>.join(state[<span class="string">"messages"</span>])
-    response = llm.invoke(<span class="string">f"Research: {state['topic']}\nContext: {context}"</span>)
-    <span class="keyword">return</span> {<span class="string">"messages"</span>: [<span class="string">f"[Researcher] {response.content}"</span>],
-            <span class="string">"current_turn"</span>: <span class="string">"writer"</span>, <span class="string">"turns_left"</span>: state[<span class="string">"turns_left"</span>] - 1}
+def researcher(state):
+    # Read previous messages, add research findings
+    context = "\n".join(state["messages"])
+    response = llm.invoke(f"Research: {state['topic']}\nContext: {context}")
+    return {"messages": [f"[Researcher] {response.content}"],
+            "current_turn": "writer", "turns_left": state["turns_left"] - 1}
 
-<span class="keyword">def</span> <span class="func">route_turn</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">if</span> state[<span class="string">"turns_left"</span>] <= 0: <span class="keyword">return</span> <span class="string">"finish"</span>
-    <span class="keyword">return</span> state[<span class="string">"current_turn"</span>]  <span class="comment"># "researcher", "writer", "reviewer"</span></div>
+def route_turn(state) -> str:
+    if state["turns_left"] <= 0: return "finish"
+    return state["current_turn"]  # "researcher", "writer", "reviewer"</code></pre>
         </section>
 
         <!-- AGENT HANDOFFS -->
@@ -344,28 +361,28 @@ Choose next: hr_worker, tech_worker, finance_worker, or FINISH"""</span>
         <!-- HANDOFF CODE -->
         <section>
           <h2>Handoff &mdash; Code Pattern</h2>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">triage_agent</span>(state):
-    prompt = <span class="string">f"""Analyze this request. Can you handle it?
+          <pre><code class="language-yaml" data-trim data-noescape>def triage_agent(state):
+    prompt = f"""Analyze this request. Can you handle it?
 Request: {state['request']}
-Reply: HANDLE if simple, HANDOFF:specialist_name if complex"""</span>
+Reply: HANDLE if simple, HANDOFF:specialist_name if complex"""
     response = llm.invoke(prompt)
     text = response.content.strip()
 
-    <span class="keyword">if</span> <span class="string">"HANDOFF:"</span> <span class="keyword">in</span> text:
-        target = text.split(<span class="string">"HANDOFF:"</span>)[1].strip()
-        <span class="keyword">return</span> {<span class="string">"handoff_to"</span>: target,
-                <span class="string">"audit"</span>: [<span class="string">f"Handing off to {target}"</span>]}
-    <span class="keyword">return</span> {<span class="string">"response"</span>: text, <span class="string">"handoff_to"</span>: <span class="string">"done"</span>,
-            <span class="string">"audit"</span>: [<span class="string">"Handled by triage"</span>]}
+    if "HANDOFF:" in text:
+        target = text.split("HANDOFF:")[1].strip()
+        return {"handoff_to": target,
+                "audit": [f"Handing off to {target}"]}
+    return {"response": text, "handoff_to": "done",
+            "audit": ["Handled by triage"]}
 
-<span class="keyword">def</span> <span class="func">route_handoff</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> state[<span class="string">"handoff_to"</span>]  <span class="comment"># "tech_specialist", "hr_specialist", "done"</span>
+def route_handoff(state) -> str:
+    return state["handoff_to"]  # "tech_specialist", "hr_specialist", "done"
 
-graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff, {
-    <span class="string">"tech_specialist"</span>: <span class="string">"tech_agent"</span>,
-    <span class="string">"hr_specialist"</span>: <span class="string">"hr_agent"</span>,
-    <span class="string">"done"</span>: <span class="string">"finalize"</span>,
-})</div>
+graph.add_conditional_edges("triage", route_handoff, {
+    "tech_specialist": "tech_agent",
+    "hr_specialist": "hr_agent",
+    "done": "finalize",
+})</code></pre>
         </section>
 
         <!-- SECTION 1 TAKEAWAY -->
@@ -413,6 +430,12 @@ graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff,
           <div class="section-number">02</div>
           <h2>Agent Collaboration Patterns</h2>
           <p class="subtitle">How agents work together to solve complex tasks</p>
+          <aside class="notes">
+            Key teaching points: Task decomposition breaks complex problems into sub-tasks for specialist agents.
+            Handoff patterns use a state field (handoff_to) read by conditional edges to transfer control.
+            Ask the audience: "Think of a complex workflow in your team — how would you split it across 3-4 specialized agents?"
+            Cover conflict resolution: voting, priority, and arbitrator agent patterns.
+          </aside>
         </section>
 
         <!-- TASK DECOMPOSITION -->
@@ -422,7 +445,7 @@ graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff,
           <div class="diagram">
             <div class="box box-large">Complex<br>Request</div>
             <div class="arrow">&rarr;</div>
-            <div class="box" style="border-color:var(--accent);">Supervisor<br>Decomposes</div>
+            <div class="box border-accent">Supervisor<br>Decomposes</div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px;">
               <div class="box box-green" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 1</div>
@@ -430,14 +453,14 @@ graph.add_conditional_edges(<span class="string">"triage"</span>, route_handoff,
               <div class="box box-red" style="padding:8px 16px; min-width:auto; font-size:0.6em;">Sub-task 3</div>
             </div>
           </div>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">decompose_task</span>(state):
-    prompt = <span class="string">f"""Break this request into sub-tasks.
+          <pre><code class="language-python" data-trim data-noescape>def decompose_task(state):
+    prompt = f"""Break this request into sub-tasks.
 Request: {state['request']}
-Reply with a numbered list of sub-tasks."""</span>
+Reply with a numbered list of sub-tasks."""
     response = llm.invoke(prompt)
     subtasks = parse_subtasks(response.content)
-    <span class="keyword">return</span> {<span class="string">"subtasks"</span>: subtasks,
-            <span class="string">"audit"</span>: [<span class="string">f"Decomposed into {len(subtasks)} sub-tasks"</span>]}</div>
+    return {"subtasks": subtasks,
+            "audit": [f"Decomposed into {len(subtasks)} sub-tasks"]}</code></pre>
         </section>
 
         <!-- DECOMPOSITION STRATEGIES -->
@@ -497,9 +520,9 @@ Reply with a numbered list of sub-tasks."""</span>
               <div class="agent-worker agent-worker-orange">Tech<br>result</div>
               <div class="agent-worker agent-worker-red">Finance<br>result</div>
             </div>
-            <div style="color:#888; font-size:1.4em;">&darr; &darr; &darr;</div>
+            <div style="color:#999; font-size:1.4em;">&darr; &darr; &darr;</div>
             <div class="agent-supervisor">Aggregator / Supervisor</div>
-            <div style="color:#888; font-size:1.4em;">&darr;</div>
+            <div style="color:#999; font-size:1.4em;">&darr;</div>
             <div style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:10px 24px; font-size:0.9em;">
               Final Response
             </div>
@@ -536,11 +559,11 @@ Reply with a numbered list of sub-tasks."""</span>
               <td>Creative outputs, draft selection</td>
             </tr>
           </table>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">aggregate_results</span>(state):
-    all_results = <span class="string">"\n"</span>.join(state[<span class="string">"worker_outputs"</span>])
-    prompt = <span class="string">f"Synthesize these worker results into one response:\n{all_results}"</span>
+          <pre><code class="language-python" data-trim data-noescape>def aggregate_results(state):
+    all_results = "\n".join(state["worker_outputs"])
+    prompt = f"Synthesize these worker results into one response:\n{all_results}"
     response = llm.invoke(prompt)
-    <span class="keyword">return</span> {<span class="string">"final_response"</span>: response.content}</div>
+    return {"final_response": response.content}</code></pre>
         </section>
 
         <!-- CONFLICT RESOLUTION -->
@@ -572,24 +595,24 @@ Reply with a numbered list of sub-tasks."""</span>
         <section>
           <h2>Conflict Resolution &mdash; Code</h2>
           <div class="pattern-label">Arbitrator Pattern</div>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">detect_conflict</span>(state):
-    outputs = state[<span class="string">"worker_outputs"</span>]
-    <span class="comment"># Check if agents agree</span>
-    categories = [o[<span class="string">"category"</span>] <span class="keyword">for</span> o <span class="keyword">in</span> outputs]
-    <span class="keyword">if</span> len(set(categories)) == 1:
-        <span class="keyword">return</span> {<span class="string">"has_conflict"</span>: <span class="keyword">False</span>, <span class="string">"agreed_answer"</span>: categories[0]}
-    <span class="keyword">return</span> {<span class="string">"has_conflict"</span>: <span class="keyword">True</span>,
-            <span class="string">"audit"</span>: [<span class="string">f"Conflict: agents said {categories}"</span>]}
+          <pre><code class="language-python" data-trim data-noescape>def detect_conflict(state):
+    outputs = state["worker_outputs"]
+    # Check if agents agree
+    categories = [o["category"] for o in outputs]
+    if len(set(categories)) == 1:
+        return {"has_conflict": False, "agreed_answer": categories[0]}
+    return {"has_conflict": True,
+            "audit": [f"Conflict: agents said {categories}"]}
 
-<span class="keyword">def</span> <span class="func">arbitrator</span>(state):
-    prompt = <span class="string">f"""Two agents disagree. Their outputs:
+def arbitrator(state):
+    prompt = f"""Two agents disagree. Their outputs:
 {state['worker_outputs']}
-Analyze both and pick the better answer with reasoning."""</span>
+Analyze both and pick the better answer with reasoning."""
     response = llm.invoke(prompt)
-    <span class="keyword">return</span> {<span class="string">"final_response"</span>: response.content}
+    return {"final_response": response.content}
 
-<span class="keyword">def</span> <span class="func">route_conflict</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> <span class="string">"arbitrator"</span> <span class="keyword">if</span> state[<span class="string">"has_conflict"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span></div>
+def route_conflict(state) -> str:
+    return "arbitrator" if state["has_conflict"] else "finalize"</code></pre>
         </section>
 
         <!-- COLLABORATION PATTERN: UniGPS EXAMPLE -->
@@ -600,7 +623,7 @@ Analyze both and pick the better answer with reasoning."""</span>
             <div style="background:rgba(79,195,247,0.1); border:2px solid var(--accent); border-radius:10px; padding:10px 20px; font-size:0.7em;">
               "Onboard Priya Sharma as Senior Developer"
             </div>
-            <div style="color:#888; font-size:1.2em;">&darr;</div>
+            <div style="color:#999; font-size:1.2em;">&darr;</div>
             <div class="agent-supervisor">Onboarding Supervisor</div>
             <div class="agent-arrows">
               <span>&darr;</span>
@@ -609,12 +632,12 @@ Analyze both and pick the better answer with reasoning."""</span>
               <span>&darr;</span>
             </div>
             <div class="agent-workers">
-              <div class="agent-worker" style="font-size:0.85em;">HR<br><span style="color:#aaa; font-size:0.8em;">Create record</span></div>
-              <div class="agent-worker agent-worker-orange" style="font-size:0.85em;">IT<br><span style="color:#aaa; font-size:0.8em;">Setup laptop</span></div>
-              <div class="agent-worker agent-worker-red" style="font-size:0.85em;">Finance<br><span style="color:#aaa; font-size:0.8em;">Add payroll</span></div>
-              <div class="agent-worker" style="border-color:#ce93d8; font-size:0.85em;">Facilities<br><span style="color:#aaa; font-size:0.8em;">Assign desk</span></div>
+              <div class="agent-worker text-085">HR<br><span class="text-080-muted">Create record</span></div>
+              <div class="agent-worker agent-worker-orange text-085">IT<br><span class="text-080-muted">Setup laptop</span></div>
+              <div class="agent-worker agent-worker-red text-085">Finance<br><span class="text-080-muted">Add payroll</span></div>
+              <div class="agent-worker" style="border-color:#ce93d8; font-size:0.85em;">Facilities<br><span class="text-080-muted">Assign desk</span></div>
             </div>
-            <div style="color:#888; font-size:1em; margin-top:4px;">&darr; all results merged via reducer &darr;</div>
+            <div style="color:#999; font-size:1em; margin-top:4px;">&darr; all results merged via reducer &darr;</div>
             <div style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2); border-radius:10px; padding:8px 20px; font-size:0.7em;">
               Onboarding Complete &mdash; welcome email sent
             </div>
@@ -653,6 +676,12 @@ Analyze both and pick the better answer with reasoning."""</span>
           <div class="section-number">03</div>
           <h2>Production Agent Patterns</h2>
           <p class="subtitle">Building reliable multi-agent systems at scale</p>
+          <aside class="notes">
+            Key teaching points: In production, use different model sizes for different roles — fast small models for routing, large models for complex reasoning.
+            Agent specialization: each agent has a focused system prompt, dedicated tools, and a clear responsibility boundary.
+            Ask the audience: "How would you monitor and debug a system where 5 agents are collaborating on a single request?"
+            This connects directly to tomorrow's observability session (Session 10).
+          </aside>
         </section>
 
         <!-- AGENT SPECIALIZATION -->
@@ -679,9 +708,9 @@ Analyze both and pick the better answer with reasoning."""</span>
               </ul>
             </div>
           </div>
-          <div class="code-block"><span class="comment"># Different models for different agents</span>
-fast_llm = ChatGroq(model=<span class="string">"llama-3.1-8b-instant"</span>)     <span class="comment"># triage (fast, cheap)</span>
-smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)  <span class="comment"># complex analysis</span></div>
+          <pre><code class="language-python" data-trim data-noescape># Different models for different agents
+fast_llm = ChatGroq(model="llama-3.1-8b-instant")     # triage (fast, cheap)
+smart_llm = ChatGroq(model="llama-3.3-70b-versatile")  # complex analysis</code></pre>
         </section>
 
         <!-- AGENT ROLES TABLE -->
@@ -733,18 +762,18 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             <div class="card card-accent">
               <h4>Round-Robin</h4>
               <p>Distribute requests evenly across equivalent worker agents. Simple but effective for uniform workloads.</p>
-              <div class="code-block" style="margin-top:8px;"><span class="keyword">def</span> <span class="func">round_robin</span>(state):
-    workers = [<span class="string">"w1"</span>, <span class="string">"w2"</span>, <span class="string">"w3"</span>]
-    idx = state[<span class="string">"req_count"</span>] % len(workers)
-    <span class="keyword">return</span> {<span class="string">"assigned"</span>: workers[idx]}</div>
+              <pre class="mt-8"><code class="language-python" data-trim data-noescape>def round_robin(state):
+    workers = ["w1", "w2", "w3"]
+    idx = state["req_count"] % len(workers)
+    return {"assigned": workers[idx]}</code></pre>
             </div>
             <div class="card card-green">
               <h4>Capability-Based</h4>
               <p>Route to the agent best equipped for the task. Different agents have different strengths.</p>
-              <div class="code-block" style="margin-top:8px;"><span class="keyword">def</span> <span class="func">capability_route</span>(state):
-    <span class="keyword">if</span> state[<span class="string">"complexity"</span>] > 7:
-        <span class="keyword">return</span> {<span class="string">"assigned"</span>: <span class="string">"expert"</span>}
-    <span class="keyword">return</span> {<span class="string">"assigned"</span>: <span class="string">"junior"</span>}</div>
+              <pre class="mt-8"><code class="language-python" data-trim data-noescape>def capability_route(state):
+    if state["complexity"] > 7:
+        return {"assigned": "expert"}
+    return {"assigned": "junior"}</code></pre>
             </div>
           </div>
           <div class="takeaway" style="margin-top:8px; font-size:0.6em;">
@@ -760,66 +789,66 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             <div class="box">Request</div>
             <div class="arrow">&rarr;</div>
             <div class="box box-green">Primary<br>Agent</div>
-            <div class="arrow" style="color:var(--accent4);">&mdash; fail &rarr;</div>
+            <div class="arrow color-red">&mdash; fail &rarr;</div>
             <div class="box box-orange">Fallback<br>Agent</div>
-            <div class="arrow" style="color:var(--accent4);">&mdash; fail &rarr;</div>
+            <div class="arrow color-red">&mdash; fail &rarr;</div>
             <div class="box box-red">Template<br>Response</div>
           </div>
-          <div class="code-block"><span class="keyword">def</span> <span class="func">primary_agent</span>(state):
-    <span class="keyword">try</span>:
-        response = smart_llm.invoke(state[<span class="string">"request"</span>])
-        <span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>}
-    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-        <span class="keyword">return</span> {<span class="string">"error"</span>: str(e), <span class="string">"audit"</span>: [<span class="string">f"Primary failed: {e}"</span>]}
+          <pre><code class="language-python" data-trim data-noescape>def primary_agent(state):
+    try:
+        response = smart_llm.invoke(state["request"])
+        return {"response": response.content, "error": ""}
+    except Exception as e:
+        return {"error": str(e), "audit": [f"Primary failed: {e}"]}
 
-<span class="keyword">def</span> <span class="func">fallback_agent</span>(state):
-    <span class="keyword">try</span>:
-        response = fast_llm.invoke(state[<span class="string">"request"</span>])  <span class="comment"># smaller, more reliable model</span>
-        <span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>}
-    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-        <span class="keyword">return</span> {<span class="string">"error"</span>: str(e)}
+def fallback_agent(state):
+    try:
+        response = fast_llm.invoke(state["request"])  # smaller, more reliable model
+        return {"response": response.content, "error": ""}
+    except Exception as e:
+        return {"error": str(e)}
 
-<span class="keyword">def</span> <span class="func">route_after_primary</span>(state) -> <span class="func">str</span>:
-    <span class="keyword">return</span> <span class="string">"fallback"</span> <span class="keyword">if</span> state[<span class="string">"error"</span>] <span class="keyword">else</span> <span class="string">"finalize"</span></div>
+def route_after_primary(state) -> str:
+    return "fallback" if state["error"] else "finalize"</code></pre>
         </section>
 
         <!-- PRODUCTION ARCHITECTURE DIAGRAM -->
         <section>
           <h2>Production Multi-Agent Architecture</h2>
           <div class="pattern-label">Complete UniGPS Support System</div>
-          <div class="agent-hub" style="font-size:0.55em;">
+          <div class="agent-hub text-xs">
             <div style="display:flex; gap:10px; align-items:center;">
-              <div style="background:rgba(255,255,255,0.05); border:2px solid #888; border-radius:10px; padding:10px 16px;">
+              <div style="background:rgba(255,255,255,0.05); border:2px solid #999; border-radius:10px; padding:10px 16px;">
                 User Request
               </div>
-              <span style="color:#888; font-size:1.4em;">&rarr;</span>
+              <span style="color:#999; font-size:1.4em;">&rarr;</span>
               <div style="background:rgba(79,195,247,0.1); border:2px solid var(--accent); border-radius:10px; padding:10px 16px;">
-                Router<br><span style="color:#aaa; font-size:0.8em;">fast model</span>
+                Router<br><span class="text-080-muted">fast model</span>
               </div>
             </div>
-            <div style="color:#888; font-size:1.4em;">&darr;</div>
+            <div style="color:#999; font-size:1.4em;">&darr;</div>
             <div class="agent-workers" style="gap:10px;">
-              <div class="agent-worker" style="font-size:0.9em;">
-                HR Agent<br><span style="color:#aaa; font-size:0.8em;">leave, policies</span>
+              <div class="agent-worker text-lg">
+                HR Agent<br><span class="text-080-muted">leave, policies</span>
               </div>
-              <div class="agent-worker agent-worker-orange" style="font-size:0.9em;">
-                Tech Agent<br><span style="color:#aaa; font-size:0.8em;">infra, dev</span>
+              <div class="agent-worker agent-worker-orange text-lg">
+                Tech Agent<br><span class="text-080-muted">infra, dev</span>
               </div>
-              <div class="agent-worker agent-worker-red" style="font-size:0.9em;">
-                Finance Agent<br><span style="color:#aaa; font-size:0.8em;">expenses, payroll</span>
+              <div class="agent-worker agent-worker-red text-lg">
+                Finance Agent<br><span class="text-080-muted">expenses, payroll</span>
               </div>
               <div class="agent-worker" style="border-color:#ce93d8; font-size:0.9em;">
-                Facilities Agent<br><span style="color:#aaa; font-size:0.8em;">desk, access</span>
+                Facilities Agent<br><span class="text-080-muted">desk, access</span>
               </div>
             </div>
-            <div style="color:#888; font-size:1.2em;">&darr;</div>
+            <div style="color:#999; font-size:1.2em;">&darr;</div>
             <div style="display:flex; gap:10px; align-items:center;">
               <div style="background:rgba(129,199,132,0.1); border:2px solid var(--accent2); border-radius:10px; padding:10px 16px;">
-                QA / Reviewer<br><span style="color:#aaa; font-size:0.8em;">validates response</span>
+                QA / Reviewer<br><span class="text-080-muted">validates response</span>
               </div>
-              <span style="color:#888; font-size:1.4em;">&rarr;</span>
+              <span style="color:#999; font-size:1.4em;">&rarr;</span>
               <div style="background:rgba(255,183,77,0.1); border:2px solid var(--accent3); border-radius:10px; padding:10px 16px;">
-                Response<br><span style="color:#aaa; font-size:0.8em;">+ audit trail</span>
+                Response<br><span class="text-080-muted">+ audit trail</span>
               </div>
             </div>
           </div>
@@ -917,7 +946,7 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             <p><span class="highlight-green">6.</span> Add <span class="highlight">observability</span> &mdash; latency, errors, token usage per agent</p>
             <p><span class="highlight-green">7.</span> Test agents <span class="highlight">independently</span> and as a system</p>
           </div>
-          <div class="takeaway" style="margin-top:16px;">
+          <div class="takeaway mt-16">
             Production multi-agent = specialization + fallbacks + observability. Start simple, add agents as needs grow.
           </div>
         </section>
@@ -981,11 +1010,11 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
         <h2>Questions?</h2>
         <br>
         <div class="card-grid">
-          <div class="card card-accent" style="text-align:center;">
+          <div class="card card-accent text-center">
             <h4>Concepts</h4>
             <p>Supervisor vs Peer-to-Peer?<br>Task decomposition strategies?<br>Conflict resolution?</p>
           </div>
-          <div class="card card-green" style="text-align:center;">
+          <div class="card card-green text-center">
             <h4>Implementation</h4>
             <p>Handoff patterns?<br>Fallback chains?<br>Agent specialization?</p>
           </div>
@@ -1000,19 +1029,19 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
       <!-- ==================== QUIZ: SESSION 9 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 9 Quiz</h1>
+          <h1 class="text-2xl">Session 9 Quiz</h1>
           <p style="font-size:0.8em; color:#ccc;">5 questions to test your multi-agent knowledge</p>
           <br>
           <div class="card-grid-3">
-            <div class="card card-accent" style="text-align:center;">
+            <div class="card card-accent text-center">
               <h4>Q1-Q2</h4>
               <p>Architectures</p>
             </div>
-            <div class="card card-green" style="text-align:center;">
+            <div class="card card-green text-center">
               <h4>Q3-Q4</h4>
               <p>Collaboration</p>
             </div>
-            <div class="card card-orange" style="text-align:center;">
+            <div class="card card-orange text-center">
               <h4>Q5</h4>
               <p>Production</p>
             </div>
@@ -1043,6 +1072,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
               <span>Replace the LLM with template responses</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Analyze the request and route it to the right worker agent.
+            The supervisor is the orchestrator. It classifies incoming requests and uses conditional edges to route to specialized workers. Workers handle domain-specific logic.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -1100,6 +1133,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
               <span>When you need strict audit trail compliance</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — When agents need to iteratively collaborate (research, write, review cycles).
+            Peer-to-peer shines when agents build on each other's work iteratively. Supervisor/worker is better for clear domain separation.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -1157,6 +1194,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
               <span>Round-robin load balancing</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — Arbitrator agent pattern.
+            The arbitrator is a dedicated agent that reviews all conflicting outputs and makes the final decision with reasoning. Voting picks the majority without analysis; priority always favors one agent.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -1214,6 +1255,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
               <span>The <code>interrupt_before</code> list in compile()</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — A handoff_to field set by the current agent.
+            Each agent sets handoff_to in state. The routing function reads this field and returns the target agent name, causing LangGraph's conditional edge to transfer control.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1272,6 +1317,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
               <span>Only 70B models support tool calling</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Routing is simple (classification), while specialists need deep reasoning — optimizes cost and latency.
+            Using a fast small model for routing and a large model for specialist tasks balances performance and cost. LangGraph does not require specific model sizes per node.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1312,15 +1361,15 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the architecture patterns and collaboration strategies. The hands-on labs will help solidify these concepts.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Good understanding of multi-agent systems! Ready to build supervisor/worker architectures.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>Expert level! You can architect production-grade multi-agent systems with confidence.</p>
             </div>
           </div>
@@ -1331,6 +1380,10 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1339,8 +1392,9 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1350,7 +1404,8 @@ smart_llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

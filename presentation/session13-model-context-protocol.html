@@ -6,6 +6,10 @@
   <title>Session 13: Model Context Protocol (MCP)</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,16 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Model Context Protocol<br>(MCP)</h1>
-        <p style="font-size:0.9em; color:#ccc;">Architecture &middot; Enterprise Use Cases &middot; Application Integration</p>
+        <p class="text-lg-dim">Architecture &middot; Enterprise Use Cases &middot; Application Integration</p>
         <p class="subtitle">Session 13 &middot; Day 5, Slot A</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Day 5 and Session 13. We have about 60-75 minutes. Over the past four days you have built agents, orchestrated them with LangGraph, and made them production-ready. Now we tackle the question: how do we give AI agents standardized access to enterprise tools and data? MCP is the answer -- think of it as USB-C for AI tool integration.
+        </aside>
       </section>
 
       <!-- ==================== DAY 5 CONTEXT ==================== -->
@@ -47,7 +54,7 @@
       <section>
         <h2>Session 12 Recap</h2>
         <p class="subtitle">Production Development &amp; Deployment</p>
-        <div class="card-grid" style="margin-top:20px;">
+        <div class="card-grid mt-20">
           <div class="card card-accent">
             <h4>FastAPI &amp; Health Probes</h4>
             <ul>
@@ -65,7 +72,7 @@
             </ul>
           </div>
         </div>
-        <div class="takeaway" style="margin-top:16px;">
+        <div class="takeaway mt-16">
           We can build and deploy AI applications. Now: how do we give agents <span class="highlight">standardized access</span> to enterprise tools and data?
         </div>
       </section>
@@ -96,6 +103,9 @@
         <div class="section-number">01</div>
         <h2>MCP Architecture</h2>
         <p class="subtitle">The Problem &middot; Protocol Spec &middot; Three Primitives &middot; Protocol Essentials</p>
+        <aside class="notes">
+          Ask the audience: how many different tools and data sources does your team use daily? Jira, GitHub, Slack, databases -- now imagine each AI agent needing a custom integration for each one. That is the N-times-M problem MCP solves. We will cover the protocol spec, the client-server model, and the three core primitives: Tools, Resources, and Prompts.
+        </aside>
       </section>
 
       <!-- THE PROBLEM MCP SOLVES -->
@@ -131,7 +141,7 @@
       <!-- MCP ARCHITECTURE -->
       <section>
         <h2>MCP Architecture</h2>
-        <p style="font-size:0.75em; color:#ccc;">One host can connect to multiple MCP servers simultaneously</p>
+        <p class="text-base-dim">One host can connect to multiple MCP servers simultaneously</p>
         <div style="margin:20px 0;">
           <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
@@ -204,7 +214,7 @@
       <section>
         <h2>Protocol Essentials</h2>
         <p style="font-size:0.7em; color:#ccc;">JSON-RPC 2.0 &middot; Transport &middot; Connection Lifecycle</p>
-        <div class="card-grid-3" style="margin-top:16px;">
+        <div class="card-grid-3 mt-16">
           <div class="card card-accent">
             <h4>JSON-RPC 2.0</h4>
             <ul>
@@ -240,7 +250,7 @@
       <!-- SECTION 01 SUMMARY -->
       <section>
         <h2>Section 01 Summary</h2>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>The Problem</h4>
             <p>N&times;M integration problem. MCP standardizes AI-tool communication into N+M with a single protocol.</p>
@@ -266,6 +276,9 @@
         <div class="section-number">02</div>
         <h2>Enterprise MCP Use Cases</h2>
         <p class="subtitle">Fortune 500 Adoption &middot; Data Access &middot; Developer Productivity &middot; ROI</p>
+        <aside class="notes">
+          Now that you understand the architecture, let us see how enterprises actually use it. The three big categories are data access (analysts querying databases via natural language), developer productivity (one agent bridging GitHub, Jira, and CI/CD), and knowledge operations (unified customer context from multiple systems). Ask: which of these use cases would deliver the most value in your organization?
+        </aside>
       </section>
 
       <!-- WHY FORTUNE 500 ADOPT MCP -->
@@ -274,7 +287,7 @@
         <div class="analogy">
           In the 2000s, enterprises adopted ESBs (Enterprise Service Buses) to standardize application integration. MCP is the <strong>ESB for the AI era</strong> &mdash; one protocol connecting all AI agents to all enterprise tools and data.
         </div>
-        <div class="card-grid" style="margin-top:16px;">
+        <div class="card-grid mt-16">
           <div class="card card-accent">
             <h4>The Enterprise Problem</h4>
             <ul>
@@ -301,7 +314,7 @@
       <section>
         <h2>Use Case 1: Enterprise Data Access</h2>
         <p class="pattern-label">Analysts Query Data in Natural Language</p>
-        <div class="card-grid-3" style="margin-top:12px;">
+        <div class="card-grid-3 mt-12">
           <div class="card card-accent">
             <h4>Postgres MCP Server</h4>
             <ul>
@@ -339,7 +352,7 @@
       <section>
         <h2>Use Case 2: Developer Productivity</h2>
         <p class="pattern-label">25% Productivity Gains Reported</p>
-        <div class="card-grid-3" style="margin-top:12px;">
+        <div class="card-grid-3 mt-12">
           <div class="card card-accent">
             <h4>GitHub MCP Server</h4>
             <ul>
@@ -377,7 +390,7 @@
       <section>
         <h2>Use Case 3: Knowledge &amp; Customer Ops</h2>
         <p class="pattern-label">Cross-System Intelligence</p>
-        <div class="card-grid-3" style="margin-top:12px;">
+        <div class="card-grid-3 mt-12">
           <div class="card card-accent">
             <h4>Confluence MCP Server</h4>
             <ul>
@@ -414,7 +427,7 @@
       <!-- MULTI-TOOL AGENT PATTERN -->
       <section>
         <h2>The Multi-Tool Agent Pattern</h2>
-        <p style="font-size:0.75em; color:#ccc;">One AI agent connecting to multiple MCP servers for cross-domain intelligence</p>
+        <p class="text-base-dim">One AI agent connecting to multiple MCP servers for cross-domain intelligence</p>
         <div style="margin:20px 0;">
           <div style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:6px;">
@@ -424,7 +437,7 @@
             </div>
             <div class="arrow">&larr;</div>
             <div class="box box-large" style="border-color:var(--accent); min-width:160px;">
-              <strong style="color:var(--accent);">AI Agent</strong><br>
+              <strong class="color-accent">AI Agent</strong><br>
               <span style="font-size:0.8em; color:#aaa;">MCP Client</span>
             </div>
             <div class="arrow">&rarr;</div>
@@ -483,7 +496,7 @@
       <!-- SECTION 02 SUMMARY -->
       <section>
         <h2>Section 02 Summary</h2>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>Data Access</h4>
             <p>Analysts query Postgres, Snowflake, BigQuery via natural language. Data teams shift to governance.</p>
@@ -509,12 +522,15 @@
         <div class="section-number">03</div>
         <h2>Consuming MCP in Applications</h2>
         <p class="subtitle">Ecosystem &middot; Client Config &middot; LangChain Bridge &middot; Security</p>
+        <aside class="notes">
+          This is the practical section -- how to actually use MCP in your code. There are over 1,000 MCP servers already available in the ecosystem. We will cover how to configure MCP clients with JSON config files, how langchain-mcp-adapters bridges MCP tools into LangChain agents, and critically, the security and governance requirements for enterprise deployment. Stress that MCP servers can execute code and query databases, so defense in depth is essential.
+        </aside>
       </section>
 
       <!-- MCP ECOSYSTEM -->
       <section>
         <h2>MCP Ecosystem</h2>
-        <p style="font-size:0.75em; color:#ccc;">1,000+ MCP servers available &mdash; open-source and vendor-provided</p>
+        <p class="text-base-dim">1,000+ MCP servers available &mdash; open-source and vendor-provided</p>
         <table class="compare-table">
           <tr>
             <th>Category</th>
@@ -564,31 +580,31 @@
         <div class="card-grid">
           <div class="card card-accent" style="padding:12px;">
             <h4>Claude Desktop Config</h4>
-            <div class="code-block" style="font-size:0.5em; margin-top:6px;">{
-  <span class="string">"mcpServers"</span>: {
-    <span class="string">"postgres"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>,
-        <span class="string">"@modelcontextprotocol/server-postgres"</span>,
-        <span class="string">"postgresql://localhost/mydb"</span>]
+            <pre style="font-size:0.55em; margin-top:6px;"><code class="language-json" data-trim data-noescape>{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://localhost/mydb"]
     }
   }
-}</div>
+}</code></pre>
           </div>
           <div class="card card-green" style="padding:12px;">
             <h4>Claude Code Config</h4>
-            <div class="code-block" style="font-size:0.5em; margin-top:6px;">{
-  <span class="string">"mcpServers"</span>: {
-    <span class="string">"github"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>,
-        <span class="string">"@modelcontextprotocol/server-github"</span>],
-      <span class="string">"env"</span>: {
-        <span class="string">"GITHUB_TOKEN"</span>: <span class="string">"ghp_..."</span>
+            <pre style="font-size:0.55em; margin-top:6px;"><code class="language-json" data-trim data-noescape>{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y",
+        "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "ghp_..."
       }
     }
   }
-}</div>
+}</code></pre>
           </div>
         </div>
         <div class="takeaway" style="margin-top:10px; font-size:0.6em;">
@@ -599,53 +615,53 @@
       <!-- MULTI-SERVER CONFIG -->
       <section>
         <h2>Multi-Server Configuration</h2>
-        <p style="font-size:0.75em; color:#ccc;">Connect one agent to five MCP servers &mdash; each with its own scope and credentials</p>
-        <div class="code-block">{
-  <span class="string">"mcpServers"</span>: {
-    <span class="string">"postgres"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-postgres"</span>, <span class="string">"$DB_URL"</span>]
+        <p class="text-base-dim">Connect one agent to five MCP servers &mdash; each with its own scope and credentials</p>
+        <pre><code class="language-json" data-trim data-noescape>{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres", "$DB_URL"]
     },
-    <span class="string">"github"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-github"</span>],
-      <span class="string">"env"</span>: {<span class="string">"GITHUB_TOKEN"</span>: <span class="string">"$GH_TOKEN"</span>}
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {"GITHUB_TOKEN": "$GH_TOKEN"}
     },
-    <span class="string">"slack"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-slack"</span>],
-      <span class="string">"env"</span>: {<span class="string">"SLACK_BOT_TOKEN"</span>: <span class="string">"$SLACK_TOKEN"</span>}
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {"SLACK_BOT_TOKEN": "$SLACK_TOKEN"}
     },
-    <span class="string">"filesystem"</span>: {
-      <span class="string">"command"</span>: <span class="string">"npx"</span>,
-      <span class="string">"args"</span>: [<span class="string">"-y"</span>, <span class="string">"@modelcontextprotocol/server-filesystem"</span>, <span class="string">"/projects"</span>]
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/projects"]
     },
-    <span class="string">"confluence"</span>: {
-      <span class="string">"url"</span>: <span class="string">"https://mcp-gateway.internal/confluence/sse"</span>
+    "confluence": {
+      "url": "https://mcp-gateway.internal/confluence/sse"
     }
   }
-}</div>
+}</code></pre>
       </section>
 
       <!-- BRIDGING MCP WITH LANGCHAIN -->
       <section>
         <h2>Bridging MCP with LangChain</h2>
-        <p style="font-size:0.75em; color:#ccc;">Use <code>langchain-mcp-adapters</code> to bring MCP tools into LangChain agents</p>
-        <div class="code-block"><span class="comment"># pip install langchain-mcp-adapters</span>
-<span class="keyword">from</span> langchain_mcp_adapters.client <span class="keyword">import</span> MultiServerMCPClient
-<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+        <p class="text-base-dim">Use <code>langchain-mcp-adapters</code> to bring MCP tools into LangChain agents</p>
+        <pre><code class="language-python" data-trim data-noescape># pip install langchain-mcp-adapters
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
 
-<span class="comment"># Connect to MCP servers</span>
-<span class="keyword">async with</span> MultiServerMCPClient({
-    <span class="string">"math"</span>:    {<span class="string">"command"</span>: <span class="string">"python"</span>, <span class="string">"args"</span>: [<span class="string">"math_server.py"</span>]},
-    <span class="string">"weather"</span>: {<span class="string">"url"</span>: <span class="string">"http://localhost:8080/sse"</span>},
-}) <span class="keyword">as</span> client:
-    tools = client.get_tools()  <span class="comment"># Auto-converts MCP tools to LangChain tools</span>
+# Connect to MCP servers
+async with MultiServerMCPClient({
+    "math":    {"command": "python", "args": ["math_server.py"]},
+    "weather": {"url": "http://localhost:8080/sse"},
+}) as client:
+    tools = client.get_tools()  # Auto-converts MCP tools to LangChain tools
 
     agent = create_react_agent(llm, tools)
-    result = <span class="keyword">await</span> agent.ainvoke({
-        <span class="string">"messages"</span>: [(<span class="string">"user"</span>, <span class="string">"What's 2+2 and weather in SF?"</span>)]
-    })</div>
+    result = await agent.ainvoke({
+        "messages": [("user", "What's 2+2 and weather in SF?")]
+    })</code></pre>
         <div class="takeaway">
           <span class="highlight">MCP for tool standardization</span> + <span class="highlight-green">LangChain/LangGraph for orchestration</span>. The adapter bridges both worlds &mdash; MCP servers become LangChain tools automatically.
         </div>
@@ -657,7 +673,7 @@
         <div class="warning">
           MCP servers can execute code, query databases, and call external APIs. Enterprise deployment demands defense in depth.
         </div>
-        <div class="card-grid-3" style="margin-top:16px;">
+        <div class="card-grid-3 mt-16">
           <div class="card card-accent">
             <h4>Input Validation</h4>
             <ul>
@@ -743,7 +759,7 @@
       <!-- SECTION 03 SUMMARY -->
       <section>
         <h2>Section 03 Summary</h2>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>Ecosystem</h4>
             <p>1,000+ MCP servers for databases, dev tools, cloud, knowledge, communication. Build vs buy decision.</p>
@@ -767,37 +783,37 @@
         <h2>Hands-On Labs</h2>
         <h3 style="margin-bottom:8px;">8 labs covering MCP architecture, enterprise use &amp; integration</h3>
         <div class="card-grid" style="gap:8px;">
-          <div class="card card-accent" style="padding:8px;">
+          <div class="card card-accent p-8">
             <h4>Lab 01: MCP Architecture</h4>
-            <p style="font-size:0.5em;">Hosts, Clients, Servers, Transports, three core primitives</p>
+            <p class="text-xs">Hosts, Clients, Servers, Transports, three core primitives</p>
           </div>
-          <div class="card card-green" style="padding:8px;">
+          <div class="card card-green p-8">
             <h4>Lab 02: Enterprise Use Cases</h4>
-            <p style="font-size:0.5em;">Map business functions to MCP servers, ROI, prioritization</p>
+            <p class="text-xs">Map business functions to MCP servers, ROI, prioritization</p>
           </div>
-          <div class="card card-orange" style="padding:8px;">
+          <div class="card card-orange p-8">
             <h4>Lab 03: Ecosystem Discovery</h4>
-            <p style="font-size:0.5em;">Catalog MCP servers, match to enterprise needs, evaluate readiness</p>
+            <p class="text-xs">Catalog MCP servers, match to enterprise needs, evaluate readiness</p>
           </div>
-          <div class="card card-red" style="padding:8px;">
+          <div class="card card-red p-8">
             <h4>Lab 04: Client Configuration</h4>
-            <p style="font-size:0.5em;">Build config JSON, multi-server config, validator, role-based</p>
+            <p class="text-xs">Build config JSON, multi-server config, validator, role-based</p>
           </div>
-          <div class="card card-accent" style="padding:8px;">
+          <div class="card card-accent p-8">
             <h4>Lab 05: Client Workflows</h4>
-            <p style="font-size:0.5em;">Client lifecycle, enterprise workflows, tool routing</p>
+            <p class="text-xs">Client lifecycle, enterprise workflows, tool routing</p>
           </div>
-          <div class="card card-green" style="padding:8px;">
+          <div class="card card-green p-8">
             <h4>Lab 06: LangChain Bridge</h4>
-            <p style="font-size:0.5em;">MCP-to-LangChain adapters, multi-tool bridge, agent tool selection</p>
+            <p class="text-xs">MCP-to-LangChain adapters, multi-tool bridge, agent tool selection</p>
           </div>
-          <div class="card card-orange" style="padding:8px;">
+          <div class="card card-orange p-8">
             <h4>Lab 07: Security &amp; Governance</h4>
-            <p style="font-size:0.5em;">Input validation, role-based access control, audit logging</p>
+            <p class="text-xs">Input validation, role-based access control, audit logging</p>
           </div>
-          <div class="card card-red" style="padding:8px;">
+          <div class="card card-red p-8">
             <h4>Lab 08: Challenge</h4>
-            <p style="font-size:0.5em;">Full enterprise MCP agent: catalog + config + security + audit</p>
+            <p class="text-xs">Full enterprise MCP agent: catalog + config + security + audit</p>
           </div>
         </div>
       </section>
@@ -807,17 +823,17 @@
         <h2>Session 13 Recap</h2>
         <div class="flow-step">
           <span class="flow-num">1</span>
-          <div><strong style="color:var(--accent);">MCP Architecture</strong> &mdash; Protocol spec, JSON-RPC 2.0, client-server model, three primitives (Tools, Resources, Prompts)</div>
+          <div><strong class="color-accent">MCP Architecture</strong> &mdash; Protocol spec, JSON-RPC 2.0, client-server model, three primitives (Tools, Resources, Prompts)</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-green">2</span>
-          <div><strong style="color:var(--accent2);">Enterprise Use Cases</strong> &mdash; Data access, developer productivity, knowledge ops, multi-tool agents, ROI</div>
+          <div><strong class="color-green">Enterprise Use Cases</strong> &mdash; Data access, developer productivity, knowledge ops, multi-tool agents, ROI</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-orange">3</span>
-          <div><strong style="color:var(--accent3);">Consuming MCP</strong> &mdash; 1,000+ server ecosystem, client configuration, LangChain bridge, security &amp; governance</div>
+          <div><strong class="color-orange">Consuming MCP</strong> &mdash; 1,000+ server ecosystem, client configuration, LangChain bridge, security &amp; governance</div>
         </div>
-        <div class="takeaway" style="margin-top:20px;">
+        <div class="takeaway mt-20">
           MCP is the <span class="highlight">USB-C of AI tool integration</span>. Fortune 500 companies adopt it to connect any AI agent to any enterprise tool via one standard protocol.
         </div>
       </section>
@@ -826,7 +842,7 @@
       <section>
         <h2>What&rsquo;s Next</h2>
         <h3>Session 14: AI Safety &amp; Guardrails</h3>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>Attack Detection</h4>
             <ul>
@@ -858,7 +874,7 @@
       <section>
         <h1>Questions?</h1>
         <br>
-        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss MCP enterprise use cases<br>before moving to AI Safety</p>
+        <p class="text-lg-dim">Let&rsquo;s discuss MCP enterprise use cases<br>before moving to AI Safety</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
           <h4>Session 13 Complete</h4>
@@ -873,7 +889,7 @@
       <section>
       <!-- Quiz title slide -->
       <section>
-        <h1 style="font-size:2.5em;">Session 13 Quiz</h1>
+        <h1 class="text-2xl">Session 13 Quiz</h1>
         <p class="subtitle">5 quick questions &mdash; test your MCP knowledge</p>
       </section>
 
@@ -926,6 +942,9 @@
         <div class="answer-explain">
           <strong>B &mdash; N+M instead of N&times;M.</strong> Like USB-C standardized device charging, MCP standardizes AI-tool communication. Each tool builds one MCP server, each agent builds one MCP client, and they all interoperate.
         </div>
+        <aside class="notes">
+          Correct answer is B. The USB-C analogy works well here. Without a standard, if you have 5 AI agents and 10 tools, you need 50 custom integrations. With MCP, each agent implements one MCP client and each tool implements one MCP server, for a total of 15 integrations. That is the core value proposition.
+        </aside>
       </section>
 
       <!-- Q2 Question -->
@@ -977,6 +996,9 @@
         <div class="answer-explain">
           <strong>A &mdash; Enterprise Data Access.</strong> Database MCP servers (Postgres, Snowflake, BigQuery) let non-technical staff query data through AI assistants using natural language, eliminating bottlenecks with data teams.
         </div>
+        <aside class="notes">
+          Correct answer is A. Developer Productivity is about GitHub, Jira, and CI/CD tools. Customer Operations is about Salesforce, Zendesk, and Confluence. Enterprise Data Access specifically enables business analysts to self-serve on Snowflake and BigQuery via natural language, reducing dependence on data engineering teams.
+        </aside>
       </section>
 
       <!-- Q3 Question -->
@@ -1028,6 +1050,9 @@
         <div class="answer-explain">
           <strong>A &mdash; Local stdio transport.</strong> When config specifies <code>command</code> + <code>args</code>, the MCP client spawns the server as a local subprocess and communicates via stdin/stdout. For remote servers, you use <code>"url"</code> instead (SSE transport).
         </div>
+        <aside class="notes">
+          Correct answer is A. This is an important config literacy question. The command/args pattern means the MCP client will spawn the server process locally and communicate via standard input/output. The alternative is the url pattern, which connects to a remote server over SSE (Server-Sent Events). Both use the same JSON-RPC 2.0 protocol underneath.
+        </aside>
       </section>
 
       <!-- Q4 Question -->
@@ -1079,6 +1104,9 @@
         <div class="answer-explain">
           <strong>C &mdash; Auto-converts MCP tools to LangChain tools.</strong> The <code>MultiServerMCPClient</code> connects to MCP servers, discovers their tools, and exposes them as LangChain <code>Tool</code> objects that work seamlessly with <code>create_react_agent</code>.
         </div>
+        <aside class="notes">
+          Correct answer is C. The adapter does not replace LangChain tools or convert agents into MCP servers. It bridges the two worlds: MCP handles standardized tool discovery and invocation, while LangChain and LangGraph handle orchestration logic. The key method is client.get_tools(), which auto-converts every discovered MCP tool into a LangChain Tool object.
+        </aside>
       </section>
 
       <!-- Q5 Question -->
@@ -1130,6 +1158,9 @@
         <div class="answer-explain">
           <strong>C &mdash; Defense in depth.</strong> Enterprise MCP requires role-based access (analysts get data servers, devs get code servers), input validation on all tool arguments, and audit logging of every tool call for compliance (SOC2, GDPR).
         </div>
+        <aside class="notes">
+          Correct answer is C. Giving all users access to all servers is a security nightmare. Using only stdio limits you to local tools. And relying on the AI model to decide what is safe is the definition of excessive agency from the OWASP Top 10. The correct approach is defense in depth: role-based access, input validation, and comprehensive audit logging for every tool call.
+        </aside>
       </section>
 
       </section> <!-- end quiz wrapper -->
@@ -1138,6 +1169,10 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1145,10 +1180,21 @@
       showSlideNumber: 'all',
       transition: 'slide',
       transitionSpeed: 'default',
-      width: "100%",
-      height: "100%",
-      margin: 0.02,
       center: false,
+      progress: true,
+      width: 1920,
+      height: 1080,
+      margin: 0.02,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

@@ -6,6 +6,10 @@
   <title>Session 8: Advanced LangGraph Workflows</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,29 +19,37 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Advanced LangGraph Workflows</h1>
-        <p style="font-size:0.9em; color:#ccc;">Multi-Branch &middot; Parallel Execution &middot; Error Handling &middot; Advanced HITL</p>
+        <p class="text-lg-dim">Multi-Branch &middot; Parallel Execution &middot; Error Handling &middot; Advanced HITL</p>
         <p class="subtitle">Session 8 &middot; Day 3, Slot B</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 8 — Advanced LangGraph Workflows. This is Day 3, Slot B, approximately 60-75 minutes.
+          Building on Session 7's foundations, we tackle production-grade patterns.
+          Four sections: (1) Complex Workflow Patterns — multi-branch, parallel execution, advanced routing;
+          (2) State Management Deep Dive — custom reducers, persistence backends, state recovery;
+          (3) Error Handling and Retry Logic — graceful failures, fallbacks, circuit breakers;
+          (4) Advanced Human-in-the-Loop — multi-gate approval, user input collection, timeout, escalation.
+        </aside>
       </section>
 
       <!-- ==================== DAY 3 CONTEXT ==================== -->
       <section>
         <h2>Day 3: Advanced Agents &amp; Production</h2>
-        <div class="pipe-flow" style="margin-top:20px;">
+        <div class="pipe-flow mt-20">
           <div class="pipe-box">
-            <strong>Session 7</strong><br><span style="font-size:0.85em;">LangGraph Workflows</span>
+            <strong>Session 7</strong><br><span class="text-085">LangGraph Workflows</span>
           </div>
           <span class="pipe-sym">&rarr;</span>
           <div class="pipe-box pipe-box-green" style="border-width:3px;">
-            <strong>Session 8</strong><br><span style="font-size:0.85em;">Adv. LangGraph</span>
+            <strong>Session 8</strong><br><span class="text-085">Adv. LangGraph</span>
           </div>
           <span class="pipe-sym">&rarr;</span>
           <div class="pipe-box pipe-box-orange">
-            <strong>Session 9</strong><br><span style="font-size:0.85em;">Multi-Agent Systems</span>
+            <strong>Session 9</strong><br><span class="text-085">Multi-Agent Systems</span>
           </div>
         </div>
         <div class="analogy">
@@ -80,32 +92,32 @@
             <th>Code</th>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent);">State</strong></td>
+            <td><strong class="color-accent">State</strong></td>
             <td>TypedDict defines the data schema</td>
             <td><code>class State(TypedDict)</code></td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent2);">Nodes</strong></td>
+            <td><strong class="color-green">Nodes</strong></td>
             <td>Functions that read &amp; update state</td>
             <td><code>graph.add_node("name", fn)</code></td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent3);">Edges</strong></td>
+            <td><strong class="color-orange">Edges</strong></td>
             <td>Connections (fixed, conditional, cycles)</td>
             <td><code>graph.add_conditional_edges()</code></td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent4);">Reducers</strong></td>
+            <td><strong class="color-red">Reducers</strong></td>
             <td>Append instead of overwrite</td>
             <td><code>Annotated[list, add]</code></td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent);">Checkpointing</strong></td>
+            <td><strong class="color-accent">Checkpointing</strong></td>
             <td>Save state after every node</td>
             <td><code>MemorySaver()</code></td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent2);">HITL</strong></td>
+            <td><strong class="color-green">HITL</strong></td>
             <td>Pause, inspect, modify, resume</td>
             <td><code>interrupt_before=["node"]</code></td>
           </tr>
@@ -121,6 +133,12 @@
           <div class="section-number">01</div>
           <h2>Complex Workflow Patterns</h2>
           <p class="subtitle">Multi-Branch &middot; Parallel Execution &middot; Advanced Routing</p>
+          <aside class="notes">
+            Key teaching points: Multi-branch graphs split work across parallel paths and join results.
+            Parallel execution with Send() fans out work to multiple nodes simultaneously.
+            Ask the audience: "Think of a use case where you need to run 3 analyses in parallel and merge the results — how would you design that graph?"
+            Emphasize the importance of reducers when parallel nodes write to the same state field.
+          </aside>
         </section>
 
         <!-- MULTI-BRANCH GRAPHS -->
@@ -133,7 +151,7 @@
               <span class="branch-arrow">&rarr;</span>
               <div class="branch-node branch-node-green"><strong>classify</strong></div>
             </div>
-            <div class="branch-row" style="margin-top:6px;">
+            <div class="branch-row mt-6">
               <span class="branch-arrow">&swarr;</span>
               <span style="width:60px; display:inline-block;"></span>
               <span class="branch-arrow">&darr;</span>
@@ -147,7 +165,7 @@
               <span style="width:20px;"></span>
               <div class="branch-node branch-node-orange"><strong>Finance</strong></div>
             </div>
-            <div class="branch-row" style="margin-top:6px;">
+            <div class="branch-row mt-6">
               <span class="branch-arrow">&searr;</span>
               <span style="width:60px; display:inline-block;"></span>
               <span class="branch-arrow">&darr;</span>
@@ -169,25 +187,25 @@
         <!-- FAN-OUT CODE -->
         <section>
           <h2>Fan-Out &amp; Convergence</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="comment"># Fan-out: one node routes to many</span>
-graph.<span class="func">add_conditional_edges</span>(
-    <span class="string">"classify"</span>,
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Fan-out: one node routes to many
+graph.add_conditional_edges(
+    "classify",
     route_fn,
-    {<span class="string">"hr"</span>: <span class="string">"handle_hr"</span>, <span class="string">"tech"</span>: <span class="string">"handle_tech"</span>, <span class="string">"finance"</span>: <span class="string">"handle_finance"</span>}
+    {"hr": "handle_hr", "tech": "handle_tech", "finance": "handle_finance"}
 )
 
-<span class="comment"># Convergence: all branches lead to one node</span>
-graph.<span class="func">add_edge</span>(<span class="string">"handle_hr"</span>, <span class="string">"format_response"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"handle_tech"</span>, <span class="string">"format_response"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"handle_finance"</span>, <span class="string">"format_response"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"format_response"</span>, END)</div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+# Convergence: all branches lead to one node
+graph.add_edge("handle_hr", "format_response")
+graph.add_edge("handle_tech", "format_response")
+graph.add_edge("handle_finance", "format_response")
+graph.add_edge("format_response", END)</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>Fan-Out</h4>
               <p>One node &rarr; multiple possible next nodes.<br>
               Uses <code>add_conditional_edges()</code> with routing function.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Convergence</h4>
               <p>Multiple nodes &rarr; one shared next node.<br>
               Uses multiple <code>add_edge()</code> calls pointing to the same target.</p>
@@ -199,7 +217,7 @@ graph.<span class="func">add_edge</span>(<span class="string">"format_response"<
         <section>
           <h2>Parallel Node Execution</h2>
           <h3>Run independent nodes simultaneously</h3>
-          <div class="pipe-flow" style="margin-top:14px;">
+          <div class="pipe-flow mt-14">
             <div class="pipe-box"><strong>START</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green"><strong>input</strong></div>
@@ -214,15 +232,15 @@ graph.<span class="func">add_edge</span>(<span class="string">"format_response"<
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35;"><span class="comment"># Send "input" to three parallel nodes</span>
-graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_spam"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_sentiment"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"input"</span>, <span class="string">"check_language"</span>)
+          <pre style="font-size:0.52em; line-height:1.35;"><code class="language-python" data-trim data-noescape># Send "input" to three parallel nodes
+graph.add_edge("input", "check_spam")
+graph.add_edge("input", "check_sentiment")
+graph.add_edge("input", "check_language")
 
-<span class="comment"># All three converge to "merge"</span>
-graph.<span class="func">add_edge</span>(<span class="string">"check_spam"</span>, <span class="string">"merge_results"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"check_sentiment"</span>, <span class="string">"merge_results"</span>)
-graph.<span class="func">add_edge</span>(<span class="string">"check_language"</span>, <span class="string">"merge_results"</span>)</div>
+# All three converge to "merge"
+graph.add_edge("check_spam", "merge_results")
+graph.add_edge("check_sentiment", "merge_results")
+graph.add_edge("check_language", "merge_results")</code></pre>
           <div class="takeaway">
             When multiple edges leave a node, LangGraph can execute them <strong>in parallel</strong>.
             Use <strong>reducers</strong> (Annotated[list, add]) in the merge node so results accumulate
@@ -233,23 +251,23 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
         <!-- PARALLEL + REDUCER -->
         <section>
           <h2>Parallel + Reducer Pattern</h2>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
-<span class="keyword">from</span> operator <span class="keyword">import</span> add
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
+from operator import add
 
-<span class="keyword">class</span> <span class="func">ReviewState</span>(TypedDict):
-    content: <span class="keyword">str</span>
-    checks: Annotated[<span class="keyword">list</span>, add]  <span class="comment"># ← reducer: each parallel node appends</span>
-    approved: <span class="keyword">bool</span>
+class ReviewState(TypedDict):
+    content: str
+    checks: Annotated[list, add]  # ← reducer: each parallel node appends
+    approved: bool
 
-<span class="keyword">def</span> <span class="func">check_spam</span>(state) -> <span class="keyword">dict</span>:
-    <span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"spam"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}
+def check_spam(state) -> dict:
+    return {"checks": [{"type": "spam", "passed": True}]}
 
-<span class="keyword">def</span> <span class="func">check_sentiment</span>(state) -> <span class="keyword">dict</span>:
-    <span class="keyword">return</span> {<span class="string">"checks"</span>: [{<span class="string">"type"</span>: <span class="string">"sentiment"</span>, <span class="string">"passed"</span>: <span class="keyword">True</span>}]}
+def check_sentiment(state) -> dict:
+    return {"checks": [{"type": "sentiment", "passed": True}]}
 
-<span class="keyword">def</span> <span class="func">merge_results</span>(state) -> <span class="keyword">dict</span>:
-    all_passed = <span class="func">all</span>(c[<span class="string">"passed"</span>] <span class="keyword">for</span> c <span class="keyword">in</span> state[<span class="string">"checks"</span>])
-    <span class="keyword">return</span> {<span class="string">"approved"</span>: all_passed}</div>
+def merge_results(state) -> dict:
+    all_passed = all(c["passed"] for c in state["checks"])
+    return {"approved": all_passed}</code></pre>
           <div class="error-callout">
             Without a reducer on <code>checks</code>, only the <em>last</em> parallel node's result would
             survive. Always use <code>Annotated[list, add]</code> for fields that receive parallel writes.
@@ -259,30 +277,30 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
         <!-- ADVANCED ROUTING STRATEGIES -->
         <section>
           <h2>Advanced Routing Strategies</h2>
-          <div class="card-grid-3" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+          <div class="card-grid-3 mt-10">
+            <div class="card card-accent p-10">
               <div class="pattern-label">Pattern 1</div>
               <h4>Priority Router</h4>
               <p>Check urgency first, then category. High-priority skips normal flow.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> state[<span class="string">"urgent"</span>]:
-  <span class="keyword">return</span> <span class="string">"escalate"</span>
-<span class="keyword">return</span> state[<span class="string">"category"</span>]</div>
+              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if state["urgent"]:
+  return "escalate"
+return state["category"]</code></pre>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <div class="pattern-label">Pattern 2</div>
               <h4>Multi-Condition</h4>
               <p>Combine multiple state fields into a routing decision.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><span class="keyword">if</span> cat == <span class="string">"finance"</span>
-  <span class="keyword">and</span> amt > 5000:
-  <span class="keyword">return</span> <span class="string">"manager"</span></div>
+              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if cat == "finance"
+  and amt > 5000:
+  return "manager"</code></pre>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <div class="pattern-label">Pattern 3</div>
               <h4>LLM Router</h4>
               <p>Let the LLM decide the route based on content analysis.</p>
-              <div class="code-block" style="font-size:0.82em; margin:8px 0 0 0; padding:8px;">resp = llm.invoke(
-  <span class="string">"Route this..."</span>)
-<span class="keyword">return</span> resp.content</div>
+              <pre style="font-size:0.82em; margin:8px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>resp = llm.invoke(
+  "Route this...")
+return resp.content</code></pre>
             </div>
           </div>
         </section>
@@ -291,17 +309,17 @@ graph.<span class="func">add_edge</span>(<span class="string">"check_language"</
         <section>
           <h2>Nested Routing</h2>
           <h3>Multi-level decision trees</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># Level 1: Category routing</span>
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"classify"</span>, route_category,
-    {<span class="string">"hr"</span>: <span class="string">"hr_triage"</span>, <span class="string">"tech"</span>: <span class="string">"tech_triage"</span>, <span class="string">"finance"</span>: <span class="string">"finance_triage"</span>})
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Level 1: Category routing
+graph.add_conditional_edges("classify", route_category,
+    {"hr": "hr_triage", "tech": "tech_triage", "finance": "finance_triage"})
 
-<span class="comment"># Level 2: Sub-routing within HR</span>
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"hr_triage"</span>, route_hr_type,
-    {<span class="string">"leave"</span>: <span class="string">"handle_leave"</span>, <span class="string">"benefits"</span>: <span class="string">"handle_benefits"</span>, <span class="string">"other"</span>: <span class="string">"handle_hr_other"</span>})
+# Level 2: Sub-routing within HR
+graph.add_conditional_edges("hr_triage", route_hr_type,
+    {"leave": "handle_leave", "benefits": "handle_benefits", "other": "handle_hr_other"})
 
-<span class="comment"># Level 2: Sub-routing within Tech</span>
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech_triage"</span>, route_tech_type,
-    {<span class="string">"bug"</span>: <span class="string">"handle_bug"</span>, <span class="string">"deploy"</span>: <span class="string">"handle_deploy"</span>, <span class="string">"infra"</span>: <span class="string">"handle_infra"</span>})</div>
+# Level 2: Sub-routing within Tech
+graph.add_conditional_edges("tech_triage", route_tech_type,
+    {"bug": "handle_bug", "deploy": "handle_deploy", "infra": "handle_infra"})</code></pre>
           <div class="analogy">
             A company phone system: "Press 1 for HR" &rarr; "Press 1 for leave, 2 for benefits."
             Each <code>add_conditional_edges()</code> is one level of the decision tree.
@@ -315,30 +333,36 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech
           <div class="section-number">02</div>
           <h2>State Management Deep Dive</h2>
           <p class="subtitle">Custom Reducers &middot; Persistence Backends &middot; State Recovery</p>
+          <aside class="notes">
+            Key teaching points: Custom reducers go beyond operator.add — sliding windows, deduplication, dictionary merging.
+            Persistence backends: MemorySaver for development, SqliteSaver/PostgresSaver for production.
+            Ask the audience: "Why is it important that switching persistence backends requires only one line of code change?"
+            Answer: It decouples graph logic from infrastructure, making testing and deployment easier.
+          </aside>
         </section>
 
         <!-- CUSTOM REDUCERS -->
         <section>
           <h2>Beyond <code>operator.add</code></h2>
           <h3>Custom reducer functions</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> typing <span class="keyword">import</span> TypedDict, Annotated
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from typing import TypedDict, Annotated
 
-<span class="comment"># Custom reducer: keep only last N items</span>
-<span class="keyword">def</span> <span class="func">keep_last_5</span>(current: <span class="keyword">list</span>, new: <span class="keyword">list</span>) -> <span class="keyword">list</span>:
-    <span class="keyword">return</span> (current + new)[-5:]
+# Custom reducer: keep only last N items
+def keep_last_5(current: list, new: list) -> list:
+    return (current + new)[-5:]
 
-<span class="comment"># Custom reducer: merge dictionaries</span>
-<span class="keyword">def</span> <span class="func">merge_dicts</span>(current: <span class="keyword">dict</span>, new: <span class="keyword">dict</span>) -> <span class="keyword">dict</span>:
-    <span class="keyword">return</span> {**current, **new}
+# Custom reducer: merge dictionaries
+def merge_dicts(current: dict, new: dict) -> dict:
+    return {**current, **new}
 
-<span class="comment"># Custom reducer: take maximum value</span>
-<span class="keyword">def</span> <span class="func">take_max</span>(current: <span class="keyword">int</span>, new: <span class="keyword">int</span>) -> <span class="keyword">int</span>:
-    <span class="keyword">return</span> <span class="func">max</span>(current, new)
+# Custom reducer: take maximum value
+def take_max(current: int, new: int) -> int:
+    return max(current, new)
 
-<span class="keyword">class</span> <span class="func">SmartState</span>(TypedDict):
-    messages: Annotated[<span class="keyword">list</span>, keep_last_5]  <span class="comment"># Sliding window</span>
-    metadata: Annotated[<span class="keyword">dict</span>, merge_dicts]  <span class="comment"># Merge updates</span>
-    max_score: Annotated[<span class="keyword">int</span>, take_max]    <span class="comment"># Keep highest</span></div>
+class SmartState(TypedDict):
+    messages: Annotated[list, keep_last_5]  # Sliding window
+    metadata: Annotated[dict, merge_dicts]  # Merge updates
+    max_score: Annotated[int, take_max]    # Keep highest</code></pre>
           <div class="takeaway">
             A reducer is any function <code>(old_value, new_value) &rarr; combined_value</code>.
             <code>operator.add</code> concatenates lists. You can write <strong>any logic</strong>:
@@ -350,26 +374,26 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech
         <section>
           <h2>Built-in: <code>add_messages</code> Reducer</h2>
           <h3>The standard way to handle chat history</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.graph <span class="keyword">import</span> <span class="func">add_messages</span>
-<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.graph import add_messages
+from langchain_core.messages import HumanMessage, AIMessage
 
-<span class="keyword">class</span> <span class="func">ChatState</span>(TypedDict):
-    messages: Annotated[<span class="keyword">list</span>, add_messages]
+class ChatState(TypedDict):
+    messages: Annotated[list, add_messages]
 
-<span class="comment"># add_messages is smart:</span>
-<span class="comment"># - Appends new messages to the list</span>
-<span class="comment"># - Handles deduplication by message ID</span>
-<span class="comment"># - Supports message replacement (same ID = update)</span>
+# add_messages is smart:
+# - Appends new messages to the list
+# - Handles deduplication by message ID
+# - Supports message replacement (same ID = update)
 
-<span class="keyword">def</span> <span class="func">chatbot</span>(state: ChatState) -> <span class="keyword">dict</span>:
-    response = llm.<span class="func">invoke</span>(state[<span class="string">"messages"</span>])
-    <span class="keyword">return</span> {<span class="string">"messages"</span>: [response]}  <span class="comment"># Appended, not replaced!</span></div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+def chatbot(state: ChatState) -> dict:
+    response = llm.invoke(state["messages"])
+    return {"messages": [response]}  # Appended, not replaced!</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4><code>operator.add</code></h4>
               <p>Simple list concatenation. Good for logs, audit trails, generic lists.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4><code>add_messages</code></h4>
               <p>Smart message management with dedup &amp; replacement. Use for chat history.</p>
             </div>
@@ -380,7 +404,7 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech
         <section>
           <h2>Checkpoint Persistence Backends</h2>
           <h3>From development to production</h3>
-          <table class="compare-table" style="font-size:0.50em; margin-top:14px;">
+          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
             <tr>
               <th>Backend</th>
               <th>Persistence</th>
@@ -388,56 +412,56 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"tech
               <th>Best For</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">MemorySaver</strong></td>
+              <td><strong class="color-accent">MemorySaver</strong></td>
               <td>In-memory (lost on restart)</td>
               <td>Single process</td>
               <td>Dev, testing, demos</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">SqliteSaver</strong></td>
+              <td><strong class="color-green">SqliteSaver</strong></td>
               <td>Local file (survives restart)</td>
               <td>Single server</td>
               <td>Prototyping, small apps</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">PostgresSaver</strong></td>
+              <td><strong class="color-orange">PostgresSaver</strong></td>
               <td>Remote DB (survives anything)</td>
               <td>Multi-server</td>
               <td>Production, scaling</td>
             </tr>
           </table>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; margin-top:12px;"><span class="comment"># Development</span>
-<span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+          <pre style="font-size:0.52em; line-height:1.4; margin-top:12px;"><code class="language-python" data-trim data-noescape># Development
+from langgraph.checkpoint.memory import MemorySaver
 checkpointer = MemorySaver()
 
-<span class="comment"># Production — just swap the checkpointer!</span>
-<span class="keyword">from</span> langgraph.checkpoint.sqlite <span class="keyword">import</span> SqliteSaver
-checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)
+# Production — just swap the checkpointer!
+from langgraph.checkpoint.sqlite import SqliteSaver
+checkpointer = SqliteSaver.from_conn_string("checkpoints.db")
 
-<span class="comment"># Same compile() call — zero code changes in your graph!</span>
-app = graph.<span class="func">compile</span>(checkpointer=checkpointer)</div>
+# Same compile() call — zero code changes in your graph!
+app = graph.compile(checkpointer=checkpointer)</code></pre>
         </section>
 
         <!-- STATE RECOVERY -->
         <section>
           <h2>State Recovery &amp; Resumption</h2>
           <h3>Pick up exactly where you left off</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># Scenario: Server restarts mid-workflow</span>
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Scenario: Server restarts mid-workflow
 
-<span class="comment"># 1. Before restart: workflow was running on thread "order-42"</span>
-config = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"order-42"</span>}}
+# 1. Before restart: workflow was running on thread "order-42"
+config = {"configurable": {"thread_id": "order-42"}}
 
-<span class="comment"># 2. After restart: reconnect to the same checkpointer</span>
-checkpointer = SqliteSaver.from_conn_string(<span class="string">"checkpoints.db"</span>)
-app = graph.<span class="func">compile</span>(checkpointer=checkpointer)
+# 2. After restart: reconnect to the same checkpointer
+checkpointer = SqliteSaver.from_conn_string("checkpoints.db")
+app = graph.compile(checkpointer=checkpointer)
 
-<span class="comment"># 3. Check where we left off</span>
-snapshot = app.<span class="func">get_state</span>(config)
-<span class="func">print</span>(snapshot.values)  <span class="output"># Full state at last checkpoint</span>
-<span class="func">print</span>(snapshot.next)    <span class="output"># ("process_payment",) — next node to run</span>
+# 3. Check where we left off
+snapshot = app.get_state(config)
+print(snapshot.values)  # Full state at last checkpoint
+print(snapshot.next)    # ("process_payment",) — next node to run
 
-<span class="comment"># 4. Resume from where it stopped</span>
-result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># ← continues from checkpoint</span></div>
+# 4. Resume from where it stopped
+result = app.invoke(None, config)  # ← continues from checkpoint</code></pre>
           <div class="takeaway">
             With a persistent checkpointer, your workflows survive <strong>server restarts, deployments,
             and crashes</strong>. The state is safely stored in the database. Just reconnect with the
@@ -448,22 +472,22 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <!-- STATE HISTORY -->
         <section>
           <h2>Time Travel with State History</h2>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="comment"># Walk through every checkpoint in order</span>
-<span class="keyword">for</span> state <span class="keyword">in</span> app.<span class="func">get_state_history</span>(config):
-    <span class="func">print</span>(f<span class="string">"Step: {state.next}"</span>)
-    <span class="func">print</span>(f<span class="string">"Values: {state.values}"</span>)
-    <span class="func">print</span>(f<span class="string">"Config: {state.config}"</span>)
-    <span class="func">print</span>(<span class="string">"---"</span>)
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Walk through every checkpoint in order
+for state in app.get_state_history(config):
+    print(f"Step: {state.next}")
+    print(f"Values: {state.values}")
+    print(f"Config: {state.config}")
+    print("---")
 
-<span class="comment"># Replay from a specific checkpoint</span>
+# Replay from a specific checkpoint
 past_config = specific_checkpoint.config
-result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, past_config)  <span class="comment"># ← replay from that point!</span></div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+result = app.invoke(None, past_config)  # ← replay from that point!</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>Debugging</h4>
               <p>Walk through each step to find where a workflow went wrong. See exact state at every node.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Replay</h4>
               <p>Go back to any checkpoint and re-run from that point with different state values.</p>
             </div>
@@ -477,26 +501,32 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
           <div class="section-number">03</div>
           <h2>Error Handling &amp; Retry Logic</h2>
           <p class="subtitle">Graceful Failures &middot; Fallbacks &middot; Circuit Breakers</p>
+          <aside class="notes">
+            Key teaching points: In production, LLM calls fail — timeouts, rate limits, bad responses.
+            Best practice: catch errors inside nodes, store them in state, let conditional edges decide the next step.
+            Ask the audience: "What should happen if an LLM call fails 3 times in a row?"
+            Cover retry with exponential backoff, fallback to a cheaper model, and circuit breaker patterns.
+          </aside>
         </section>
 
         <!-- NODE-LEVEL ERROR HANDLING -->
         <section>
           <h2>Node-Level Error Handling</h2>
           <h3>Wrap nodes with try/except for graceful failures</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">def</span> <span class="func">call_llm</span>(state) -> <span class="keyword">dict</span>:
-    <span class="keyword">try</span>:
-        response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])
-        <span class="keyword">return</span> {
-            <span class="string">"response"</span>: response.content,
-            <span class="string">"error"</span>: <span class="keyword">None</span>,
-            <span class="string">"audit"</span>: [<span class="string">"LLM call successful"</span>],
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def call_llm(state) -> dict:
+    try:
+        response = llm.invoke(state["message"])
+        return {
+            "response": response.content,
+            "error": None,
+            "audit": ["LLM call successful"],
         }
-    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-        <span class="keyword">return</span> {
-            <span class="string">"response"</span>: <span class="string">""</span>,
-            <span class="string">"error"</span>: <span class="func">str</span>(e),
-            <span class="string">"audit"</span>: [f<span class="string">"LLM error: {e}"</span>],
-        }</div>
+    except Exception as e:
+        return {
+            "response": "",
+            "error": str(e),
+            "audit": [f"LLM error: {e}"],
+        }</code></pre>
           <div class="takeaway">
             Store errors <strong>in state</strong> rather than raising exceptions. This lets downstream
             nodes make decisions: retry, use a fallback, or escalate. The workflow stays alive.
@@ -507,16 +537,16 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <section>
           <h2>Error-Aware Routing</h2>
           <h3>Route based on success or failure</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.4; padding:12px 16px;"><span class="keyword">def</span> <span class="func">check_error</span>(state) -> <span class="keyword">str</span>:
-    <span class="keyword">if</span> state[<span class="string">"error"</span>]:
-        <span class="keyword">return</span> <span class="string">"handle_error"</span>
-    <span class="keyword">return</span> <span class="string">"continue"</span>
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>def check_error(state) -> str:
+    if state["error"]:
+        return "handle_error"
+    return "continue"
 
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_llm"</span>, check_error, {
-    <span class="string">"handle_error"</span>: <span class="string">"fallback_node"</span>,
-    <span class="string">"continue"</span>: <span class="string">"next_step"</span>,
-})</div>
-          <div class="pipe-flow" style="margin-top:12px;">
+graph.add_conditional_edges("call_llm", check_error, {
+    "handle_error": "fallback_node",
+    "continue": "next_step",
+})</code></pre>
+          <div class="pipe-flow mt-12">
             <div class="pipe-box pipe-box-green"><strong>call_llm</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange"><strong>error?</strong></div>
@@ -531,60 +561,60 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"call
         <!-- RETRY PATTERN -->
         <section>
           <h2>Retry with Exponential Backoff</h2>
-          <div class="code-block" style="font-size:0.44em; line-height:1.3; padding:12px 16px;"><span class="keyword">import</span> time
+          <pre style="font-size:0.52em; line-height:1.3; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
 
-<span class="keyword">class</span> <span class="func">RetryState</span>(TypedDict):
-    message: <span class="keyword">str</span>
-    response: <span class="keyword">str</span>
-    error: <span class="keyword">str</span>
-    attempts: <span class="keyword">int</span>
-    max_attempts: <span class="keyword">int</span>
+class RetryState(TypedDict):
+    message: str
+    response: str
+    error: str
+    attempts: int
+    max_attempts: int
 
-<span class="keyword">def</span> <span class="func">call_api</span>(state) -> <span class="keyword">dict</span>:
-    attempt = state[<span class="string">"attempts"</span>] + 1
-    <span class="keyword">try</span>:
-        response = llm.<span class="func">invoke</span>(state[<span class="string">"message"</span>])
-        <span class="keyword">return</span> {<span class="string">"response"</span>: response.content, <span class="string">"error"</span>: <span class="string">""</span>, <span class="string">"attempts"</span>: attempt}
-    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-        time.<span class="func">sleep</span>(2 ** attempt)  <span class="comment"># Exponential backoff: 2s, 4s, 8s...</span>
-        <span class="keyword">return</span> {<span class="string">"error"</span>: <span class="func">str</span>(e), <span class="string">"attempts"</span>: attempt}
+def call_api(state) -> dict:
+    attempt = state["attempts"] + 1
+    try:
+        response = llm.invoke(state["message"])
+        return {"response": response.content, "error": "", "attempts": attempt}
+    except Exception as e:
+        time.sleep(2 ** attempt)  # Exponential backoff: 2s, 4s, 8s...
+        return {"error": str(e), "attempts": attempt}
 
-<span class="keyword">def</span> <span class="func">should_retry</span>(state) -> <span class="keyword">str</span>:
-    <span class="keyword">if not</span> state[<span class="string">"error"</span>]: <span class="keyword">return</span> <span class="string">"success"</span>
-    <span class="keyword">if</span> state[<span class="string">"attempts"</span>] >= state[<span class="string">"max_attempts"</span>]: <span class="keyword">return</span> <span class="string">"give_up"</span>
-    <span class="keyword">return</span> <span class="string">"retry"</span>    <span class="comment"># ← cycle back!</span>
+def should_retry(state) -> str:
+    if not state["error"]: return "success"
+    if state["attempts"] >= state["max_attempts"]: return "give_up"
+    return "retry"    # ← cycle back!
 
-graph.<span class="func">add_conditional_edges</span>(<span class="string">"call_api"</span>, should_retry,
-    {<span class="string">"success"</span>: <span class="string">"process"</span>, <span class="string">"retry"</span>: <span class="string">"call_api"</span>, <span class="string">"give_up"</span>: <span class="string">"fallback"</span>})</div>
+graph.add_conditional_edges("call_api", should_retry,
+    {"success": "process", "retry": "call_api", "give_up": "fallback"})</code></pre>
         </section>
 
         <!-- FALLBACK STRATEGIES -->
         <section>
           <h2>Fallback Strategies</h2>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-10">
               <h4>LLM Fallback Chain</h4>
               <p style="font-size:0.55em; margin:4px 0;">Primary LLM fails? Try a backup model.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">try</span>: llm_primary.invoke()
-<span class="keyword">except</span>: llm_backup.invoke()</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-yaml" data-trim data-noescape>try: llm_primary.invoke()
+except: llm_backup.invoke()</code></pre>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>Cached Response</h4>
               <p style="font-size:0.55em; margin:4px 0;">API down? Return a cached or template response.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
-  <span class="keyword">return</span> CACHED[category]</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+  return CACHED[category]</code></pre>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <h4>Graceful Degradation</h4>
               <p style="font-size:0.55em; margin:4px 0;">Skip failing step, continue with partial results.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
-  <span class="keyword">return</span> {<span class="string">"partial"</span>: <span class="keyword">True</span>}</div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+  return {"partial": True}</code></pre>
             </div>
-            <div class="card card-red" style="padding:10px;">
+            <div class="card card-red p-10">
               <h4>Human Escalation</h4>
               <p style="font-size:0.55em; margin:4px 0;">Can't recover? Route to a human via interrupt.</p>
-              <div class="code-block" style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><span class="keyword">if</span> error:
-  <span class="keyword">return</span> <span class="string">"escalate"</span></div>
+              <pre style="font-size:0.8em; margin:6px 0 0 0; padding:8px;"><code class="language-python" data-trim data-noescape>if error:
+  return "escalate"</code></pre>
             </div>
           </div>
         </section>
@@ -596,65 +626,71 @@ graph.<span class="func">add_conditional_edges</span>(<span class="string">"call
           <div class="section-number">04</div>
           <h2>Advanced Human-in-the-Loop</h2>
           <p class="subtitle">Multi-Gate &middot; User Input &middot; Timeout &middot; Escalation</p>
+          <aside class="notes">
+            Key teaching points: Beyond simple approve/reject — multi-gate workflows need multiple approvals in sequence.
+            User input collection mid-workflow uses interrupt + update_state + resume.
+            Ask the audience: "How would you handle a workflow that needs VP approval after manager approval?"
+            Cover timeout handling (what if the human never responds?) and escalation paths.
+          </aside>
         </section>
 
         <!-- MULTI-GATE APPROVAL -->
         <section>
           <h2>Multi-Gate Approval Workflows</h2>
           <h3>Multiple pause points in one workflow</h3>
-          <div class="pipe-flow" style="margin-top:16px;">
+          <div class="pipe-flow mt-16">
             <div class="pipe-box"><strong>draft</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange" style="border-width:3px;">
-              <strong>GATE 1</strong><br><span style="font-size:0.85em;">review</span>
+              <strong>GATE 1</strong><br><span class="text-085">review</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green"><strong>approve</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange" style="border-width:3px;">
-              <strong>GATE 2</strong><br><span style="font-size:0.85em;">send</span>
+              <strong>GATE 2</strong><br><span class="text-085">send</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>END</strong></div>
           </div>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="comment"># Multiple interrupt points</span>
-app = graph.<span class="func">compile</span>(
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape># Multiple interrupt points
+app = graph.compile(
     checkpointer=MemorySaver(),
-    interrupt_before=[<span class="string">"review"</span>, <span class="string">"send"</span>]  <span class="comment"># ← TWO gates!</span>
+    interrupt_before=["review", "send"]  # ← TWO gates!
 )
 
-<span class="comment"># Gate 1: pause before review</span>
-app.<span class="func">invoke</span>(initial_state, config)  <span class="comment"># Pauses at "review"</span>
-app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)             <span class="comment"># Resume, hits "send" gate</span>
+# Gate 1: pause before review
+app.invoke(initial_state, config)  # Pauses at "review"
+app.invoke(None, config)             # Resume, hits "send" gate
 
-<span class="comment"># Gate 2: pause before send</span>
-app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)             <span class="comment"># Resume, completes workflow</span></div>
+# Gate 2: pause before send
+app.invoke(None, config)             # Resume, completes workflow</code></pre>
         </section>
 
         <!-- USER INPUT COLLECTION -->
         <section>
           <h2>Collecting User Input Mid-Workflow</h2>
           <h3>Pause, ask the user, inject their answer into state</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="comment"># 1. Workflow reaches "collect_input" and pauses</span>
-app = graph.<span class="func">compile</span>(
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape># 1. Workflow reaches "collect_input" and pauses
+app = graph.compile(
     checkpointer=MemorySaver(),
-    interrupt_before=[<span class="string">"process_answer"</span>]
+    interrupt_before=["process_answer"]
 )
 
-<span class="comment"># 2. Run until pause — "ask_question" node sets state["question"]</span>
-app.<span class="func">invoke</span>({<span class="string">"topic"</span>: <span class="string">"expense policy"</span>}, config)
+# 2. Run until pause — "ask_question" node sets state["question"]
+app.invoke({"topic": "expense policy"}, config)
 
-<span class="comment"># 3. Read the question from state</span>
-snap = app.<span class="func">get_state</span>(config)
-question = snap.values[<span class="string">"question"</span>]
-<span class="func">print</span>(f<span class="string">"System asks: {question}"</span>)
+# 3. Read the question from state
+snap = app.get_state(config)
+question = snap.values["question"]
+print(f"System asks: {question}")
 
-<span class="comment"># 4. User provides answer — inject it into state</span>
-user_answer = <span class="func">input</span>(<span class="string">"Your answer: "</span>)
-app.<span class="func">update_state</span>(config, {<span class="string">"user_answer"</span>: user_answer})
+# 4. User provides answer — inject it into state
+user_answer = input("Your answer: ")
+app.update_state(config, {"user_answer": user_answer})
 
-<span class="comment"># 5. Resume — "process_answer" now has the user's input</span>
-result = app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)</div>
+# 5. Resume — "process_answer" now has the user's input
+result = app.invoke(None, config)</code></pre>
           <div class="takeaway">
             This pattern turns any LangGraph workflow into an <strong>interactive conversation</strong>.
             The graph pauses, the system asks a question, the user answers, and the workflow continues
@@ -666,63 +702,63 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <section>
           <h2>Timeout &amp; Escalation</h2>
           <h3>What if the human doesn't respond?</h3>
-          <div class="code-block" style="font-size:0.46em; line-height:1.35; padding:12px 16px;"><span class="keyword">import</span> time
-<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime, timedelta
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>import time
+from datetime import datetime, timedelta
 
-<span class="comment"># Check if a paused workflow has timed out</span>
-<span class="keyword">def</span> <span class="func">check_timeout</span>(config, app, timeout_minutes=30):
-    snap = app.<span class="func">get_state</span>(config)
-    <span class="keyword">if not</span> snap.next:  <span class="comment"># Not paused</span>
-        <span class="keyword">return</span> <span class="keyword">False</span>
+# Check if a paused workflow has timed out
+def check_timeout(config, app, timeout_minutes=30):
+    snap = app.get_state(config)
+    if not snap.next:  # Not paused
+        return False
 
-    paused_at = snap.values.get(<span class="string">"paused_at"</span>)
-    <span class="keyword">if</span> paused_at <span class="keyword">and</span> datetime.<span class="func">now</span>() - paused_at > timedelta(minutes=timeout_minutes):
-        <span class="comment"># Auto-escalate: update state and resume</span>
-        app.<span class="func">update_state</span>(config, {
-            <span class="string">"decision"</span>: <span class="string">"auto_escalated"</span>,
-            <span class="string">"reason"</span>: <span class="string">"Timeout: no response in 30 minutes"</span>,
+    paused_at = snap.values.get("paused_at")
+    if paused_at and datetime.now() - paused_at > timedelta(minutes=timeout_minutes):
+        # Auto-escalate: update state and resume
+        app.update_state(config, {
+            "decision": "auto_escalated",
+            "reason": "Timeout: no response in 30 minutes",
         })
-        app.<span class="func">invoke</span>(<span class="keyword">None</span>, config)  <span class="comment"># Resume with auto-escalation</span>
-        <span class="keyword">return</span> <span class="keyword">True</span>
-    <span class="keyword">return</span> <span class="keyword">False</span></div>
+        app.invoke(None, config)  # Resume with auto-escalation
+        return True
+    return False</code></pre>
         </section>
 
         <!-- HITL PATTERNS SUMMARY -->
         <section>
           <h2>HITL Pattern Summary</h2>
-          <table class="compare-table" style="font-size:0.50em; margin-top:14px;">
+          <table class="compare-table" style="font-size:0.52em; margin-top:14px;">
             <tr>
               <th>Pattern</th>
               <th>When to Use</th>
               <th>Implementation</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">Approval Gate</strong></td>
+              <td><strong class="color-accent">Approval Gate</strong></td>
               <td>Before destructive actions (send, delete, pay)</td>
               <td><code>interrupt_before=["action"]</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">Review Gate</strong></td>
+              <td><strong class="color-green">Review Gate</strong></td>
               <td>After LLM generates content for quality check</td>
               <td><code>interrupt_after=["generate"]</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">Edit &amp; Resume</strong></td>
+              <td><strong class="color-orange">Edit &amp; Resume</strong></td>
               <td>Human needs to modify LLM output before continuing</td>
               <td><code>update_state()</code> + <code>invoke(None)</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent4);">User Input</strong></td>
+              <td><strong class="color-red">User Input</strong></td>
               <td>Workflow needs information only the user has</td>
               <td>Pause, read question, inject answer</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">Multi-Gate</strong></td>
+              <td><strong class="color-accent">Multi-Gate</strong></td>
               <td>Critical workflows needing multiple approvals</td>
               <td><code>interrupt_before=["a", "b"]</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">Timeout</strong></td>
+              <td><strong class="color-green">Timeout</strong></td>
               <td>SLA requirements &mdash; can't wait forever</td>
               <td>Background job checks paused state</td>
             </tr>
@@ -739,7 +775,7 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange"><strong>route</strong></div>
           </div>
-          <div class="pipe-flow" style="font-size:0.9em;">
+          <div class="pipe-flow text-lg">
             <div class="pipe-box pipe-box-green" style="padding:6px 10px;">
               &le; Rs 5K<br><strong>auto-approve</strong>
             </div>
@@ -752,7 +788,7 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               &gt; Rs 50K<br><strong>PAUSE: VP + CFO</strong>
             </div>
           </div>
-          <div class="pipe-flow" style="font-size:0.9em;">
+          <div class="pipe-flow text-lg">
             <div class="pipe-box pipe-box-green"><strong>process</strong></div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box"><strong>notify</strong></div>
@@ -770,21 +806,21 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <section>
           <h2>The Advanced Toolkit</h2>
           <h3>Patterns for production LangGraph workflows</h3>
-          <div class="layer-stack" style="margin-top:16px;">
+          <div class="layer-stack mt-16">
             <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:1px solid var(--accent);">
-              <span class="layer-title" style="color:var(--accent);">Complex Routing</span>
+              <span class="layer-title color-accent">Complex Routing</span>
               <span class="layer-items">Fan-out, convergence, nested conditionals, LLM routing</span>
             </div>
             <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:1px solid var(--accent2);">
-              <span class="layer-title" style="color:var(--accent2);">Smart State</span>
+              <span class="layer-title color-green">Smart State</span>
               <span class="layer-items">Custom reducers, add_messages, Pydantic validation</span>
             </div>
             <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:1px solid var(--accent3);">
-              <span class="layer-title" style="color:var(--accent3);">Error Resilience</span>
+              <span class="layer-title color-orange">Error Resilience</span>
               <span class="layer-items">Try/except in nodes, retry cycles, fallback chains</span>
             </div>
             <div class="layer-bar" style="background:rgba(229,115,115,0.15); border:1px solid var(--accent4);">
-              <span class="layer-title" style="color:var(--accent4);">Advanced HITL</span>
+              <span class="layer-title color-red">Advanced HITL</span>
               <span class="layer-items">Multi-gate, user input, timeout, escalation</span>
             </div>
           </div>
@@ -798,23 +834,23 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
         <!-- DESIGN PRINCIPLES -->
         <section>
           <h2>Design Principles</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4>1. State is the Source of Truth</h4>
               <p>Every decision, every error, every result lives in state. Nodes only communicate
               through state &mdash; never side channels.</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>2. Nodes Should Be Idempotent</h4>
               <p>Running a node twice with the same state should produce the same result.
               This makes retry and replay safe.</p>
             </div>
-            <div class="card card-orange" style="padding:16px;">
+            <div class="card card-orange p-16">
               <h4>3. Always Include Guards</h4>
               <p>Every cycle needs a max-attempt limit. Every retry needs a backoff.
               Every HITL needs a timeout. No infinite loops.</p>
             </div>
-            <div class="card card-red" style="padding:16px;">
+            <div class="card card-red p-16">
               <h4>4. Use Reducers for History</h4>
               <p>Current values overwrite. Historical data (logs, messages, audit trails)
               uses <code>Annotated[list, add]</code>. Mix both in one state.</p>
@@ -827,23 +863,23 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
       <section>
         <section>
           <h2>Session 8 Recap</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>Complex Patterns</h4>
               <p>Multi-branch fan-out/convergence, parallel execution with reducers,
               nested routing, LLM-powered routing.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>State Management</h4>
               <p>Custom reducers (sliding window, merge, max), add_messages for chat,
               persistence backends, state recovery.</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>Error Handling</h4>
               <p>Errors in state (not exceptions), error-aware routing,
               retry with backoff, fallback chains.</p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>Advanced HITL</h4>
               <p>Multi-gate approvals, user input collection mid-workflow,
               timeout patterns, escalation handling.</p>
@@ -859,15 +895,15 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
             <h4>Session 9: Multi-Agent Systems</h4>
             <br>
             <div class="card-grid-3" style="margin-top:0;">
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Architectures</h4>
                 <p>Supervisor/Worker, peer-to-peer, agent handoffs</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Collaboration</h4>
                 <p>Task decomposition, result aggregation, conflict resolution</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Production</h4>
                 <p>Specialization, load balancing, fallback &amp; redundancy</p>
               </div>
@@ -891,7 +927,7 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
       <!-- ==================== QUIZ: SESSION 8 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 8 Quiz</h1>
+          <h1 class="text-2xl">Session 8 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
@@ -922,6 +958,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               <span>The field becomes a list of both values</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Only the last node's value survives (overwrite).
+            Without a reducer, the default behavior is overwrite. Whichever parallel node finishes last wins. Use Annotated[list, add] or a custom reducer for fields that receive writes from parallel nodes.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -980,6 +1020,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               <span>A configuration option in the compile() method</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — A function (old, new) -> combined that controls how a state field is updated.
+            Reducers let you define custom merge logic: sliding windows, deduplication, dictionary merging, max/min tracking. Applied via Annotated[type, reducer_fn].
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -1038,6 +1082,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               <span>Silently ignore the error and return empty state</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Catch the error and store it in state so downstream nodes can decide what to do.
+            Storing errors in state keeps the workflow alive. Downstream nodes or conditional edges can retry, use a fallback, skip, or escalate to a human.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -1096,6 +1144,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               <span>Use a separate callback function registered with the graph</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Pause with an interrupt, read state for the question, use update_state() with the answer, then resume.
+            This pattern works with any UI (web, CLI, API) and keeps state persistent via the checkpointer.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1154,6 +1206,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
               <span>SqliteSaver doesn't support interrupt_before/after</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Only the checkpointer line changes; the graph code stays identical.
+            LangGraph's persistence abstraction means you swap MemorySaver for SqliteSaver or PostgresSaver with a single line change. All graph logic, nodes, edges, and interrupts remain untouched.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1194,15 +1250,15 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the patterns and code examples. The hands-on labs will reinforce these concepts.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Strong grasp of advanced patterns! Ready to build production workflows.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>Expert level! You can architect complex multi-branch, error-resilient workflows.</p>
             </div>
           </div>
@@ -1213,6 +1269,10 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1221,8 +1281,9 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1232,7 +1293,8 @@ result = app.<span class="func">invoke</span>(<span class="keyword">None</span>,
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

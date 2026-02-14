@@ -6,6 +6,10 @@
   <title>Session 10: Observability Fundamentals</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,21 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Observability<br>Fundamentals</h1>
-        <p style="font-size:0.9em; color:#ccc;">Metrics &middot; Logs &middot; Traces &middot; OpenTelemetry</p>
+        <p class="text-lg-dim">Metrics &middot; Logs &middot; Traces &middot; OpenTelemetry</p>
         <p class="subtitle">Session 10 &middot; Day 4, Slot A</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 10 — Observability Fundamentals. This is Day 4, Slot A, approximately 60-75 minutes.
+          After building multi-agent systems on Day 3, we now learn how to see inside them.
+          Three sections: (1) Three Pillars of Observability — metrics, logs, traces;
+          (2) OpenTelemetry — the vendor-neutral standard for collecting telemetry;
+          (3) Instrumenting Python Applications — OTel SDK, FastAPI, custom spans.
+          This session sets the foundation for LangFuse integration in Session 11.
+        </aside>
       </section>
 
       <!-- ==================== DAY 4 CONTEXT ==================== -->
@@ -47,7 +59,7 @@
       <section>
         <h2>Session 9 Recap</h2>
         <p class="subtitle">Multi-Agent Systems</p>
-        <div class="card-grid" style="margin-top:20px;">
+        <div class="card-grid mt-20">
           <div class="card card-accent">
             <h4>Multi-Agent Architectures</h4>
             <ul>
@@ -65,7 +77,7 @@
             </ul>
           </div>
         </div>
-        <div class="takeaway" style="margin-top:16px;">
+        <div class="takeaway mt-16">
           Days 1&ndash;3 built AI agents, workflows, and multi-agent systems. Now on Day 4: how do we <em>observe</em> and <em>operate</em> them in production?
         </div>
       </section>
@@ -96,6 +108,11 @@
         <div class="section-number">01</div>
         <h2>Three Pillars of Observability</h2>
         <p class="subtitle">Metrics &middot; Logs &middot; Traces</p>
+        <aside class="notes">
+          Key teaching points: The three pillars are complementary, not competing. Metrics tell you "what" is happening (aggregates), Logs tell you "when and where" (events), Traces tell you "why" (request paths).
+          Ask the audience: "When your production service slows down, what do you look at first — dashboards (metrics), log files, or traces?"
+          Emphasize that most teams start with logs, but traces are the most powerful for debugging distributed systems.
+        </aside>
       </section>
 
       <!-- WHY OBSERVABILITY -->
@@ -170,7 +187,7 @@
       <!-- METRICS DEEP DIVE -->
       <section>
         <h2><span class="signal-metrics">METRICS</span> &mdash; Numbers Over Time</h2>
-        <p style="font-size:0.75em; color:#ccc;">Aggregated, low-cardinality data that answers &ldquo;is anything unusual happening?&rdquo;</p>
+        <p class="text-base-dim">Aggregated, low-cardinality data that answers &ldquo;is anything unusual happening?&rdquo;</p>
         <table class="compare-table">
           <tr>
             <th>Metric Type</th>
@@ -206,20 +223,20 @@
       <!-- LOGS DEEP DIVE -->
       <section>
         <h2><span class="signal-logs">LOGS</span> &mdash; Event Records</h2>
-        <p style="font-size:0.75em; color:#ccc;">Rich, unstructured or structured text capturing discrete events</p>
-        <div class="code-block"><span class="comment"># Unstructured log (hard to parse)</span>
+        <p class="text-base-dim">Rich, unstructured or structured text capturing discrete events</p>
+        <pre><code class="language-python" data-trim data-noescape># Unstructured log (hard to parse)
 2025-01-15 14:32:01 ERROR Failed to connect to ChromaDB at localhost:8000
 
-<span class="comment"># Structured log (machine-parseable, preferred)</span>
+# Structured log (machine-parseable, preferred)
 {
-  <span class="string">"timestamp"</span>: <span class="string">"2025-01-15T14:32:01Z"</span>,
-  <span class="string">"level"</span>: <span class="string">"ERROR"</span>,
-  <span class="string">"service"</span>: <span class="string">"agent-api"</span>,
-  <span class="string">"message"</span>: <span class="string">"Failed to connect to ChromaDB"</span>,
-  <span class="string">"target_host"</span>: <span class="string">"localhost:8000"</span>,
-  <span class="string">"trace_id"</span>: <span class="string">"abc123def456"</span>,
-  <span class="string">"retry_count"</span>: 3
-}</div>
+  "timestamp": "2025-01-15T14:32:01Z",
+  "level": "ERROR",
+  "service": "agent-api",
+  "message": "Failed to connect to ChromaDB",
+  "target_host": "localhost:8000",
+  "trace_id": "abc123def456",
+  "retry_count": 3
+}</code></pre>
         <div class="card-grid">
           <div class="card card-green">
             <h4>Best Practices</h4>
@@ -245,35 +262,35 @@
       <!-- TRACES DEEP DIVE -->
       <section>
         <h2><span class="signal-traces">TRACES</span> &mdash; Request Journey</h2>
-        <p style="font-size:0.75em; color:#ccc;">A trace follows a single request across all services it touches</p>
+        <p class="text-base-dim">A trace follows a single request across all services it touches</p>
 
         <div style="margin:20px 0;">
           <div style="font-size:0.6em; color:#aaa; margin-bottom:8px;">Trace ID: <span class="highlight">abc-123-def-456</span> &mdash; Total: 480ms</div>
           <div style="position:relative; padding-left:100px;">
             <div style="display:flex; align-items:center; margin:6px 0;">
               <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent);">API Gateway</span>
-              <div style="background:var(--accent); height:22px; border-radius:4px; width:96%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">480ms</div>
+              <div style="background:var(--accent); height:22px; border-radius:4px; width:96%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">480ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
               <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent2);">Agent</span>
-              <div style="background:var(--accent2); height:22px; border-radius:4px; width:85%; margin-left:4%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">420ms</div>
+              <div style="background:var(--accent2); height:22px; border-radius:4px; width:85%; margin-left:4%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">420ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
               <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">LLM Call</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:60%; margin-left:8%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">320ms</div>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:60%; margin-left:8%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">320ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
               <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">ChromaDB</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:12%; margin-left:6%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">45ms</div>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:12%; margin-left:6%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">45ms</div>
             </div>
             <div style="display:flex; align-items:center; margin:6px 0;">
               <span style="position:absolute; left:0; font-size:0.55em; color:var(--accent3);">Redis</span>
-              <div style="background:var(--accent3); height:22px; border-radius:4px; width:5%; margin-left:70%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.5em; color:#111; font-weight:bold;">12ms</div>
+              <div style="background:var(--accent3); height:22px; border-radius:4px; width:5%; margin-left:70%; opacity:0.8; display:flex; align-items:center; padding-left:8px; font-size:0.55em; color:#111; font-weight:bold;">12ms</div>
             </div>
           </div>
         </div>
 
-        <div class="card-grid" style="margin-top:10px;">
+        <div class="card-grid mt-10">
           <div class="card card-accent">
             <h4>Trace Concepts</h4>
             <ul>
@@ -338,7 +355,7 @@
       <!-- AI OBSERVABILITY CHALLENGES -->
       <section>
         <h2>AI Observability Challenges</h2>
-        <p style="font-size:0.75em; color:#ccc;">AI systems have unique observability needs beyond traditional services</p>
+        <p class="text-base-dim">AI systems have unique observability needs beyond traditional services</p>
         <div class="card-grid">
           <div class="card card-accent">
             <h4>Non-Deterministic Outputs</h4>
@@ -362,7 +379,7 @@
       <!-- SECTION 01 SUMMARY -->
       <section>
         <h2>Section 01 Summary</h2>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>Metrics</h4>
             <p>Numeric time-series: counters, gauges, histograms. Cheap to store, great for dashboards and alerts.</p>
@@ -388,6 +405,11 @@
         <div class="section-number">02</div>
         <h2>OpenTelemetry</h2>
         <p class="subtitle">The Vendor-Neutral Standard</p>
+        <aside class="notes">
+          Key teaching points: OpenTelemetry (OTel) is the CNCF project that unifies metrics, logs, and traces under one API, SDK, and wire protocol (OTLP).
+          Ask the audience: "Who here has used Prometheus, Jaeger, or Grafana? OTel is the common layer that feeds all of them."
+          Key benefit: instrument once, export anywhere. No vendor lock-in. The Collector acts as a gateway with receivers, processors, and exporters.
+        </aside>
       </section>
 
       <!-- OTEL OVERVIEW -->
@@ -428,26 +450,26 @@
           <div style="display:flex; gap:8px; justify-content:center; align-items:stretch; flex-wrap:wrap;">
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
               <div class="box" style="min-width:130px;"><strong>Your App</strong><br><span style="font-size:0.8em; color:#aaa;">OTel SDK</span></div>
-              <div style="font-size:0.5em; color:#aaa;">Traces + Metrics + Logs</div>
+              <div style="font-size:0.55em; color:#aaa;">Traces + Metrics + Logs</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
               <div class="box box-green" style="min-width:130px;"><strong>OTLP</strong><br><span style="font-size:0.8em; color:#aaa;">Protocol</span></div>
-              <div style="font-size:0.5em; color:#aaa;">gRPC or HTTP</div>
+              <div style="font-size:0.55em; color:#aaa;">gRPC or HTTP</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
               <div class="box box-orange" style="min-width:130px;"><strong>OTel Collector</strong><br><span style="font-size:0.8em; color:#aaa;">Optional</span></div>
-              <div style="font-size:0.5em; color:#aaa;">Process &amp; route</div>
+              <div style="font-size:0.55em; color:#aaa;">Process &amp; route</div>
             </div>
             <div class="arrow">&rarr;</div>
             <div style="display:flex; flex-direction:column; gap:8px; align-items:center;">
               <div class="box box-red" style="min-width:130px;"><strong>Backend</strong><br><span style="font-size:0.8em; color:#aaa;">Any vendor</span></div>
-              <div style="font-size:0.5em; color:#aaa;">Jaeger, LangFuse, etc.</div>
+              <div style="font-size:0.55em; color:#aaa;">Jaeger, LangFuse, etc.</div>
             </div>
           </div>
         </div>
-        <table class="compare-table" style="margin-top:14px;">
+        <table class="compare-table mt-14">
           <tr>
             <th>Component</th>
             <th>Role</th>
@@ -479,7 +501,7 @@
       <!-- OTLP PROTOCOL -->
       <section>
         <h2>OTLP &mdash; The Universal Protocol</h2>
-        <p style="font-size:0.75em; color:#ccc;">OpenTelemetry Protocol is the standard for transmitting telemetry data</p>
+        <p class="text-base-dim">OpenTelemetry Protocol is the standard for transmitting telemetry data</p>
         <div class="card-grid-3">
           <div class="card card-accent">
             <h4>gRPC (Default)</h4>
@@ -509,11 +531,11 @@
             </ul>
           </div>
         </div>
-        <div class="code-block"><span class="comment"># Environment variables to configure OTLP export</span>
-<span class="keyword">OTEL_EXPORTER_OTLP_ENDPOINT</span>=<span class="string">"http://otel-collector:4317"</span>
-<span class="keyword">OTEL_EXPORTER_OTLP_PROTOCOL</span>=<span class="string">"grpc"</span>          <span class="comment"># or "http/protobuf"</span>
-<span class="keyword">OTEL_SERVICE_NAME</span>=<span class="string">"agent-api"</span>
-<span class="keyword">OTEL_RESOURCE_ATTRIBUTES</span>=<span class="string">"deployment.environment=production,service.version=2.0"</span></div>
+        <pre><code class="language-bash" data-trim data-noescape># Environment variables to configure OTLP export
+OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-collector:4317"
+OTEL_EXPORTER_OTLP_PROTOCOL="grpc"          # or "http/protobuf"
+OTEL_SERVICE_NAME="agent-api"
+OTEL_RESOURCE_ATTRIBUTES="deployment.environment=production,service.version=2.0"</code></pre>
       </section>
 
       <!-- AUTO VS MANUAL INSTRUMENTATION -->
@@ -528,10 +550,10 @@
               <li>Covers HTTP endpoints, database calls, external requests</li>
               <li>Great starting point &mdash; get spans immediately</li>
             </ul>
-            <div class="code-block" style="margin-top:8px;"><span class="comment"># Run with auto-instrumentation</span>
+            <pre class="mt-8"><code class="language-bash" data-trim data-noescape># Run with auto-instrumentation
 opentelemetry-instrument \
   --service_name agent-api \
-  python -m uvicorn main:app</div>
+  python -m uvicorn main:app</code></pre>
           </div>
           <div class="card card-green">
             <h4>Manual Instrumentation</h4>
@@ -541,11 +563,11 @@ opentelemetry-instrument \
               <li>Add custom attributes (tokens, model, cost)</li>
               <li>Full control over span names and hierarchy</li>
             </ul>
-            <div class="code-block" style="margin-top:8px;"><span class="comment"># Create custom span</span>
-<span class="keyword">with</span> tracer.start_as_current_span(
-    <span class="string">"llm_call"</span>) <span class="keyword">as</span> span:
-    span.set_attribute(<span class="string">"llm.model"</span>, <span class="string">"groq/llama3"</span>)
-    span.set_attribute(<span class="string">"llm.tokens"</span>, 1250)</div>
+            <pre class="mt-8"><code class="language-python" data-trim data-noescape># Create custom span
+with tracer.start_as_current_span(
+    "llm_call") as span:
+    span.set_attribute("llm.model", "groq/llama3")
+    span.set_attribute("llm.tokens", 1250)</code></pre>
           </div>
         </div>
         <div class="takeaway">
@@ -556,26 +578,26 @@ opentelemetry-instrument \
       <!-- OTEL COLLECTOR -->
       <section>
         <h2>OTel Collector</h2>
-        <p style="font-size:0.75em; color:#ccc;">Optional but recommended &mdash; a pipeline between your app and backends</p>
+        <p class="text-base-dim">Optional but recommended &mdash; a pipeline between your app and backends</p>
         <div class="diagram">
           <div class="box" style="min-width:90px;">App 1</div>
           <div class="box" style="min-width:90px;">App 2</div>
           <div class="box" style="min-width:90px;">App 3</div>
         </div>
-        <div style="text-align:center; font-size:1.2em; color:#888;">&darr; &darr; &darr;</div>
+        <div style="text-align:center; font-size:1.2em; color:#999;">&darr; &darr; &darr;</div>
         <div style="text-align:center; margin:10px 0;">
           <div class="box box-orange box-large" style="display:inline-block;">
             <strong>OTel Collector</strong><br>
-            <span style="font-size:0.8em;">Receivers &rarr; Processors &rarr; Exporters</span>
+            <span class="text-080">Receivers &rarr; Processors &rarr; Exporters</span>
           </div>
         </div>
-        <div style="text-align:center; font-size:1.2em; color:#888;">&darr; &darr; &darr;</div>
+        <div style="text-align:center; font-size:1.2em; color:#999;">&darr; &darr; &darr;</div>
         <div class="diagram">
-          <div class="box box-green" style="min-width:90px;">Jaeger<br><span style="font-size:0.8em;">Traces</span></div>
-          <div class="box box-green" style="min-width:90px;">LangFuse<br><span style="font-size:0.8em;">Traces &amp; Metrics</span></div>
-          <div class="box box-green" style="min-width:90px;">Loki<br><span style="font-size:0.8em;">Logs</span></div>
+          <div class="box box-green" style="min-width:90px;">Jaeger<br><span class="text-080">Traces</span></div>
+          <div class="box box-green" style="min-width:90px;">LangFuse<br><span class="text-080">Traces &amp; Metrics</span></div>
+          <div class="box box-green" style="min-width:90px;">Loki<br><span class="text-080">Logs</span></div>
         </div>
-        <div class="card-grid-3" style="margin-top:14px;">
+        <div class="card-grid-3 mt-14">
           <div class="card card-accent">
             <h4>Receivers</h4>
             <p>Accept data: OTLP, Jaeger, Zipkin formats</p>
@@ -594,42 +616,42 @@ opentelemetry-instrument \
       <!-- OTEL COLLECTOR CONFIG -->
       <section>
         <h2>Collector Configuration</h2>
-        <div class="code-block"><span class="comment"># otel-collector-config.yaml</span>
-<span class="keyword">receivers</span>:
-  <span class="func">otlp</span>:
+        <pre><code class="language-python" data-trim data-noescape># otel-collector-config.yaml
+receivers:
+  otlp:
     protocols:
       grpc:
-        endpoint: <span class="string">0.0.0.0:4317</span>
+        endpoint: 0.0.0.0:4317
       http:
-        endpoint: <span class="string">0.0.0.0:4318</span>
+        endpoint: 0.0.0.0:4318
 
-<span class="keyword">processors</span>:
-  <span class="func">batch</span>:
-    timeout: <span class="string">5s</span>
-    send_batch_size: <span class="string">1000</span>
-  <span class="func">memory_limiter</span>:
-    limit_mib: <span class="string">512</span>
+processors:
+  batch:
+    timeout: 5s
+    send_batch_size: 1000
+  memory_limiter:
+    limit_mib: 512
 
-<span class="keyword">exporters</span>:
-  <span class="func">otlp/jaeger</span>:
-    endpoint: <span class="string">jaeger:4317</span>
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
     tls:
-      insecure: <span class="string">true</span>
-  <span class="func">otlp/langfuse</span>:
-    endpoint: <span class="string">langfuse:4318</span>
+      insecure: true
+  otlp/langfuse:
+    endpoint: langfuse:4318
     tls:
-      insecure: <span class="string">true</span>
+      insecure: true
 
-<span class="keyword">service</span>:
+service:
   pipelines:
-    <span class="func">traces</span>:
+    traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
       exporters: [otlp/jaeger, otlp/langfuse]
-    <span class="func">metrics</span>:
+    metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch]
-      exporters: [otlp/langfuse]</div>
+      exporters: [otlp/langfuse]</code></pre>
       </section>
 
       <!-- BACKEND OPTIONS -->
@@ -661,7 +683,7 @@ opentelemetry-instrument \
             <td>Datadog, Splunk, CloudWatch</td>
           </tr>
         </table>
-        <div class="card-grid" style="margin-top:16px;">
+        <div class="card-grid mt-16">
           <div class="card card-green">
             <h4>The &ldquo;PLG&rdquo; Stack (Our Choice)</h4>
             <ul>
@@ -715,30 +737,36 @@ opentelemetry-instrument \
         <div class="section-number">03</div>
         <h2>Instrumenting Python Applications</h2>
         <p class="subtitle">opentelemetry-python SDK &middot; FastAPI &middot; Custom Spans</p>
+        <aside class="notes">
+          Key teaching points: Two approaches — auto-instrumentation (zero-code, covers frameworks like FastAPI, requests, SQLAlchemy) and manual instrumentation (custom spans for business logic like LLM calls and RAG retrieval).
+          Ask the audience: "For AI agents, what operations would you want custom spans around?"
+          Answer: LLM calls (with token counts), retrieval steps, tool invocations, agent reasoning cycles.
+          Demo tip: Show ConsoleSpanExporter first so participants see the raw output before connecting to a backend.
+        </aside>
       </section>
 
       <!-- PYTHON OTEL PACKAGES -->
       <section>
         <h2>Python OTel Packages</h2>
-        <div class="code-block"><span class="comment"># Core SDK</span>
+        <pre><code class="language-python" data-trim data-noescape># Core SDK
 pip install opentelemetry-api
 pip install opentelemetry-sdk
 
-<span class="comment"># OTLP Exporter (sends data to collector/backend)</span>
+# OTLP Exporter (sends data to collector/backend)
 pip install opentelemetry-exporter-otlp
 
-<span class="comment"># Auto-instrumentation for FastAPI</span>
+# Auto-instrumentation for FastAPI
 pip install opentelemetry-instrumentation-fastapi
 
-<span class="comment"># Additional auto-instrumentations</span>
-pip install opentelemetry-instrumentation-requests   <span class="comment"># HTTP client</span>
-pip install opentelemetry-instrumentation-redis       <span class="comment"># Redis calls</span>
-pip install opentelemetry-instrumentation-httpx        <span class="comment"># httpx client</span>
-pip install opentelemetry-instrumentation-logging      <span class="comment"># Log correlation</span>
+# Additional auto-instrumentations
+pip install opentelemetry-instrumentation-requests   # HTTP client
+pip install opentelemetry-instrumentation-redis       # Redis calls
+pip install opentelemetry-instrumentation-httpx        # httpx client
+pip install opentelemetry-instrumentation-logging      # Log correlation
 
-<span class="comment"># Or install everything at once</span>
+# Or install everything at once
 pip install opentelemetry-distro
-opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and install</span></div>
+opentelemetry-bootstrap -a install   # auto-detect and install</code></pre>
         <div class="takeaway">
           <code>opentelemetry-distro</code> + <code>opentelemetry-bootstrap</code> automatically detects which libraries you use and installs the matching instrumentations.
         </div>
@@ -747,30 +775,30 @@ opentelemetry-bootstrap -a install   <span class="comment"># auto-detect and ins
       <!-- SETUP TRACER -->
       <section>
         <h2>Setting Up the Tracer</h2>
-        <div class="code-block"><span class="comment"># tracing.py &mdash; OTel initialization</span>
-<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
-<span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
-<span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> BatchSpanProcessor
-<span class="keyword">from</span> opentelemetry.exporter.otlp.proto.grpc.trace_exporter <span class="keyword">import</span> OTLPSpanExporter
-<span class="keyword">from</span> opentelemetry.sdk.resources <span class="keyword">import</span> Resource
+        <pre><code class="language-python" data-trim data-noescape># tracing.py &mdash; OTel initialization
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.resources import Resource
 
-<span class="comment"># 1. Define the service identity</span>
+# 1. Define the service identity
 resource = Resource.create({
-    <span class="string">"service.name"</span>: <span class="string">"agent-api"</span>,
-    <span class="string">"service.version"</span>: <span class="string">"2.0.0"</span>,
-    <span class="string">"deployment.environment"</span>: <span class="string">"production"</span>,
+    "service.name": "agent-api",
+    "service.version": "2.0.0",
+    "deployment.environment": "production",
 })
 
-<span class="comment"># 2. Create a TracerProvider with OTLP export</span>
+# 2. Create a TracerProvider with OTLP export
 provider = TracerProvider(resource=resource)
 processor = BatchSpanProcessor(
-    OTLPSpanExporter(endpoint=<span class="string">"http://otel-collector:4317"</span>)
+    OTLPSpanExporter(endpoint="http://otel-collector:4317")
 )
 provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
 
-<span class="comment"># 3. Get a tracer for your module</span>
-tracer = trace.get_tracer(<span class="string">"agent.api"</span>)</div>
+# 3. Get a tracer for your module
+tracer = trace.get_tracer("agent.api")</code></pre>
         <div style="font-size:0.65em; color:#aaa; margin-top:10px;">
           Resource attributes identify <em>which service</em> generated the telemetry. Every span carries these.
         </div>
@@ -782,24 +810,24 @@ tracer = trace.get_tracer(<span class="string">"agent.api"</span>)</div>
         <div class="card-grid">
           <div class="card card-accent" style="padding:12px;">
             <h4>Option A: Code-Based</h4>
-            <div class="code-block" style="margin-top:6px; font-size:0.48em; max-height:260px;"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
-<span class="keyword">from</span> opentelemetry.instrumentation.fastapi \
-    <span class="keyword">import</span> FastAPIInstrumentor
+            <pre style="margin-top:6px; font-size:0.52em; max-height:260px;"><code class="language-python" data-trim data-noescape>from fastapi import FastAPI
+from opentelemetry.instrumentation.fastapi \
+    import FastAPIInstrumentor
 
 app = FastAPI()
 FastAPIInstrumentor.instrument_app(app)
 
-<span class="keyword">@app.get</span>(<span class="string">"/health"</span>)
-<span class="keyword">async def</span> <span class="func">health</span>():
-    <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ok"</span>}
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
 
-<span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
-<span class="keyword">async def</span> <span class="func">chat</span>(query: str):
-    <span class="keyword">return</span> {<span class="string">"response"</span>: <span class="string">"..."</span>}</div>
+@app.post("/chat")
+async def chat(query: str):
+    return {"response": "..."}</code></pre>
           </div>
           <div class="card card-green" style="padding:12px;">
             <h4>Option B: Zero-Code</h4>
-            <div class="code-block" style="margin-top:6px; font-size:0.48em; max-height:260px;"><span class="comment"># No code changes needed!</span>
+            <pre style="margin-top:6px; font-size:0.52em; max-height:260px;"><code class="language-bash" data-trim data-noescape># No code changes needed!
 opentelemetry-instrument \
   --service_name agent-api \
   --exporter_otlp_endpoint \
@@ -807,8 +835,8 @@ opentelemetry-instrument \
   python -m uvicorn main:app \
     --host 0.0.0.0 --port 8000
 
-<span class="comment"># Every endpoint now produces</span>
-<span class="comment"># spans automatically</span></div>
+# Every endpoint now produces
+# spans automatically</code></pre>
             <p style="margin-top:6px; font-size:0.55em;">Spans include: HTTP method, path, status code, duration, headers</p>
           </div>
         </div>
@@ -820,7 +848,7 @@ opentelemetry-instrument \
       <!-- WHAT AUTO-INSTRUMENTATION GIVES YOU -->
       <section>
         <h2>What You Get Automatically</h2>
-        <p style="font-size:0.75em; color:#ccc;">Auto-instrumentation covers the &ldquo;plumbing&rdquo; &mdash; framework-level operations</p>
+        <p class="text-base-dim">Auto-instrumentation covers the &ldquo;plumbing&rdquo; &mdash; framework-level operations</p>
         <table class="compare-table">
           <tr>
             <th>Library</th>
@@ -861,37 +889,37 @@ opentelemetry-instrument \
       <!-- CUSTOM SPANS -->
       <section>
         <h2>Custom Spans for AI Logic</h2>
-        <div class="code-block"><span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
+        <pre><code class="language-python" data-trim data-noescape>from opentelemetry import trace
 
-tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
+tracer = trace.get_tracer("agent.core")
 
-<span class="keyword">async def</span> <span class="func">process_query</span>(query: str):
-    <span class="comment"># Parent span for the entire agent workflow</span>
-    <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"agent_workflow"</span>) <span class="keyword">as</span> span:
-        span.set_attribute(<span class="string">"agent.query"</span>, query)
+async def process_query(query: str):
+    # Parent span for the entire agent workflow
+    with tracer.start_as_current_span("agent_workflow") as span:
+        span.set_attribute("agent.query", query)
 
-        <span class="comment"># Child span: RAG retrieval</span>
-        <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"rag_retrieval"</span>) <span class="keyword">as</span> rag_span:
-            docs = <span class="keyword">await</span> chromadb.query(query, n_results=5)
-            rag_span.set_attribute(<span class="string">"rag.docs_retrieved"</span>, len(docs))
-            rag_span.set_attribute(<span class="string">"rag.collection"</span>, <span class="string">"knowledge_base"</span>)
+        # Child span: RAG retrieval
+        with tracer.start_as_current_span("rag_retrieval") as rag_span:
+            docs = await chromadb.query(query, n_results=5)
+            rag_span.set_attribute("rag.docs_retrieved", len(docs))
+            rag_span.set_attribute("rag.collection", "knowledge_base")
 
-        <span class="comment"># Child span: LLM call</span>
-        <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"llm_call"</span>) <span class="keyword">as</span> llm_span:
-            response = <span class="keyword">await</span> llm.invoke(query, context=docs)
-            llm_span.set_attribute(<span class="string">"llm.model"</span>, <span class="string">"groq/llama3-70b"</span>)
-            llm_span.set_attribute(<span class="string">"llm.tokens_in"</span>, response.usage.prompt_tokens)
-            llm_span.set_attribute(<span class="string">"llm.tokens_out"</span>, response.usage.completion_tokens)
-            llm_span.set_attribute(<span class="string">"llm.cost_usd"</span>, calculate_cost(response.usage))
+        # Child span: LLM call
+        with tracer.start_as_current_span("llm_call") as llm_span:
+            response = await llm.invoke(query, context=docs)
+            llm_span.set_attribute("llm.model", "groq/llama3-70b")
+            llm_span.set_attribute("llm.tokens_in", response.usage.prompt_tokens)
+            llm_span.set_attribute("llm.tokens_out", response.usage.completion_tokens)
+            llm_span.set_attribute("llm.cost_usd", calculate_cost(response.usage))
 
-        span.set_attribute(<span class="string">"agent.tools_used"</span>, 2)
-        <span class="keyword">return</span> response.content</div>
+        span.set_attribute("agent.tools_used", 2)
+        return response.content</code></pre>
       </section>
 
       <!-- SPAN ATTRIBUTES FOR AI -->
       <section>
         <h2>AI Span Attributes</h2>
-        <p style="font-size:0.75em; color:#ccc;">Recommended attributes for AI-specific spans (emerging OTel semantic conventions)</p>
+        <p class="text-base-dim">Recommended attributes for AI-specific spans (emerging OTel semantic conventions)</p>
         <table class="compare-table">
           <tr>
             <th>Attribute</th>
@@ -899,42 +927,42 @@ tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
             <th>Example</th>
           </tr>
           <tr>
-            <td><code style="color:var(--accent);">llm.model</code></td>
+            <td><code class="color-accent">llm.model</code></td>
             <td>string</td>
             <td><code>"groq/llama3-70b"</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent);">llm.tokens_in</code></td>
+            <td><code class="color-accent">llm.tokens_in</code></td>
             <td>int</td>
             <td><code>850</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent);">llm.tokens_out</code></td>
+            <td><code class="color-accent">llm.tokens_out</code></td>
             <td>int</td>
             <td><code>420</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent);">llm.cost_usd</code></td>
+            <td><code class="color-accent">llm.cost_usd</code></td>
             <td>float</td>
             <td><code>0.0038</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent2);">rag.docs_retrieved</code></td>
+            <td><code class="color-green">rag.docs_retrieved</code></td>
             <td>int</td>
             <td><code>5</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent2);">rag.collection</code></td>
+            <td><code class="color-green">rag.collection</code></td>
             <td>string</td>
             <td><code>"knowledge_base"</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent3);">agent.tools_used</code></td>
+            <td><code class="color-orange">agent.tools_used</code></td>
             <td>int</td>
             <td><code>3</code></td>
           </tr>
           <tr>
-            <td><code style="color:var(--accent3);">agent.steps</code></td>
+            <td><code class="color-orange">agent.steps</code></td>
             <td>int</td>
             <td><code>4</code></td>
           </tr>
@@ -947,64 +975,64 @@ tracer = trace.get_tracer(<span class="string">"agent.core"</span>)
       <!-- CUSTOM METRICS -->
       <section>
         <h2>Custom Metrics in Python</h2>
-        <div class="code-block"><span class="keyword">from</span> opentelemetry <span class="keyword">import</span> metrics
-<span class="keyword">from</span> opentelemetry.sdk.metrics <span class="keyword">import</span> MeterProvider
-<span class="keyword">from</span> opentelemetry.sdk.metrics.export <span class="keyword">import</span> PeriodicExportingMetricReader
-<span class="keyword">from</span> opentelemetry.exporter.otlp.proto.grpc.metric_exporter <span class="keyword">import</span> OTLPMetricExporter
+        <pre><code class="language-python" data-trim data-noescape>from opentelemetry import metrics
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import OTLPMetricExporter
 
-<span class="comment"># Setup meter provider</span>
+# Setup meter provider
 reader = PeriodicExportingMetricReader(OTLPMetricExporter())
 provider = MeterProvider(metric_readers=[reader])
 metrics.set_meter_provider(provider)
 
-meter = metrics.get_meter(<span class="string">"agent.api"</span>)
+meter = metrics.get_meter("agent.api")
 
-<span class="comment"># Define metrics</span>
+# Define metrics
 request_counter = meter.create_counter(
-    <span class="string">"agent.requests.total"</span>,
-    description=<span class="string">"Total agent requests"</span>,
+    "agent.requests.total",
+    description="Total agent requests",
 )
 token_counter = meter.create_counter(
-    <span class="string">"agent.tokens.total"</span>,
-    description=<span class="string">"Total tokens consumed"</span>,
+    "agent.tokens.total",
+    description="Total tokens consumed",
 )
 latency_histogram = meter.create_histogram(
-    <span class="string">"agent.request.duration"</span>,
-    unit=<span class="string">"ms"</span>,
-    description=<span class="string">"Request duration in milliseconds"</span>,
+    "agent.request.duration",
+    unit="ms",
+    description="Request duration in milliseconds",
 )
 
-<span class="comment"># Record metrics in your handlers</span>
-request_counter.add(1, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
-token_counter.add(1270, {<span class="string">"direction"</span>: <span class="string">"total"</span>, <span class="string">"model"</span>: <span class="string">"llama3"</span>})
-latency_histogram.record(342.5, {<span class="string">"endpoint"</span>: <span class="string">"/chat"</span>})</div>
+# Record metrics in your handlers
+request_counter.add(1, {"endpoint": "/chat", "model": "llama3"})
+token_counter.add(1270, {"direction": "total", "model": "llama3"})
+latency_histogram.record(342.5, {"endpoint": "/chat"})</code></pre>
       </section>
 
       <!-- LOG CORRELATION -->
       <section>
         <h2>Log Correlation with Trace IDs</h2>
-        <p style="font-size:0.75em; color:#ccc;">Connect logs to traces so you can jump between them</p>
-        <div class="code-block"><span class="keyword">import</span> logging
-<span class="keyword">from</span> opentelemetry.instrumentation.logging <span class="keyword">import</span> LoggingInstrumentor
+        <p class="text-base-dim">Connect logs to traces so you can jump between them</p>
+        <pre><code class="language-python" data-trim data-noescape>import logging
+from opentelemetry.instrumentation.logging import LoggingInstrumentor
 
-<span class="comment"># Enable trace context injection into logs</span>
-LoggingInstrumentor().instrument(set_logging_format=<span class="keyword">True</span>)
+# Enable trace context injection into logs
+LoggingInstrumentor().instrument(set_logging_format=True)
 
-<span class="comment"># Configure structured logging</span>
+# Configure structured logging
 logging.basicConfig(
     level=logging.INFO,
-    format=<span class="string">'%(asctime)s %(levelname)s [%(name)s] '</span>
-           <span class="string">'[trace_id=%(otelTraceID)s span_id=%(otelSpanID)s] '</span>
-           <span class="string">'%(message)s'</span>
+    format='%(asctime)s %(levelname)s [%(name)s] '
+           '[trace_id=%(otelTraceID)s span_id=%(otelSpanID)s] '
+           '%(message)s'
 )
-logger = logging.getLogger(<span class="string">"agent"</span>)
+logger = logging.getLogger("agent")
 
-<span class="comment"># Now every log line includes the trace context</span>
-logger.info(<span class="string">"Processing query"</span>)
-<span class="comment"># Output:</span>
-<span class="comment"># 2025-01-15 14:32:01 INFO [agent]</span>
-<span class="comment"># [trace_id=abc123def456 span_id=789xyz] Processing query</span></div>
-        <div class="diagram" style="margin-top:16px;">
+# Now every log line includes the trace context
+logger.info("Processing query")
+# Output:
+# 2025-01-15 14:32:01 INFO [agent]
+# [trace_id=abc123def456 span_id=789xyz] Processing query</code></pre>
+        <div class="diagram mt-16">
           <div class="box" style="font-size:0.6em;">See error in<br><strong>LangFuse/Loki</strong><br>(logs)</div>
           <div class="arrow">&rarr;</div>
           <div class="box box-orange" style="font-size:0.6em;">Click<br><strong>trace_id</strong><br>link</div>
@@ -1018,63 +1046,63 @@ logger.info(<span class="string">"Processing query"</span>)
       <!-- PUTTING IT ALL TOGETHER -->
       <section>
         <h2>Complete FastAPI + OTel Setup</h2>
-        <div class="code-block"><span class="comment"># main.py &mdash; Production FastAPI with full OTel</span>
-<span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
-<span class="keyword">from</span> tracing <span class="keyword">import</span> tracer, setup_otel   <span class="comment"># our tracing.py module</span>
-<span class="keyword">from</span> opentelemetry.instrumentation.fastapi <span class="keyword">import</span> FastAPIInstrumentor
-<span class="keyword">from</span> opentelemetry.instrumentation.requests <span class="keyword">import</span> RequestsInstrumentor
-<span class="keyword">from</span> opentelemetry.instrumentation.redis <span class="keyword">import</span> RedisInstrumentor
+        <pre><code class="language-python" data-trim data-noescape># main.py &mdash; Production FastAPI with full OTel
+from fastapi import FastAPI
+from tracing import tracer, setup_otel   # our tracing.py module
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.instrumentation.redis import RedisInstrumentor
 
-<span class="comment"># Initialize OTel</span>
+# Initialize OTel
 setup_otel()
 
-app = FastAPI(title=<span class="string">"AI Agent API"</span>)
+app = FastAPI(title="AI Agent API")
 
-<span class="comment"># Auto-instrument frameworks</span>
+# Auto-instrument frameworks
 FastAPIInstrumentor.instrument_app(app)
 RequestsInstrumentor().instrument()
 RedisInstrumentor().instrument()
 
-<span class="keyword">@app.post</span>(<span class="string">"/chat"</span>)
-<span class="keyword">async def</span> <span class="func">chat</span>(query: str):
-    <span class="keyword">with</span> tracer.start_as_current_span(<span class="string">"chat_handler"</span>) <span class="keyword">as</span> span:
-        span.set_attribute(<span class="string">"agent.query_length"</span>, len(query))
+@app.post("/chat")
+async def chat(query: str):
+    with tracer.start_as_current_span("chat_handler") as span:
+        span.set_attribute("agent.query_length", len(query))
 
-        <span class="comment"># RAG + LLM calls (auto-instrumented HTTP + custom spans)</span>
-        result = <span class="keyword">await</span> agent.process(query)
+        # RAG + LLM calls (auto-instrumented HTTP + custom spans)
+        result = await agent.process(query)
 
-        span.set_attribute(<span class="string">"agent.response_length"</span>, len(result))
-        <span class="keyword">return</span> {<span class="string">"response"</span>: result}</div>
+        span.set_attribute("agent.response_length", len(result))
+        return {"response": result}</code></pre>
       </section>
 
       <!-- PYTHON OTEL CONFIGURATION -->
       <section>
         <h2>Configuring OTel in Python</h2>
-        <div class="code-block"><span class="comment"># otel_config.py &mdash; Python OTel setup with ConsoleSpanExporter</span>
-<span class="keyword">from</span> opentelemetry <span class="keyword">import</span> trace
-<span class="keyword">from</span> opentelemetry.sdk.trace <span class="keyword">import</span> TracerProvider
-<span class="keyword">from</span> opentelemetry.sdk.trace.export <span class="keyword">import</span> (
+        <pre><code class="language-python" data-trim data-noescape># otel_config.py &mdash; Python OTel setup with ConsoleSpanExporter
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
     BatchSpanProcessor, ConsoleSpanExporter
 )
-<span class="keyword">from</span> opentelemetry.sdk.resources <span class="keyword">import</span> Resource
-<span class="keyword">import</span> os
+from opentelemetry.sdk.resources import Resource
+import os
 
-<span class="comment"># Configure via environment variables or Python</span>
+# Configure via environment variables or Python
 resource = Resource.create({
-    <span class="string">"service.name"</span>: os.getenv(<span class="string">"OTEL_SERVICE_NAME"</span>, <span class="string">"agent-api"</span>),
-    <span class="string">"service.version"</span>: <span class="string">"2.0.0"</span>,
-    <span class="string">"deployment.environment"</span>: <span class="string">"production"</span>,
+    "service.name": os.getenv("OTEL_SERVICE_NAME", "agent-api"),
+    "service.version": "2.0.0",
+    "deployment.environment": "production",
 })
 
 provider = TracerProvider(resource=resource)
 
-<span class="comment"># ConsoleSpanExporter for local dev (no collector needed)</span>
+# ConsoleSpanExporter for local dev (no collector needed)
 provider.add_span_processor(
     BatchSpanProcessor(ConsoleSpanExporter())
 )
 trace.set_tracer_provider(provider)
 
-<span class="comment"># Run with: uvicorn app:app --host 0.0.0.0 --port 8000</span></div>
+# Run with: uvicorn app:app --host 0.0.0.0 --port 8000</code></pre>
         <div class="warning">
           In production, use <strong>sampling</strong> (e.g., 10%) to avoid overwhelming your trace backend. Always sample 100% of errors regardless of the ratio.
         </div>
@@ -1111,15 +1139,15 @@ trace.set_tracer_provider(provider)
         <h2>Day 4 Journey: Observability &amp; Production</h2>
         <div class="flow-step">
           <span class="flow-num">1</span>
-          <div><strong style="color:var(--accent);">Observability Fundamentals</strong> (this session) &mdash; Three pillars, OpenTelemetry, Python instrumentation</div>
+          <div><strong class="color-accent">Observability Fundamentals</strong> (this session) &mdash; Three pillars, OpenTelemetry, Python instrumentation</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-green">2</span>
-          <div><strong style="color:var(--accent2);">LangFuse AI Observability</strong> &mdash; LLM tracing, cost tracking, agent debugging</div>
+          <div><strong class="color-green">LangFuse AI Observability</strong> &mdash; LLM tracing, cost tracking, agent debugging</div>
         </div>
         <div class="flow-step">
           <span class="flow-num flow-num-orange">3</span>
-          <div><strong style="color:var(--accent3);">Production Development &amp; Deployment</strong> &mdash; FastAPI, health probes, secrets, structured logging</div>
+          <div><strong class="color-orange">Production Development &amp; Deployment</strong> &mdash; FastAPI, health probes, secrets, structured logging</div>
         </div>
       </section>
 
@@ -1127,7 +1155,7 @@ trace.set_tracer_provider(provider)
       <section>
         <h2>What&rsquo;s Next</h2>
         <h3>Session 11: LangFuse Observability</h3>
-        <div class="card-grid-3" style="margin-top:20px;">
+        <div class="card-grid-3 mt-20">
           <div class="card card-accent">
             <h4>LangFuse Overview</h4>
             <ul>
@@ -1159,7 +1187,7 @@ trace.set_tracer_provider(provider)
       <section>
         <h1>Questions?</h1>
         <br>
-        <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss observability concepts<br>before we move to LangFuse</p>
+        <p class="text-lg-dim">Let&rsquo;s discuss observability concepts<br>before we move to LangFuse</p>
         <br>
         <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
           <h4>Session 10 Complete</h4>
@@ -1170,7 +1198,7 @@ trace.set_tracer_provider(provider)
       <!-- ==================== QUIZ: SESSION 10 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 10 Quiz</h1>
+          <h1 class="text-2xl">Session 10 Quiz</h1>
           <p style="font-size:0.8em; color:#ccc;">5 questions to test your observability knowledge</p>
         </section>
 
@@ -1199,6 +1227,9 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>C &mdash; Traces.</strong> Traces show the exact path a specific request took through all services, revealing which span (operation) consumed the most time. Metrics show aggregates (p99), not individual requests.
         </div>
+        <aside class="notes">
+          Correct answer: C — Traces. Traces follow a specific request across services, showing which span consumed the most time. Metrics show aggregates (p99 latency), not individual request paths.
+        </aside>
       </section>
 
       <!-- Q2 -->
@@ -1226,6 +1257,9 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>B &mdash; OpenTelemetry Protocol, port 4317.</strong> OTLP uses gRPC on port 4317 by default. Port 4318 is for HTTP/protobuf transport. OTLP is the standard wire format for all three signals.
         </div>
+        <aside class="notes">
+          Correct answer: B — OpenTelemetry Protocol, port 4317. OTLP is the standard wire format. gRPC on 4317 is the default; 4318 is for HTTP/protobuf. Common trick question: 4318 is close but wrong for gRPC.
+        </aside>
       </section>
 
       <!-- Q3 -->
@@ -1253,6 +1287,9 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>C &mdash; Auto covers frameworks, manual covers business logic.</strong> Auto-instrumentation detects HTTP endpoints, database calls, and external requests. Manual instrumentation is needed for custom spans around LLM calls, RAG retrieval, and agent reasoning steps.
         </div>
+        <aside class="notes">
+          Correct answer: C — Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent). Auto-instrumentation detects framework-level operations; manual instrumentation wraps custom business logic like LLM calls and RAG retrieval in spans.
+        </aside>
       </section>
 
       <!-- Q4 -->
@@ -1280,6 +1317,9 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>B &mdash; Correlate logs with traces.</strong> When you find an error in logs, the trace_id lets you click through to the distributed trace in Jaeger/Tempo, showing exactly which service and operation caused the error.
         </div>
+        <aside class="notes">
+          Correct answer: B — It lets you jump from a log entry to its full distributed trace. Including trace_id in logs enables log-to-trace correlation — find an error in logs, click through to the full trace in Jaeger or Tempo.
+        </aside>
       </section>
 
       <!-- Q5 -->
@@ -1307,6 +1347,9 @@ trace.set_tracer_provider(provider)
         <div class="answer-explain">
           <strong>B &mdash; Processors.</strong> The Collector pipeline is: Receivers (accept data) &rarr; Processors (batch, filter, transform, sample) &rarr; Exporters (send to backends). Processors sit in the middle and modify or filter data in transit.
         </div>
+        <aside class="notes">
+          Correct answer: B — Processors. The OTel Collector pipeline flows: Receivers (accept data) then Processors (batch, filter, transform, sample) then Exporters (send to backends). Processors are the middle stage that modifies data in transit.
+        </aside>
       </section>
       </section>
 
@@ -1314,6 +1357,10 @@ trace.set_tracer_provider(provider)
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1321,10 +1368,21 @@ trace.set_tracer_provider(provider)
       showSlideNumber: 'all',
       transition: 'slide',
       transitionSpeed: 'default',
-      width: "100%",
-      height: "100%",
-      margin: 0.02,
       center: false,
+      progress: true,
+      width: 1920,
+      height: 1080,
+      margin: 0.02,
+      keyboard: {
+        70: function() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+          } else {
+            document.exitFullscreen();
+          }
+        }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

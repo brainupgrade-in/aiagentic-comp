@@ -6,6 +6,10 @@
   <title>Session 12: Production Development & Deployment</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,16 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Production Development<br>& Deployment</h1>
-        <p style="font-size:0.9em; color:#ccc;">From FastAPI to Production-Ready AI Applications</p>
+        <p class="text-lg-dim">From FastAPI to Production-Ready AI Applications</p>
         <p class="subtitle">Session 12 &middot; Day 4, Slot C</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 12, the final slot of Day 4. We have about 60-75 minutes. In Sessions 10 and 11 we learned how to observe AI systems with OTel and LangFuse. Now we make them production-ready -- FastAPI serving, health probes, secrets management, structured logging, and a comprehensive deployment checklist. By the end of this session, you will know what it takes to ship an AI application to production.
+        </aside>
       </section>
 
       <!-- ==================== PREVIOUS SESSION RECAP ==================== -->
@@ -83,6 +90,9 @@
           <div class="section-number">01</div>
           <h2>FastAPI for AI Agents</h2>
           <p class="subtitle">REST API Patterns &middot; Agent Endpoints &middot; Async Design</p>
+          <aside class="notes">
+            Ask the audience: how many of you have used Flask or Django for APIs? FastAPI is purpose-built for async workloads like LLM inference. The key insight here is that LLM calls are I/O-bound, not CPU-bound, so async is a natural fit. Stress that Pydantic integration means you get free validation and docs.
+          </aside>
         </section>
 
         <!-- WHY FASTAPI -->
@@ -114,32 +124,32 @@
         <!-- BASIC ENDPOINT PATTERN -->
         <section>
           <h2>Basic Agent Endpoint</h2>
-          <div class="code-block"><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
-<span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+          <pre><code class="language-python" data-trim data-noescape>from fastapi import FastAPI
+from pydantic import BaseModel
 
-app = FastAPI(title=<span class="string">"AI Agent API"</span>)
+app = FastAPI(title="AI Agent API")
 
-<span class="keyword">class</span> <span class="function">AgentRequest</span>(BaseModel):
+class <span class="function">AgentRequest(BaseModel):
     query: str
     session_id: str | None = None
     max_tokens: int = 1024
 
-<span class="keyword">class</span> <span class="function">AgentResponse</span>(BaseModel):
+class <span class="function">AgentResponse(BaseModel):
     answer: str
     sources: list[str] = []
     tokens_used: int
     latency_ms: float
 
-<span class="decorator">@app.post</span>(<span class="string">"/agent/invoke"</span>, response_model=AgentResponse)
-<span class="keyword">async def</span> <span class="function">invoke_agent</span>(request: AgentRequest):
-    <span class="comment"># Agent logic here</span>
-    result = <span class="keyword">await</span> agent.ainvoke(request.query)
-    <span class="keyword">return</span> AgentResponse(
-        answer=result[<span class="string">"output"</span>],
-        sources=result.get(<span class="string">"sources"</span>, []),
-        tokens_used=result[<span class="string">"token_count"</span>],
-        latency_ms=result[<span class="string">"latency"</span>]
-    )</div>
+<span class="decorator">@app.post("/agent/invoke", response_model=AgentResponse)
+async def <span class="function">invoke_agent(request: AgentRequest):
+    # Agent logic here
+    result = await agent.ainvoke(request.query)
+    return AgentResponse(
+        answer=result["output"],
+        sources=result.get("sources", []),
+        tokens_used=result["token_count"],
+        latency_ms=result["latency"]
+    )</code></pre>
         </section>
       </section>
 
@@ -149,29 +159,32 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
           <div class="section-number">02</div>
           <h2>Pydantic Models</h2>
           <p class="subtitle">Request/Response Validation &middot; Type Safety &middot; Serialization</p>
+          <aside class="notes">
+            This section is about trusting nothing at the boundary. Ask: what happens if a client sends temperature=5.0 or max_tokens=-1? Without Pydantic, those bad values flow straight into your LLM call and waste money or cause errors. Emphasize the field_validator pattern for custom business rules.
+          </aside>
         </section>
 
         <!-- PYDANTIC FOR AI -->
         <section>
           <h2>Pydantic for AI Applications</h2>
           <h3>Validate everything at the boundary</h3>
-          <div class="code-block"><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field, field_validator
+          <pre><code class="language-python" data-trim data-noescape>from pydantic import BaseModel, Field, field_validator
 
-<span class="keyword">class</span> <span class="function">ChatMessage</span>(BaseModel):
-    role: str = Field(..., pattern=<span class="string">"^(user|assistant|system)$"</span>)
+class <span class="function">ChatMessage(BaseModel):
+    role: str = Field(..., pattern="^(user|assistant|system)$")
     content: str = Field(..., min_length=1, max_length=10000)
 
-<span class="keyword">class</span> <span class="function">AgentRequest</span>(BaseModel):
+class <span class="function">AgentRequest(BaseModel):
     messages: list[ChatMessage]
-    model: str = <span class="string">"llama-3.3-70b-versatile"</span>
+    model: str = "llama-3.3-70b-versatile"
     temperature: float = Field(0.7, ge=0.0, le=2.0)
     max_tokens: int = Field(1024, ge=1, le=8192)
 
-    <span class="decorator">@field_validator</span>(<span class="string">"messages"</span>)
-    <span class="keyword">def</span> <span class="function">must_have_user_message</span>(cls, v):
-        <span class="keyword">if not</span> any(m.role == <span class="string">"user"</span> <span class="keyword">for</span> m <span class="keyword">in</span> v):
-            <span class="keyword">raise</span> ValueError(<span class="string">"Must include at least one user message"</span>)
-        <span class="keyword">return</span> v</div>
+    <span class="decorator">@field_validator("messages")
+    def <span class="function">must_have_user_message(cls, v):
+        if not any(m.role == "user" for m in v):
+            raise ValueError("Must include at least one user message")
+        return v</code></pre>
           <div class="takeaway">
             Pydantic catches malformed requests <strong>before</strong> they reach your agent.
             Invalid temperature? Missing messages? Rejected instantly with a clear error.
@@ -185,39 +198,42 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
           <div class="section-number">03</div>
           <h2>Streaming Responses</h2>
           <p class="subtitle">Server-Sent Events &middot; Real-Time Output &middot; User Experience</p>
+          <aside class="notes">
+            Ask: how long will users wait before abandoning a request? Research says about 3-5 seconds. LLM calls often take 10-30 seconds. Streaming solves this by showing the first token in about 200ms. Mention that ChatGPT, Claude, and every production AI product uses streaming for exactly this reason.
+          </aside>
         </section>
 
         <!-- SSE PATTERN -->
         <section>
           <h2>SSE for Real-Time Agent Output</h2>
           <h3>Don't make users stare at a spinner for 30 seconds</h3>
-          <div class="code-block"><span class="keyword">from</span> fastapi.responses <span class="keyword">import</span> StreamingResponse
-<span class="keyword">import</span> json
+          <pre><code class="language-python" data-trim data-noescape>from fastapi.responses import StreamingResponse
+import json
 
-<span class="decorator">@app.post</span>(<span class="string">"/agent/stream"</span>)
-<span class="keyword">async def</span> <span class="function">stream_agent</span>(request: AgentRequest):
-    <span class="keyword">async def</span> <span class="function">event_generator</span>():
-        <span class="keyword">async for</span> chunk <span class="keyword">in</span> agent.astream(request.query):
-            data = json.dumps({<span class="string">"token"</span>: chunk})
-            <span class="keyword">yield</span> f<span class="string">"data: {data}\n\n"</span>
-        <span class="keyword">yield</span> <span class="string">"data: [DONE]\n\n"</span>
+<span class="decorator">@app.post("/agent/stream")
+async def <span class="function">stream_agent(request: AgentRequest):
+    async def <span class="function">event_generator():
+        async for chunk in agent.astream(request.query):
+            data = json.dumps({"token": chunk})
+            yield f"data: {data}\n\n"
+        yield "data: [DONE]\n\n"
 
-    <span class="keyword">return</span> StreamingResponse(
+    return StreamingResponse(
         event_generator(),
-        media_type=<span class="string">"text/event-stream"</span>
-    )</div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+        media_type="text/event-stream"
+    )</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-10">
               <h4>Why stream?</h4>
-              <ul style="font-size:0.5em;">
+              <ul class="text-xs">
                 <li>First token in ~200ms instead of waiting 5-30s</li>
                 <li>Users can read as output is generated</li>
                 <li>Can cancel mid-stream if wrong direction</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>Client-side (JavaScript)</h4>
-              <ul style="font-size:0.5em;">
+              <ul class="text-xs">
                 <li>Use <code>EventSource</code> or <code>fetch</code> with reader</li>
                 <li>Append each token to UI progressively</li>
                 <li>Handle <code>[DONE]</code> to finalize output</li>
@@ -233,41 +249,44 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
           <div class="section-number">04</div>
           <h2>Health Checks & Probes</h2>
           <p class="subtitle">Liveness &middot; Readiness &middot; Startup Probes</p>
+          <aside class="notes">
+            This is critical for anyone running on Kubernetes. Ask: what happens if your AI app takes 2 minutes to load the model but K8s expects a healthy response in 30 seconds? It crash-loops forever. Stress the three-probe model: startup (give me time to load), liveness (am I stuck?), readiness (am I ready for traffic?).
+          </aside>
         </section>
 
         <!-- HEALTH ENDPOINT -->
         <section>
           <h2>The /health Endpoint Pattern</h2>
-          <div class="code-block"><span class="decorator">@app.get</span>(<span class="string">"/health"</span>)
-<span class="keyword">async def</span> <span class="function">health_check</span>():
-    <span class="keyword">return</span> {
-        <span class="string">"status"</span>: <span class="string">"healthy"</span>,
-        <span class="string">"version"</span>: <span class="string">"1.2.0"</span>,
-        <span class="string">"checks"</span>: {
-            <span class="string">"llm_provider"</span>: <span class="keyword">await</span> check_groq_connection(),
-            <span class="string">"vector_db"</span>: <span class="keyword">await</span> check_chromadb(),
-            <span class="string">"memory_mb"</span>: get_memory_usage(),
+          <pre><code class="language-python" data-trim data-noescape><span class="decorator">@app.get("/health")
+async def <span class="function">health_check():
+    return {
+        "status": "healthy",
+        "version": "1.2.0",
+        "checks": {
+            "llm_provider": await check_groq_connection(),
+            "vector_db": await check_chromadb(),
+            "memory_mb": get_memory_usage(),
         }
     }
 
-<span class="decorator">@app.get</span>(<span class="string">"/ready"</span>)
-<span class="keyword">async def</span> <span class="function">readiness_check</span>():
-    <span class="comment"># Only return 200 when the app can serve traffic</span>
-    <span class="keyword">if not</span> model_loaded:
-        <span class="keyword">raise</span> HTTPException(status_code=503, detail=<span class="string">"Model not loaded"</span>)
-    <span class="keyword">return</span> {<span class="string">"status"</span>: <span class="string">"ready"</span>}</div>
-          <div class="card-grid-3" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+<span class="decorator">@app.get("/ready")
+async def <span class="function">readiness_check():
+    # Only return 200 when the app can serve traffic
+    if not model_loaded:
+        raise HTTPException(status_code=503, detail="Model not loaded")
+    return {"status": "ready"}</code></pre>
+          <div class="card-grid-3 mt-10">
+            <div class="card card-accent p-10">
               <h4>Liveness</h4>
-              <p style="font-size:0.55em;">Is the process alive?<br>"Restart me if I'm stuck."</p>
+              <p class="text-xs">Is the process alive?<br>"Restart me if I'm stuck."</p>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>Readiness</h4>
-              <p style="font-size:0.55em;">Can I serve traffic?<br>"Don't send requests yet."</p>
+              <p class="text-xs">Can I serve traffic?<br>"Don't send requests yet."</p>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <h4>Startup</h4>
-              <p style="font-size:0.55em;">Has initial load finished?<br>"Give me time to warm up."</p>
+              <p class="text-xs">Has initial load finished?<br>"Give me time to warm up."</p>
             </div>
           </div>
         </section>
@@ -275,13 +294,13 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         <!-- PYTHON HEALTH MONITORING -->
         <section>
           <h2>Python Health Monitoring</h2>
-          <div class="code-block"><span class="comment"># health_monitor.py &mdash; async HealthChecker class</span>
-<span class="keyword">import</span> asyncio, signal, httpx, psutil
+          <pre><code class="language-python" data-trim data-noescape># health_monitor.py &mdash; async HealthChecker class
+import asyncio, signal, httpx, psutil
 
-<span class="keyword">class</span> <span class="function">HealthChecker</span>:
-    <span class="string">"""Monitors /health endpoint and manages process lifecycle."""</span>
+class <span class="function">HealthChecker:
+    """Monitors /health endpoint and manages process lifecycle."""
 
-    <span class="keyword">def</span> <span class="function">__init__</span>(self, url=<span class="string">"http://localhost:8000/health"</span>,
+    def <span class="function">__init__(self, url="http://localhost:8000/health",
                  interval=30, timeout=5, retries=3, start_delay=120):
         self.url = url
         self.interval = interval
@@ -290,28 +309,28 @@ app = FastAPI(title=<span class="string">"AI Agent API"</span>)
         self.start_delay = start_delay
         self.failures = 0
 
-    <span class="keyword">async def</span> <span class="function">check</span>(self):
-        <span class="keyword">try</span>:
-            <span class="keyword">async with</span> httpx.AsyncClient() <span class="keyword">as</span> client:
-                resp = <span class="keyword">await</span> client.get(self.url, timeout=self.timeout)
-                <span class="keyword">if</span> resp.status_code == 200:
+    async def <span class="function">check(self):
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get(self.url, timeout=self.timeout)
+                if resp.status_code == 200:
                     self.failures = 0
-                    <span class="keyword">return</span> <span class="keyword">True</span>
-        <span class="keyword">except</span> Exception:
-            <span class="keyword">pass</span>
+                    return True
+        except Exception:
+            pass
         self.failures += 1
-        <span class="keyword">return</span> self.failures &lt; self.retries
+        return self.failures &lt; self.retries
 
-    <span class="keyword">async def</span> <span class="function">run</span>(self):
-        <span class="keyword">await</span> asyncio.sleep(self.start_delay)
-        <span class="keyword">while True</span>:
-            <span class="keyword">if not await</span> self.check():
-                logger.error(<span class="string">"Health check failed, shutting down"</span>)
-                <span class="keyword">break</span>
-            <span class="keyword">await</span> asyncio.sleep(self.interval)
+    async def <span class="function">run(self):
+        await asyncio.sleep(self.start_delay)
+        while True:
+            if not await self.check():
+                logger.error("Health check failed, shutting down")
+                break
+            await asyncio.sleep(self.interval)
 
-<span class="comment"># Graceful shutdown via signal handlers</span>
-signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.get_event_loop().stop())</div>
+# Graceful shutdown via signal handlers
+signal.signal(signal.SIGTERM, lambda s, f: asyncio.get_event_loop().stop())</code></pre>
           <div class="warning">
             AI apps can take minutes to load models. Use <code>start_delay</code> to give the application
             time to initialize before health checks begin counting failures.
@@ -325,6 +344,9 @@ signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.
           <div class="section-number">05</div>
           <h2>Secrets Management</h2>
           <p class="subtitle">.env Files &middot; python-dotenv &middot; Environment Variables</p>
+          <aside class="notes">
+            Ask the audience: has anyone ever accidentally committed an API key to git? This happens constantly, and with LLM API keys costing real money, leaked keys can run up large bills. The key takeaway is: .env.example goes in the repo with placeholder values, .env with real values stays in .gitignore.
+          </aside>
         </section>
 
         <!-- CONFIGMAP VS SECRET -->
@@ -363,20 +385,20 @@ signal.signal(signal.SIGTERM, <span class="keyword">lambda</span> s, f: asyncio.
             </tr>
           </table>
           <br>
-          <div class="code-block"><span class="comment"># .env.example (committed to repo &mdash; no real values)</span>
+          <pre><code class="language-python" data-trim data-noescape># .env.example (committed to repo &mdash; no real values)
 GROQ_API_KEY=your-groq-api-key-here
 LANGFUSE_SECRET_KEY=your-langfuse-secret-here
 LANGFUSE_PUBLIC_KEY=your-langfuse-public-here
 
-<span class="comment"># .env (local only &mdash; in .gitignore)</span>
+# .env (local only &mdash; in .gitignore)
 GROQ_API_KEY=gsk_abc123...
 LANGFUSE_SECRET_KEY=sk-lf-xyz...
 
-<span class="comment"># Python &mdash; inject via python-dotenv</span>
-<span class="keyword">from</span> dotenv <span class="keyword">import</span> load_dotenv
-load_dotenv(<span class="string">".env"</span>)     <span class="comment"># loads into os.environ</span>
-<span class="keyword">import</span> os
-api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)</div>
+# Python &mdash; inject via python-dotenv
+from dotenv import load_dotenv
+load_dotenv(".env")     # loads into os.environ
+import os
+api_key = os.getenv("GROQ_API_KEY")</code></pre>
           <div class="warning">
             Never hardcode API keys in source code. Use <code>.env</code> files with
             <code>.gitignore</code> and <code>python-dotenv</code> for environment variable injection. Rotate keys regularly.
@@ -390,6 +412,9 @@ api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)</div>
           <div class="section-number">06</div>
           <h2>Structured Logging</h2>
           <p class="subtitle">JSON Logs &middot; AI-Specific Fields &middot; Correlation</p>
+          <aside class="notes">
+            This connects directly to Session 10 and 11 on observability. Ask: how do you find out why a particular request was slow last Tuesday at 3am? With print statements, you cannot. With structured JSON logs including trace_id, model name, token counts, and cost, you can filter and aggregate instantly. Stress the AI-specific fields that traditional logging misses.
+          </aside>
         </section>
 
         <!-- JSON LOGS VS PRINT -->
@@ -398,10 +423,10 @@ api_key = os.getenv(<span class="string">"GROQ_API_KEY"</span>)</div>
           <div class="card-grid">
             <div class="card card-red">
               <h4>Bad: print()</h4>
-              <div class="code-block" style="font-size:0.85em; margin-top:8px;">print("Agent called with query: " + query)
+              <pre style="font-size:0.85em; margin-top:8px;"><code class="language-python" data-trim data-noescape>print("Agent called with query: " + query)
 print("Tokens used: 247")
-print("Error: rate limit exceeded")</div>
-              <ul style="margin-top:8px;">
+print("Error: rate limit exceeded")</code></pre>
+              <ul class="mt-8">
                 <li>No structure &mdash; hard to parse</li>
                 <li>No timestamps</li>
                 <li>Cannot filter or aggregate</li>
@@ -409,7 +434,7 @@ print("Error: rate limit exceeded")</div>
             </div>
             <div class="card card-green">
               <h4>Good: Structured JSON</h4>
-              <div class="code-block" style="font-size:0.85em; margin-top:8px;">{"timestamp": "2026-02-12T10:30:00Z",
+              <pre style="font-size:0.85em; margin-top:8px;"><code class="language-json" data-trim data-noescape>{"timestamp": "2026-02-12T10:30:00Z",
  "level": "INFO",
  "trace_id": "abc-123",
  "model": "llama-3.3-70b-versatile",
@@ -417,8 +442,8 @@ print("Error: rate limit exceeded")</div>
  "tokens_out": 247,
  "cost_usd": 0.0003,
  "latency_ms": 1840,
- "message": "Agent invocation complete"}</div>
-              <ul style="margin-top:8px;">
+ "message": "Agent invocation complete"}</code></pre>
+              <ul class="mt-8">
                 <li>Machine-parseable</li>
                 <li>Searchable in LangFuse/ELK</li>
                 <li>Correlate with traces</li>
@@ -481,6 +506,9 @@ print("Error: rate limit exceeded")</div>
           <div class="section-number">07</div>
           <h2>Production Checklist</h2>
           <p class="subtitle">Six Categories &middot; Comprehensive Readiness Review</p>
+          <aside class="notes">
+            This is the slide to bookmark. Walk through each of the six categories and ask the audience which ones their current projects would fail. Most teams skip alerting and backup/recovery. Emphasize that this checklist should be a gate before any production deployment -- no exceptions.
+          </aside>
         </section>
 
         <!-- CHECKLIST -->
@@ -551,6 +579,9 @@ print("Error: rate limit exceeded")</div>
           <div class="section-number">08</div>
           <h2>Deployment Order</h2>
           <p class="subtitle">Correct Sequencing for Reliable Rollouts</p>
+          <aside class="notes">
+            Ask: what happens if you deploy the app before the database is running? The app crashes, health checks fail, and K8s starts a crash loop. The kitchen analogy works well here -- you do not invite guests before the stove is installed. Walk through each step and ask what breaks if you skip it.
+          </aside>
         </section>
 
         <!-- DEPLOYMENT SEQUENCE -->
@@ -650,40 +681,43 @@ print("Error: rate limit exceeded")</div>
           <div class="section-number">09</div>
           <h2>Error Handling Patterns</h2>
           <p class="subtitle">HTTPException &middot; Status Codes &middot; Fallbacks</p>
+          <aside class="notes">
+            This is where most AI applications fall short. Ask: what does your app return when Groq rate-limits you? If it returns a generic 500, the client has no idea whether to retry or give up. Stress the importance of specific HTTP status codes -- 429 means retry after delay, 504 means the LLM timed out, 503 means the service is not ready.
+          </aside>
         </section>
 
         <!-- ERROR HANDLING CODE -->
         <section>
           <h2>Robust Error Handling</h2>
-          <div class="code-block"><span class="keyword">from</span> fastapi <span class="keyword">import</span> HTTPException
-<span class="keyword">import</span> logging
+          <pre><code class="language-python" data-trim data-noescape>from fastapi import HTTPException
+import logging
 
-logger = logging.getLogger(<span class="string">"ai_agent"</span>)
+logger = logging.getLogger("ai_agent")
 
-<span class="decorator">@app.post</span>(<span class="string">"/agent/invoke"</span>)
-<span class="keyword">async def</span> <span class="function">invoke_agent</span>(request: AgentRequest):
-    <span class="keyword">try</span>:
-        result = <span class="keyword">await</span> agent.ainvoke(request.query)
-        <span class="keyword">return</span> AgentResponse(answer=result[<span class="string">"output"</span>])
+<span class="decorator">@app.post("/agent/invoke")
+async def <span class="function">invoke_agent(request: AgentRequest):
+    try:
+        result = await agent.ainvoke(request.query)
+        return AgentResponse(answer=result["output"])
 
-    <span class="keyword">except</span> RateLimitError:
-        logger.warning(<span class="string">"Rate limit hit"</span>, extra={<span class="string">"model"</span>: request.model})
-        <span class="keyword">raise</span> HTTPException(
-            status_code=<span class="highlight-orange">429</span>,
-            detail=<span class="string">"LLM rate limit exceeded. Retry after 60s."</span>
+    except RateLimitError:
+        logger.warning("Rate limit hit", extra={"model": request.model})
+        raise HTTPException(
+            status_code=<span class="highlight-orange">429,
+            detail="LLM rate limit exceeded. Retry after 60s."
         )
-    <span class="keyword">except</span> ModelTimeoutError:
-        logger.error(<span class="string">"Model timeout"</span>, extra={<span class="string">"latency_ms"</span>: elapsed})
-        <span class="keyword">raise</span> HTTPException(
-            status_code=<span class="highlight-orange">504</span>,
-            detail=<span class="string">"LLM inference timed out."</span>
+    except ModelTimeoutError:
+        logger.error("Model timeout", extra={"latency_ms": elapsed})
+        raise HTTPException(
+            status_code=<span class="highlight-orange">504,
+            detail="LLM inference timed out."
         )
-    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:
-        logger.exception(<span class="string">"Unhandled error"</span>)
-        <span class="keyword">raise</span> HTTPException(
-            status_code=<span class="highlight-red">500</span>,
-            detail=<span class="string">"Internal server error."</span>
-        )</div>
+    except Exception as e:
+        logger.exception("Unhandled error")
+        raise HTTPException(
+            status_code=<span class="highlight-red">500,
+            detail="Internal server error."
+        )</code></pre>
         </section>
 
         <!-- STATUS CODE REFERENCE -->
@@ -696,37 +730,37 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
               <th>AI Use Case</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">200</strong></td>
+              <td><strong class="color-green">200</strong></td>
               <td>Success</td>
               <td>Agent completed successfully</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">400</strong></td>
+              <td><strong class="color-orange">400</strong></td>
               <td>Bad Request</td>
               <td>Invalid prompt, missing required fields</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">422</strong></td>
+              <td><strong class="color-orange">422</strong></td>
               <td>Unprocessable Entity</td>
               <td>Pydantic validation failed</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent4);">429</strong></td>
+              <td><strong class="color-red">429</strong></td>
               <td>Too Many Requests</td>
               <td>LLM provider rate limit exceeded</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent4);">500</strong></td>
+              <td><strong class="color-red">500</strong></td>
               <td>Internal Server Error</td>
               <td>Unhandled exception in agent logic</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent4);">503</strong></td>
+              <td><strong class="color-red">503</strong></td>
               <td>Service Unavailable</td>
               <td>Model not loaded, dependency down</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent4);">504</strong></td>
+              <td><strong class="color-red">504</strong></td>
               <td>Gateway Timeout</td>
               <td>LLM inference took too long</td>
             </tr>
@@ -744,6 +778,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
           <div class="section-number">10</div>
           <h2>Testing AI Applications</h2>
           <p class="subtitle">Unit Tests &middot; Mocking LLMs &middot; Integration Tests</p>
+          <aside class="notes">
+            Ask: how many of you write tests for your AI code today? Testing AI is different from testing traditional software because LLM outputs are non-deterministic. The key insight is to test everything around the LLM deterministically -- Pydantic validation, error handling, tool routing -- and mock the LLM itself for repeatable assertions.
+          </aside>
         </section>
 
         <!-- TESTING STRATEGIES -->
@@ -792,26 +829,26 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <!-- MOCK LLM EXAMPLE -->
         <section>
           <h2>Mocking LLMs in Tests</h2>
-          <div class="code-block"><span class="keyword">from</span> unittest.mock <span class="keyword">import</span> AsyncMock, patch
-<span class="keyword">from</span> httpx <span class="keyword">import</span> AsyncClient
-<span class="keyword">import</span> pytest
+          <pre><code class="language-python" data-trim data-noescape>from unittest.mock import AsyncMock, patch
+from httpx import AsyncClient
+import pytest
 
-<span class="decorator">@pytest.mark.asyncio</span>
-<span class="keyword">async def</span> <span class="function">test_agent_invoke</span>():
-    <span class="comment"># Mock the LLM to return a fixed response</span>
-    mock_response = {<span class="string">"output"</span>: <span class="string">"Paris is the capital of France."</span>}
+<span class="decorator">@pytest.mark.asyncio
+async def <span class="function">test_agent_invoke():
+    # Mock the LLM to return a fixed response
+    mock_response = {"output": "Paris is the capital of France."}
 
-    <span class="keyword">with</span> patch(<span class="string">"app.agent.ainvoke"</span>, new_callable=AsyncMock) <span class="keyword">as</span> mock:
+    with patch("app.agent.ainvoke", new_callable=AsyncMock) as mock:
         mock.return_value = mock_response
 
-        <span class="keyword">async with</span> AsyncClient(app=app, base_url=<span class="string">"http://test"</span>) <span class="keyword">as</span> client:
-            resp = <span class="keyword">await</span> client.post(<span class="string">"/agent/invoke"</span>, json={
-                <span class="string">"query"</span>: <span class="string">"What is the capital of France?"</span>
+        async with AsyncClient(app=app, base_url="http://test") as client:
+            resp = await client.post("/agent/invoke", json={
+                "query": "What is the capital of France?"
             })
 
-        <span class="keyword">assert</span> resp.status_code == 200
-        <span class="keyword">assert</span> <span class="string">"Paris"</span> <span class="keyword">in</span> resp.json()[<span class="string">"answer"</span>]
-        mock.assert_called_once()</div>
+        assert resp.status_code == 200
+        assert "Paris" in resp.json()["answer"]
+        mock.assert_called_once()</code></pre>
           <div class="takeaway">
             Mock the LLM at the boundary. Test everything around it deterministically.
             Save real LLM calls for integration and evaluation tests.
@@ -824,37 +861,37 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <h2>Hands-On Labs</h2>
         <h3 style="margin-bottom:8px;">8 labs covering the full production pipeline</h3>
         <div class="card-grid" style="gap:8px;">
-          <div class="card card-accent" style="padding:8px;">
+          <div class="card card-accent p-8">
             <h4>Lab 01: FastAPI Basics</h4>
-            <p style="font-size:0.5em;">Build endpoints, Pydantic models, health checks, TestClient</p>
+            <p class="text-xs">Build endpoints, Pydantic models, health checks, TestClient</p>
           </div>
-          <div class="card card-green" style="padding:8px;">
+          <div class="card card-green p-8">
             <h4>Lab 02: FastAPI + LangGraph</h4>
-            <p style="font-size:0.5em;">Connect FastAPI endpoints to LangGraph multi-agent systems</p>
+            <p class="text-xs">Connect FastAPI endpoints to LangGraph multi-agent systems</p>
           </div>
-          <div class="card card-orange" style="padding:8px;">
+          <div class="card card-orange p-8">
             <h4>Lab 03: Health Probes</h4>
-            <p style="font-size:0.5em;">Production-grade /health endpoint with async HealthChecker</p>
+            <p class="text-xs">Production-grade /health endpoint with async HealthChecker</p>
           </div>
-          <div class="card card-red" style="padding:8px;">
+          <div class="card card-red p-8">
             <h4>Lab 04: Streaming Responses</h4>
-            <p style="font-size:0.5em;">SSE streaming for real-time LangGraph state updates</p>
+            <p class="text-xs">SSE streaming for real-time LangGraph state updates</p>
           </div>
-          <div class="card card-accent" style="padding:8px;">
+          <div class="card card-accent p-8">
             <h4>Lab 05: Secrets Management</h4>
-            <p style="font-size:0.5em;">Secure API key handling with .env files and python-dotenv</p>
+            <p class="text-xs">Secure API key handling with .env files and python-dotenv</p>
           </div>
-          <div class="card card-green" style="padding:8px;">
+          <div class="card card-green p-8">
             <h4>Lab 06: Structured Logging</h4>
-            <p style="font-size:0.5em;">JSON logging with trace_id correlation for AI applications</p>
+            <p class="text-xs">JSON logging with trace_id correlation for AI applications</p>
           </div>
-          <div class="card card-orange" style="padding:8px;">
+          <div class="card card-orange p-8">
             <h4>Lab 07: Production Checklist</h4>
-            <p style="font-size:0.5em;">Production readiness checklist for deploying AI applications</p>
+            <p class="text-xs">Production readiness checklist for deploying AI applications</p>
           </div>
-          <div class="card card-red" style="padding:8px;">
+          <div class="card card-red p-8">
             <h4>Lab 08: Challenge</h4>
-            <p style="font-size:0.5em;">Complete integration: endpoints, health, logging, secrets, checklist</p>
+            <p class="text-xs">Complete integration: endpoints, health, logging, secrets, checklist</p>
           </div>
         </div>
       </section>
@@ -919,7 +956,7 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <section>
           <h1>Questions?</h1>
           <br>
-          <p style="font-size:0.9em; color:#ccc;">Let&rsquo;s discuss production deployment patterns<br>before we move to labs</p>
+          <p class="text-lg-dim">Let&rsquo;s discuss production deployment patterns<br>before we move to labs</p>
           <br>
           <div class="card" style="max-width:500px; margin:0 auto; text-align:center;">
             <h4>Session 12 Complete</h4>
@@ -934,7 +971,7 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
       <section>
 
       <section>
-        <h1 style="font-size:2.5em;">Session 12 Quiz</h1>
+        <h1 class="text-2xl">Session 12 Quiz</h1>
         <p style="font-size:1.1em; color:#ccc; margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
       </section>
 
@@ -963,6 +1000,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <div class="answer-explain">
           <strong>B &mdash; Async + Pydantic.</strong> FastAPI&rsquo;s ASGI foundation handles concurrent LLM calls efficiently, and Pydantic integration validates requests before they reach your agent logic.
         </div>
+        <aside class="notes">
+          Correct answer is B. FastAPI does not include its own LLM engine, nor is it the only framework supporting streaming. The critical advantage is async-native I/O for concurrent LLM calls plus built-in Pydantic validation for request and response schemas.
+        </aside>
       </section>
 
       <!-- Q2 -->
@@ -990,6 +1030,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <div class="answer-explain">
           <strong>C &mdash; Alive vs. ready.</strong> Liveness answers &ldquo;should I restart this process?&rdquo; Readiness answers &ldquo;should I send traffic here?&rdquo; A process can be alive but not ready (e.g., still loading a model).
         </div>
+        <aside class="notes">
+          Correct answer is C. A common confusion is thinking they are the same. The classic example: your app process is running (liveness passes) but the model file is still downloading (readiness fails). Kubernetes will not send traffic until readiness passes, but it will not restart the pod because liveness is fine.
+        </aside>
       </section>
 
       <!-- Q3 -->
@@ -1017,6 +1060,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <div class="answer-explain">
           <strong>C &mdash; Security risk.</strong> Hardcoded keys in source code end up in git history and are nearly impossible to fully remove. Use <code>.env</code> files (in <code>.gitignore</code>) and load them via <code>python-dotenv</code>.
         </div>
+        <aside class="notes">
+          Correct answer is C. Even if you delete a hardcoded key in a later commit, it remains in git history forever unless you rewrite history. The .env plus .gitignore pattern is the minimum viable approach. In production, use a secrets manager like AWS Secrets Manager or HashiCorp Vault.
+        </aside>
       </section>
 
       <!-- Q4 -->
@@ -1044,6 +1090,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <div class="answer-explain">
           <strong>B &mdash; Machine-parseable with AI-specific fields.</strong> Structured logs let you search, filter, and aggregate in tools like LangFuse or ELK. Adding trace_id, model, tokens_in/out, and cost_usd fields answers critical production questions.
         </div>
+        <aside class="notes">
+          Correct answer is B. Print statements are actually captured by some logging systems, but they lack structure. The real advantage of JSON logging is that you can filter by trace_id, aggregate token costs across requests, and set up alerts on specific fields -- none of which is possible with unstructured print output.
+        </aside>
       </section>
 
       <!-- Q5 -->
@@ -1071,6 +1120,9 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
         <div class="answer-explain">
           <strong>C &mdash; Dependencies first.</strong> Config and secrets must exist before anything reads them. Databases must be running before the app connects. Observability should be ready to capture the app&rsquo;s first logs. Only then do you expose the app via routing.
         </div>
+        <aside class="notes">
+          Correct answer is C. Order matters because each layer depends on the one below it. If you expose routing before the application is ready, users get errors. If you start the application before the database is up, the app crashes on first query. Always deploy bottom-up: infrastructure, then services, then routing.
+        </aside>
       </section>
 
       </section> <!-- end quiz wrapper -->
@@ -1079,6 +1131,10 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1087,12 +1143,11 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
-      // Keyboard shortcuts
       keyboard: {
-        // Use 'f' for fullscreen
         70: function() {
           if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -1100,7 +1155,8 @@ logger = logging.getLogger(<span class="string">"ai_agent"</span>)
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

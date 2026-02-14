@@ -6,6 +6,10 @@
   <title>Session 5: Building RAG Applications</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,21 +19,27 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Building RAG Applications</h1>
-        <p style="font-size:0.9em; color:#ccc;">Retrieval-Augmented Generation with LangChain</p>
+        <p class="text-lg-dim">Retrieval-Augmented Generation with LangChain</p>
         <p class="subtitle">Session 5 &middot; Day 2, Slot B</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 5 — Building RAG Applications. This is Day 2, Slot B.
+          We will cover: why RAG (Retrieval-Augmented Generation) is essential, vector stores and ChromaDB,
+          and building complete RAG pipelines from document ingestion to response generation. Approximate timing: 60-75 minutes including the quiz.
+          RAG is one of the most practical and widely-deployed patterns in production AI — this session teaches participants to build it from scratch.
+        </aside>
       </section>
 
       <!-- ==================== DAY 2 WELCOME ==================== -->
       <section>
         <h2>Welcome to Day 2!</h2>
         <h3>What changes today</h3>
-        <div class="card-grid" style="margin-top:14px;">
-          <div class="card card-red" style="padding:16px;">
+        <div class="card-grid mt-14">
+          <div class="card card-red p-16">
             <h4>Day 1 (Yesterday)</h4>
             <ul>
               <li>Ollama + llama3.2:1b (local LLM)</li>
@@ -37,7 +47,7 @@
               <li>Runs on your machine's RAM</li>
             </ul>
           </div>
-          <div class="card card-green" style="padding:16px;">
+          <div class="card card-green p-16">
             <h4>Day 2+ (Today onwards)</h4>
             <ul>
               <li>Groq API + llama-3.3-70b (cloud LLM)</li>
@@ -46,11 +56,12 @@
             </ul>
           </div>
         </div>
-        <div class="code-block" style="text-align:center; font-size:0.65em;"><span class="comment"># The only change in your code:</span>
-<span style="text-decoration:line-through; color:#888;">from langchain_ollama import ChatOllama</span>
-<span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq<br>
-<span style="text-decoration:line-through; color:#888;">llm = ChatOllama(model="llama3.2:1b")</span>
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div>
+        <pre style="text-align:center; font-size:0.65em;"><code class="language-python" data-trim data-noescape># The only change in your code:
+<span style="text-decoration:line-through; color:#999;">from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
+
+<span style="text-decoration:line-through; color:#999;">llm = ChatOllama(model="llama3.2:1b")
+llm = ChatGroq(model="llama-3.3-70b-versatile")</code></pre>
         <div class="takeaway">
           LangChain's model-agnostic design in action: <strong>two lines change, everything else stays the same.</strong>
           Your chains, prompts, and parsers from yesterday work as-is.
@@ -86,14 +97,20 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
           <div class="section-number">01</div>
           <h2>Why RAG?</h2>
           <p class="subtitle">The Problem &middot; The Architecture &middot; Embedding Models</p>
+          <aside class="notes">
+            Key teaching points: RAG solves the problem of LLMs not knowing about your private data. Instead of fine-tuning (expensive, slow),
+            RAG retrieves relevant documents at query time and injects them into the prompt as context.
+            Embedding models convert text into vectors that capture semantic meaning, enabling similarity search.
+            Ask the audience: "What kind of internal documents would be most valuable to make searchable with RAG?"
+          </aside>
         </section>
 
         <!-- THE PROBLEM -->
         <section>
           <h2>The Problem with LLMs Alone</h2>
           <h3>LLMs know a lot, but not <em>your</em> data</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-red" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-red p-16">
               <h4>What LLMs Can't Do</h4>
               <ul>
                 <li>Answer questions about your company's docs</li>
@@ -103,7 +120,7 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
               </ul>
               <p style="margin-top:8px; color:var(--accent4);">They hallucinate when they don't know</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>What RAG Enables</h4>
               <ul>
                 <li>Query your own documents with natural language</li>
@@ -120,22 +137,22 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
         <section>
           <h2>What is RAG?</h2>
           <div class="card card-accent" style="text-align:center; padding:24px; margin-top:16px;">
-            <p style="font-size:0.85em;">
+            <p class="text-085">
               <strong>Retrieval-Augmented Generation</strong> is a pattern where the LLM first
               <em>retrieves</em> relevant information from your data, then <em>generates</em>
               a response grounded in that information &mdash; instead of relying solely on its training data.
             </p>
           </div>
-          <div class="card-grid-3" style="margin-top:16px;">
-            <div class="card" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-16">
+            <div class="card text-center p-14">
               <h4>Retrieve</h4>
               <p>Find the most relevant chunks from your documents</p>
             </div>
-            <div class="card" style="text-align:center; padding:14px;">
+            <div class="card text-center p-14">
               <h4>Augment</h4>
               <p>Inject those chunks into the LLM's prompt as context</p>
             </div>
-            <div class="card" style="text-align:center; padding:14px;">
+            <div class="card text-center p-14">
               <h4>Generate</h4>
               <p>LLM generates an answer using the provided context</p>
             </div>
@@ -150,36 +167,36 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
         <!-- RAG ARCHITECTURE -->
         <section>
           <h2>RAG Architecture Overview</h2>
-          <div class="pipe-flow" style="margin-top:16px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-16">
+            <div class="pipe-box border-accent">
               <strong>Documents</strong><br>
-              <span style="font-size:0.85em;">PDFs, web, CSVs</span>
+              <span class="text-085">PDFs, web, CSVs</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green">
               <strong>Chunk & Embed</strong><br>
-              <span style="font-size:0.85em;">Split + vectorize</span>
+              <span class="text-085">Split + vectorize</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange">
               <strong>Vector Store</strong><br>
-              <span style="font-size:0.85em;">ChromaDB</span>
+              <span class="text-085">ChromaDB</span>
             </div>
           </div>
-          <div class="pipe-flow" style="margin-top:8px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-8">
+            <div class="pipe-box border-accent">
               <strong>User Query</strong><br>
-              <span style="font-size:0.85em;">"What is our refund policy?"</span>
+              <span class="text-085">"What is our refund policy?"</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange">
               <strong>Similarity Search</strong><br>
-              <span style="font-size:0.85em;">Find relevant chunks</span>
+              <span class="text-085">Find relevant chunks</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green">
               <strong>LLM + Context</strong><br>
-              <span style="font-size:0.85em;">Generate answer</span>
+              <span class="text-085">Generate answer</span>
             </div>
           </div>
           <div class="takeaway">
@@ -193,22 +210,22 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
           <h2>Embedding Models</h2>
           <h3>Turning text into numbers that capture meaning</h3>
           <div class="card card-accent" style="text-align:center; padding:20px; margin-top:14px;">
-            <p style="font-size:0.8em;">
+            <p class="text-080">
               An <strong>embedding</strong> is a list of numbers (a vector) that represents the
               <em>meaning</em> of a piece of text. Similar texts produce similar vectors.
             </p>
           </div>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card p-14">
               <h4>Example</h4>
               <p style="font-size:0.7em;">
                 "king" &rarr; [0.21, -0.45, 0.87, ...]<br>
                 "queen" &rarr; [0.19, -0.42, 0.85, ...]<br>
                 "bicycle" &rarr; [-0.76, 0.33, -0.12, ...]
               </p>
-              <p style="margin-top:6px;">King and queen are close in vector space. Bicycle is far away.</p>
+              <p class="mt-6">King and queen are close in vector space. Bicycle is far away.</p>
             </div>
-            <div class="card" style="padding:14px;">
+            <div class="card p-14">
               <h4>Why This Matters for RAG</h4>
               <p>When you ask "What is the return policy?", the embedding of your question is
               compared to embeddings of all document chunks. The closest matches are the most relevant.</p>
@@ -224,21 +241,21 @@ llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)</div
         <!-- EMBEDDING MODELS IN CODE -->
         <section>
           <h2>Embeddings in LangChain</h2>
-          <div class="code-block"><span class="keyword">from</span> langchain_community.embeddings <span class="keyword">import</span> HuggingFaceEmbeddings
+          <pre><code class="language-python" data-trim data-noescape>from langchain_community.embeddings import HuggingFaceEmbeddings
 
-<span class="comment"># Initialize the embedding model (runs locally, no API key needed)</span>
+# Initialize the embedding model (runs locally, no API key needed)
 embeddings = HuggingFaceEmbeddings(
-    model_name=<span class="string">"all-MiniLM-L6-v2"</span>
+    model_name="all-MiniLM-L6-v2"
 )
 
-<span class="comment"># Embed a single text</span>
-vector = embeddings.<span class="func">embed_query</span>(<span class="string">"What is the refund policy?"</span>)
-<span class="func">print</span>(<span class="func">len</span>(vector))  <span class="output"># 384 dimensions</span>
+# Embed a single text
+vector = embeddings.embed_query("What is the refund policy?")
+print(len(vector))  # 384 dimensions
 
-<span class="comment"># Embed multiple documents</span>
-docs = [<span class="string">"Refund within 30 days"</span>, <span class="string">"Free shipping over Rs 500"</span>]
-vectors = embeddings.<span class="func">embed_documents</span>(docs)
-<span class="func">print</span>(<span class="func">len</span>(vectors))  <span class="output"># 2 vectors, each 384 dimensions</span></div>
+# Embed multiple documents
+docs = ["Refund within 30 days", "Free shipping over Rs 500"]
+vectors = embeddings.embed_documents(docs)
+print(len(vectors))  # 2 vectors, each 384 dimensions</code></pre>
           <div class="takeaway">
             <code>all-MiniLM-L6-v2</code> is a small, fast model (80 MB) that runs locally with no API key.
             It produces 384-dimensional vectors &mdash; good enough for most RAG applications.
@@ -249,18 +266,18 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
         <section>
           <h2>How Similarity Search Works</h2>
           <h3>Cosine similarity: measuring how close two vectors are</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-green" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-green text-center p-14">
               <h4>Score: 0.92</h4>
               <p style="font-size:0.75em;">"refund policy" vs<br>"return procedure"</p>
               <p style="margin-top:6px; color:var(--accent2); font-weight:bold;">Very similar</p>
             </div>
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+            <div class="card card-orange text-center p-14">
               <h4>Score: 0.54</h4>
               <p style="font-size:0.75em;">"refund policy" vs<br>"customer support hours"</p>
               <p style="margin-top:6px; color:var(--accent3); font-weight:bold;">Somewhat related</p>
             </div>
-            <div class="card card-red" style="text-align:center; padding:14px;">
+            <div class="card card-red text-center p-14">
               <h4>Score: 0.12</h4>
               <p style="font-size:0.75em;">"refund policy" vs<br>"company picnic schedule"</p>
               <p style="margin-top:6px; color:var(--accent4); font-weight:bold;">Not related</p>
@@ -297,14 +314,20 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
           <div class="section-number">02</div>
           <h2>Vector Stores & ChromaDB</h2>
           <p class="subtitle">Architecture &middot; Collections &middot; Metadata &middot; Search</p>
+          <aside class="notes">
+            Key teaching points: Vector stores are specialized databases optimized for similarity search on embeddings.
+            ChromaDB is lightweight, open-source, and runs in-process — perfect for learning and prototyping.
+            Collections organize documents. Metadata (source, page, date) enables filtering search results beyond just semantic similarity.
+            Ask the audience: "How is a vector store different from a traditional database? What kind of queries does each excel at?"
+          </aside>
         </section>
 
         <!-- WHAT IS A VECTOR STORE -->
         <section>
           <h2>What is a Vector Store?</h2>
           <h3>A database designed for similarity search</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-red" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-red p-16">
               <h4>Regular Database (SQL)</h4>
               <ul>
                 <li>Stores rows and columns</li>
@@ -313,7 +336,7 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
               </ul>
               <p style="margin-top:6px; font-size:0.75em; color:var(--accent4);">"Find rows where city = Mumbai"</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>Vector Database (ChromaDB)</h4>
               <ul>
                 <li>Stores vectors (embeddings) + text + metadata</li>
@@ -333,7 +356,7 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
         <!-- WHY CHROMADB -->
         <section>
           <h2>Why ChromaDB?</h2>
-          <div class="card-grid" style="margin-top:14px;">
+          <div class="card-grid mt-14">
             <div class="card card-accent" style="text-align:center; padding:16px;">
               <h4>Open Source</h4>
               <p>Free, Apache 2.0 license. No vendor lock-in.</p>
@@ -358,7 +381,7 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
               <th>Best For</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">ChromaDB</strong></td>
+              <td><strong class="color-accent">ChromaDB</strong></td>
               <td>Embedded / Client-Server</td>
               <td>Prototyping, small-medium datasets, learning</td>
             </tr>
@@ -383,22 +406,22 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
         <!-- CHROMADB ARCHITECTURE -->
         <section>
           <h2>ChromaDB Architecture</h2>
-          <div class="layer-stack" style="margin-top:14px;">
+          <div class="layer-stack mt-14">
             <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:2px solid var(--accent);">
-              <span class="layer-title" style="color:var(--accent);">Your Application</span>
+              <span class="layer-title color-accent">Your Application</span>
               <span class="layer-items">LangChain &middot; Python code</span>
             </div>
             <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2);">
-              <span class="layer-title" style="color:var(--accent2);">ChromaDB Client</span>
+              <span class="layer-title color-green">ChromaDB Client</span>
               <span class="layer-items">Collections &middot; Add &middot; Query &middot; Delete</span>
             </div>
             <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:2px solid var(--accent3);">
-              <span class="layer-title" style="color:var(--accent3);">Storage</span>
+              <span class="layer-title color-orange">Storage</span>
               <span class="layer-items">Vectors &middot; Documents &middot; Metadata &middot; IDs</span>
             </div>
           </div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card" style="padding:14px;">
+          <div class="card-grid mt-10">
+            <div class="card p-14">
               <h4>Each document stores:</h4>
               <ul>
                 <li><strong>ID</strong> &mdash; unique identifier</li>
@@ -407,13 +430,13 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
                 <li><strong>Metadata</strong> &mdash; source, page, date, etc.</li>
               </ul>
             </div>
-            <div class="card" style="padding:14px;">
+            <div class="card p-14">
               <h4>Two modes:</h4>
               <ul>
                 <li><strong>In-memory</strong> &mdash; fast, ephemeral (for labs)</li>
                 <li><strong>Persistent</strong> &mdash; saved to disk (for production)</li>
               </ul>
-              <p style="margin-top:6px;">Both use the same API. Just change one setting.</p>
+              <p class="mt-6">Both use the same API. Just change one setting.</p>
             </div>
           </div>
         </section>
@@ -421,22 +444,22 @@ vectors = embeddings.<span class="func">embed_documents</span>(docs)
         <!-- COLLECTIONS AND METADATA -->
         <section>
           <h2>Collections & Metadata</h2>
-          <div class="code-block" style="font-size:0.54em; line-height:1.45;"><span class="keyword">import</span> chromadb
+          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape>import chromadb
 
-<span class="comment"># Create a persistent ChromaDB client</span>
-client = chromadb.PersistentClient(path=<span class="string">"./chroma_db"</span>)
+# Create a persistent ChromaDB client
+client = chromadb.PersistentClient(path="./chroma_db")
 
-<span class="comment"># Create a collection (like a table in SQL)</span>
-collection = client.<span class="func">get_or_create_collection</span>(<span class="string">"company_docs"</span>)
+# Create a collection (like a table in SQL)
+collection = client.get_or_create_collection("company_docs")
 
-<span class="comment"># Add documents with metadata</span>
-collection.<span class="func">add</span>(
-    documents=[<span class="string">"Refund within 30 days of purchase"</span>,
-              <span class="string">"Free shipping on orders above Rs 500"</span>],
-    metadatas=[{<span class="string">"source"</span>: <span class="string">"policy.pdf"</span>, <span class="string">"page"</span>: 3},
-              {<span class="string">"source"</span>: <span class="string">"policy.pdf"</span>, <span class="string">"page"</span>: 7}],
-    ids=[<span class="string">"doc1"</span>, <span class="string">"doc2"</span>]
-)</div>
+# Add documents with metadata
+collection.add(
+    documents=["Refund within 30 days of purchase",
+              "Free shipping on orders above Rs 500"],
+    metadatas=[{"source": "policy.pdf", "page": 3},
+              {"source": "policy.pdf", "page": 7}],
+    ids=["doc1", "doc2"]
+)</code></pre>
           <div class="takeaway">
             <strong>Metadata is powerful.</strong> You can filter search results by source, page number,
             date, category &mdash; any key-value pair you attach. This lets you build precise retrieval:
@@ -447,22 +470,22 @@ collection.<span class="func">add</span>(
         <!-- SIMILARITY SEARCH CODE -->
         <section>
           <h2>Querying ChromaDB</h2>
-          <div class="code-block" style="font-size:0.54em; line-height:1.45;"><span class="comment"># Basic similarity search</span>
-results = collection.<span class="func">query</span>(
-    query_texts=[<span class="string">"How do I return a product?"</span>],
+          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape># Basic similarity search
+results = collection.query(
+    query_texts=["How do I return a product?"],
     n_results=3
 )
 
-<span class="func">print</span>(results[<span class="string">"documents"</span>])  <span class="output"># [["Refund within 30 days..."]]</span>
-<span class="func">print</span>(results[<span class="string">"metadatas"</span>])  <span class="output"># [[{"source": "policy.pdf", "page": 3}]]</span>
-<span class="func">print</span>(results[<span class="string">"distances"</span>])  <span class="output"># [[0.34]]  (lower = more similar)</span>
+print(results["documents"])  # [["Refund within 30 days..."]]
+print(results["metadatas"])  # [[{"source": "policy.pdf", "page": 3}]]
+print(results["distances"])  # [[0.34]]  (lower = more similar)
 
-<span class="comment"># Search with metadata filter</span>
-results = collection.<span class="func">query</span>(
-    query_texts=[<span class="string">"shipping info"</span>],
+# Search with metadata filter
+results = collection.query(
+    query_texts=["shipping info"],
     n_results=3,
-    where={<span class="string">"source"</span>: <span class="string">"policy.pdf"</span>}
-)</div>
+    where={"source": "policy.pdf"}
+)</code></pre>
           <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
             Notice: you searched with <em>"How do I return a product?"</em> and it found <em>"Refund within 30 days"</em> &mdash;
             different words, same meaning. That's the power of embeddings.
@@ -473,29 +496,29 @@ results = collection.<span class="func">query</span>(
         <section>
           <h2>Document Ingestion Pipeline</h2>
           <h3>Getting your documents into the vector store</h3>
-          <div class="pipe-flow" style="margin-top:16px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-16">
+            <div class="pipe-box border-accent">
               <strong>Load</strong><br>
-              <span style="font-size:0.85em;">PDF, Web, CSV</span>
+              <span class="text-085">PDF, Web, CSV</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green">
               <strong>Split</strong><br>
-              <span style="font-size:0.85em;">Into chunks</span>
+              <span class="text-085">Into chunks</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange">
               <strong>Embed</strong><br>
-              <span style="font-size:0.85em;">Vectorize</span>
+              <span class="text-085">Vectorize</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-red">
               <strong>Store</strong><br>
-              <span style="font-size:0.85em;">ChromaDB</span>
+              <span class="text-085">ChromaDB</span>
             </div>
           </div>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>Document Loaders</h4>
               <ul>
                 <li><code>PyPDFLoader</code> &mdash; PDF files</li>
@@ -504,7 +527,7 @@ results = collection.<span class="func">query</span>(
                 <li><code>TextLoader</code> &mdash; Plain text</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Text Splitters</h4>
               <ul>
                 <li><code>RecursiveCharacterTextSplitter</code></li>
@@ -520,26 +543,26 @@ results = collection.<span class="func">query</span>(
         <section>
           <h2>Text Splitting: Why and How</h2>
           <h3>Documents are too long to fit in one embedding</h3>
-          <div class="code-block" style="font-size:0.54em; line-height:1.45;"><span class="keyword">from</span> langchain_text_splitters <span class="keyword">import</span> RecursiveCharacterTextSplitter
+          <pre style="font-size:0.54em; line-height:1.45;"><code class="language-python" data-trim data-noescape>from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,      <span class="comment"># max characters per chunk</span>
-    chunk_overlap=50,    <span class="comment"># overlap between chunks (preserves context)</span>
-    separators=[<span class="string">"\n\n"</span>, <span class="string">"\n"</span>, <span class="string">" "</span>, <span class="string">""</span>]  <span class="comment"># split priority</span>
+    chunk_size=500,      # max characters per chunk
+    chunk_overlap=50,    # overlap between chunks (preserves context)
+    separators=["\n\n", "\n", " ", ""]  # split priority
 )
 
-text = <span class="string">"""Our refund policy allows returns within 30 days.
+text = """Our refund policy allows returns within 30 days.
 Items must be in original packaging. Contact support for return labels.
-Refunds are processed within 5-7 business days."""</span>
+Refunds are processed within 5-7 business days."""
 
-chunks = splitter.<span class="func">split_text</span>(text)
-<span class="func">print</span>(<span class="func">len</span>(chunks))  <span class="output"># Number of chunks created</span></div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-red" style="padding:14px;">
+chunks = splitter.split_text(text)
+print(len(chunks))  # Number of chunks created</code></pre>
+          <div class="card-grid mt-10">
+            <div class="card card-red p-14">
               <h4>Too large chunks (5000+)</h4>
               <p>Dilutes the meaning &mdash; embeddings become vague. Retrieval returns irrelevant content.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Right-sized chunks (200-1000)</h4>
               <p>Each chunk has focused meaning. Retrieval is precise. Overlap preserves boundary context.</p>
             </div>
@@ -553,31 +576,37 @@ chunks = splitter.<span class="func">split_text</span>(text)
           <div class="section-number">03</div>
           <h2>Building RAG Pipelines</h2>
           <p class="subtitle">Ingestion &middot; Query Processing &middot; Context Retrieval &middot; Response Generation</p>
+          <aside class="notes">
+            Key teaching points: A RAG pipeline has four stages. Ingestion: load documents, split into chunks, embed, and store.
+            Query Processing: take the user's question and convert it for retrieval. Context Retrieval: find the most relevant chunks from the vector store.
+            Response Generation: combine the retrieved context with the question in a prompt and generate the answer.
+            Ask the audience: "What could go wrong at each stage? What if the chunks are too big or too small?"
+          </aside>
         </section>
 
         <!-- LANGCHAIN + CHROMADB INTEGRATION -->
         <section>
           <h2>LangChain + ChromaDB</h2>
           <h3>The complete ingestion pipeline in code</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_community.document_loaders <span class="keyword">import</span> PyPDFLoader
-<span class="keyword">from</span> langchain_text_splitters <span class="keyword">import</span> RecursiveCharacterTextSplitter
-<span class="keyword">from</span> langchain_community.embeddings <span class="keyword">import</span> HuggingFaceEmbeddings
-<span class="keyword">from</span> langchain_chroma <span class="keyword">import</span> Chroma
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 
-<span class="comment"># 1. Load</span>
-loader = PyPDFLoader(<span class="string">"company_policy.pdf"</span>)
-pages = loader.<span class="func">load</span>()  <span class="output"># List of Document objects (one per page)</span>
+# 1. Load
+loader = PyPDFLoader("company_policy.pdf")
+pages = loader.load()  # List of Document objects (one per page)
 
-<span class="comment"># 2. Split</span>
+# 2. Split
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-chunks = splitter.<span class="func">split_documents</span>(pages)
+chunks = splitter.split_documents(pages)
 
-<span class="comment"># 3. Embed + Store</span>
-vectorstore = Chroma.<span class="func">from_documents</span>(
+# 3. Embed + Store
+vectorstore = Chroma.from_documents(
     documents=chunks,
-    embedding=HuggingFaceEmbeddings(model_name=<span class="string">"all-MiniLM-L6-v2"</span>),
-    persist_directory=<span class="string">"./chroma_db"</span>
-)</div>
+    embedding=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2"),
+    persist_directory="./chroma_db"
+)</code></pre>
           <div class="takeaway">
             Three steps: <strong>Load &rarr; Split &rarr; Store</strong>.
             LangChain's <code>Chroma.from_documents()</code> handles embedding and storing in one call.
@@ -589,18 +618,18 @@ vectorstore = Chroma.<span class="func">from_documents</span>(
         <section>
           <h2>Creating a Retriever</h2>
           <h3>The bridge between your vector store and your chain</h3>
-          <div class="code-block"><span class="comment"># Create a retriever from the vector store</span>
-retriever = vectorstore.<span class="func">as_retriever</span>(
-    search_type=<span class="string">"similarity"</span>,  <span class="comment"># or "mmr" for diversity</span>
-    search_kwargs={<span class="string">"k"</span>: 3}    <span class="comment"># return top 3 results</span>
+          <pre><code class="language-python" data-trim data-noescape># Create a retriever from the vector store
+retriever = vectorstore.as_retriever(
+    search_type="similarity",  # or "mmr" for diversity
+    search_kwargs={"k": 3}    # return top 3 results
 )
 
-<span class="comment"># Use it directly</span>
-docs = retriever.<span class="func">invoke</span>(<span class="string">"What is the refund policy?"</span>)
+# Use it directly
+docs = retriever.invoke("What is the refund policy?")
 
-<span class="keyword">for</span> doc <span class="keyword">in</span> docs:
-    <span class="func">print</span>(doc.page_content)  <span class="comment"># the text</span>
-    <span class="func">print</span>(doc.metadata)      <span class="comment"># {"source": "policy.pdf", "page": 3}</span></div>
+for doc in docs:
+    print(doc.page_content)  # the text
+    print(doc.metadata)      # {"source": "policy.pdf", "page": 3}</code></pre>
           <div class="analogy">
             A retriever is like a research assistant. You ask a question, and they go to the library (vector store),
             find the most relevant books and pages, and bring them back to you. You then use those references to write your answer.
@@ -611,28 +640,28 @@ docs = retriever.<span class="func">invoke</span>(<span class="string">"What is 
         <section>
           <h2>The RAG Chain</h2>
           <h3>Combining retrieval with generation</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
-<span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> StrOutputParser
-<span class="keyword">from</span> langchain_core.runnables <span class="keyword">import</span> RunnablePassthrough
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
 
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 
-prompt = ChatPromptTemplate.<span class="func">from_template</span>(<span class="string">"""Answer based on the context below.
+prompt = ChatPromptTemplate.from_template("""Answer based on the context below.
 If the context doesn't contain the answer, say "I don't know."
 
 Context: {context}
 Question: {question}
-Answer:"""</span>)
+Answer:""")
 
-<span class="comment"># The RAG chain</span>
+# The RAG chain
 rag_chain = (
-    {<span class="string">"context"</span>: retriever, <span class="string">"question"</span>: RunnablePassthrough()}
-    <span class="keyword">|</span> prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
+    {"context": retriever, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
 )
 
-answer = rag_chain.<span class="func">invoke</span>(<span class="string">"What is the refund policy?"</span>)
-<span class="func">print</span>(answer)</div>
+answer = rag_chain.invoke("What is the refund policy?")
+print(answer)</code></pre>
         </section>
 
         <!-- DATA FLOW INSIDE RAG CHAIN -->
@@ -687,7 +716,7 @@ answer = rag_chain.<span class="func">invoke</span>(<span class="string">"What i
         <section>
           <h2>Response Generation with Citations</h2>
           <h3>Tell the user <em>where</em> the answer came from</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;">prompt = ChatPromptTemplate.<span class="func">from_template</span>(<span class="string">"""Answer using ONLY the context below.
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>prompt = ChatPromptTemplate.from_template("""Answer using ONLY the context below.
 Include the source and page number for each fact you cite.
 
 Context:
@@ -695,19 +724,19 @@ Context:
 
 Question: {question}
 
-Answer (with citations):"""</span>)
+Answer (with citations):""")
 
-<span class="comment"># Format documents with source info</span>
-<span class="keyword">def</span> <span class="func">format_docs</span>(docs):
-    <span class="keyword">return</span> <span class="string">"\n\n"</span>.join(
-        <span class="keyword">f</span><span class="string">"[Source: {d.metadata['source']}, Page {d.metadata.get('page', '?')}]\n{d.page_content}"</span>
-        <span class="keyword">for</span> d <span class="keyword">in</span> docs
+# Format documents with source info
+def format_docs(docs):
+    return "\n\n".join(
+        f"[Source: {d.metadata['source']}, Page {d.metadata.get('page', '?')}]\n{d.page_content}"
+        for d in docs
     )
 
 rag_chain = (
-    {<span class="string">"context"</span>: retriever <span class="keyword">|</span> format_docs, <span class="string">"question"</span>: RunnablePassthrough()}
-    <span class="keyword">|</span> prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
-)</div>
+    {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)</code></pre>
           <div class="takeaway">
             By including source information in the context and asking the LLM to cite its sources,
             you get answers like: <em>"Returns are accepted within 30 days (policy.pdf, page 3)."</em>
@@ -718,8 +747,8 @@ rag_chain = (
         <!-- COMMON RAG PATTERNS -->
         <section>
           <h2>Common RAG Patterns</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4>Naive RAG</h4>
               <p>Simple retrieve &rarr; generate. Good starting point.</p>
               <ul>
@@ -729,7 +758,7 @@ rag_chain = (
               </ul>
               <p style="margin-top:6px; color:var(--accent);">What we're building today</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>Advanced RAG</h4>
               <p>Pre/post-processing for better results.</p>
               <ul>
@@ -739,7 +768,7 @@ rag_chain = (
               </ul>
               <p style="margin-top:6px; color:var(--accent2);">Covered in later sessions</p>
             </div>
-            <div class="card card-orange" style="padding:16px;">
+            <div class="card card-orange p-16">
               <h4>Modular RAG</h4>
               <p>Customizable pipeline components.</p>
               <ul>
@@ -749,7 +778,7 @@ rag_chain = (
               </ul>
               <p style="margin-top:6px; color:var(--accent3);">Production pattern</p>
             </div>
-            <div class="card card-red" style="padding:16px;">
+            <div class="card card-red p-16">
               <h4>Agentic RAG</h4>
               <p>Agent decides when and what to retrieve.</p>
               <ul>
@@ -768,22 +797,22 @@ rag_chain = (
         <section>
           <h2>The Complete Picture</h2>
           <h3>End-to-end RAG data flow</h3>
-          <div class="layer-stack" style="margin-top:14px;">
+          <div class="layer-stack mt-14">
             <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:2px solid var(--accent);">
-              <span class="layer-title" style="color:var(--accent);">1. Ingestion (once)</span>
+              <span class="layer-title color-accent">1. Ingestion (once)</span>
               <span class="layer-items">Load docs &rarr; Split &rarr; Embed &rarr; Store in ChromaDB</span>
             </div>
             <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2);">
-              <span class="layer-title" style="color:var(--accent2);">2. Retrieval (per query)</span>
+              <span class="layer-title color-green">2. Retrieval (per query)</span>
               <span class="layer-items">Embed query &rarr; Similarity search &rarr; Get top-k chunks</span>
             </div>
             <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:2px solid var(--accent3);">
-              <span class="layer-title" style="color:var(--accent3);">3. Generation (per query)</span>
+              <span class="layer-title color-orange">3. Generation (per query)</span>
               <span class="layer-items">Inject context into prompt &rarr; LLM generates answer &rarr; Citations</span>
             </div>
           </div>
-          <div class="card-grid" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-10">
+            <div class="card card-accent p-14">
               <h4>What you learned today</h4>
               <ul>
                 <li>Why RAG matters and its architecture</li>
@@ -794,7 +823,7 @@ rag_chain = (
                 <li>Adding citations for trustworthy answers</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Key code patterns</h4>
               <ul>
                 <li><code>PyPDFLoader</code> &rarr; load documents</li>
@@ -863,23 +892,23 @@ rag_chain = (
       <section>
         <section>
           <h2>Session 5 Recap</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>RAG</h4>
               <p>Retrieve relevant documents, augment the prompt with them, then generate a grounded answer.
               Solves the "LLMs don't know your data" problem.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Embeddings</h4>
               <p>Turn text into vectors that capture meaning. Similar meaning = similar vectors.
               The foundation of semantic search.</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>ChromaDB</h4>
               <p>Lightweight vector store. Collections, metadata, similarity search.
               Integrates with LangChain via <code>langchain-chroma</code>.</p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>RAG Pipeline</h4>
               <p>Load &rarr; Split &rarr; Embed &rarr; Store &rarr; Retrieve &rarr; Generate.
               Uses LCEL pipe syntax with a retriever in the chain.</p>
@@ -895,15 +924,15 @@ rag_chain = (
             <h4>Session 6: LangChain Agents & Memory</h4>
             <br>
             <div class="card-grid-3" style="margin-top:0;">
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Agent Types</h4>
                 <p>ReAct agents, function-calling agents, and custom agents</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Tool Integration</h4>
                 <p>Built-in tools, custom tools, multi-tool orchestration</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Memory</h4>
                 <p>Conversation memory, session management, and persistence</p>
               </div>
@@ -927,7 +956,7 @@ rag_chain = (
       <!-- ==================== QUIZ: SESSION 5 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 5 Quiz</h1>
+          <h1 class="text-2xl">Session 5 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
@@ -958,6 +987,10 @@ rag_chain = (
               <span>Training the LLM on new data to update its knowledge</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Answering questions grounded in your own documents and data.
+            RAG is about retrieval, not training. It retrieves relevant documents at query time and includes them in the prompt as context. Option D (training) is fine-tuning, which is a completely different and more expensive approach.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -1015,6 +1048,10 @@ rag_chain = (
               <span>A compressed version of the text to save storage</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — A vector (list of numbers) representing the meaning of the text.
+            An embedding is a dense numerical representation that captures semantic meaning. Similar texts have similar vectors, enabling semantic search. It is not compression or translation — it is a mathematical representation of meaning.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -1072,6 +1109,10 @@ rag_chain = (
               <span>Because ChromaDB can only store strings under 100 characters</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Because embedding models have a maximum input length, and smaller chunks produce more focused embeddings.
+            Chunking is essential because embedding models have token limits, and embedding an entire document would dilute the semantic signal. Smaller, focused chunks produce better retrieval results. Option D is wrong — ChromaDB has no such 100-character limit.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -1129,6 +1170,10 @@ rag_chain = (
               <span>Removes sensitive information from the query</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Passes the user's query through unchanged so it can be used in the prompt template.
+            In a RAG chain, RunnablePassthrough passes the original query directly to the prompt template while the retriever fetches context separately. This allows the prompt to access both the retrieved documents and the original question.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1186,6 +1231,10 @@ rag_chain = (
               <span>It encrypts the documents for security</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: C — It allows filtering search results by source, page, date, or other attributes.
+            Metadata in a vector store provides structured attributes alongside the vector embeddings. This enables hybrid search: semantic similarity plus metadata filters (e.g., "find relevant chunks but only from documents published after 2024").
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1225,15 +1274,15 @@ rag_chain = (
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the RAG architecture diagram &mdash; the hands-on labs will make it click.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Solid understanding of RAG fundamentals! Ready for the labs.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>You've nailed RAG! Time to build some pipelines.</p>
             </div>
           </div>
@@ -1244,6 +1293,10 @@ rag_chain = (
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1252,8 +1305,9 @@ rag_chain = (
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1263,7 +1317,8 @@ rag_chain = (
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

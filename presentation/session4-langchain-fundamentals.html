@@ -6,6 +6,10 @@
   <title>Session 4: LangChain Fundamentals</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,19 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>LangChain Fundamentals</h1>
-        <p style="font-size:0.9em; color:#ccc;">From Concepts to Code</p>
+        <p class="text-lg-dim">From Concepts to Code</p>
         <p class="subtitle">Session 4 &middot; Day 2, Slot A</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 4 — LangChain Fundamentals. This is Day 2, Slot A — the first hands-on coding session.
+          We will cover: why LangChain exists, its core three-layer architecture, working with models and prompt templates,
+          and chains using LCEL (LangChain Expression Language) with the pipe syntax. Approximate timing: 60-75 minutes including the quiz.
+          From this session onward, participants will be writing real code. Ensure everyone has their Codespace ready and Groq API key configured.
+        </aside>
       </section>
 
       <!-- ==================== SESSION 4 AGENDA ==================== -->
@@ -53,13 +63,19 @@
           <div class="section-number">01</div>
           <h2>Why LangChain?</h2>
           <p class="subtitle">The Framework &middot; The Ecosystem &middot; The Philosophy</p>
+          <aside class="notes">
+            Key teaching points: LangChain solves the problem of building LLM applications without being locked to a single provider.
+            It provides a unified interface so you can swap LLM providers (Ollama, Groq, OpenAI) by changing one line of code.
+            The ecosystem includes LangChain core, LangServe, LangSmith, and community integrations.
+            Ask the audience: "How many different LLM providers have you worked with? What was the switching cost?"
+          </aside>
         </section>
 
         <!-- THE PROBLEM -->
         <section>
           <h2>The Problem LangChain Solves</h2>
           <h3>Building agents from scratch is hard</h3>
-          <div class="card-grid" style="margin-top:14px;">
+          <div class="card-grid mt-14">
             <div class="card card-red">
               <h4>Without a Framework</h4>
               <ul>
@@ -89,22 +105,22 @@
         <section>
           <h2>What is LangChain?</h2>
           <div class="card card-accent" style="text-align:center; padding:24px; margin-top:16px;">
-            <p style="font-size:0.85em;">
+            <p class="text-085">
               LangChain is an <strong>open-source Python framework</strong> that provides
               building blocks to create applications powered by LLMs &mdash;
               from simple chatbots to complex multi-agent systems.
             </p>
           </div>
-          <div class="card-grid-3" style="margin-top:16px;">
-            <div class="card" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-16">
+            <div class="card text-center p-14">
               <h4>70M+</h4>
               <p>Monthly downloads</p>
             </div>
-            <div class="card" style="text-align:center; padding:14px;">
+            <div class="card text-center p-14">
               <h4>Production Ready</h4>
               <p>Stable 1.0 release</p>
             </div>
-            <div class="card" style="text-align:center; padding:14px;">
+            <div class="card text-center p-14">
               <h4>90K+ GitHub Stars</h4>
               <p>Largest LLM framework</p>
             </div>
@@ -119,28 +135,28 @@
         <!-- ECOSYSTEM -->
         <section>
           <h2>The LangChain Ecosystem</h2>
-          <div class="diagram" style="margin-top:16px;">
+          <div class="diagram mt-16">
             <div class="box box-large" style="min-width:170px;">
-              <strong style="color:var(--accent);">langchain</strong><br>
-              <span style="font-size:0.8em;">Core framework<br>Chains, prompts, agents</span>
+              <strong class="color-accent">langchain</strong><br>
+              <span class="text-080">Core framework<br>Chains, prompts, agents</span>
             </div>
             <div class="box box-large box-green" style="min-width:170px;">
-              <strong style="color:var(--accent2);">langgraph</strong><br>
-              <span style="font-size:0.8em;">Stateful workflows<br>Multi-agent orchestration</span>
+              <strong class="color-green">langgraph</strong><br>
+              <span class="text-080">Stateful workflows<br>Multi-agent orchestration</span>
             </div>
           </div>
           <div class="diagram" style="margin-top:4px;">
             <div class="box" style="min-width:145px;">
               <strong>langchain-community</strong><br>
-              <span style="font-size:0.85em;">3rd-party integrations</span>
+              <span class="text-085">3rd-party integrations</span>
             </div>
             <div class="box box-orange" style="min-width:145px;">
               <strong>langchain-groq</strong><br>
-              <span style="font-size:0.85em;">Groq LLM provider</span>
+              <span class="text-085">Groq LLM provider</span>
             </div>
             <div class="box box-red" style="min-width:145px;">
               <strong>langchain-chroma</strong><br>
-              <span style="font-size:0.85em;">ChromaDB vectors</span>
+              <span class="text-085">ChromaDB vectors</span>
             </div>
           </div>
           <div class="takeaway">
@@ -152,23 +168,23 @@
         <!-- DESIGN PHILOSOPHY -->
         <section>
           <h2>Core Design Philosophy</h2>
-          <div class="card-grid" style="margin-top:16px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-16">
+            <div class="card card-accent p-16">
               <h4>Composable</h4>
               <p>Small pieces that snap together like LEGO blocks.
               Mix and match models, prompts, tools, and memory.</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>Model-Agnostic</h4>
               <p>Switch from Ollama to Groq to OpenAI by changing one line.
               Your agent logic stays the same.</p>
             </div>
-            <div class="card card-orange" style="padding:16px;">
+            <div class="card card-orange p-16">
               <h4>Declarative</h4>
               <p>Describe <em>what</em> you want (prompt | model | parser),
               not <em>how</em> to execute it step by step.</p>
             </div>
-            <div class="card card-red" style="padding:16px;">
+            <div class="card card-red p-16">
               <h4>Observable</h4>
               <p>Built-in tracing and callbacks. See every step your agent takes.
               Essential for debugging and production.</p>
@@ -183,6 +199,12 @@
           <div class="section-number">02</div>
           <h2>Core Architecture</h2>
           <p class="subtitle">Foundation Layer &middot; Intelligence Layer &middot; Data Layer</p>
+          <aside class="notes">
+            Key teaching points: LangChain has three layers. The Foundation Layer provides base abstractions (models, prompts, output parsers).
+            The Intelligence Layer adds chains, agents, and memory. The Data Layer handles document loaders, text splitters, and vector stores.
+            This layered architecture is what makes LangChain composable and extensible.
+            Ask the audience: "Which layer do you think you'll interact with most in your projects?"
+          </aside>
         </section>
 
         <!-- THREE LAYERS -->
@@ -190,15 +212,15 @@
           <h2>Three Layers of LangChain</h2>
           <div class="layer-stack">
             <div class="layer-bar" style="background:rgba(79,195,247,0.15); border:2px solid var(--accent);">
-              <span class="layer-title" style="color:var(--accent);">Foundation Layer</span>
+              <span class="layer-title color-accent">Foundation Layer</span>
               <span class="layer-items">Models &middot; Prompts &middot; Chains</span>
             </div>
             <div class="layer-bar" style="background:rgba(129,199,132,0.15); border:2px solid var(--accent2);">
-              <span class="layer-title" style="color:var(--accent2);">Intelligence Layer</span>
+              <span class="layer-title color-green">Intelligence Layer</span>
               <span class="layer-items">Memory &middot; Tools &middot; Agents</span>
             </div>
             <div class="layer-bar" style="background:rgba(255,183,77,0.15); border:2px solid var(--accent3);">
-              <span class="layer-title" style="color:var(--accent3);">Data Layer</span>
+              <span class="layer-title color-orange">Data Layer</span>
               <span class="layer-items">Retrievers &middot; Document Loaders &middot; Vector Stores</span>
             </div>
           </div>
@@ -213,20 +235,20 @@
         <section>
           <h2>Foundation Layer</h2>
           <h3>The building blocks you use in every project</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-accent text-center p-14">
               <h4>Models (LLMs)</h4>
               <p style="font-size:1.3em; margin:6px 0;">🧠</p>
               <p>The AI brain. Connect to Ollama, Groq, OpenAI, or any provider.</p>
               <p style="margin-top:6px; font-size:0.85em; color:var(--accent);"><code>ChatOllama</code><br><code>ChatGroq</code></p>
             </div>
-            <div class="card card-accent" style="text-align:center; padding:14px;">
+            <div class="card card-accent text-center p-14">
               <h4>Prompts (Templates)</h4>
               <p style="font-size:1.3em; margin:6px 0;">📝</p>
               <p>Structured instructions with variables. Reusable and consistent.</p>
               <p style="margin-top:6px; font-size:0.85em; color:var(--accent);"><code>ChatPromptTemplate</code></p>
             </div>
-            <div class="card card-accent" style="text-align:center; padding:14px;">
+            <div class="card card-accent text-center p-14">
               <h4>Chains (Workflows)</h4>
               <p style="font-size:1.3em; margin:6px 0;">🔗</p>
               <p>Connect components together: prompt &rarr; model &rarr; output.</p>
@@ -243,20 +265,20 @@
         <section>
           <h2>Intelligence Layer</h2>
           <h3>What turns a chain into an agent</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-green" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-green text-center p-14">
               <h4>Memory (State)</h4>
               <p style="font-size:1.3em; margin:6px 0;">💾</p>
               <p>Conversation history and persistent context.</p>
               <p style="margin-top:6px; font-size:0.85em; color:var(--accent2);">Day 2</p>
             </div>
-            <div class="card card-green" style="text-align:center; padding:14px;">
+            <div class="card card-green text-center p-14">
               <h4>Tools (Actions)</h4>
               <p style="font-size:1.3em; margin:6px 0;">🔧</p>
               <p>Functions the agent can call to interact with the world.</p>
               <p style="margin-top:6px; font-size:0.85em; color:var(--accent2);">Day 2</p>
             </div>
-            <div class="card card-green" style="text-align:center; padding:14px;">
+            <div class="card card-green text-center p-14">
               <h4>Agents (Reasoning)</h4>
               <p style="font-size:1.3em; margin:6px 0;">🤖</p>
               <p>The ReAct loop that decides what to do next.</p>
@@ -272,18 +294,18 @@
         <section>
           <h2>Data Layer</h2>
           <h3>How agents access your data</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-orange text-center p-14">
               <h4>Document Loaders</h4>
               <p style="font-size:1.3em; margin:6px 0;">📄</p>
               <p>Load PDFs, web pages, CSVs, databases into LangChain.</p>
             </div>
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+            <div class="card card-orange text-center p-14">
               <h4>Vector Stores</h4>
               <p style="font-size:1.3em; margin:6px 0;">🗄️</p>
               <p>Store document embeddings for similarity search (ChromaDB).</p>
             </div>
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+            <div class="card card-orange text-center p-14">
               <h4>Retrievers</h4>
               <p style="font-size:1.3em; margin:6px 0;">🔍</p>
               <p>Find relevant documents based on a query. Core of RAG.</p>
@@ -301,6 +323,12 @@
           <div class="section-number">03</div>
           <h2>Working with Models & Prompts</h2>
           <p class="subtitle">LLM Integration &middot; Prompt Templates &middot; Message Types</p>
+          <aside class="notes">
+            Key teaching points: Show how to connect to an LLM with ChatGroq or ChatOllama — it's just a few lines of code.
+            Prompt templates are reusable, parameterized prompts. The system message sets the LLM's role and personality.
+            Message types: SystemMessage, HumanMessage, AIMessage — understanding these is essential for building conversations.
+            Ask the audience: "Why is the system message important? What happens if you skip it?"
+          </aside>
         </section>
 
         <!-- CONNECTING TO AN LLM -->
@@ -308,18 +336,18 @@
           <h2>Connecting to an LLM</h2>
           <h3>Two lines of code to talk to an AI</h3>
           <div style="display:flex; gap:16px; margin-top:10px;">
-            <div class="code-block" style="flex:1; margin:0; font-size:0.52em;"><span class="comment"># Using Ollama (local, free) - Day 1</span>
-<span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
+            <pre style="flex:1; margin:0; font-size:0.52em;"><code class="language-python" data-trim data-noescape># Using Ollama (local, free) - Day 1
+from langchain_ollama import ChatOllama
 
-llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
-response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)
-<span class="func">print</span>(response.content)</div>
-            <div class="code-block" style="flex:1; margin:0; font-size:0.52em;"><span class="comment"># Using Groq (cloud, free) - Day 2 onwards</span>
-<span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
+llm = ChatOllama(model="llama3.2:1b")
+response = llm.invoke("What is Python?")
+print(response.content)</code></pre>
+            <pre style="flex:1; margin:0; font-size:0.52em;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - Day 2 onwards
+from langchain_groq import ChatGroq
 
-llm = ChatGroq(model=<span class="string">"mixtral-8x7b-32768"</span>)
-response = llm.<span class="func">invoke</span>(<span class="string">"What is Python?"</span>)
-<span class="func">print</span>(response.content)</div>
+llm = ChatGroq(model="mixtral-8x7b-32768")
+response = llm.invoke("What is Python?")
+print(response.content)</code></pre>
           </div>
           <div class="takeaway">
             Notice: the <code>.invoke()</code> call is <strong>identical</strong>. Only the import and model name change.
@@ -331,26 +359,26 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <section>
           <h2>Message Types</h2>
           <h3>LLMs communicate through structured messages</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>SystemMessage</h4>
               <p>Sets the agent's behavior and personality</p>
-              <p style="margin-top:6px;"><em>"You are a helpful travel assistant who speaks Hindi and English."</em></p>
+              <p class="mt-6"><em>"You are a helpful travel assistant who speaks Hindi and English."</em></p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>HumanMessage</h4>
               <p>The user's input / question</p>
-              <p style="margin-top:6px;"><em>"Find me flights to Tokyo."</em></p>
+              <p class="mt-6"><em>"Find me flights to Tokyo."</em></p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>AIMessage</h4>
               <p>The LLM's response</p>
-              <p style="margin-top:6px;"><em>"I found 3 flights. The cheapest is..."</em></p>
+              <p class="mt-6"><em>"I found 3 flights. The cheapest is..."</em></p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>ToolMessage</h4>
               <p>Result from a tool call, fed back to the LLM</p>
-              <p style="margin-top:6px;"><em>{"flights": [{"airline": "AI", "price": 38500}]}</em></p>
+              <p class="mt-6"><em>{"flights": [{"airline": "AI", "price": 38500}]}</em></p>
             </div>
           </div>
         </section>
@@ -358,20 +386,20 @@ response = llm.<span class="func">invoke</span>(<span class="string">"What is Py
         <!-- MESSAGE TYPES IN CODE -->
         <section>
           <h2>Messages in Code</h2>
-          <div class="code-block"><span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> SystemMessage, HumanMessage
-<span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
+          <pre><code class="language-python" data-trim data-noescape>from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_ollama import ChatOllama
 
-llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
+llm = ChatOllama(model="llama3.2:1b")
 
 messages = [
-    SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>),
-    HumanMessage(content=<span class="string">"What are the 3 largest oceans?"</span>)
+    SystemMessage(content="You are a helpful assistant. Be concise."),
+    HumanMessage(content="What are the 3 largest oceans?")
 ]
 
-response = llm.<span class="func">invoke</span>(messages)
-<span class="func">print</span>(response.content)
+response = llm.invoke(messages)
+print(response.content)
 
-<span class="output"># Pacific Ocean, Atlantic Ocean, Indian Ocean</span></div>
+# Pacific Ocean, Atlantic Ocean, Indian Ocean</code></pre>
           <div class="analogy">
             The SystemMessage is like a job description you give to a new employee before they start working.
             It shapes <em>how</em> the LLM responds to every question that follows.
@@ -382,16 +410,18 @@ response = llm.<span class="func">invoke</span>(messages)
         <section>
           <h2>Prompt Templates</h2>
           <h3>Reusable prompts with variables</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-red" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-red p-14">
               <h4>Hard-coded (bad)</h4>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;">llm.invoke(<span class="string">"Translate 'hello'<br>to French"</span>)</div>
-              <p style="margin-top:6px;">Can't reuse. Need a new string for every language.</p>
+              <pre style="margin:8px 0 0 0; font-size:0.9em;"><code class="language-python" data-trim data-noescape>llm.invoke("Translate 'hello'
+to French")</code></pre>
+              <p class="mt-6">Can't reuse. Need a new string for every language.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Template (good)</h4>
-              <div class="code-block" style="margin:8px 0 0 0; font-size:0.9em;"><span class="string">"Translate '{text}'<br>to {language}"</span></div>
-              <p style="margin-top:6px;">Reusable! Pass any text and language.</p>
+              <pre style="margin:8px 0 0 0; font-size:0.9em;"><code class="language-python" data-trim data-noescape>"Translate '{text}'
+to {language}"</code></pre>
+              <p class="mt-6">Reusable! Pass any text and language.</p>
             </div>
           </div>
           <div class="takeaway">
@@ -403,24 +433,24 @@ response = llm.<span class="func">invoke</span>(messages)
         <!-- CHATPROMPTTEMPLATE CODE -->
         <section>
           <h2>ChatPromptTemplate</h2>
-          <div class="code-block"><span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
+          <pre><code class="language-python" data-trim data-noescape>from langchain_core.prompts import ChatPromptTemplate
 
-<span class="comment"># Define the template with variables in {curly braces}</span>
-prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
-    (<span class="string">"system"</span>, <span class="string">"You are a translator. Translate accurately."</span>),
-    (<span class="string">"human"</span>, <span class="string">"Translate '{text}' to {language}"</span>)
+# Define the template with variables in {curly braces}
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a translator. Translate accurately."),
+    ("human", "Translate '{text}' to {language}")
 ])
 
-<span class="comment"># Fill in the variables</span>
-messages = prompt.<span class="func">invoke</span>({
-    <span class="string">"text"</span>: <span class="string">"Good morning"</span>,
-    <span class="string">"language"</span>: <span class="string">"Japanese"</span>
+# Fill in the variables
+messages = prompt.invoke({
+    "text": "Good morning",
+    "language": "Japanese"
 })
 
-<span class="comment"># Send to LLM</span>
-response = llm.<span class="func">invoke</span>(messages)
-<span class="func">print</span>(response.content)
-<span class="output"># おはようございます (Ohayou gozaimasu)</span></div>
+# Send to LLM
+response = llm.invoke(messages)
+print(response.content)
+# おはようございます (Ohayou gozaimasu)</code></pre>
         </section>
       </section>
 
@@ -430,29 +460,35 @@ response = llm.<span class="func">invoke</span>(messages)
           <div class="section-number">04</div>
           <h2>Chains & LCEL</h2>
           <p class="subtitle">The Pipe Syntax &middot; Chain Composition &middot; Output Parsing</p>
+          <aside class="notes">
+            Key teaching points: LCEL (LangChain Expression Language) uses the pipe operator (|) to compose chains.
+            The pattern is: chain = prompt | llm | parser. Each component transforms the data and passes it to the next.
+            Output parsers like StrOutputParser extract the text from AIMessage responses. This composability is LangChain's superpower.
+            Ask the audience: "If you've used Unix pipes (cmd1 | cmd2 | cmd3), LCEL works the same way. Data flows left to right."
+          </aside>
         </section>
 
         <!-- WHAT IS A CHAIN -->
         <section>
           <h2>What is a Chain?</h2>
           <h3>Connect components into a workflow</h3>
-          <div class="pipe-flow" style="margin-top:20px;">
-            <div class="pipe-box" style="border-color:var(--accent);">
+          <div class="pipe-flow mt-20">
+            <div class="pipe-box border-accent">
               📝 <strong>Prompt</strong><br>
-              <span style="font-size:0.9em;">Prepare the input</span>
+              <span class="text-lg">Prepare the input</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-green">
               🧠 <strong>Model</strong><br>
-              <span style="font-size:0.9em;">Process with LLM</span>
+              <span class="text-lg">Process with LLM</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-orange">
               📤 <strong>Parser</strong><br>
-              <span style="font-size:0.9em;">Format the output</span>
+              <span class="text-lg">Format the output</span>
             </div>
           </div>
-          <div class="code-block" style="text-align:center; font-size:0.7em;">chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> output_parser</div>
+          <pre style="text-align:center; font-size:0.7em;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | output_parser</code></pre>
           <div class="analogy">
             A chain is like an assembly line in a factory. Raw materials (user input) enter one end,
             pass through stations (prompt, model, parser), and a finished product (structured output) comes out the other end.
@@ -465,23 +501,23 @@ response = llm.<span class="func">invoke</span>(messages)
           <h2>LCEL: LangChain Expression Language</h2>
           <h3>The pipe <code style="color:var(--accent3); font-size:1.1em;">|</code> operator</h3>
           <div class="card card-accent" style="text-align:center; padding:20px; margin-top:14px;">
-            <p style="font-size:0.8em;">
+            <p class="text-080">
               LCEL lets you compose chains using the <strong>pipe operator</strong> <code>|</code><br>
               Just like Unix pipes: <code>cat file.txt | grep "error" | wc -l</code><br><br>
               The output of each step automatically becomes the input of the next.
             </p>
           </div>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-red" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-red p-14">
               <h4>Without LCEL (verbose)</h4>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">msgs = prompt.invoke(input)
+              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>msgs = prompt.invoke(input)
 resp = llm.invoke(msgs)
-out = parser.invoke(resp)</div>
+out = parser.invoke(resp)</code></pre>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>With LCEL (clean)</h4>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">chain = prompt | llm | parser
-out = chain.invoke(input)</div>
+              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>chain = prompt | llm | parser
+out = chain.invoke(input)</code></pre>
             </div>
           </div>
           <p style="font-size:0.6em; color:#aaa; text-align:center; margin-top:10px;">
@@ -492,29 +528,29 @@ out = chain.invoke(input)</div>
         <!-- FIRST CHAIN -->
         <section>
           <h2>Your First Chain</h2>
-          <div class="code-block"><span class="keyword">from</span> langchain_ollama <span class="keyword">import</span> ChatOllama
-<span class="keyword">from</span> langchain_core.prompts <span class="keyword">import</span> ChatPromptTemplate
-<span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> StrOutputParser
+          <pre><code class="language-python" data-trim data-noescape>from langchain_ollama import ChatOllama
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
-<span class="comment"># 1. Prompt template</span>
-prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
-    (<span class="string">"system"</span>, <span class="string">"You are a helpful assistant. Be concise."</span>),
-    (<span class="string">"human"</span>, <span class="string">"{question}"</span>)
+# 1. Prompt template
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant. Be concise."),
+    ("human", "{question}")
 ])
 
-<span class="comment"># 2. LLM</span>
-llm = ChatOllama(model=<span class="string">"llama3.2:1b"</span>)
+# 2. LLM
+llm = ChatOllama(model="llama3.2:1b")
 
-<span class="comment"># 3. Output parser (extracts just the text)</span>
+# 3. Output parser (extracts just the text)
 parser = StrOutputParser()
 
-<span class="comment"># 4. Chain them with LCEL pipe syntax</span>
-chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser
+# 4. Chain them with LCEL pipe syntax
+chain = prompt | llm | parser
 
-<span class="comment"># 5. Run it!</span>
-result = chain.<span class="func">invoke</span>({<span class="string">"question"</span>: <span class="string">"What is Docker?"</span>})
-<span class="func">print</span>(result)
-<span class="output"># "Docker is a platform for containerizing applications..."</span></div>
+# 5. Run it!
+result = chain.invoke({"question": "What is Docker?"})
+print(result)
+# "Docker is a platform for containerizing applications..."</code></pre>
         </section>
 
         <!-- DATA FLOW -->
@@ -558,21 +594,21 @@ result = chain.<span class="func">invoke</span>({<span class="string">"question"
         <section>
           <h2>Output Parsers</h2>
           <h3>Get structured data from LLM responses</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-accent p-14">
               <h4>StrOutputParser</h4>
               <p>Extracts plain text from the response</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;"><span class="output">"Docker is..."</span></div>
+              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>"Docker is..."</code></pre>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>JsonOutputParser</h4>
               <p>Parses JSON from the response</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">{<span class="string">"name"</span>: <span class="string">"Docker"</span>}</div>
+              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-json" data-trim data-noescape>{"name": "Docker"}</code></pre>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>PydanticOutputParser</h4>
               <p>Validates into a Python class</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.85em;">Tool(name=<span class="string">"Docker"</span>)</div>
+              <pre style="margin:6px 0 0 0; font-size:0.85em;"><code class="language-python" data-trim data-noescape>Tool(name="Docker")</code></pre>
             </div>
           </div>
           <div class="analogy">
@@ -586,45 +622,45 @@ result = chain.<span class="func">invoke</span>({<span class="string">"question"
         <section>
           <h2>Pydantic Output Parser</h2>
           <h3 style="margin-bottom:6px;">Get validated, typed Python objects from LLM output</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> langchain_core.output_parsers <span class="keyword">import</span> PydanticOutputParser
-<span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel, Field
 
-<span class="keyword">class</span> <span class="func">MovieReview</span>(BaseModel):
-    title: <span class="keyword">str</span> = Field(description=<span class="string">"Movie title"</span>)
-    rating: <span class="keyword">int</span> = Field(description=<span class="string">"Rating 1-10"</span>)
-    summary: <span class="keyword">str</span> = Field(description=<span class="string">"One line summary"</span>)
+class MovieReview(BaseModel):
+    title: str = Field(description="Movie title")
+    rating: int = Field(description="Rating 1-10")
+    summary: str = Field(description="One line summary")
 
-parser = PydanticOutputParser(pydantic_object=<span class="func">MovieReview</span>)
-prompt = ChatPromptTemplate.<span class="func">from_messages</span>([
-    (<span class="string">"system"</span>, <span class="string">"Review movies. {format_instructions}"</span>),
-    (<span class="string">"human"</span>, <span class="string">"Review: {movie}"</span>)
+parser = PydanticOutputParser(pydantic_object=MovieReview)
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "Review movies. {format_instructions}"),
+    ("human", "Review: {movie}")
 ])
 
-chain = prompt <span class="keyword">|</span> llm <span class="keyword">|</span> parser
-review = chain.<span class="func">invoke</span>({<span class="string">"movie"</span>: <span class="string">"Inception"</span>,
-    <span class="string">"format_instructions"</span>: parser.get_format_instructions()})
+chain = prompt | llm | parser
+review = chain.invoke({"movie": "Inception",
+    "format_instructions": parser.get_format_instructions()})
 
-<span class="output"># review.title = "Inception"  |  review.rating = 9  |  review.summary = "A mind-bending..."</span></div>
+# review.title = "Inception"  |  review.rating = 9  |  review.summary = "A mind-bending..."</code></pre>
         </section>
 
         <!-- CHAINING MULTIPLE STEPS -->
         <section>
           <h2>Chaining Multiple Steps</h2>
           <h3>Chains can feed into other chains</h3>
-          <div class="code-block"><span class="comment"># Chain 1: Generate a topic</span>
-topic_prompt = ChatPromptTemplate.<span class="func">from_template</span>(
-    <span class="string">"Give me one interesting topic about {subject}"</span>
+          <pre><code class="language-python" data-trim data-noescape># Chain 1: Generate a topic
+topic_prompt = ChatPromptTemplate.from_template(
+    "Give me one interesting topic about {subject}"
 )
-topic_chain = topic_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
+topic_chain = topic_prompt | llm | StrOutputParser()
 
-<span class="comment"># Chain 2: Write about the topic</span>
-write_prompt = ChatPromptTemplate.<span class="func">from_template</span>(
-    <span class="string">"Write a 3-sentence explanation of: {topic}"</span>
+# Chain 2: Write about the topic
+write_prompt = ChatPromptTemplate.from_template(
+    "Write a 3-sentence explanation of: {topic}"
 )
-write_chain = write_prompt <span class="keyword">|</span> llm <span class="keyword">|</span> StrOutputParser()
+write_chain = write_prompt | llm | StrOutputParser()
 
-<span class="comment"># Combined: topic output feeds into write input</span>
-full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">lambda</span> topic: {<span class="string">"topic"</span>: topic}) <span class="keyword">|</span> write_chain</div>
+# Combined: topic output feeds into write input
+full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code></pre>
           <div class="takeaway">
             This is the "chaining" we talked about in Session 1 &mdash; now you see it in real code.
             Small, focused chains composed into larger workflows. This is how production agents are built.
@@ -634,30 +670,30 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
         <!-- INVOKE vs STREAM vs BATCH -->
         <section>
           <h2>Three Ways to Run a Chain</h2>
-          <div class="card-grid-3" style="margin-top:10px;">
-            <div class="card card-accent" style="padding:10px;">
+          <div class="card-grid-3 mt-10">
+            <div class="card card-accent p-10">
               <h4>.invoke()</h4>
               <p style="margin:4px 0;">Run once, get complete result</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;">result = chain.invoke(
-  {<span class="string">"q"</span>: <span class="string">"hi"</span>})
-<span class="comment"># waits for full response</span></div>
+              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>result = chain.invoke(
+  {"q": "hi"})
+# waits for full response</code></pre>
               <p style="margin-top:4px; font-size:0.55em;">Best for: scripts, APIs</p>
             </div>
-            <div class="card card-green" style="padding:10px;">
+            <div class="card card-green p-10">
               <h4>.stream()</h4>
               <p style="margin:4px 0;">Get tokens as they're generated</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;"><span class="keyword">for</span> chunk <span class="keyword">in</span> chain.stream(
-  {<span class="string">"q"</span>: <span class="string">"hi"</span>}):
-  print(chunk, end=<span class="string">""</span>)</div>
+              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>for chunk in chain.stream(
+  {"q": "hi"}):
+  print(chunk, end="")</code></pre>
               <p style="margin-top:4px; font-size:0.55em;">Best for: chat UIs</p>
             </div>
-            <div class="card card-orange" style="padding:10px;">
+            <div class="card card-orange p-10">
               <h4>.batch()</h4>
               <p style="margin:4px 0;">Process multiple inputs at once</p>
-              <div class="code-block" style="margin:6px 0 0 0; font-size:0.8em;">results = chain.batch([
-  {<span class="string">"q"</span>: <span class="string">"hi"</span>},
-  {<span class="string">"q"</span>: <span class="string">"bye"</span>}
-])</div>
+              <pre style="margin:6px 0 0 0; font-size:0.8em;"><code class="language-python" data-trim data-noescape>results = chain.batch([
+  {"q": "hi"},
+  {"q": "bye"}
+])</code></pre>
               <p style="margin-top:4px; font-size:0.55em;">Best for: bulk processing</p>
             </div>
           </div>
@@ -672,25 +708,25 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
         <section>
           <h2>The Big Picture</h2>
           <h3>How today's concepts connect</h3>
-          <div class="pipe-flow" style="margin-top:20px;">
+          <div class="pipe-flow mt-20">
             <div class="pipe-box" style="border-color:var(--accent); min-width:100px;">
               📝 <strong>Template</strong><br>
-              <span style="font-size:0.85em;">Structure input</span>
+              <span class="text-085">Structure input</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-green" style="min-width:100px;">
               🧠 <strong>LLM</strong><br>
-              <span style="font-size:0.85em;">Think</span>
+              <span class="text-085">Think</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-orange" style="min-width:100px;">
               📤 <strong>Parser</strong><br>
-              <span style="font-size:0.85em;">Structure output</span>
+              <span class="text-085">Structure output</span>
             </div>
           </div>
           <br>
           <div class="card-grid">
-            <div class="card card-accent" style="padding:14px;">
+            <div class="card card-accent p-14">
               <h4>What you learned today</h4>
               <ul>
                 <li>LangChain's three-layer architecture</li>
@@ -700,7 +736,7 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
                 <li>Output parsers (String, JSON, Pydantic)</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>What's coming in labs</h4>
               <ul>
                 <li>Labs 1-3: LangChain setup, message types, prompt templates</li>
@@ -767,20 +803,20 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
       <section>
         <section>
           <h2>Session 4 Recap</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>LangChain</h4>
               <p>Open-source framework for building LLM apps. Modular, model-agnostic, composable.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Architecture</h4>
               <p>Three layers: Foundation (models, prompts, chains), Intelligence (memory, tools, agents), Data (RAG).</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>LCEL</h4>
               <p>Pipe syntax: <code>prompt | llm | parser</code>. Clean, readable, with streaming and batching built in.</p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>Output Parsing</h4>
               <p>StrOutputParser for text, JsonOutputParser for JSON, PydanticOutputParser for validated objects.</p>
             </div>
@@ -795,15 +831,15 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
             <h4>Session 5: Building RAG Applications</h4>
             <br>
             <div class="card-grid-3" style="margin-top:0;">
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Document Loading</h4>
                 <p>Load PDFs, web pages, and text files into LangChain</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Embeddings &amp; Vector Stores</h4>
                 <p>Convert text to vectors and store in ChromaDB</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Retrieval Chains</h4>
                 <p>Build question-answering over your own documents</p>
               </div>
@@ -827,7 +863,7 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
       <!-- ==================== QUIZ: SESSION 4 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 4 Quiz</h1>
+          <h1 class="text-2xl">Session 4 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
@@ -858,6 +894,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
               <span>It automatically picks the best model for each task</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — You can switch LLM providers (Ollama, Groq, OpenAI) by changing one line of code.
+            LangChain's key value proposition is provider abstraction. The unified interface means your application logic stays the same regardless of which LLM backend you use. This eliminates vendor lock-in.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -915,6 +955,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
               <span>Creates a backup in case the first step fails</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Passes the output of the left side as input to the right side.
+            The pipe operator in LCEL works just like Unix pipes. The output of the component on the left becomes the input to the component on the right. This is how you compose prompt | llm | parser into a chain.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -972,6 +1016,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
               <span>It stores the result of a tool call</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — It sets the LLM's behavior, role, and personality.
+            The system message is the first message in the conversation that instructs the LLM how to behave. For example: "You are a helpful coding assistant that writes Python." This shapes all subsequent responses.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -1028,6 +1076,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
               <span>Translates the output to English</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Extracts just the text content from the LLM's AIMessage response.
+            StrOutputParser takes the AIMessage object returned by the LLM and extracts the .content string. Without it, you get the full AIMessage object with metadata. With it, you get clean text output ready for display or further processing.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -1085,6 +1137,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
               <span><code>chain = prompt.run(llm, parser)</code></span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — chain = prompt | llm | parser.
+            This is the canonical LCEL pattern. Data flows left to right: the prompt template formats the input, the LLM generates a response, and the parser extracts the content. The order matters — parser must come last because it processes the LLM's output.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1124,15 +1180,15 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Don't worry &mdash; the hands-on labs will make these concepts click.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Great grasp of LangChain basics! Labs will solidify your understanding.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>You've nailed it! Time to put this knowledge into practice.</p>
             </div>
           </div>
@@ -1143,6 +1199,10 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1151,8 +1211,9 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1162,7 +1223,8 @@ full_chain = topic_chain <span class="keyword">|</span> (<span class="keyword">l
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

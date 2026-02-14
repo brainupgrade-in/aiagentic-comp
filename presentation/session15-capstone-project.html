@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Session 15: Capstone Project</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
+
 <body>
   <div class="reveal">
     <div class="slides">
@@ -15,13 +21,16 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>Capstone Project</h1>
-        <p style="font-size:0.9em; color:#ccc;">Build a Production-Ready AI Agent System</p>
+        <p class="text-lg-dim">Build a Production-Ready AI Agent System</p>
         <p class="subtitle">Session 15 &middot; Day 5, Slots C + D</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 15, the capstone. This is where everything comes together. You have about 3 hours across two time slots. No new concepts today -- only integration. You will build a complete production-ready AI agent system using FastAPI, LangGraph, MCP, LangFuse observability, health probes, and safety guardrails. Think of it as building a house: you have learned plumbing, electrical, and framing separately; now you build the whole thing.
+        </aside>
       </section>
 
       <!-- ==================== COURSE JOURNEY RECAP ==================== -->
@@ -31,29 +40,30 @@
         <div class="evolution" style="margin-top:24px;">
           <div class="evo-step" style="border:2px solid var(--accent); border-radius:10px; padding:12px;">
             <span class="evo-icon">&#x1F9E0;</span>
-            <span class="evo-label" style="color:var(--accent);">Day 1</span>
+            <span class="evo-label color-accent">Day 1</span>
             <span class="evo-year">Foundations</span>
           </div>
           <span class="evo-arrow">&rarr;</span>
           <div class="evo-step" style="border:2px solid var(--accent2); border-radius:10px; padding:12px;">
             <span class="evo-icon">&#x1F4DA;</span>
-            <span class="evo-label" style="color:var(--accent2);">Day 2</span>
+            <span class="evo-label color-green">Day 2</span>
             <span class="evo-year">RAG &amp; Agents</span>
           </div>
           <span class="evo-arrow">&rarr;</span>
           <div class="evo-step" style="border:2px solid var(--accent3); border-radius:10px; padding:12px;">
             <span class="evo-icon">&#x1F504;</span>
-            <span class="evo-label" style="color:var(--accent3);">Day 3</span>
+            <span class="evo-label color-orange">Day 3</span>
             <span class="evo-year">LangGraph &amp; Multi-Agent</span>
           </div>
           <span class="evo-arrow">&rarr;</span>
           <div class="evo-step" style="border:2px solid var(--accent4); border-radius:10px; padding:12px;">
             <span class="evo-icon">&#x1F50D;</span>
-            <span class="evo-label" style="color:var(--accent4);">Day 4</span>
+            <span class="evo-label color-red">Day 4</span>
             <span class="evo-year">Observability &amp; Production</span>
           </div>
           <span class="evo-arrow">&rarr;</span>
-          <div class="evo-step" style="border:2px solid #fff; border-radius:10px; padding:12px; background:rgba(79,195,247,0.12);">
+          <div class="evo-step"
+            style="border:2px solid #fff; border-radius:10px; padding:12px; background:rgba(79,195,247,0.12);">
             <span class="evo-icon">&#x1F3C6;</span>
             <span class="evo-label" style="color:#fff;">Day 5</span>
             <span class="evo-year">MCP &amp; Capstone</span>
@@ -74,7 +84,8 @@
         <div class="card-grid">
           <div class="card card-accent">
             <h4>Production-Ready Agent</h4>
-            <p>A fully functional AI agent system with FastAPI serving, LangGraph orchestration, and MCP tool integration</p>
+            <p>A fully functional AI agent system with FastAPI serving, LangGraph orchestration, and MCP tool
+              integration</p>
           </div>
           <div class="card card-green">
             <h4>Full Observability</h4>
@@ -101,28 +112,29 @@
         <h2>Architecture Overview</h2>
         <h3>The full system you will build</h3>
         <br>
-        <div style="text-align:center;">
+        <div class="text-center">
           <div class="box box-large" style="display:inline-block; min-width:180px; margin-bottom:8px;">
             &#x1F464; <strong>Client</strong><br>
-            <span style="font-size:0.8em;">HTTP Requests</span>
+            <span class="text-080">HTTP Requests</span>
           </div>
-          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
-          <div class="box box-large" style="display:inline-block; min-width:320px; margin-bottom:8px; border-color:var(--accent);">
+          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
+          <div class="box box-large"
+            style="display:inline-block; min-width:320px; margin-bottom:8px; border-color:var(--accent);">
             &#x26A1; <strong>FastAPI Application</strong><br>
-            <span style="font-size:0.8em;">REST API + Health Probes + Metrics</span>
+            <span class="text-080">REST API + Health Probes + Metrics</span>
           </div>
-          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
+          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
           <div class="diagram" style="margin:8px 0;">
-            <div class="box box-green" style="min-width:140px;">&#x1F504; <strong>LangGraph</strong><br><span style="font-size:0.8em;">Agent Orchestration</span></div>
+            <div class="box box-green" style="min-width:140px;">&#x1F504; <strong>LangGraph</strong><br><span class="text-080">Agent Orchestration</span></div>
             <span class="arrow">&harr;</span>
-            <div class="box box-orange" style="min-width:140px;">&#x1F527; <strong>MCP Server</strong><br><span style="font-size:0.8em;">Tool Registry</span></div>
+            <div class="box box-orange" style="min-width:140px;">&#x1F527; <strong>MCP Server</strong><br><span class="text-080">Tool Registry</span></div>
             <span class="arrow">&harr;</span>
-            <div class="box" style="min-width:140px;">&#x1F4BE; <strong>ChromaDB</strong><br><span style="font-size:0.8em;">Vector Store</span></div>
+            <div class="box" style="min-width:140px;">&#x1F4BE; <strong>ChromaDB</strong><br><span class="text-080">Vector Store</span></div>
           </div>
-          <div style="font-size:1.5em; color:#888;">&#x2193;</div>
+          <div style="font-size:1.5em; color:#999;">&#x2193;</div>
           <div class="diagram" style="margin:8px 0;">
-            <div class="box box-green" style="min-width:180px;">&#x1F50D; <strong>LangFuse</strong><br><span style="font-size:0.8em;">Traces, Metrics &amp; Dashboards</span></div>
-            <div class="box box-orange" style="min-width:130px;">&#x1F4CB; <strong>Structured Logs</strong><br><span style="font-size:0.8em;">JSON Logging</span></div>
+            <div class="box box-green" style="min-width:180px;">&#x1F50D; <strong>LangFuse</strong><br><span class="text-080">Traces, Metrics &amp; Dashboards</span></div>
+            <div class="box box-orange" style="min-width:130px;">&#x1F4CB; <strong>Structured Logs</strong><br><span class="text-080">JSON Logging</span></div>
           </div>
         </div>
       </section>
@@ -132,7 +144,7 @@
         <h2>Component Checklist</h2>
         <h3>Every piece and where you learned it</h3>
         <br>
-        <table class="compare-table" style="font-size:0.55em;">
+        <table class="compare-table text-xs">
           <tr>
             <th>Component</th>
             <th>Session</th>
@@ -187,6 +199,9 @@
           <div class="section-number">01</div>
           <h2>Phase 1: Architecture Design</h2>
           <p class="subtitle">Lab 01 &middot; Define components, data flows, dependencies</p>
+          <aside class="notes">
+            This is the most important phase. Encourage participants to spend real time here rather than jumping into code. A good architecture diagram and dependency map will save hours of debugging later. Ask them to identify every component, draw the data flow from client request to response, and define what happens when each dependency fails.
+          </aside>
         </section>
 
         <section>
@@ -240,10 +255,13 @@
           <div class="section-number">02</div>
           <h2>Phase 2: MCP Server</h2>
           <p class="subtitle">Lab 02 &middot; Build MCP server with tools from Session 13</p>
+          <aside class="notes">
+            Participants will build an MCP server using FastMCP from Session 13. The server should register at least two or three tools -- typically a document search tool backed by ChromaDB, a calculator or data analysis tool, and optionally a web lookup tool. Remind them to test the server standalone before wiring it into the agent. The tool decorator pattern from Session 13 labs should be fresh in their minds.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-green" style="display:inline-block; background:var(--accent2); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 2 &mdash; Lab 02</div>
+          <div class="phase-badge-green">Phase 2 &mdash; Lab 02</div>
           <h2>MCP Server Implementation</h2>
           <br>
           <div class="card-grid">
@@ -268,9 +286,9 @@
           </div>
           <br>
           <div class="diagram">
-            <div class="box" style="border-color:#888;">&#x1F916; Agent</div>
+            <div class="box" style="border-color:#999;">&#x1F916; Agent</div>
             <span class="arrow">&rarr;</span>
-            <div class="box box-green" style="min-width:180px;">&#x1F527; <strong>MCP Server</strong><br><span style="font-size:0.8em;">JSON-RPC 2.0</span></div>
+            <div class="box box-green" style="min-width:180px;">&#x1F527; <strong>MCP Server</strong><br><span class="text-080">JSON-RPC 2.0</span></div>
             <span class="arrow">&rarr;</span>
             <div style="display:flex; flex-direction:column; gap:6px;">
               <div class="box" style="padding:8px 14px; font-size:0.6em;">Tool 1: Search</div>
@@ -287,10 +305,13 @@
           <div class="section-number">03</div>
           <h2>Phase 3: API Endpoint</h2>
           <p class="subtitle">Lab 03 &middot; FastAPI endpoint from Session 12</p>
+          <aside class="notes">
+            The FastAPI application is the front door. Participants should implement the POST /agent/query endpoint with Pydantic validation, health and readiness probes, and proper error handling with specific HTTP status codes from Session 12. Remind them: if the front door is broken, nothing else matters. Get a basic endpoint returning a hardcoded response first, then wire in the real agent.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-orange" style="display:inline-block; background:var(--accent3); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 3 &mdash; Lab 03</div>
+          <div class="phase-badge-orange">Phase 3 &mdash; Lab 03</div>
           <h2>FastAPI Application</h2>
           <br>
           <div class="card-grid-3">
@@ -337,10 +358,13 @@
           <div class="section-number">04</div>
           <h2>Phase 4: Instrumentation</h2>
           <p class="subtitle">Lab 04 &middot; LangFuse traces from Session 11</p>
+          <aside class="notes">
+            This phase adds the observability layer from Sessions 10 and 11. Participants wire in the LangFuse CallbackHandler for automatic trace capture, add structured JSON logging with trace_id and token counts, and set up cost tracking per request. The goal is that after this phase, every single request through the system produces a visible trace in the LangFuse dashboard with full latency and cost breakdowns.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-red" style="display:inline-block; background:var(--accent4); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 4 &mdash; Lab 04</div>
+          <div class="phase-badge-red">Phase 4 &mdash; Lab 04</div>
           <h2>Observability Instrumentation</h2>
           <br>
           <div class="card-grid">
@@ -390,6 +414,9 @@
           <div class="section-number">05</div>
           <h2>Phase 5: Health &amp; Monitoring</h2>
           <p class="subtitle">Lab 05 &middot; Probes + metrics from Session 12</p>
+          <aside class="notes">
+            Health probes are what Kubernetes uses to decide whether to restart your pod or remove it from the load balancer. Participants should implement a liveness probe that returns 200 if the process is alive, and a readiness probe that checks whether the LLM API is reachable and ChromaDB is connected. Remind them of the three-probe model from Session 12 and that a process can be alive but not ready.
+          </aside>
         </section>
 
         <section>
@@ -429,7 +456,8 @@
           <div class="diagram">
             <div class="box">&#x26A1; FastAPI</div>
             <span class="arrow">&rarr;</span>
-            <div class="box box-green">&#x1F50D; LangFuse<br><span style="font-size:0.8em;">traces &amp; dashboards</span></div>
+            <div class="box box-green">&#x1F50D; LangFuse<br><span class="text-080">traces &amp;
+                dashboards</span></div>
           </div>
         </section>
       </section>
@@ -440,10 +468,13 @@
           <div class="section-number">06</div>
           <h2>Phase 6: Deployment Config</h2>
           <p class="subtitle">Lab 06 &middot; Containerization and deployment manifests</p>
+          <aside class="notes">
+            This phase covers the deployment configuration -- uvicorn settings, environment variable management with .env files, and process startup sequencing. In the Codespace environment, participants will use Python process management rather than Docker containers due to resource constraints. Remind them that API keys must never be hardcoded -- use python-dotenv and the .env.example pattern from Session 12.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-green" style="display:inline-block; background:var(--accent2); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 6 &mdash; Lab 06</div>
+          <div class="phase-badge-green">Phase 6 &mdash; Lab 06</div>
           <h2>Deployment Configuration</h2>
           <br>
           <div class="card-grid">
@@ -493,26 +524,29 @@
           <div class="section-number">07</div>
           <h2>Phase 7: Testing</h2>
           <p class="subtitle">Lab 07 &middot; Comprehensive test plan</p>
+          <aside class="notes">
+            Testing AI applications requires a different mindset from traditional testing. Participants should write unit tests for Pydantic models and utility functions (deterministic), mock LLM tests for agent logic (repeatable), and integration tests for the full API flow. Emphasize testing the error paths: what happens when the LLM times out, when a tool fails, when input validation rejects a request? These edge cases are where production systems break.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-orange" style="display:inline-block; background:var(--accent3); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 7 &mdash; Lab 07</div>
+          <div class="phase-badge-orange">Phase 7 &mdash; Lab 07</div>
           <h2>Testing Strategy</h2>
           <br>
           <div class="diagram-vertical">
             <div class="box" style="width:70%; padding:12px 18px; border-color:var(--accent4);">
               <strong>End-to-End Tests</strong><br>
-              <span style="font-size:0.85em;">Full request through agent to response</span>
+              <span class="text-085">Full request through agent to response</span>
             </div>
             <div class="arrow-down">&#x2193;</div>
             <div class="box box-orange" style="width:70%; padding:12px 18px;">
               <strong>Integration Tests</strong><br>
-              <span style="font-size:0.85em;">API + Agent + Tools working together</span>
+              <span class="text-085">API + Agent + Tools working together</span>
             </div>
             <div class="arrow-down">&#x2193;</div>
             <div class="box box-green" style="width:70%; padding:12px 18px;">
               <strong>Unit Tests</strong><br>
-              <span style="font-size:0.85em;">Individual functions, tools, and parsers</span>
+              <span class="text-085">Individual functions, tools, and parsers</span>
             </div>
           </div>
           <br>
@@ -545,10 +579,13 @@
           <div class="section-number">08</div>
           <h2>Phase 8: Integration Challenge</h2>
           <p class="subtitle">Lab 08 &middot; Full production deployment</p>
+          <aside class="notes">
+            This is the final challenge -- wire all seven phases together into one working system. The success criteria is end-to-end: send a query, the agent processes it, tools are called via MCP, a response comes back, the trace appears in LangFuse, and health probes pass. Remind participants to focus on getting a working end-to-end flow first, then optimize. A working but simple system scores better than a complex but broken one.
+          </aside>
         </section>
 
         <section>
-          <div class="phase-badge-red" style="display:inline-block; background:var(--accent4); color:#111; font-weight:bold; padding:6px 18px; border-radius:20px; font-size:0.6em; margin-bottom:12px;">Phase 8 &mdash; Lab 08</div>
+          <div class="phase-badge-red">Phase 8 &mdash; Lab 08</div>
           <h2>The Final Challenge</h2>
           <h3>Wire everything together and deploy</h3>
           <br>
@@ -568,7 +605,7 @@
               <span style="font-size:0.8em; color:var(--accent2);">Phase 3</span>
             </div>
           </div>
-          <div class="diagram" style="margin-top:8px;">
+          <div class="diagram mt-8">
             <div class="box box-large box-red" style="min-width:160px;">
               &#x2705; Traces<br>
               <span style="font-size:0.8em; color:var(--accent2);">Phase 4</span>
@@ -587,8 +624,9 @@
           <br>
           <div class="card card-accent" style="text-align:center; padding:20px;">
             <h4>Success Criteria</h4>
-            <p style="font-size:0.8em;">Send a query &rarr; Agent processes it &rarr; Tools are called &rarr; Response returned &rarr;
-            Trace visible in LangFuse &rarr; Metrics appear in LangFuse dashboard &rarr; Health probes pass</p>
+            <p class="text-080">Send a query &rarr; Agent processes it &rarr; Tools are called &rarr; Response
+              returned &rarr;
+              Trace visible in LangFuse &rarr; Metrics appear in LangFuse dashboard &rarr; Health probes pass</p>
           </div>
         </section>
       </section>
@@ -602,25 +640,25 @@
           <tr>
             <th>Category</th>
             <th>What We Look For</th>
-            <th style="text-align:center;">Points</th>
+            <th class="text-center">Points</th>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent);">API Design</strong></td>
+            <td><strong class="color-accent">API Design</strong></td>
             <td>Clean endpoints, input validation, structured responses, error handling</td>
             <td class="score">20</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent2);">Agent Logic</strong></td>
+            <td><strong class="color-green">Agent Logic</strong></td>
             <td>LangGraph workflow, tool selection, state management, fallback handling</td>
             <td class="score">25</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent3);">Observability</strong></td>
+            <td><strong class="color-orange">Observability</strong></td>
             <td>LangFuse traces, cost tracking, structured logging, LangFuse dashboard</td>
             <td class="score">20</td>
           </tr>
           <tr>
-            <td><strong style="color:var(--accent4);">Security &amp; Reliability</strong></td>
+            <td><strong class="color-red">Security &amp; Reliability</strong></td>
             <td>Secrets management, health probes, graceful degradation, timeouts</td>
             <td class="score">15</td>
           </tr>
@@ -637,13 +675,14 @@
         </table>
         <br>
         <p style="font-size:0.65em; color:#aaa; text-align:center;">
-          Total: <strong style="color:var(--accent2);">100 points</strong> &mdash; Focus on getting a working end-to-end system first, then optimize.
+          Total: <strong class="color-green">100 points</strong> &mdash; Focus on getting a working end-to-end
+          system first, then optimize.
         </p>
       </section>
 
       <!-- ==================== DEMO TIME ==================== -->
       <section>
-        <h1 style="font-size:2.5em;">Demo Time</h1>
+        <h1 class="text-2xl">Demo Time</h1>
         <p style="color:#ccc; font-size:0.85em;">Present your capstone to the group</p>
         <br>
         <div class="card-grid">
@@ -773,7 +812,7 @@
         <section>
           <h1 style="font-size:2.8em;">Thank You!</h1>
           <br>
-          <p style="font-size:0.9em; color:#ccc;">
+          <p class="text-lg-dim">
             Congratulations on completing the<br>
             <span class="highlight">Agentic AI Comprehensive Course</span>
           </p>
@@ -781,7 +820,8 @@
           <div class="card card-accent" style="text-align:center; padding:24px; max-width:600px; margin:0 auto;">
             <p style="font-size:0.85em; color:#fff;">
               You started with <em>"What is an AI agent?"</em><br><br>
-              You are leaving with the ability to <strong>design, build, instrument, test, and deploy</strong> production-ready AI agent systems.
+              You are leaving with the ability to <strong>design, build, instrument, test, and deploy</strong>
+              production-ready AI agent systems.
             </p>
           </div>
           <br>
@@ -797,7 +837,8 @@
           <br>
           <div class="card card-accent" style="text-align:center; padding:14px 28px; display:inline-block;">
             <h4>Session 15 Complete</h4>
-            <p>Architecture &middot; MCP &middot; FastAPI &middot; Observability &middot; Production &middot; Testing</p>
+            <p>Architecture &middot; MCP &middot; FastAPI &middot; Observability &middot; Production &middot; Testing
+            </p>
           </div>
           <br><br>
           <p style="color:#aaa; font-size:0.7em;">
@@ -810,6 +851,10 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -818,12 +863,11 @@
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
-      // Keyboard shortcuts
       keyboard: {
-        // Use 'f' for fullscreen
         70: function() {
           if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
@@ -831,9 +875,11 @@
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>
 </body>
+
 </html>

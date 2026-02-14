@@ -4,55 +4,25 @@
      <script src="shared.js"></script>
    ============================================================= */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
   // ── Index link (bottom-left corner) ──────────────────────────
-  var link = document.createElement('a');
-  link.className = 'index-link';
-  link.href = 'index.html';
-  link.textContent = '\u2302 Index';   // ⌂ Index
-  document.querySelector('.reveal').appendChild(link);
+  var revealEl = document.querySelector('.reveal');
+  if (revealEl) {
+    var link = document.createElement('a');
+    link.className = 'index-link';
+    link.href = 'index.html';
+    link.textContent = '\u2302 Index';   // ⌂ Index
+    revealEl.appendChild(link);
 
-  // ── Copy button on every .code-block ─────────────────────────
-  document.querySelectorAll('.code-block').forEach(function(block) {
-    if (block.parentElement.classList.contains('code-block-wrapper')) return;
-
-    var wrapper = document.createElement('div');
-    wrapper.className = 'code-block-wrapper';
-    block.parentNode.insertBefore(wrapper, block);
-    wrapper.appendChild(block);
-
-    var btn = document.createElement('button');
-    btn.className = 'copy-btn';
-    btn.textContent = 'Copy';
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var text = block.innerText || block.textContent;
-      navigator.clipboard.writeText(text).then(function() {
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(function() {
-          btn.textContent = 'Copy';
-          btn.classList.remove('copied');
-        }, 2000);
-      }).catch(function() {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(function() {
-          btn.textContent = 'Copy';
-          btn.classList.remove('copied');
-        }, 2000);
-      });
-    });
-    wrapper.appendChild(btn);
-  });
+    // ── Keyboard shortcut hint on title slide ───────────────────
+    var titleSlide = document.querySelector('.reveal .slides > section:first-child');
+    if (titleSlide) {
+      var hint = document.createElement('p');
+      hint.style.cssText = 'font-size:0.45em; color:rgba(255,255,255,0.3); margin-top:16px; text-align:center;';
+      hint.textContent = 'Use \u2190 \u2192 to navigate \u00B7 Press ? for shortcuts \u00B7 Press F for fullscreen \u00B7 Press S for speaker notes';
+      titleSlide.appendChild(hint);
+    }
+  }
 
 });

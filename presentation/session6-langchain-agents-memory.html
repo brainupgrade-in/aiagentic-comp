@@ -6,6 +6,10 @@
   <title>Session 6: LangChain Agents & Memory</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/theme/black.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/monokai.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap">
   <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -15,13 +19,21 @@
       <!-- ==================== TITLE ==================== -->
       <section>
         <h1>LangChain Agents & Memory</h1>
-        <p style="font-size:0.9em; color:#ccc;">From Chains to Autonomous Agents</p>
+        <p class="text-lg-dim">From Chains to Autonomous Agents</p>
         <p class="subtitle">Session 6 &middot; Day 2, Slot C</p>
         <br>
         <p class="trainer-info">
           Trainer: <strong>Rajesh Gheware</strong><br>
           Agentic AI: Comprehensive Course &middot; 5 Days
         </p>
+        <aside class="notes">
+          Welcome to Session 6 — LangChain Agents and Memory. This is Day 2, Slot C, approximately 60-75 minutes.
+          We move from fixed chains to autonomous agents that decide which tools to call. Three sections:
+          (1) Agent Types — ReAct, function calling, custom agents;
+          (2) Tool Integration — built-in tools, custom tools, multi-tool orchestration;
+          (3) Memory and Conversation Management — buffer, summary, and session persistence.
+          By the end, participants will understand how agents reason, act, and remember.
+        </aside>
       </section>
 
       <!-- ==================== AGENDA ==================== -->
@@ -53,14 +65,20 @@
           <div class="section-number">01</div>
           <h2>Agent Types</h2>
           <p class="subtitle">ReAct &middot; Function Calling &middot; Custom Agents</p>
+          <aside class="notes">
+            Key teaching points: Start by contrasting chains (fixed pipeline) with agents (dynamic tool selection).
+            Emphasize the ReAct loop: Think, Act, Observe, repeat until done.
+            Ask the audience: "Has anyone used a chatbot that felt like it was 'deciding' what to do next? That is an agent."
+            Cover function calling as the modern API-native approach vs. the older text-parsing ReAct.
+          </aside>
         </section>
 
         <!-- CHAIN vs AGENT -->
         <section>
           <h2>Chains vs Agents</h2>
           <h3>What makes an agent different from a chain?</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4>Chain (Session 3-4)</h4>
               <ul>
                 <li>Fixed sequence: prompt &rarr; LLM &rarr; parser</li>
@@ -70,7 +88,7 @@
               </ul>
               <p style="margin-top:8px; font-size:0.8em; color:var(--accent);">prompt | llm | parser</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>Agent (Today)</h4>
               <ul>
                 <li>Dynamic: LLM decides what to do next</li>
@@ -92,34 +110,34 @@
         <section>
           <h2>ReAct Agents</h2>
           <h3>Reasoning + Acting in a loop</h3>
-          <div class="cycle-flow" style="margin-top:16px;">
-            <div class="cycle-box" style="border-color:var(--accent);">
+          <div class="cycle-flow mt-16">
+            <div class="cycle-box border-accent">
               <strong>Think</strong><br>
-              <span style="font-size:0.85em;">What should I do?</span>
+              <span class="text-085">What should I do?</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
             <div class="cycle-box" style="border-color:var(--accent2);">
               <strong>Act</strong><br>
-              <span style="font-size:0.85em;">Call a tool</span>
+              <span class="text-085">Call a tool</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
             <div class="cycle-box" style="border-color:var(--accent3);">
               <strong>Observe</strong><br>
-              <span style="font-size:0.85em;">Read the result</span>
+              <span class="text-085">Read the result</span>
             </div>
             <span class="cycle-arrow">&rarr;</span>
             <div class="cycle-box" style="border-color:var(--accent4);">
               <strong>Decide</strong><br>
-              <span style="font-size:0.85em;">Done or loop?</span>
+              <span class="text-085">Done or loop?</span>
             </div>
           </div>
           <div class="card card-accent" style="padding:16px; margin-top:10px;">
             <h4>Example: "What's the weather in Bangalore and should I carry an umbrella?"</h4>
             <p style="font-size:0.72em;">
-              <strong style="color:var(--accent);">Think:</strong> I need weather data &rarr;
-              <strong style="color:var(--accent2);">Act:</strong> Call weather_tool("Bangalore") &rarr;
-              <strong style="color:var(--accent3);">Observe:</strong> "24&deg;C, 70% rain chance" &rarr;
-              <strong style="color:var(--accent4);">Decide:</strong> I have enough info &rarr;
+              <strong class="color-accent">Think:</strong> I need weather data &rarr;
+              <strong class="color-green">Act:</strong> Call weather_tool("Bangalore") &rarr;
+              <strong class="color-orange">Observe:</strong> "24&deg;C, 70% rain chance" &rarr;
+              <strong class="color-red">Decide:</strong> I have enough info &rarr;
               <strong>Answer:</strong> "Yes, carry an umbrella &mdash; 70% chance of rain."
             </p>
           </div>
@@ -132,25 +150,25 @@
         <!-- REACT AGENT IN CODE -->
         <section>
           <h2>ReAct Agent in LangChain</h2>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
-<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
 
-<span class="comment"># Define tools</span>
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
-    <span class="string">"""Get current weather for a city."""</span>
-    <span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, 70% rain"</span>}.get(city, <span class="string">"Unknown"</span>)
+# Define tools
+@tool
+def weather(city: str) -> str:
+    """Get current weather for a city."""
+    return {"Bangalore": "24&deg;C, 70% rain"}.get(city, "Unknown")
 
-<span class="comment"># Create the agent</span>
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
-agent = <span class="func">create_react_agent</span>(llm, tools=[weather])
+# Create the agent
+llm = ChatGroq(model="llama-3.3-70b-versatile")
+agent = create_react_agent(llm, tools=[weather])
 
-<span class="comment"># Run it</span>
-result = agent.<span class="func">invoke</span>(
-    {<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Bangalore?"</span>)]}
+# Run it
+result = agent.invoke(
+    {"messages": [("human", "Weather in Bangalore?")]}
 )
-<span class="func">print</span>(result[<span class="string">"messages"</span>][-1].content)</div>
+print(result["messages"][-1].content)</code></pre>
           <div class="takeaway">
             <code>create_react_agent</code> from <code>langgraph.prebuilt</code> is the modern way to build agents.
             You give it an LLM and tools &mdash; it handles the Think &rarr; Act &rarr; Observe loop automatically.
@@ -161,8 +179,8 @@ result = agent.<span class="func">invoke</span>(
         <section>
           <h2>Function-Calling Agents</h2>
           <h3>The LLM natively decides which tool to call</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-16">
               <h4>How It Works</h4>
               <ul>
                 <li>Tools are described as JSON schemas to the LLM</li>
@@ -171,7 +189,7 @@ result = agent.<span class="func">invoke</span>(
                 <li>LLM uses the result to form a final answer</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>Why It's Better</h4>
               <ul>
                 <li>More reliable than text-based parsing</li>
@@ -181,34 +199,34 @@ result = agent.<span class="func">invoke</span>(
               </ul>
             </div>
           </div>
-          <div class="code-block" style="font-size:0.55em;"><span class="comment"># LLM sees this tool description:</span>
-<span class="comment"># {"name": "weather", "description": "Get weather for a city",</span>
-<span class="comment">#  "parameters": {"city": {"type": "string"}}}</span>
+          <pre class="text-xs"><code class="language-python" data-trim data-noescape># LLM sees this tool description:
+# {"name": "weather", "description": "Get weather for a city",
+#  "parameters": {"city": {"type": "string"}}}
 
-<span class="comment"># LLM responds with structured call (not free text):</span>
-<span class="comment"># {"tool": "weather", "args": {"city": "Bangalore"}}</span></div>
+# LLM responds with structured call (not free text):
+# {"tool": "weather", "args": {"city": "Bangalore"}}</code></pre>
         </section>
 
         <!-- BIND_TOOLS -->
         <section>
           <h2>Binding Tools to an LLM</h2>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+from langchain_core.tools import tool
 
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
-    <span class="string">"""Calculate a math expression. Input: a math expression like '2 + 3'."""</span>
-    <span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))
+@tool
+def calculator(expression: str) -> str:
+    """Calculate a math expression. Input: a math expression like '2 + 3'."""
+    return str(eval(expression))
 
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 
-<span class="comment"># Bind tools — LLM now knows about calculator</span>
-llm_with_tools = llm.<span class="func">bind_tools</span>([calculator])
+# Bind tools — LLM now knows about calculator
+llm_with_tools = llm.bind_tools([calculator])
 
-<span class="comment"># LLM decides to call the tool</span>
-response = llm_with_tools.<span class="func">invoke</span>(<span class="string">"What is 17 * 28 + 55?"</span>)
-<span class="func">print</span>(response.tool_calls)
-<span class="output"># [{"name": "calculator", "args": {"expression": "17 * 28 + 55"}}]</span></div>
+# LLM decides to call the tool
+response = llm_with_tools.invoke("What is 17 * 28 + 55?")
+print(response.tool_calls)
+# [{"name": "calculator", "args": {"expression": "17 * 28 + 55"}}]</code></pre>
           <div class="analogy">
             <code>bind_tools</code> is like handing a calculator to a student before an exam.
             The student (LLM) now <em>knows</em> the calculator is available and can choose to use it
@@ -227,19 +245,19 @@ response = llm_with_tools.<span class="func">invoke</span>(<span class="string">
               <th>LangChain API</th>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent);">ReAct</strong></td>
+              <td><strong class="color-accent">ReAct</strong></td>
               <td>Reasons step-by-step in a loop</td>
               <td>Multi-step tasks needing planning</td>
               <td><code>create_react_agent()</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent2);">Function-Calling</strong></td>
+              <td><strong class="color-green">Function-Calling</strong></td>
               <td>LLM natively outputs tool calls</td>
               <td>Single-step tool use, structured output</td>
               <td><code>llm.bind_tools()</code></td>
             </tr>
             <tr>
-              <td><strong style="color:var(--accent3);">Custom</strong></td>
+              <td><strong class="color-orange">Custom</strong></td>
               <td>Your own logic for routing and decisions</td>
               <td>Complex workflows, domain-specific rules</td>
               <td><code>LangGraph StateGraph</code></td>
@@ -259,28 +277,34 @@ response = llm_with_tools.<span class="func">invoke</span>(<span class="string">
           <div class="section-number">02</div>
           <h2>Tool Integration</h2>
           <p class="subtitle">Built-in Tools &middot; Custom Tools &middot; Multi-Tool Orchestration</p>
+          <aside class="notes">
+            Key teaching points: Tools are what give agents real-world capabilities — search, calculate, call APIs.
+            Stress that the @tool decorator's docstring is the LLM's instruction manual for when and how to use the tool.
+            Ask the audience: "What tools would you want an AI agent to have access to in your daily workflow?"
+            Demo tip: Show a simple custom tool first, then compose multiple tools together.
+          </aside>
         </section>
 
         <!-- WHAT ARE TOOLS -->
         <section>
           <h2>What Are Tools?</h2>
           <h3>Functions the agent can call to interact with the world</h3>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="text-align:center; padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-accent text-center p-14">
               <h4>Information Tools</h4>
               <p>Search the web, query databases, fetch APIs, read documents</p>
             </div>
-            <div class="card card-green" style="text-align:center; padding:14px;">
+            <div class="card card-green text-center p-14">
               <h4>Action Tools</h4>
               <p>Send emails, create files, update records, call external services</p>
             </div>
-            <div class="card card-orange" style="text-align:center; padding:14px;">
+            <div class="card card-orange text-center p-14">
               <h4>Computation Tools</h4>
               <p>Calculate math, run code, process data, transform formats</p>
             </div>
           </div>
           <div class="card card-accent" style="text-align:center; padding:16px; margin-top:14px;">
-            <p style="font-size:0.8em;">
+            <p class="text-080">
               A tool is simply a <strong>Python function</strong> with a <strong>description</strong>
               that tells the LLM what it does and what arguments it needs.
               The LLM reads the description and decides when to call it.
@@ -292,19 +316,19 @@ response = llm_with_tools.<span class="func">invoke</span>(<span class="string">
         <section>
           <h2>Creating Tools with @tool</h2>
           <h3>The simplest way to define a tool</h3>
-          <div class="code-block" style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
 
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">get_order_status</span>(order_id: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
-    <span class="string">"""Check the status of a customer order. Input: order ID like 'ORD-001'."""</span>
-    orders = {<span class="string">"ORD-001"</span>: <span class="string">"Shipped, arriving tomorrow"</span>,
-              <span class="string">"ORD-002"</span>: <span class="string">"Processing, 2 days"</span>}
-    <span class="keyword">return</span> orders.get(order_id, <span class="string">"Order not found"</span>)
+@tool
+def get_order_status(order_id: str) -> str:
+    """Check the status of a customer order. Input: order ID like 'ORD-001'."""
+    orders = {"ORD-001": "Shipped, arriving tomorrow",
+              "ORD-002": "Processing, 2 days"}
+    return orders.get(order_id, "Order not found")
 
-<span class="comment"># What the LLM sees:</span>
-<span class="func">print</span>(get_order_status.name)        <span class="output"># "get_order_status"</span>
-<span class="func">print</span>(get_order_status.description)  <span class="output"># "Check the status of..."</span>
-<span class="func">print</span>(get_order_status.args_schema)  <span class="output"># {"order_id": {"type": "string"}}</span></div>
+# What the LLM sees:
+print(get_order_status.name)        # "get_order_status"
+print(get_order_status.description)  # "Check the status of..."
+print(get_order_status.args_schema)  # {"order_id": {"type": "string"}}</code></pre>
           <div class="takeaway">
             The <strong>docstring is critical</strong> &mdash; it's how the LLM understands what the tool does.
             Write clear, specific descriptions. Include examples of valid inputs.
@@ -316,27 +340,27 @@ response = llm_with_tools.<span class="func">invoke</span>(<span class="string">
         <section>
           <h2>Multi-Tool Agent</h2>
           <h3>Agent with several tools to choose from</h3>
-          <div class="code-block" style="font-size:0.48em; line-height:1.35; padding:12px 16px;"><span class="keyword">from</span> langchain_core.tools <span class="keyword">import</span> tool
-<span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
+          <pre style="font-size:0.52em; line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
+from langgraph.prebuilt import create_react_agent
 
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">weather</span>(city: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
-    <span class="string">"""Get current weather for a city."""</span>
-    <span class="keyword">return</span> {<span class="string">"Bangalore"</span>: <span class="string">"24&deg;C, Rain"</span>, <span class="string">"Mumbai"</span>: <span class="string">"32&deg;C, Sunny"</span>}.get(city, <span class="string">"Unknown"</span>)
+@tool
+def weather(city: str) -> str:
+    """Get current weather for a city."""
+    return {"Bangalore": "24&deg;C, Rain", "Mumbai": "32&deg;C, Sunny"}.get(city, "Unknown")
 
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">calculator</span>(expression: <span class="keyword">str</span>) -> <span class="keyword">str</span>:
-    <span class="string">"""Calculate a math expression like '15 * 7 + 3'."""</span>
-    <span class="keyword">return</span> <span class="keyword">str</span>(<span class="func">eval</span>(expression))
+@tool
+def calculator(expression: str) -> str:
+    """Calculate a math expression like '15 * 7 + 3'."""
+    return str(eval(expression))
 
-@<span class="func">tool</span>
-<span class="keyword">def</span> <span class="func">get_time</span>() -> <span class="keyword">str</span>:
-    <span class="string">"""Get the current date and time."""</span>
-    <span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
-    <span class="keyword">return</span> datetime.now().strftime(<span class="string">"%A, %B %d at %I:%M %p"</span>)
+@tool
+def get_time() -> str:
+    """Get the current date and time."""
+    from datetime import datetime
+    return datetime.now().strftime("%A, %B %d at %I:%M %p")
 
 agent = create_react_agent(llm, tools=[weather, calculator, get_time])
-<span class="comment"># The agent picks the right tool for each question automatically!</span></div>
+# The agent picks the right tool for each question automatically!</code></pre>
         </section>
 
         <!-- TOOL ORCHESTRATION FLOW -->
@@ -346,12 +370,12 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
           <div class="card card-accent" style="padding:16px; margin-top:14px;">
             <h4>Query: "Is it warmer in Bangalore or Mumbai? Show the difference in Fahrenheit."</h4>
             <p style="font-size:0.72em; margin-top:8px;">
-              <strong style="color:var(--accent);">Step 1:</strong> Think &rarr; I need weather for both cities<br>
-              <strong style="color:var(--accent2);">Step 2:</strong> Call weather("Bangalore") &rarr; "24&deg;C"<br>
-              <strong style="color:var(--accent2);">Step 3:</strong> Call weather("Mumbai") &rarr; "32&deg;C"<br>
-              <strong style="color:var(--accent3);">Step 4:</strong> Think &rarr; Now convert and compare<br>
-              <strong style="color:var(--accent3);">Step 5:</strong> Call calculator("(32-24) * 9/5") &rarr; "14.4"<br>
-              <strong style="color:var(--accent4);">Step 6:</strong> Answer: "Mumbai is warmer. Difference is 14.4&deg;F."
+              <strong class="color-accent">Step 1:</strong> Think &rarr; I need weather for both cities<br>
+              <strong class="color-green">Step 2:</strong> Call weather("Bangalore") &rarr; "24&deg;C"<br>
+              <strong class="color-green">Step 3:</strong> Call weather("Mumbai") &rarr; "32&deg;C"<br>
+              <strong class="color-orange">Step 4:</strong> Think &rarr; Now convert and compare<br>
+              <strong class="color-orange">Step 5:</strong> Call calculator("(32-24) * 9/5") &rarr; "14.4"<br>
+              <strong class="color-red">Step 6:</strong> Answer: "Mumbai is warmer. Difference is 14.4&deg;F."
             </p>
           </div>
           <div class="takeaway">
@@ -364,8 +388,8 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
         <!-- TOOL BEST PRACTICES -->
         <section>
           <h2>Tool Design Best Practices</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-green" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-green p-14">
               <h4>Do</h4>
               <ul>
                 <li>Write clear, specific docstrings</li>
@@ -375,7 +399,7 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
                 <li>Keep tools focused &mdash; one tool, one job</li>
               </ul>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>Don't</h4>
               <ul>
                 <li>Write vague descriptions ("does stuff")</li>
@@ -395,28 +419,37 @@ agent = create_react_agent(llm, tools=[weather, calculator, get_time])
           <div class="section-number">03</div>
           <h2>Memory & Conversation Management</h2>
           <p class="subtitle">Buffer Memory &middot; Summary Memory &middot; Session Persistence</p>
+          <aside class="notes">
+            Key teaching points: Without memory, every LLM call is stateless — the agent forgets the conversation.
+            Compare buffer memory (stores everything, simple but grows unbounded) vs. summary memory (compresses older messages).
+            Ask the audience: "What happens in a customer-support bot if the context window fills up mid-conversation?"
+            Note: Legacy ConversationBufferMemory APIs are deprecated — LangGraph state is the modern approach.
+            Thread IDs isolate per-user conversations in multi-tenant applications.
+          </aside>
         </section>
 
         <!-- WHY MEMORY MATTERS -->
         <section>
           <h2>Why Memory Matters</h2>
           <h3>LLMs are stateless &mdash; every call starts fresh</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-red" style="padding:16px;">
+          <div class="card-grid mt-14">
+            <div class="card card-red p-16">
               <h4>Without Memory</h4>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">User: My name is Raj
-Bot: Nice to meet you, Raj!<br>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
+Bot: Nice to meet you, Raj!
+
 User: What is my name?
-Bot: I don't know your name.</div>
-              <p style="margin-top:6px;">Each call is independent. The LLM forgot everything.</p>
+Bot: I don't know your name.</code></pre>
+              <p class="mt-6">Each call is independent. The LLM forgot everything.</p>
             </div>
-            <div class="card card-green" style="padding:16px;">
+            <div class="card card-green p-16">
               <h4>With Memory</h4>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">User: My name is Raj
-Bot: Nice to meet you, Raj!<br>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-yaml" data-trim data-noescape>User: My name is Raj
+Bot: Nice to meet you, Raj!
+
 User: What is my name?
-Bot: Your name is Raj!</div>
-              <p style="margin-top:6px;">Previous messages are included in every call. Context preserved.</p>
+Bot: Your name is Raj!</code></pre>
+              <p class="mt-6">Previous messages are included in every call. Context preserved.</p>
             </div>
           </div>
         </section>
@@ -424,20 +457,20 @@ Bot: Your name is Raj!</div>
         <!-- MEMORY TYPES -->
         <section>
           <h2>Memory Types</h2>
-          <div class="card-grid-3" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid-3 mt-14">
+            <div class="card card-accent p-14">
               <h4>Buffer Memory</h4>
               <p>Store the entire conversation history. Every message is kept and sent to the LLM each time.</p>
               <p style="margin-top:8px; color:var(--accent);"><strong>Simple but grows fast</strong></p>
               <p style="margin-top:4px; font-size:0.85em;">Best for: short conversations (5-10 turns)</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Summary Memory</h4>
               <p>Use an LLM to summarize older messages. Keeps recent messages + a summary of earlier ones.</p>
               <p style="margin-top:8px; color:var(--accent2);"><strong>Token-efficient</strong></p>
               <p style="margin-top:4px; font-size:0.85em;">Best for: long conversations (10+ turns)</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>Window Memory</h4>
               <p>Keep only the last N messages. Older messages are dropped entirely.</p>
               <p style="margin-top:8px; color:var(--accent3);"><strong>Fixed size, simple</strong></p>
@@ -455,23 +488,23 @@ Bot: Your name is Raj!</div>
         <section>
           <h2>Conversation Buffer Memory</h2>
           <h3>The simplest approach: store all messages</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 
-<span class="comment"># The "memory" is just a list of messages</span>
-memory = [SystemMessage(content=<span class="string">"You are a helpful assistant. Be concise."</span>)]
+# The "memory" is just a list of messages
+memory = [SystemMessage(content="You are a helpful assistant. Be concise.")]
 
-<span class="keyword">def</span> <span class="func">chat</span>(user_msg):
+def chat(user_msg):
     memory.append(HumanMessage(content=user_msg))
-    response = llm.<span class="func">invoke</span>(memory)
+    response = llm.invoke(memory)
     memory.append(AIMessage(content=response.content))
-    <span class="keyword">return</span> response.content
+    return response.content
 
-<span class="func">print</span>(chat(<span class="string">"My name is Raj"</span>))    <span class="output"># "Nice to meet you, Raj!"</span>
-<span class="func">print</span>(chat(<span class="string">"What is my name?"</span>))  <span class="output"># "Your name is Raj!"</span>
-<span class="func">print</span>(<span class="keyword">f</span><span class="string">"Messages in memory: {len(memory)}"</span>)  <span class="output"># 5</span></div>
+print(chat("My name is Raj"))    # "Nice to meet you, Raj!"
+print(chat("What is my name?"))  # "Your name is Raj!"
+print(f"Messages in memory: {len(memory)}")  # 5</code></pre>
           <div class="takeaway">
             At its core, memory is just <strong>appending messages to a list</strong> and passing the full list
             to the LLM every time. The LLM sees the entire conversation history and can reference
@@ -483,47 +516,47 @@ memory = [SystemMessage(content=<span class="string">"You are a helpful assistan
         <section>
           <h2>Conversation Summary Memory</h2>
           <h3>Summarize older messages to save tokens</h3>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langchain_groq <span class="keyword">import</span> ChatGroq
-<span class="keyword">from</span> langchain_core.messages <span class="keyword">import</span> HumanMessage, AIMessage, SystemMessage
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 
-llm = ChatGroq(model=<span class="string">"llama-3.3-70b-versatile"</span>)
-MAX_MESSAGES = 6  <span class="comment"># keep last 6 messages, summarize the rest</span>
+llm = ChatGroq(model="llama-3.3-70b-versatile")
+MAX_MESSAGES = 6  # keep last 6 messages, summarize the rest
 
-<span class="keyword">def</span> <span class="func">summarize_old_messages</span>(messages):
-    <span class="string">"""Use the LLM to summarize older messages."""</span>
-    old_text = <span class="string">"\n"</span>.join(m.content <span class="keyword">for</span> m <span class="keyword">in</span> messages)
-    summary = llm.<span class="func">invoke</span>(
-        <span class="keyword">f</span><span class="string">"Summarize this conversation in 2 sentences:\n{old_text}"</span>
+def summarize_old_messages(messages):
+    """Use the LLM to summarize older messages."""
+    old_text = "\n".join(m.content for m in messages)
+    summary = llm.invoke(
+        f"Summarize this conversation in 2 sentences:\n{old_text}"
     )
-    <span class="keyword">return</span> SystemMessage(content=<span class="keyword">f</span><span class="string">"Summary of earlier conversation: {summary.content}"</span>)
+    return SystemMessage(content=f"Summary of earlier conversation: {summary.content}")
 
-<span class="keyword">def</span> <span class="func">chat_with_summary</span>(memory, user_msg):
+def chat_with_summary(memory, user_msg):
     memory.append(HumanMessage(content=user_msg))
-    <span class="keyword">if</span> <span class="func">len</span>(memory) > MAX_MESSAGES:
+    if len(memory) > MAX_MESSAGES:
         summary = summarize_old_messages(memory[1:-MAX_MESSAGES])
         memory[:] = [memory[0], summary] + memory[-MAX_MESSAGES:]
-    response = llm.<span class="func">invoke</span>(memory)
+    response = llm.invoke(memory)
     memory.append(AIMessage(content=response.content))
-    <span class="keyword">return</span> response.content</div>
+    return response.content</code></pre>
         </section>
 
         <!-- SESSION PERSISTENCE -->
         <section>
           <h2>Session Management</h2>
           <h3>Persisting conversations across restarts</h3>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>In-Memory (Lab/Dev)</h4>
               <p>Messages stored in a Python list. Lost when the process restarts.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;">sessions = {}
-sessions[<span class="string">"user-1"</span>] = [msg1, msg2]</div>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape>sessions = {}
+sessions["user-1"] = [msg1, msg2]</code></pre>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Persistent (Production)</h4>
               <p>Messages stored in a database. Survive restarts and scale to many users.</p>
-              <div class="code-block" style="font-size:0.85em; margin:8px 0 0 0;"><span class="comment"># LangGraph checkpoint</span>
+              <pre style="font-size:0.85em; margin:8px 0 0 0;"><code class="language-python" data-trim data-noescape># LangGraph checkpoint
 SqliteSaver(db_path)
-PostgresSaver(conn_string)</div>
+PostgresSaver(conn_string)</code></pre>
             </div>
           </div>
           <div class="takeaway">
@@ -536,22 +569,22 @@ PostgresSaver(conn_string)</div>
         <!-- MULTI-SESSION PATTERN -->
         <section>
           <h2>Multi-User Session Pattern</h2>
-          <div class="code-block" style="font-size:0.50em; line-height:1.4; padding:12px 16px;"><span class="keyword">from</span> langgraph.prebuilt <span class="keyword">import</span> create_react_agent
-<span class="keyword">from</span> langgraph.checkpoint.memory <span class="keyword">import</span> MemorySaver
+          <pre style="font-size:0.52em; line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.prebuilt import create_react_agent
+from langgraph.checkpoint.memory import MemorySaver
 
-<span class="comment"># Create agent with memory</span>
+# Create agent with memory
 memory = MemorySaver()
 agent = create_react_agent(llm, tools=[weather], checkpointer=memory)
 
-<span class="comment"># User A's conversation</span>
-config_a = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-A"</span>}}
-agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"I live in Bangalore"</span>)]}, config=config_a)
-agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"What's the weather here?"</span>)]}, config=config_a)
-<span class="comment"># ^ Agent remembers "here" = Bangalore from the previous message</span>
+# User A's conversation
+config_a = {"configurable": {"thread_id": "user-A"}}
+agent.invoke({"messages": [("human", "I live in Bangalore")]}, config=config_a)
+agent.invoke({"messages": [("human", "What's the weather here?")]}, config=config_a)
+# ^ Agent remembers "here" = Bangalore from the previous message
 
-<span class="comment"># User B's separate conversation (isolated)</span>
-config_b = {<span class="string">"configurable"</span>: {<span class="string">"thread_id"</span>: <span class="string">"user-B"</span>}}
-agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: [(<span class="string">"human"</span>, <span class="string">"Weather in Mumbai?"</span>)]}, config=config_b)</div>
+# User B's separate conversation (isolated)
+config_b = {"configurable": {"thread_id": "user-B"}}
+agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</code></pre>
           <div class="takeaway">
             Each <code>thread_id</code> gets its own isolated conversation history.
             User A's messages are never seen by User B's agent. This is how production chatbots
@@ -565,34 +598,34 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
         <section>
           <h2>The Complete Picture</h2>
           <h3>Agent + Tools + Memory</h3>
-          <div class="pipe-flow" style="margin-top:16px;">
+          <div class="pipe-flow mt-16">
             <div class="pipe-box" style="border-color:var(--accent); min-width:90px;">
               <strong>User</strong><br>
-              <span style="font-size:0.85em;">Question</span>
+              <span class="text-085">Question</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-green" style="min-width:90px;">
               <strong>Memory</strong><br>
-              <span style="font-size:0.85em;">Load context</span>
+              <span class="text-085">Load context</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-orange" style="min-width:90px;">
               <strong>Agent</strong><br>
-              <span style="font-size:0.85em;">Think + Act</span>
+              <span class="text-085">Think + Act</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box pipe-box-red" style="min-width:90px;">
               <strong>Tools</strong><br>
-              <span style="font-size:0.85em;">Execute</span>
+              <span class="text-085">Execute</span>
             </div>
             <span class="pipe-sym">&rarr;</span>
             <div class="pipe-box" style="min-width:90px;">
               <strong>Answer</strong><br>
-              <span style="font-size:0.85em;">+ Save to memory</span>
+              <span class="text-085">+ Save to memory</span>
             </div>
           </div>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>What you learned today</h4>
               <ul>
                 <li>Chains vs Agents &mdash; fixed vs dynamic</li>
@@ -603,7 +636,7 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
                 <li>Multi-user sessions with thread IDs</li>
               </ul>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Key code patterns</h4>
               <ul>
                 <li><code>@tool</code> decorator &rarr; define tools</li>
@@ -663,23 +696,23 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
       <section>
         <section>
           <h2>Session 6 Recap</h2>
-          <div class="card-grid" style="margin-top:14px;">
-            <div class="card card-accent" style="padding:14px;">
+          <div class="card-grid mt-14">
+            <div class="card card-accent p-14">
               <h4>Agent Types</h4>
               <p>ReAct agents reason in a Think &rarr; Act &rarr; Observe loop.
               Function-calling agents use structured tool invocation. Custom agents use LangGraph.</p>
             </div>
-            <div class="card card-green" style="padding:14px;">
+            <div class="card card-green p-14">
               <h4>Tools</h4>
               <p>@tool decorator makes any Python function an agent tool. Docstrings
               describe the tool to the LLM. Agents pick the right tool autonomously.</p>
             </div>
-            <div class="card card-orange" style="padding:14px;">
+            <div class="card card-orange p-14">
               <h4>Memory</h4>
               <p>Buffer stores all messages, Summary compresses old ones, Window keeps the last N.
               Choose based on conversation length and token budget.</p>
             </div>
-            <div class="card card-red" style="padding:14px;">
+            <div class="card card-red p-14">
               <h4>Sessions</h4>
               <p>MemorySaver with thread_id gives each user their own conversation.
               SQLite/PostgreSQL checkpointers for production persistence.</p>
@@ -695,15 +728,15 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
             <h4>Session 7: LangGraph &mdash; Stateful Workflows</h4>
             <br>
             <div class="card-grid-3" style="margin-top:0;">
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>StateGraph</h4>
                 <p>Define stateful workflows with nodes and edges</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Checkpointing</h4>
                 <p>Save and resume workflow state</p>
               </div>
-              <div class="card" style="padding:14px;">
+              <div class="card p-14">
                 <h4>Human-in-Loop</h4>
                 <p>Pause for human approval mid-workflow</p>
               </div>
@@ -727,7 +760,7 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
       <!-- ==================== QUIZ: SESSION 6 SELF-CHECK ==================== -->
       <section>
         <section>
-          <h1 style="font-size:2.5em;">Session 6 Quiz</h1>
+          <h1 class="text-2xl">Session 6 Quiz</h1>
           <p style="color:#ccc; font-size:0.8em;">5 questions to check your understanding</p>
           <p style="color:#aaa; font-size:0.65em; margin-top:20px;">
             Think about your answer. We'll discuss, then I'll reveal it.
@@ -758,6 +791,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
               <span>Agents can only use one tool at a time</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Agents dynamically decide which tools to call, while chains follow a fixed sequence.
+            Chains are deterministic pipelines; agents use LLM reasoning to choose actions at each step.
+          </aside>
         </section>
 
         <!-- Q1 ANSWER -->
@@ -815,6 +852,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
               <span>Embed, Search, Retrieve</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — Think, Act, Observe.
+            ReAct stands for Reasoning + Acting. The agent thinks about what to do, acts by calling a tool, observes the result, then loops or gives a final answer.
+          </aside>
         </section>
 
         <!-- Q2 ANSWER -->
@@ -873,6 +914,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
               <span>It's displayed to the end user as help text</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — The LLM reads the docstring to understand what the tool does and when to use it.
+            The docstring becomes the tool description sent to the LLM. A vague docstring means the LLM will not know when to invoke the tool.
+          </aside>
         </section>
 
         <!-- Q3 ANSWER -->
@@ -930,6 +975,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
               <span>It requires a database to work</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — It grows indefinitely and eventually exceeds the LLM's context window (token limit).
+            Buffer memory stores every message verbatim. After many turns, you blow past the context limit. Summary memory compresses older messages.
+          </aside>
         </section>
 
         <!-- Q4 ANSWER -->
@@ -987,6 +1036,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
               <span>It encrypts the messages for security</span>
             </div>
           </div>
+          <aside class="notes">
+            Correct answer: B — It isolates each user's conversation history so they don't see each other's data.
+            Thread IDs partition memory per user/session, essential for multi-tenant applications where conversations must remain private.
+          </aside>
         </section>
 
         <!-- Q5 ANSWER -->
@@ -1026,15 +1079,15 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
           <br>
           <div class="card-grid-3">
             <div class="card" style="text-align:center; border-left:4px solid var(--accent4);">
-              <h4 style="color:var(--accent4);">0-2 correct</h4>
+              <h4 class="color-red">0-2 correct</h4>
               <p>Review the ReAct diagram and tool examples &mdash; the labs will make it click.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent3);">
-              <h4 style="color:var(--accent3);">3-4 correct</h4>
+              <h4 class="color-orange">3-4 correct</h4>
               <p>Strong grasp of agents and memory! Labs will solidify your skills.</p>
             </div>
             <div class="card" style="text-align:center; border-left:4px solid var(--accent2);">
-              <h4 style="color:var(--accent2);">5 correct</h4>
+              <h4 class="color-green">5 correct</h4>
               <p>You've nailed it! Time to build some agents.</p>
             </div>
           </div>
@@ -1045,6 +1098,10 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/reveal.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/highlight/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/notes/notes.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/search/search.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.1/plugin/zoom/zoom.min.js"></script>
   <script>
     Reveal.initialize({
       hash: true,
@@ -1053,8 +1110,9 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
       transition: 'slide',
       transitionSpeed: 'default',
       center: false,
-      width: "100%",
-      height: "100%",
+      progress: true,
+      width: 1920,
+      height: 1080,
       margin: 0.02,
       keyboard: {
         70: function() {
@@ -1064,7 +1122,8 @@ agent.<span class="func">invoke</span>({<span class="string">"messages"</span>: 
             document.exitFullscreen();
           }
         }
-      }
+      },
+      plugins: [RevealHighlight, RevealNotes, RevealSearch, RevealZoom]
     });
   </script>
   <script src="shared.js"></script>

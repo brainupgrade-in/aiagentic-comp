@@ -12,47 +12,231 @@
   --accent2: #81c784;
   --accent3: #ffb74d;
   --accent4: #e57373;
-  --bg-card: rgba(255,255,255,0.07);
+  --bg-card: rgba(255, 255, 255, 0.07);
 }
 
 /* =============================================================
-   Base Reveal.js Overrides
+   Base Reveal.js Overrides & Scaling
    ============================================================= */
 .reveal {
-  font-size: 32px;
+  font-size: 28px;
+  /* Slightly smaller base font for better content fit */
+}
+
+@media (min-width: 1600px) {
+  .reveal {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .reveal {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reveal {
+    font-size: 20px;
+  }
 }
 
 .reveal h1 {
-  font-size: 2.2em;
+  font-size: 2em;
   color: var(--accent);
   text-transform: none;
+  font-weight: 800;
+  margin-bottom: 0.3em;
 }
 
 .reveal h2 {
-  font-size: 1.6em;
+  font-size: 1.5em;
   color: var(--accent);
   text-transform: none;
+  font-weight: 700;
+  margin-bottom: 0.3em;
 }
 
 .reveal h3 {
-  font-size: 1.2em;
+  font-size: 1.1em;
   color: var(--accent2);
   text-transform: none;
+  font-weight: 600;
 }
 
 .reveal ul {
   text-align: left;
+  display: inline-block;
 }
 
 .reveal li {
-  margin-bottom: 0.2em;
-  font-size: 0.85em;
+  margin-bottom: 0.4em;
+  font-size: 0.8em;
 }
 
 .reveal .subtitle {
-  color: #aaa;
-  font-size: 0.7em;
-  margin-top: 0.5em;
+  color: #bbb;
+  font-size: 0.65em;
+  margin-top: 0.4em;
+}
+
+/* Prevent content overflow on slides */
+.reveal .slides section {
+  overflow: auto;
+}
+
+/* Fragment fade-in override for cleaner look */
+.reveal .slides section .fragment.visible {
+  opacity: 1;
+}
+
+/* =============================================================
+   15-70-15 Vertical Layout — Optimize viewport space utilization
+   ============================================================= */
+
+/* Let Reveal.js handle its own scaling; only customize the flex layout within slides */
+.reveal .slides>section,
+.reveal .slides section>section {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 4vh 6vw !important;
+  box-sizing: border-box !important;
+}
+
+/* Header elements should be centered */
+.reveal .slides section h1,
+.reveal .slides section h2,
+.reveal .slides section h3,
+.reveal .slides section .subtitle,
+.reveal .slides section .section-number,
+.reveal .slides section .trainer-info {
+  flex: 0 0 auto;
+  text-align: center;
+  width: 100%;
+}
+
+/* Main content area — fills middle */
+.reveal .slides section>*:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br):not(aside) {
+  flex: 1 1 auto;
+  width: 100%;
+  margin: 0.8vh 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: block;
+}
+
+/* Ensure common layout containers stay centered and use correct display */
+.reveal .slides section .card-grid,
+.reveal .slides section .card-grid-3,
+.reveal .slides section .pipe-flow,
+.reveal .slides section .evolution,
+.reveal .slides section .diagram,
+.reveal .slides section .layer-stack,
+.reveal .slides section .branch-diagram {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.reveal .slides section .pipe-flow,
+.reveal .slides section .evolution,
+.reveal .slides section .diagram,
+.reveal .slides section .layer-stack,
+.reveal .slides section .branch-diagram {
+  display: flex !important;
+}
+
+/* Footer elements should stick to bottom and be centered */
+.reveal .slides section .takeaway,
+.reveal .slides section .tip-callout,
+.reveal .slides section .warning-callout,
+.reveal .slides section .note-callout,
+.reveal .slides section .error-callout,
+.reveal .slides section .answer-explain,
+.reveal .slides section .analogy {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 1000px;
+  margin: 1.5vh auto 0 auto !important;
+  text-align: left;
+}
+
+/* Reduce excessive spacing in lists and paragraphs */
+.reveal ul,
+.reveal ol {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+.reveal p {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+/* =============================================================
+   Cards & Layouts
+   ============================================================= */
+.reveal .slides section .card-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 20px;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.reveal .slides section .card-grid-3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px;
+  width: 100%;
+  max-width: 1200px;
+}
+
+@media (max-width: 1100px) {
+  .reveal .slides section .card-grid-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .reveal .slides section .card-grid,
+  .reveal .slides section .card-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .card {
+    padding: 12px;
+  }
+}
+
+.card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-accent {
+  border-left: 4px solid var(--accent);
+}
+
+.card-green {
+  border-left: 4px solid var(--accent2);
+}
+
+.card-orange {
+  border-left: 4px solid var(--accent3);
+}
+
+.card-red {
+  border-left: 4px solid var(--accent4);
 }
 
 .reveal .highlight {
@@ -75,162 +259,27 @@
   font-weight: bold;
 }
 
-/* Prevent content overflow on slides */
-.reveal .slides section {
-  overflow: hidden;
-}
-
-/* Fragment fade-in override for cleaner look */
-.reveal .slides section .fragment.visible {
-  opacity: 1;
-}
-
-/* =============================================================
-   15-70-15 Vertical Layout — Optimize viewport space utilization
-   Top 15%: Slide title and subtitle
-   Middle 70%: Main content (diagrams, code, lists, cards)
-   Bottom 15%: Takeaways, tips, warnings, notes
-   ============================================================= */
-
-/* Make all slides fill available height and use flexbox */
-.reveal .slides {
-  height: 100% !important;
-}
-
-.reveal .slides > section,
-.reveal .slides section > section {
-  height: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  padding: 0.5vh 3vw 2vh 3vw !important;
-  box-sizing: border-box !important;
-}
-
-/* Header area — constrained to top ~15% */
-.reveal .slides > section > h1,
-.reveal .slides > section > h2,
-.reveal .slides > section > h3,
-.reveal .slides section > section > h1,
-.reveal .slides section > section > h2,
-.reveal .slides section > section > h3 {
-  flex: 0 0 auto;
-  max-height: 12vh;
-  margin: 0 0 0.3em 0;
-  overflow: hidden;
-}
-
-.reveal .slides > section > .subtitle,
-.reveal .slides section > section > .subtitle {
-  flex: 0 0 auto;
-  margin: 0.2em 0 0.5em 0;
-}
-
-.reveal .slides > section > .section-number,
-.reveal .slides section > section > .section-number {
-  flex: 0 0 auto;
-  margin: 0 0 0.4em 0;
-}
-
-.reveal .slides > section > p.subtitle,
-.reveal .slides section > section > p.subtitle {
-  flex: 0 0 auto;
-  margin: 0.2em 0 0.5em 0;
-}
-
-/* Trainer info and other header paragraph elements */
-.reveal .slides > section > .trainer-info,
-.reveal .slides section > section > .trainer-info {
-  flex: 0 0 auto;
-  margin: 0.3em 0;
-}
-
-/* Main content area — fills middle ~70% */
-.reveal .slides > section > *:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br),
-.reveal .slides section > section > *:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br) {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin: 0.4em 0;
-  min-height: 0;
-}
-
-/* Analogy boxes are part of footer */
-.reveal .slides > section > .analogy,
-.reveal .slides section > section > .analogy {
-  flex: 0 0 auto;
-  max-height: 12vh;
-  overflow-y: auto;
-  margin: 0.5em 0 0 0;
-}
-
-/* Footer area — constrained to bottom ~15% */
-.reveal .slides > section > .takeaway,
-.reveal .slides > section > .tip-callout,
-.reveal .slides > section > .warning-callout,
-.reveal .slides > section > .note-callout,
-.reveal .slides > section > .error-callout,
-.reveal .slides > section > .answer-explain,
-.reveal .slides section > section > .takeaway,
-.reveal .slides section > section > .tip-callout,
-.reveal .slides section > section > .warning-callout,
-.reveal .slides section > section > .note-callout,
-.reveal .slides section > section > .error-callout,
-.reveal .slides section > section > .answer-explain {
-  flex: 0 0 auto;
-  max-height: 12vh;
-  overflow-y: auto;
-  margin: 0.5em 0 0 0;
-}
-
-/* Reduce excessive spacing in lists and paragraphs */
-.reveal ul,
-.reveal ol {
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
-}
-
-.reveal p {
-  margin-top: 0.3em;
-  margin-bottom: 0.3em;
-}
-
-/* =============================================================
-   Cards
-   ============================================================= */
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.card-grid-3 {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 16px;
-  margin-top: 20px;
-}
-
-.card {
-  background: var(--bg-card);
-  border-radius: 12px;
-  padding: 20px;
-  text-align: left;
-  border: 1px solid rgba(255,255,255,0.1);
+.reveal .highlight-purple {
+  color: #ce93d8;
+  font-weight: bold;
 }
 
 .card h4 {
   margin: 0 0 8px 0;
-  font-size: 0.85em;
+  font-size: 0.8em;
   color: var(--accent);
+  font-weight: 700;
 }
 
 .card p,
 .card ul {
   margin: 0;
-  font-size: 0.65em;
-  color: #ccc;
+  font-size: 0.6em;
+  color: #ddd;
+}
+
+.card p {
+  line-height: 1.4;
 }
 
 .card ul {
@@ -239,22 +288,6 @@
 
 .card li {
   margin-bottom: 0.2em;
-}
-
-.card-accent {
-  border-left: 4px solid var(--accent);
-}
-
-.card-green {
-  border-left: 4px solid var(--accent2);
-}
-
-.card-orange {
-  border-left: 4px solid var(--accent3);
-}
-
-.card-red {
-  border-left: 4px solid var(--accent4);
 }
 
 /* =============================================================
@@ -307,12 +340,12 @@
 
 .arrow {
   font-size: 1.5em;
-  color: #888;
+  color: #999;
 }
 
 .arrow-down {
   font-size: 1.2em;
-  color: #888;
+  color: #999;
 }
 
 /* =============================================================
@@ -346,7 +379,7 @@
 }
 
 .evo-step .evo-year {
-  color: #888;
+  color: #999;
   font-size: 0.85em;
 }
 
@@ -359,15 +392,18 @@
 /* =============================================================
    Comparison Table
    ============================================================= */
+.reveal .slides section .compare-table,
 .compare-table {
-  width: 100%;
+  width: auto !important;
+  min-width: 70%;
+  max-width: 100%;
+  margin: 16px auto 0 auto !important;
   border-collapse: collapse;
   font-size: 0.6em;
-  margin-top: 16px;
 }
 
 .compare-table th {
-  background: rgba(79,195,247,0.15);
+  background: rgba(79, 195, 247, 0.15);
   color: var(--accent);
   padding: 10px 14px;
   text-align: left;
@@ -376,8 +412,12 @@
 
 .compare-table td {
   padding: 10px 14px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   vertical-align: top;
+}
+
+.compare-table tr:hover td {
+  background: rgba(79, 195, 247, 0.05);
 }
 
 /* =============================================================
@@ -386,7 +426,7 @@
 
 /* Analogy callout */
 .analogy {
-  background: rgba(79,195,247,0.08);
+  background: rgba(79, 195, 247, 0.08);
   border-left: 4px solid var(--accent);
   border-radius: 0 8px 8px 0;
   padding: 16px 20px;
@@ -406,7 +446,7 @@
 
 /* Key takeaway */
 .takeaway {
-  background: rgba(129,199,132,0.1);
+  background: rgba(129, 199, 132, 0.1);
   border: 1px solid var(--accent2);
   border-radius: 10px;
   padding: 20px;
@@ -425,7 +465,7 @@
 
 /* Tip callout */
 .tip-callout {
-  background: rgba(129,199,132,0.08);
+  background: rgba(129, 199, 132, 0.08);
   border-left: 4px solid var(--accent2);
   border-radius: 0 8px 8px 0;
   padding: 14px 18px;
@@ -444,7 +484,7 @@
 
 /* Warning callout */
 .warning-callout {
-  background: rgba(255,183,77,0.08);
+  background: rgba(255, 183, 77, 0.08);
   border-left: 4px solid var(--accent3);
   border-radius: 0 8px 8px 0;
   padding: 14px 18px;
@@ -463,7 +503,7 @@
 
 /* Note callout */
 .note-callout {
-  background: rgba(79,195,247,0.08);
+  background: rgba(79, 195, 247, 0.08);
   border-left: 4px solid var(--accent);
   border-radius: 0 8px 8px 0;
   padding: 14px 18px;
@@ -482,7 +522,7 @@
 
 /* Error callout */
 .error-callout {
-  background: rgba(229,115,115,0.1);
+  background: rgba(229, 115, 115, 0.1);
   border: 1px solid var(--accent4);
   border-radius: 10px;
   padding: 14px 18px;
@@ -514,7 +554,7 @@
 
 /* Trainer info */
 .trainer-info {
-  color: #aaa;
+  color: #bbb;
   font-size: 0.55em;
   margin-top: 30px;
 }
@@ -551,7 +591,7 @@
 
 .quiz-option {
   background: var(--bg-card);
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 2px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 16px 18px;
   text-align: left;
@@ -563,7 +603,7 @@
   min-height: 60px;
 }
 
-.quiz-option > span:not(.opt-letter) {
+.quiz-option>span:not(.opt-letter) {
   flex: 1;
   line-height: 1.4;
 }
@@ -572,7 +612,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
   font-weight: bold;
   width: 32px;
@@ -584,7 +624,7 @@
 
 .quiz-option.correct {
   border-color: var(--accent2);
-  background: rgba(129,199,132,0.12);
+  background: rgba(129, 199, 132, 0.12);
 }
 
 .quiz-option.correct .opt-letter {
@@ -593,19 +633,28 @@
 }
 
 .quiz-option.wrong {
-  border-color: rgba(255,255,255,0.06);
+  border-color: rgba(255, 255, 255, 0.06);
   opacity: 0.5;
 }
 
+.warning {
+  background: rgba(255, 183, 77, 0.10);
+  border: 1px solid var(--accent3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.65em;
+  color: #ffe0b2;
+}
+
 .answer-explain {
-  background: rgba(129,199,132,0.08);
+  background: rgba(129, 199, 132, 0.08);
   border-left: 4px solid var(--accent2);
   border-radius: 0 8px 8px 0;
   padding: 14px 18px;
   margin-top: 16px;
   font-size: 0.65em;
   text-align: left;
-  color: #ccc;
+  color: #ddd;
 }
 
 .answer-explain strong {
@@ -616,12 +665,12 @@
    Code Blocks
    ============================================================= */
 .code-block {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 16px 20px;
   font-family: 'Fira Code', 'Consolas', monospace;
-  font-size: 0.58em;
+  font-size: 0.65em;
   text-align: left;
   color: #e0e0e0;
   margin: 0.4em 0;
@@ -634,7 +683,7 @@
 }
 
 .code-block .comment {
-  color: #888;
+  color: #b0b0b0;   /* WCAG AA ~5.2:1 contrast on dark bg */
 }
 
 .code-block .keyword {
@@ -650,7 +699,7 @@
 }
 
 .code-block .output {
-  color: #aaa;
+  color: #bbb;
   font-style: italic;
 }
 
@@ -668,8 +717,8 @@
   position: absolute;
   top: 6px;
   right: 6px;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   color: #aaa;
   font-size: 12px;
@@ -681,14 +730,14 @@
 }
 
 .copy-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   color: #fff;
 }
 
 .copy-btn.copied {
-  background: rgba(129,199,132,0.3);
+  background: rgba(129, 199, 132, 0.3);
   color: #81c784;
-  border-color: rgba(129,199,132,0.5);
+  border-color: rgba(129, 199, 132, 0.5);
 }
 
 /* Scrollbar styling for code blocks on dark backgrounds */
@@ -698,23 +747,70 @@
 }
 
 .code-block::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 3px;
 }
 
 .code-block::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
 
 .code-block::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.35);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 /* Firefox scrollbar */
 .code-block {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) rgba(255,255,255,0.05);
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+/* =============================================================
+   Highlight.js Code Blocks (pre > code)
+   ============================================================= */
+.reveal pre {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 0.4em 0;
+  width: 100%;
+  max-height: 45vh;
+  box-shadow: none;
+}
+
+.reveal pre code {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.65em;
+  line-height: 1.5;
+  padding: 16px 20px;
+  max-height: 45vh;
+  overflow: auto;
+}
+
+/* Scrollbar styling for highlight.js code blocks */
+.reveal pre code::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.reveal pre code::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+.reveal pre code::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.reveal pre code::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.reveal pre code {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 }
 
 /* =============================================================
@@ -745,7 +841,7 @@
 }
 
 .layer-bar .layer-items {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.9em;
 }
 
@@ -828,12 +924,12 @@
 }
 
 .branch-arrow {
-  color: #888;
+  color: #999;
   font-size: 1.2em;
 }
 
 .branch-label {
-  color: #aaa;
+  color: #bbb;
   font-size: 0.9em;
 }
 
@@ -842,13 +938,79 @@
    ============================================================= */
 .pattern-label {
   display: inline-block;
-  background: rgba(79,195,247,0.15);
+  background: rgba(79, 195, 247, 0.15);
   color: var(--accent);
   font-weight: bold;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.55em;
   margin-bottom: 8px;
+}
+
+/* =============================================================
+   Phase Badges (Capstone)
+   ============================================================= */
+.phase-badge,
+.phase-badge-green,
+.phase-badge-orange,
+.phase-badge-red {
+  display: inline-block;
+  font-weight: bold;
+  padding: 6px 18px;
+  border-radius: 20px;
+  font-size: 0.6em;
+  margin-bottom: 12px;
+}
+
+.phase-badge {
+  background: var(--accent);
+  color: #111;
+}
+
+.phase-badge-green {
+  background: var(--accent2);
+  color: #111;
+}
+
+.phase-badge-orange {
+  background: var(--accent3);
+  color: #111;
+}
+
+.phase-badge-red {
+  background: var(--accent4);
+  color: #111;
+}
+
+/* =============================================================
+   Rubric Table (Capstone)
+   ============================================================= */
+.rubric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.6em;
+  margin-top: 16px;
+}
+
+.rubric-table th {
+  background: rgba(79, 195, 247, 0.15);
+  color: var(--accent);
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--accent);
+}
+
+.rubric-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  vertical-align: top;
+}
+
+.rubric-table .score {
+  text-align: center;
+  font-weight: bold;
+  color: var(--accent);
+  font-size: 1.2em;
 }
 
 /* =============================================================
@@ -859,7 +1021,7 @@
   bottom: 16px;
   left: 20px;
   font-size: 14px;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
   text-decoration: none;
   font-family: system-ui, -apple-system, sans-serif;
   z-index: 100;
@@ -868,5 +1030,381 @@
 }
 
 .index-link:hover {
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
 }
+
+/* =============================================================
+   Utility Classes (reduce inline styles)
+   ============================================================= */
+.mt-sm {
+  margin-top: 8px;
+}
+
+.mt-md {
+  margin-top: 14px;
+}
+
+.mt-lg {
+  margin-top: 20px;
+}
+
+.mt-xl {
+  margin-top: 30px;
+}
+
+.mb-sm {
+  margin-bottom: 8px;
+}
+
+.mb-md {
+  margin-bottom: 14px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.p-compact {
+  padding: 14px;
+}
+
+.p-md {
+  padding: 16px;
+}
+
+.p-lg {
+  padding: 20px;
+}
+
+.p-xl {
+  padding: 24px;
+}
+
+.font-sm {
+  font-size: 0.65em;
+}
+
+.font-md {
+  font-size: 0.7em;
+}
+
+.font-lg {
+  font-size: 0.85em;
+}
+
+.color-muted {
+  color: #aaa;
+}
+
+.color-light {
+  color: #ccc;
+}
+
+/* =============================================================
+   Agent Hub Diagrams (Session 9: Multi-Agent Systems)
+   ============================================================= */
+.agent-hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+  font-size: 0.75em;
+}
+
+.agent-supervisor {
+  background: rgba(79, 195, 247, 0.12);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-weight: bold;
+  font-size: 1em;
+  text-align: center;
+  color: #fff;
+}
+
+.agent-arrows {
+  display: flex;
+  gap: 40px;
+  font-size: 1.4em;
+  color: #999;
+}
+
+.agent-workers {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.agent-worker {
+  background: var(--bg-card);
+  border: 2px solid var(--accent2);
+  border-radius: 10px;
+  padding: 10px 18px;
+  text-align: center;
+  font-size: 0.9em;
+  min-width: 80px;
+  color: #ddd;
+}
+
+.agent-worker-orange {
+  border-color: var(--accent3);
+}
+
+.agent-worker-red {
+  border-color: var(--accent4);
+}
+
+/* =============================================================
+   Peer-to-Peer Diagrams (Session 9)
+   ============================================================= */
+.peer-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 16px 0;
+  font-size: 0.75em;
+}
+
+.peer-node {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  min-width: 90px;
+  color: #ddd;
+}
+
+.peer-node-green {
+  border-color: var(--accent2);
+}
+
+.peer-node-orange {
+  border-color: var(--accent3);
+}
+
+.peer-connector {
+  font-size: 1.6em;
+  color: #999;
+}
+
+/* =============================================================
+   Handoff Flow Diagrams (Session 9)
+   ============================================================= */
+.handoff-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0;
+  font-size: 0.75em;
+}
+
+.handoff-agent {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  min-width: 90px;
+  color: #ddd;
+}
+
+.handoff-agent-green {
+  border-color: var(--accent2);
+}
+
+.handoff-agent-orange {
+  border-color: var(--accent3);
+}
+
+.handoff-arrow {
+  color: #999;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+
+/* =============================================================
+   Observability Pillars (Session 10)
+   ============================================================= */
+.pillar {
+  background: var(--bg-card);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: left;
+}
+
+.pillar h4 {
+  margin: 8px 0;
+  font-size: 0.8em;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.pillar p {
+  font-size: 0.58em;
+  color: #ddd;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pillar-green {
+  border-color: var(--accent2);
+}
+
+.pillar-green h4 {
+  color: var(--accent2);
+}
+
+.pillar-orange {
+  border-color: var(--accent3);
+}
+
+.pillar-orange h4 {
+  color: var(--accent3);
+}
+
+.pillar-icon {
+  margin-bottom: 4px;
+}
+
+/* Signal badges */
+.signal-metrics {
+  display: inline-block;
+  background: rgba(79, 195, 247, 0.2);
+  color: var(--accent);
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  letter-spacing: 0.5px;
+}
+
+.signal-logs {
+  display: inline-block;
+  background: rgba(129, 199, 132, 0.2);
+  color: var(--accent2);
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  letter-spacing: 0.5px;
+}
+
+.signal-traces {
+  display: inline-block;
+  background: rgba(255, 183, 77, 0.2);
+  color: var(--accent3);
+  font-weight: bold;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 0.7em;
+  letter-spacing: 0.5px;
+}
+
+/* =============================================================
+   Flow Steps (Session 10)
+   ============================================================= */
+.flow-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 10px 0;
+  font-size: 0.72em;
+  text-align: left;
+}
+
+.flow-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: #111;
+  font-weight: bold;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0.9em;
+}
+
+.flow-num-green {
+  background: var(--accent2);
+}
+
+.flow-num-orange {
+  background: var(--accent3);
+}
+
+/* =============================================================
+   Utility Classes
+   ============================================================= */
+
+/* ── Typography ── */
+.text-xs   { font-size: 0.55em; }
+.text-052  { font-size: 0.52em; }
+.text-sm   { font-size: 0.65em; }
+.text-base { font-size: 0.75em; }
+.text-080  { font-size: 0.8em; }
+.text-085  { font-size: 0.85em; }
+.text-lg   { font-size: 0.9em; }
+.text-xl   { font-size: 1.05em; }
+.text-2xl  { font-size: 2.5em; }
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+
+/* ── Colors ── */
+.color-accent { color: var(--accent); }
+.color-green  { color: var(--accent2); }
+.color-orange { color: var(--accent3); }
+.color-red    { color: var(--accent4); }
+.color-dim    { color: #999; }
+.color-muted2 { color: #aaa; }
+.color-light  { color: #ccc; }
+.color-white  { color: #fff; }
+
+/* ── Border colors ── */
+.border-accent { border-color: var(--accent); }
+.border-green  { border-color: var(--accent2); }
+.border-orange { border-color: var(--accent3); }
+.border-red    { border-color: var(--accent4); }
+
+/* ── Spacing — margins ── */
+.mt-0  { margin-top: 0; }
+.mt-6  { margin-top: 6px; }
+.mt-8  { margin-top: 8px; }
+.mt-10 { margin-top: 10px; }
+.mt-12 { margin-top: 12px; }
+.mt-14 { margin-top: 14px; }
+.mt-16 { margin-top: 16px; }
+.mt-20 { margin-top: 20px; }
+.mb-0  { margin-bottom: 0; }
+.mb-lg { margin-bottom: 20px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+
+/* ── Spacing — padding ── */
+.p-8  { padding: 8px; }
+.p-10 { padding: 10px; }
+.p-14 { padding: 14px; }
+.p-16 { padding: 16px; }
+
+/* ── Layout ── */
+.w-full    { width: 100%; }
+.max-w-500 { max-width: 500px; }
+.max-w-700 { max-width: 700px; }
+.gap-sm    { gap: 8px; }
+.opacity-50 { opacity: 0.5; }
+.border-thick { border-width: 3px; }
+
+/* ── Compound utilities ── */
+.text-base-dim { font-size: 0.75em; color: #ccc; }
+.text-lg-dim   { font-size: 0.9em; color: #ccc; }
+.text-080-muted { font-size: 0.8em; color: #aaa; }
