@@ -13,7 +13,8 @@ echo ""
 
 # Clean Python cache and temp files
 echo "[1/1] Cleaning temp files..."
-find ~/workspace -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+find "$REPO_DIR" -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 rm -rf /tmp/k8s-lab-04-* /tmp/k8s-lab-05-* /tmp/k8s-lab-06-*
 
 echo ""

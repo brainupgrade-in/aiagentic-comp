@@ -18,10 +18,11 @@ else
 fi
 echo ""
 
-# Step 2: Install ipykernel
+# Step 2: Install ipykernel (relative to repo root)
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 echo "[2/3] Installing ipykernel..."
-if [ -f /home/vscode/.venv/bin/python ]; then
-  source /home/vscode/.venv/bin/activate
+if [ -f "$REPO_DIR/.venv/bin/python" ]; then
+  source "$REPO_DIR/.venv/bin/activate"
 fi
 pip install --quiet ipykernel 2>/dev/null || pip install ipykernel
 python -m ipykernel install --user --name agentic-ai --display-name "Agentic AI (Python)" 2>/dev/null || true

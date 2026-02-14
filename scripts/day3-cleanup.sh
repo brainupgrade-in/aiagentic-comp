@@ -18,7 +18,8 @@ pkill -f "fastapi" 2>/dev/null || true
 
 # Clean temp files and Python cache
 echo "[2/2] Cleaning temp files..."
-find ~/workspace -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+find "$REPO_DIR" -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 rm -rf /tmp/k8s-lab-07-* /tmp/k8s-lab-08-* /tmp/k8s-lab-09-*
 
 echo ""

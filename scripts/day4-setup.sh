@@ -11,10 +11,11 @@ free -h | head -2
 df -h / | tail -1 | awk '{print "Storage: "$3" used / "$2" total ("$5" used)"}'
 echo ""
 
-# Verify Python
+# Verify Python (relative to repo root)
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 echo "[1/3] Verifying Python environment..."
-if [ -f /home/vscode/.venv/bin/python ]; then
-  source /home/vscode/.venv/bin/activate
+if [ -f "$REPO_DIR/.venv/bin/python" ]; then
+  source "$REPO_DIR/.venv/bin/activate"
   echo "  Virtual environment active: $(python --version)"
 else
   python3 --version || { echo "ERROR: Python 3 not found"; exit 1; }

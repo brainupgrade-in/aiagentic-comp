@@ -18,13 +18,14 @@ if command -v ollama &>/dev/null; then
   echo ""
 fi
 
-# Check Python venv
+# Check Python venv (relative to repo root)
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 echo "[1/3] Verifying Python environment..."
-if [ -f /home/vscode/.venv/bin/python ]; then
-  source /home/vscode/.venv/bin/activate
+if [ -f "$REPO_DIR/.venv/bin/python" ]; then
+  source "$REPO_DIR/.venv/bin/activate"
   echo "  Virtual environment active: $(python --version)"
 else
-  echo "  ERROR: Virtual environment not found. Run: python -m venv /home/vscode/.venv"
+  echo "  ERROR: Virtual environment not found. Run: python -m venv $REPO_DIR/.venv"
   exit 1
 fi
 
@@ -37,8 +38,8 @@ python -c "import langgraph; print(f'  langgraph {langgraph.__version__}')" 2>/d
 
 # Check Groq API key
 echo "[3/3] Checking Groq API key..."
-if [ -f ~/workspace/.env ]; then
-  source ~/workspace/.env 2>/dev/null || true
+if [ -f "$REPO_DIR/.env" ]; then
+  source "$REPO_DIR/.env" 2>/dev/null || true
 fi
 
 if [ -n "$GROQ_API_KEY" ] && [ "$GROQ_API_KEY" != "gsk_your_key_here" ]; then
@@ -47,7 +48,7 @@ else
   echo "  WARNING: GROQ_API_KEY not configured"
   echo "  1. Sign up at https://console.groq.com (free)"
   echo "  2. Create an API key"
-  echo "  3. Add to ~/workspace/.env:"
+  echo "  3. Add to .env in the repo root:"
   echo "     GROQ_API_KEY=gsk_your_key_here"
 fi
 
