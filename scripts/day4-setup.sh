@@ -49,6 +49,39 @@ else
     echo "  GROQ_API_KEY is set"
 fi
 
+# Start LangFuse server for Session 12 Lab 09
+echo ""
+echo "[4/4] Starting LangFuse server for Session 12 Lab 09..."
+
+# Check if LangFuse server is already running
+if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+    echo "  WARNING: Port 3000 already in use. LangFuse server may already be running."
+    echo "  To stop it: bash scripts/day4-cleanup.sh"
+else
+    # Start LangFuse server in background
+    if [ -f "$REPO_DIR/.venv/bin/python" ]; then
+        nohup "$REPO_DIR/.venv/bin/python" "$REPO_DIR/scripts/langfuse-server.py" > /tmp/langfuse-server.log 2>&1 &
+        LANGFUSE_PID=$!
+        echo $LANGFUSE_PID > /tmp/langfuse-server.pid
+
+        # Wait for server to start
+        sleep 3
+
+        # Check if server started successfully
+        if curl -s http://localhost:3000/api/public/health > /dev/null 2>&1; then
+            echo "  ✓ LangFuse server started on http://localhost:3000"
+            echo "  ✓ PID: $LANGFUSE_PID (saved to /tmp/langfuse-server.pid)"
+            echo "  ✓ Logs: /tmp/langfuse-server.log"
+            echo "  ✓ Database: /tmp/langfuse.db"
+        else
+            echo "  ERROR: LangFuse server failed to start. Check /tmp/langfuse-server.log"
+        fi
+    else
+        echo "  ERROR: Virtual environment not found. Cannot start LangFuse server."
+        exit 1
+    fi
+fi
+
 echo ""
 echo "============================================"
 echo "  Day 4 Ready!"
@@ -61,19 +94,28 @@ echo "  Session 12: LangFuse Observability"
 echo ""
 echo "Session flow: Learn observability theory → Build production app → Instrument it"
 echo ""
-echo "All labs run as pure Python — no external services needed."
-echo "LangFuse SDK patterns are taught using mock mode (logs to local JSON)."
+echo "Infrastructure:"
+echo "  ✓ LangFuse server running on http://localhost:3000 (for Lab 09)"
+echo "  ✓ Database: /tmp/langfuse.db (SQLite)"
+echo "  ✓ Logs: /tmp/langfuse-server.log"
 echo ""
 echo "Labs (open in VS Code or JupyterLab):"
-echo "  Session 10: hands-on/session-10/lab01_three_pillars.ipynb"
+echo "  Session 10: hands-on/session-10/lab01_three_pillars.ipynb (8 labs)"
 echo "  Session 11: hands-on/session-11/lab01_fastapi_basics.ipynb (8 labs)"
 echo "  Session 12: hands-on/session-12/lab01_langfuse_fundamentals.ipynb (9 labs)"
 echo ""
-echo "Capstone:"
-echo "  Session 12 Lab 09: Production app + LangFuse integration"
-echo "  Combines Session 11 (FastAPI+LangGraph) with Session 12 (observability)"
+echo "Lab pattern:"
+echo "  - Labs 01-08: Use MockLangfuse (local JSON files)"
+echo "  - Lab 09: Use real LangFuse server (http://localhost:3000)"
 echo ""
-echo "Resource usage: ~2-4 GB RAM (Python only)"
+echo "Capstone:"
+echo "  Session 12 Lab 09: Production-grade FastAPI + LangGraph + LangFuse"
+echo "  - Full trace collection with SQLite backend"
+echo "  - Cost tracking per request"
+echo "  - User feedback via scores API"
+echo "  - Health probes with observability metrics"
+echo ""
+echo "Resource usage: ~2-4 GB RAM (Python + SQLite)"
 echo ""
 echo "IMPORTANT: Run 'bash scripts/day4-cleanup.sh' at end of day"
 echo ""

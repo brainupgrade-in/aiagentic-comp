@@ -35,7 +35,7 @@
 | LLM (Day 1) | Ollama + llama3.2:1b or larger models | Can use larger models (llama3.2:3b, llama3.3:70b) with 16GB RAM. Ollama can stay installed throughout course |
 | LLM (Days 2-5) | Groq free API (primary) + optional local Ollama | Groq for consistency and speed. Ollama optional for offline demos. Each participant creates own Groq API key |
 | MCP SDK | MCP Python SDK (`mcp>=1.0`) | Standard protocol for AI tool integration. Lightweight, no infrastructure overhead |
-| Observability | Python in-process (no containers) | Clean setup without Docker complexity. Mock LangFuse logs to local JSON, OTel ConsoleSpanExporter |
+| Observability | Python-based LangFuse server + SQLite | No Docker needed. Labs 01-08 use MockLangFuse (JSON files), Lab 09 uses real LangFuse server (Python FastAPI + SQLite) on port 3000 |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises. Runs in-process |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
 | Base environment | Python 3.13 on Ubuntu Linux | Native Python installation, faster than containers for this use case |
@@ -63,9 +63,10 @@ Day 2: LangChain + Groq API + ChromaDB (~2-3 GB RAM)
 Day 3: LangGraph + Multi-Agent (~3-4 GB RAM)
        → cleanup: optional (stop servers to free ports)
 
-Day 4: Python OTel + mock LangFuse + FastAPI (~2-3 GB RAM)
-       → all Python in-process, no containers
-       → cleanup: optional (temp files only)
+Day 4: Python OTel + LangFuse server + FastAPI (~2-3 GB RAM)
+       → LangFuse server (Python FastAPI + SQLite) runs on port 3000
+       → Labs 01-08: MockLangFuse (JSON files), Lab 09: Real server
+       → cleanup: Stop LangFuse server, remove DB and logs
 
 Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
        → lightweight, no containers needed
@@ -159,7 +160,8 @@ Oracle/
 
 | Port | Service | Days Active |
 |------|---------|-------------|
-| 8000 | FastAPI application | 4 |
+| 3000 | LangFuse server (Python + SQLite) | 4 (Session 12 Lab 09) |
+| 8000 | FastAPI application | 4 (Session 11 labs) |
 | 11434 | Ollama | 1 only |
 
 ## OpenCode — AI Coding Assistant
