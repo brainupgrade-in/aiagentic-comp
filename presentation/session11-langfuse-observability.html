@@ -802,160 +802,185 @@ template = ChatPromptTemplate.from_messages([
       <!-- ====================================================== -->
       <section>
 
-      <section>
-        <h1 class="text-2xl">Session 11 Quiz</h1>
-        <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
-      </section>
+        <section>
+          <h1 class="text-2xl">Session 11 Quiz</h1>
+          <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; LangFuse &amp; AI Observability</p>
+        </section>
 
-      <!-- Q1 -->
-      <section>
-        <div class="quiz-badge">Question 1 of 5</div>
-        <p class="quiz-question">What is the key advantage of LangFuse over OpenTelemetry for AI applications?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>LangFuse replaces OTel completely for all tracing needs</span>
+        <!-- Q1 - Question -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <p class="quiz-question">What is the key advantage of LangFuse over OpenTelemetry for AI applications?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>LangFuse replaces OTel completely for all tracing needs</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>LangFuse captures full prompt input/output, token costs, and supports prompt management</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>LangFuse is faster and more efficient than OTel</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>LangFuse supports more programming languages</span>
+            </div>
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>LangFuse captures full prompt input/output, token costs, and supports prompt management</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>LangFuse is faster and more efficient than OTel</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>LangFuse supports more programming languages</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; AI-specific features.</strong> LangFuse captures what OTel can&rsquo;t: the actual prompt text sent to LLMs, the full completion, automatic cost calculation, prompt version management, and user feedback scoring.
-        </div>
-        <aside class="notes">
-          Correct answer: B. LangFuse complements OTel by capturing AI-specific data -- full prompt/completion text, automatic cost calculation, prompt versioning, and user feedback. OTel handles infrastructure tracing; LangFuse handles AI-layer tracing. They work together, not as replacements.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q2 -->
-      <section>
-        <div class="quiz-badge">Question 2 of 5</div>
-        <p class="quiz-question">In LangFuse&rsquo;s trace hierarchy, what represents an actual LLM API call?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Trace &mdash; the top-level container</span>
+        <!-- Q1 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="answer-explain">
+            <strong>B &mdash; AI-specific features.</strong> LangFuse captures what OTel can&rsquo;t: the actual prompt text sent to LLMs, the full completion, automatic cost calculation, prompt version management, and user feedback scoring.
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>Span &mdash; a logical grouping of operations</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>Generation &mdash; captures model, tokens, input/output</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Score &mdash; a quality measurement</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Generation.</strong> In LangFuse&rsquo;s hierarchy: Trace (per request) &rarr; Span (logical grouping) &rarr; Generation (actual LLM call with model, input, output, tokens, cost). Generations are the leaf nodes that represent real API calls.
-        </div>
-        <aside class="notes">
-          Correct answer: C -- Generation. The hierarchy is Trace (one per user request) containing Spans (logical groupings like "rag_retrieval") containing Generations (actual LLM API calls). Generations capture the model name, input/output tokens, cost, and latency. This three-level nesting gives complete visibility into complex agent workflows.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: B. LangFuse complements OTel by capturing AI-specific data -- full prompt/completion text, automatic cost calculation, prompt versioning, and user feedback. OTel handles infrastructure tracing; LangFuse handles AI-layer tracing. They work together, not as replacements.
+          </aside>
+        </section>
 
-      <!-- Q3 -->
-      <section>
-        <div class="quiz-badge">Question 3 of 5</div>
-        <p class="quiz-question">How do you integrate LangFuse with a LangChain application?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Replace all LangChain imports with LangFuse equivalents</span>
+        <!-- Q2 - Question -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <p class="quiz-question">In LangFuse&rsquo;s trace hierarchy, what represents an actual LLM API call?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Trace &mdash; the top-level container</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Span &mdash; a logical grouping of operations</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Generation &mdash; captures model, tokens, input/output</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Score &mdash; a quality measurement</span>
+            </div>
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>Pass a CallbackHandler in the config parameter of chain.invoke()</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>Wrap every LLM call with a langfuse.trace() decorator</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>LangFuse reads LangChain logs from disk automatically</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; CallbackHandler.</strong> LangChain&rsquo;s callback system makes integration minimal: create a <code>CallbackHandler</code> and pass it via <code>config={"callbacks": [handler]}</code>. LangFuse automatically captures all chain, retriever, and LLM operations.
-        </div>
-        <aside class="notes">
-          Correct answer: B -- CallbackHandler. The integration is minimal: create a CallbackHandler with your LangFuse credentials and pass it in the config parameter of chain.invoke(). LangFuse then automatically captures every LLM call, retriever query, and tool invocation without changing any of your chain logic.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q4 -->
-      <section>
-        <div class="quiz-badge">Question 4 of 5</div>
-        <p class="quiz-question">An agent trace shows 15 generations in a single request with $0.45 cost. What likely happened?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>The LLM model is very expensive per token</span>
+        <!-- Q2 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Generation.</strong> In LangFuse&rsquo;s hierarchy: Trace (per request) &rarr; Span (logical grouping) &rarr; Generation (actual LLM call with model, input, output, tokens, cost). Generations are the leaf nodes that represent real API calls.
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>The user asked a very complex multi-part question</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>The agent entered an infinite loop, repeatedly calling tools without reaching a final answer</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>LangFuse has a tracing bug causing duplicate generations</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Infinite loop.</strong> 15 generations in one trace is a classic sign of an agent stuck in a loop. The fix: set <code>max_iterations</code>, improve tool descriptions so the agent picks the right tool, or add a &ldquo;stop condition&rdquo; in the system prompt.
-        </div>
-        <aside class="notes">
-          Correct answer: C -- the agent entered an infinite loop. 15 generations in a single trace with $0.45 cost is a telltale sign. The fix involves setting max_iterations on the agent, improving tool descriptions, and adding explicit stop conditions. LangFuse makes this pattern visible because you can see the repeated tool calls in the trace timeline.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: C -- Generation. The hierarchy is Trace (one per user request) containing Spans (logical groupings like "rag_retrieval") containing Generations (actual LLM API calls). Generations capture the model name, input/output tokens, cost, and latency. This three-level nesting gives complete visibility into complex agent workflows.
+          </aside>
+        </section>
 
-      <!-- Q5 -->
-      <section>
-        <div class="quiz-badge">Question 5 of 5</div>
-        <p class="quiz-question">What is the benefit of managing prompts through LangFuse instead of hardcoding them?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Prompts run faster when stored in LangFuse</span>
+        <!-- Q3 - Question -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <p class="quiz-question">How do you integrate LangFuse with a LangChain application?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Replace all LangChain imports with LangFuse equivalents</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Pass a CallbackHandler in the config parameter of chain.invoke()</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Wrap every LLM call with a langfuse.trace() decorator</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>LangFuse reads LangChain logs from disk automatically</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>LangFuse automatically optimizes prompt wording</span>
+        </section>
+
+        <!-- Q3 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="answer-explain">
+            <strong>B &mdash; CallbackHandler.</strong> LangChain&rsquo;s callback system makes integration minimal: create a <code>CallbackHandler</code> and pass it via <code>config={"callbacks": [handler]}</code>. LangFuse automatically captures all chain, retriever, and LLM operations.
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>You can version, compare, A/B test, and rollback prompts without deploying code</span>
+          <aside class="notes">
+            Correct answer: B -- CallbackHandler. The integration is minimal: create a CallbackHandler with your LangFuse credentials and pass it in the config parameter of chain.invoke(). LangFuse then automatically captures every LLM call, retriever query, and tool invocation without changing any of your chain logic.
+          </aside>
+        </section>
+
+        <!-- Q4 - Question -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <p class="quiz-question">An agent trace shows 15 generations in a single request with $0.45 cost. What likely happened?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>The LLM model is very expensive per token</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>The user asked a very complex multi-part question</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>The agent entered an infinite loop, repeatedly calling tools without reaching a final answer</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>LangFuse has a tracing bug causing duplicate generations</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>LangFuse prompts are required for the callback handler to work</span>
+        </section>
+
+        <!-- Q4 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Infinite loop.</strong> 15 generations in one trace is a classic sign of an agent stuck in a loop. The fix: set <code>max_iterations</code>, improve tool descriptions so the agent picks the right tool, or add a &ldquo;stop condition&rdquo; in the system prompt.
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Version control without code deploys.</strong> LangFuse prompt management lets you iterate on prompts independently of code releases. You can A/B test prompt versions, see which produces better user feedback scores, and rollback instantly if quality drops.
-        </div>
-        <aside class="notes">
-          Correct answer: C -- version, compare, A/B test, and rollback prompts without deploying code. LangFuse prompt management decouples prompt iteration from code releases. You can update a prompt in the LangFuse UI, A/B test it against the previous version, and rollback instantly if quality drops -- all without touching your application code.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: C -- the agent entered an infinite loop. 15 generations in a single trace with $0.45 cost is a telltale sign. The fix involves setting max_iterations on the agent, improving tool descriptions, and adding explicit stop conditions. LangFuse makes this pattern visible because you can see the repeated tool calls in the trace timeline.
+          </aside>
+        </section>
+
+        <!-- Q5 - Question -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <p class="quiz-question">What is the benefit of managing prompts through LangFuse instead of hardcoding them?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Prompts run faster when stored in LangFuse</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>LangFuse automatically optimizes prompt wording</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>You can version, compare, A/B test, and rollback prompts without deploying code</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>LangFuse prompts are required for the callback handler to work</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Version control without code deploys.</strong> LangFuse prompt management lets you iterate on prompts independently of code releases. You can A/B test prompt versions, see which produces better user feedback scores, and rollback instantly if quality drops.
+          </div>
+          <aside class="notes">
+            Correct answer: C -- version, compare, A/B test, and rollback prompts without deploying code. LangFuse prompt management decouples prompt iteration from code releases. You can update a prompt in the LangFuse UI, A/B test it against the previous version, and rollback instantly if quality drops -- all without touching your application code.
+          </aside>
+        </section>
 
       </section> <!-- end quiz wrapper -->
 

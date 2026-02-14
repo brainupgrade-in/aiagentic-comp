@@ -75,11 +75,11 @@
           </div>
           <div class="card card-orange">
             <h4>3. Secrets & Configuration</h4>
-            <p>ConfigMaps, Secrets, environment injection</p>
+            <p>.env files, secrets management, environment variables</p>
           </div>
           <div class="card card-red">
             <h4>4. Deployment & Operations</h4>
-            <p>Deployment order, resource limits, testing, alerting</p>
+            <p>Deployment order, process monitoring, testing, alerting</p>
           </div>
         </div>
       </section>
@@ -247,10 +247,10 @@ async def <span class="function">stream_agent(request: AgentRequest):
       <section>
         <section>
           <div class="section-number">04</div>
-          <h2>Health Checks & Probes</h2>
-          <p class="subtitle">Liveness &middot; Readiness &middot; Startup Probes</p>
+          <h2>Health Checks & Monitoring</h2>
+          <p class="subtitle">Health Endpoints &middot; Process Monitoring &middot; Startup Delays</p>
           <aside class="notes">
-            This is critical for anyone running on Kubernetes. Ask: what happens if your AI app takes 2 minutes to load the model but K8s expects a healthy response in 30 seconds? It crash-loops forever. Stress the three-probe model: startup (give me time to load), liveness (am I stuck?), readiness (am I ready for traffic?).
+            This is critical for production deployments. Ask: what happens if your AI app takes 2 minutes to load the model but monitoring expects a healthy response in 30 seconds? Monitoring systems might incorrectly report failures. Stress the three-endpoint model: startup health (give me time to load), liveness health (am I stuck?), readiness health (am I ready for traffic?).
           </aside>
         </section>
 
@@ -277,16 +277,16 @@ async def <span class="function">readiness_check():
     return {"status": "ready"}</code></pre>
           <div class="card-grid-3 mt-10">
             <div class="card card-accent p-10">
-              <h4>Liveness</h4>
-              <p class="text-xs">Is the process alive?<br>"Restart me if I'm stuck."</p>
+              <h4>/health (Liveness)</h4>
+              <p class="text-xs">Is the process alive?<br>"Monitor for crashes."</p>
             </div>
             <div class="card card-green p-10">
-              <h4>Readiness</h4>
-              <p class="text-xs">Can I serve traffic?<br>"Don't send requests yet."</p>
+              <h4>/ready (Readiness)</h4>
+              <p class="text-xs">Can I serve traffic?<br>"Model still loading."</p>
             </div>
             <div class="card card-orange p-10">
-              <h4>Startup</h4>
-              <p class="text-xs">Has initial load finished?<br>"Give me time to warm up."</p>
+              <h4>Startup Delay</h4>
+              <p class="text-xs">Initial load time?<br>"Give me time to warm up."</p>
             </div>
           </div>
         </section>
@@ -349,7 +349,7 @@ signal.signal(signal.SIGTERM, lambda s, f: asyncio.get_event_loop().stop())</cod
           </aside>
         </section>
 
-        <!-- CONFIGMAP VS SECRET -->
+        <!-- CONFIGURATION VS SECRETS -->
         <section>
           <h2>Configuration vs Secrets</h2>
           <table class="compare-table">
@@ -520,17 +520,17 @@ print("Error: rate limit exceeded")</code></pre>
               <ul class="checklist">
                 <li>/health endpoint</li>
                 <li>/ready endpoint</li>
-                <li>Startup probe configured</li>
+                <li>Startup delay configured</li>
                 <li>Dependency checks included</li>
               </ul>
             </div>
             <div class="card card-green">
               <h4>Resources</h4>
               <ul class="checklist">
-                <li>CPU requests &amp; limits set</li>
-                <li>Memory requests &amp; limits set</li>
-                <li>HPA configured for scaling</li>
-                <li>PVC for persistent data</li>
+                <li>Memory usage monitored</li>
+                <li>Process restart on failure</li>
+                <li>Connection pooling configured</li>
+                <li>Persistent storage for data</li>
               </ul>
             </div>
             <div class="card card-orange">
@@ -538,7 +538,7 @@ print("Error: rate limit exceeded")</code></pre>
               <ul class="checklist">
                 <li>No hardcoded credentials</li>
                 <li>.env files for API keys</li>
-                <li>ConfigMaps for non-sensitive</li>
+                <li>.env.example for non-sensitive</li>
                 <li>Key rotation process</li>
               </ul>
             </div>
@@ -580,7 +580,7 @@ print("Error: rate limit exceeded")</code></pre>
           <h2>Deployment Order</h2>
           <p class="subtitle">Correct Sequencing for Reliable Rollouts</p>
           <aside class="notes">
-            Ask: what happens if you deploy the app before the database is running? The app crashes, health checks fail, and K8s starts a crash loop. The kitchen analogy works well here -- you do not invite guests before the stove is installed. Walk through each step and ask what breaks if you skip it.
+            Ask: what happens if you start the app before the database is running? The app crashes on first connection attempt, health checks fail, and monitoring systems report errors. The kitchen analogy works well here -- you do not invite guests before the stove is installed. Walk through each step and ask what breaks if you skip it.
           </aside>
         </section>
 
@@ -590,7 +590,7 @@ print("Error: rate limit exceeded")</code></pre>
           <h3>Dependencies must exist before dependents</h3>
           <div class="diagram-vertical" style="margin:14px 0;">
             <div class="box" style="width:80%; padding:12px 18px;">
-              <strong>Step 1:</strong> ConfigMaps &amp; Secrets
+              <strong>Step 1:</strong> .env Files &amp; Configuration
               <span class="color-accent" style="float:right;">Configuration</span>
             </div>
             <div class="arrow-down">&darr;</div>
@@ -621,57 +621,45 @@ print("Error: rate limit exceeded")</code></pre>
         </section>
       </section>
 
-      <!-- ==================== PART 9: RESOURCE RECOMMENDATIONS ==================== -->
+      <!-- ==================== PART 9: RESOURCE MONITORING ==================== -->
       <section>
-        <h2>Resource Recommendations</h2>
-        <h3>Right-sizing for AI workloads</h3>
+        <h2>Resource Monitoring</h2>
+        <h3>Monitor memory and process health</h3>
         <table class="compare-table">
           <tr>
             <th>Component</th>
-            <th>CPU Request</th>
-            <th>CPU Limit</th>
-            <th>Memory Request</th>
-            <th>Memory Limit</th>
+            <th>Typical Memory</th>
+            <th>Monitor With</th>
+            <th>Alert Threshold</th>
           </tr>
           <tr>
             <td><strong>AI Agent (FastAPI)</strong></td>
-            <td>250m</td>
-            <td>1000m</td>
-            <td>512Mi</td>
-            <td>1Gi</td>
+            <td>512 MB - 1 GB</td>
+            <td>psutil, /health endpoint</td>
+            <td>&gt; 1.5 GB</td>
           </tr>
           <tr>
             <td><strong>ChromaDB</strong></td>
-            <td>250m</td>
-            <td>500m</td>
-            <td>512Mi</td>
-            <td>1Gi</td>
+            <td>512 MB - 1 GB</td>
+            <td>Process monitoring</td>
+            <td>&gt; 1.5 GB</td>
           </tr>
           <tr>
-            <td><strong>PostgreSQL (LangFuse)</strong></td>
-            <td>100m</td>
-            <td>250m</td>
-            <td>128Mi</td>
-            <td>256Mi</td>
+            <td><strong>LangFuse + PostgreSQL</strong></td>
+            <td>256 MB - 512 MB</td>
+            <td>Process monitoring</td>
+            <td>&gt; 768 MB</td>
           </tr>
           <tr>
-            <td><strong>LangFuse</strong></td>
-            <td>250m</td>
-            <td>500m</td>
-            <td>256Mi</td>
-            <td>512Mi</td>
-          </tr>
-          <tr>
-            <td><strong>PostgreSQL</strong></td>
-            <td>100m</td>
-            <td>250m</td>
-            <td>128Mi</td>
-            <td>256Mi</td>
+            <td><strong>Total System</strong></td>
+            <td>~2-3 GB</td>
+            <td>System monitoring (htop, top)</td>
+            <td>&gt; 6 GB (on 8 GB system)</td>
           </tr>
         </table>
         <div class="warning">
-          On the 8 GB Codespace free tier, the total cannot exceed ~6.5 GB. These limits are tuned
-          for that constraint. In production, increase based on actual usage metrics.
+          On the 8 GB GitHub Codespaces free tier, monitor total memory usage. Use <code>psutil</code> in Python
+          to track process memory and restart if thresholds are exceeded. In production, use process managers like systemd or supervisord.
         </div>
       </section>
 
@@ -970,160 +958,185 @@ async def <span class="function">test_agent_invoke():
       <!-- ====================================================== -->
       <section>
 
-      <section>
-        <h1 class="text-2xl">Session 12 Quiz</h1>
-        <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
-      </section>
+        <section>
+          <h1 class="text-2xl">Session 12 Quiz</h1>
+          <p class="text-110 color-light" style="margin-top:1em;">5 questions &middot; Production Development &amp; Deployment</p>
+        </section>
 
-      <!-- Q1 -->
-      <section>
-        <div class="quiz-badge">Question 1 of 5</div>
-        <p class="quiz-question">Why is FastAPI a good fit for serving AI agents?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>It has a built-in LLM inference engine</span>
+        <!-- Q1 - Question -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <p class="quiz-question">Why is FastAPI a good fit for serving AI agents?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>It has a built-in LLM inference engine</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>It is async-native, handles concurrent LLM calls without blocking, and integrates Pydantic for validation</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>It is the only Python framework that supports streaming</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>It automatically scales to multiple servers</span>
+            </div>
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>It is async-native, handles concurrent LLM calls without blocking, and integrates Pydantic for validation</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>It is the only Python framework that supports streaming</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>It automatically scales to multiple servers</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Async + Pydantic.</strong> FastAPI&rsquo;s ASGI foundation handles concurrent LLM calls efficiently, and Pydantic integration validates requests before they reach your agent logic.
-        </div>
-        <aside class="notes">
-          Correct answer is B. FastAPI does not include its own LLM engine, nor is it the only framework supporting streaming. The critical advantage is async-native I/O for concurrent LLM calls plus built-in Pydantic validation for request and response schemas.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q2 -->
-      <section>
-        <div class="quiz-badge">Question 2 of 5</div>
-        <p class="quiz-question">What is the difference between a liveness probe and a readiness probe?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Liveness checks if the model is loaded; readiness checks if the process is running</span>
+        <!-- Q1 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="answer-explain">
+            <strong>B &mdash; Async + Pydantic.</strong> FastAPI&rsquo;s ASGI foundation handles concurrent LLM calls efficiently, and Pydantic integration validates requests before they reach your agent logic.
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>They are the same thing with different names</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>Liveness checks if the process is alive (restart if stuck); readiness checks if it can serve traffic (don&rsquo;t route requests yet)</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Liveness runs once at startup; readiness runs continuously</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Alive vs. ready.</strong> Liveness answers &ldquo;should I restart this process?&rdquo; Readiness answers &ldquo;should I send traffic here?&rdquo; A process can be alive but not ready (e.g., still loading a model).
-        </div>
-        <aside class="notes">
-          Correct answer is C. A common confusion is thinking they are the same. The classic example: your app process is running (liveness passes) but the model file is still downloading (readiness fails). Kubernetes will not send traffic until readiness passes, but it will not restart the pod because liveness is fine.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer is B. FastAPI does not include its own LLM engine, nor is it the only framework supporting streaming. The critical advantage is async-native I/O for concurrent LLM calls plus built-in Pydantic validation for request and response schemas.
+          </aside>
+        </section>
 
-      <!-- Q3 -->
-      <section>
-        <div class="quiz-badge">Question 3 of 5</div>
-        <p class="quiz-question">Why should API keys never be hardcoded in source code?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Hardcoded keys make the application run slower</span>
+        <!-- Q2 - Question -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <p class="quiz-question">What is the difference between a liveness probe and a readiness probe?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Liveness checks if the model is loaded; readiness checks if the process is running</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>They are the same thing with different names</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Liveness checks if the process is alive (restart if stuck); readiness checks if it can serve traffic (don&rsquo;t route requests yet)</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Liveness runs once at startup; readiness runs continuously</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>Python cannot read hardcoded strings at runtime</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>They get committed to version control and exposed; use .env files with .gitignore and python-dotenv instead</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Hardcoded keys cannot be rotated without recompiling</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Security risk.</strong> Hardcoded keys in source code end up in git history and are nearly impossible to fully remove. Use <code>.env</code> files (in <code>.gitignore</code>) and load them via <code>python-dotenv</code>.
-        </div>
-        <aside class="notes">
-          Correct answer is C. Even if you delete a hardcoded key in a later commit, it remains in git history forever unless you rewrite history. The .env plus .gitignore pattern is the minimum viable approach. In production, use a secrets manager like AWS Secrets Manager or HashiCorp Vault.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q4 -->
-      <section>
-        <div class="quiz-badge">Question 4 of 5</div>
-        <p class="quiz-question">What advantage does structured JSON logging have over print() statements?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>JSON logs are smaller in file size than print output</span>
+        <!-- Q2 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Alive vs. ready.</strong> Liveness answers &ldquo;should I restart this process?&rdquo; Readiness answers &ldquo;should I send traffic here?&rdquo; A process can be alive but not ready (e.g., still loading a model).
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>JSON logs are machine-parseable, searchable, filterable, and can include trace_id, token counts, and cost fields</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>print() statements are not captured by any logging system</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>JSON logs automatically fix application errors</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Machine-parseable with AI-specific fields.</strong> Structured logs let you search, filter, and aggregate in tools like LangFuse or ELK. Adding trace_id, model, tokens_in/out, and cost_usd fields answers critical production questions.
-        </div>
-        <aside class="notes">
-          Correct answer is B. Print statements are actually captured by some logging systems, but they lack structure. The real advantage of JSON logging is that you can filter by trace_id, aggregate token costs across requests, and set up alerts on specific fields -- none of which is possible with unstructured print output.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer is C. A common confusion is thinking they are the same. The classic example: your app process is running (liveness passes) but the model file is still downloading (readiness fails). Monitoring systems should not send traffic until readiness passes, but should not restart the process because liveness is fine.
+          </aside>
+        </section>
 
-      <!-- Q5 -->
-      <section>
-        <div class="quiz-badge">Question 5 of 5</div>
-        <p class="quiz-question">What is the correct deployment order for an AI application stack?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Application &rarr; Database &rarr; Config &rarr; Observability &rarr; Routing</span>
+        <!-- Q3 - Question -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <p class="quiz-question">Why should API keys never be hardcoded in source code?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Hardcoded keys make the application run slower</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Python cannot read hardcoded strings at runtime</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>They get committed to version control and exposed; use .env files with .gitignore and python-dotenv instead</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Hardcoded keys cannot be rotated without recompiling</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>Routing &rarr; Application &rarr; Config &rarr; Database &rarr; Observability</span>
+        </section>
+
+        <!-- Q3 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Security risk.</strong> Hardcoded keys in source code end up in git history and are nearly impossible to fully remove. Use <code>.env</code> files (in <code>.gitignore</code>) and load them via <code>python-dotenv</code>.
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>Config/Secrets &rarr; Databases &rarr; Observability &rarr; Application &rarr; Routing</span>
+          <aside class="notes">
+            Correct answer is C. Even if you delete a hardcoded key in a later commit, it remains in git history forever unless you rewrite history. The .env plus .gitignore pattern is the minimum viable approach. In production, use a secrets manager like AWS Secrets Manager or HashiCorp Vault.
+          </aside>
+        </section>
+
+        <!-- Q4 - Question -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <p class="quiz-question">What advantage does structured JSON logging have over print() statements?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>JSON logs are smaller in file size than print output</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>JSON logs are machine-parseable, searchable, filterable, and can include trace_id, token counts, and cost fields</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>print() statements are not captured by any logging system</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>JSON logs automatically fix application errors</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>The order does not matter as long as everything is deployed</span>
+        </section>
+
+        <!-- Q4 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="answer-explain">
+            <strong>B &mdash; Machine-parseable with AI-specific fields.</strong> Structured logs let you search, filter, and aggregate in tools like LangFuse or ELK. Adding trace_id, model, tokens_in/out, and cost_usd fields answers critical production questions.
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Dependencies first.</strong> Config and secrets must exist before anything reads them. Databases must be running before the app connects. Observability should be ready to capture the app&rsquo;s first logs. Only then do you expose the app via routing.
-        </div>
-        <aside class="notes">
-          Correct answer is C. Order matters because each layer depends on the one below it. If you expose routing before the application is ready, users get errors. If you start the application before the database is up, the app crashes on first query. Always deploy bottom-up: infrastructure, then services, then routing.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer is B. Print statements are actually captured by some logging systems, but they lack structure. The real advantage of JSON logging is that you can filter by trace_id, aggregate token costs across requests, and set up alerts on specific fields -- none of which is possible with unstructured print output.
+          </aside>
+        </section>
+
+        <!-- Q5 - Question -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <p class="quiz-question">What is the correct deployment order for an AI application stack?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Application &rarr; Database &rarr; Config &rarr; Observability &rarr; Routing</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Routing &rarr; Application &rarr; Config &rarr; Database &rarr; Observability</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Config/Secrets &rarr; Databases &rarr; Observability &rarr; Application &rarr; Routing</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>The order does not matter as long as everything is deployed</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Dependencies first.</strong> Config and secrets must exist before anything reads them. Databases must be running before the app connects. Observability should be ready to capture the app&rsquo;s first logs. Only then do you expose the app via routing.
+          </div>
+          <aside class="notes">
+            Correct answer is C. Order matters because each layer depends on the one below it. If you expose routing before the application is ready, users get errors. If you start the application before the database is up, the app crashes on first query. Always deploy bottom-up: infrastructure, then services, then routing.
+          </aside>
+        </section>
 
       </section> <!-- end quiz wrapper -->
 

@@ -1202,155 +1202,180 @@ trace.set_tracer_provider(provider)
           <p class="text-080-light">5 questions to test your observability knowledge</p>
         </section>
 
-      <!-- Q1 -->
-      <section>
-        <div class="quiz-badge">Question 1 of 5</div>
-        <p class="quiz-question">Which observability pillar is best for answering &ldquo;Why is this specific request slow?&rdquo;</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Metrics &mdash; check latency percentiles</span>
+        <!-- Q1 - Question -->
+        <section>
+          <div class="quiz-badge">Question 1 of 5</div>
+          <p class="quiz-question">Which observability pillar is best for answering &ldquo;Why is this specific request slow?&rdquo;</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Metrics &mdash; check latency percentiles</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Logs &mdash; search for slow request entries</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Traces &mdash; follow the request path across services</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Alerts &mdash; check which alert fired</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>Logs &mdash; search for slow request entries</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>Traces &mdash; follow the request path across services</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Alerts &mdash; check which alert fired</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Traces.</strong> Traces show the exact path a specific request took through all services, revealing which span (operation) consumed the most time. Metrics show aggregates (p99), not individual requests.
-        </div>
-        <aside class="notes">
-          Correct answer: C — Traces. Traces follow a specific request across services, showing which span consumed the most time. Metrics show aggregates (p99 latency), not individual request paths.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q2 -->
-      <section>
-        <div class="quiz-badge">Question 2 of 5</div>
-        <p class="quiz-question">What does OTLP stand for and what is its default gRPC port?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Open Tracing Log Protocol, port 9090</span>
+        <!-- Q1 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 1</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Traces.</strong> Traces show the exact path a specific request took through all services, revealing which span (operation) consumed the most time. Metrics show aggregates (p99), not individual requests.
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>OpenTelemetry Protocol, port 4317</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>OpenTelemetry Protocol, port 4318</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Open Telemetry Log Protocol, port 8080</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; OpenTelemetry Protocol, port 4317.</strong> OTLP uses gRPC on port 4317 by default. Port 4318 is for HTTP/protobuf transport. OTLP is the standard wire format for all three signals.
-        </div>
-        <aside class="notes">
-          Correct answer: B — OpenTelemetry Protocol, port 4317. OTLP is the standard wire format. gRPC on 4317 is the default; 4318 is for HTTP/protobuf. Common trick question: 4318 is close but wrong for gRPC.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: C — Traces. Traces follow a specific request across services, showing which span consumed the most time. Metrics show aggregates (p99 latency), not individual request paths.
+          </aside>
+        </section>
 
-      <!-- Q3 -->
-      <section>
-        <div class="quiz-badge">Question 3 of 5</div>
-        <p class="quiz-question">What is the key difference between auto and manual instrumentation?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Auto is for production, manual is for development only</span>
+        <!-- Q2 - Question -->
+        <section>
+          <div class="quiz-badge">Question 2 of 5</div>
+          <p class="quiz-question">What does OTLP stand for and what is its default gRPC port?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Open Tracing Log Protocol, port 9090</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>OpenTelemetry Protocol, port 4317</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>OpenTelemetry Protocol, port 4318</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Open Telemetry Log Protocol, port 8080</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">B</span>
-            <span>Auto creates metrics, manual creates traces</span>
-          </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">C</span>
-            <span>Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent)</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Auto is faster, manual produces more accurate data</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>C &mdash; Auto covers frameworks, manual covers business logic.</strong> Auto-instrumentation detects HTTP endpoints, database calls, and external requests. Manual instrumentation is needed for custom spans around LLM calls, RAG retrieval, and agent reasoning steps.
-        </div>
-        <aside class="notes">
-          Correct answer: C — Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent). Auto-instrumentation detects framework-level operations; manual instrumentation wraps custom business logic like LLM calls and RAG retrieval in spans.
-        </aside>
-      </section>
+        </section>
 
-      <!-- Q4 -->
-      <section>
-        <div class="quiz-badge">Question 4 of 5</div>
-        <p class="quiz-question">Why should you include <code>trace_id</code> in your log messages?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>It makes logs smaller and more efficient</span>
+        <!-- Q2 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 2</div>
+          <div class="answer-explain">
+            <strong>B &mdash; OpenTelemetry Protocol, port 4317.</strong> OTLP uses gRPC on port 4317 by default. Port 4318 is for HTTP/protobuf transport. OTLP is the standard wire format for all three signals.
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>It lets you jump from a log entry to its full distributed trace</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>It&rsquo;s required by the OTLP protocol specification</span>
-          </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>It prevents duplicate log entries across services</span>
-          </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Correlate logs with traces.</strong> When you find an error in logs, the trace_id lets you click through to the distributed trace in Jaeger/Tempo, showing exactly which service and operation caused the error.
-        </div>
-        <aside class="notes">
-          Correct answer: B — It lets you jump from a log entry to its full distributed trace. Including trace_id in logs enables log-to-trace correlation — find an error in logs, click through to the full trace in Jaeger or Tempo.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: B — OpenTelemetry Protocol, port 4317. OTLP is the standard wire format. gRPC on 4317 is the default; 4318 is for HTTP/protobuf. Common trick question: 4318 is close but wrong for gRPC.
+          </aside>
+        </section>
 
-      <!-- Q5 -->
-      <section>
-        <div class="quiz-badge">Question 5 of 5</div>
-        <p class="quiz-question">Which OTel Collector component is responsible for batching, filtering, and transforming telemetry data?</p>
-        <div class="quiz-options">
-          <div class="quiz-option wrong">
-            <span class="opt-letter">A</span>
-            <span>Receivers</span>
+        <!-- Q3 - Question -->
+        <section>
+          <div class="quiz-badge">Question 3 of 5</div>
+          <p class="quiz-question">What is the key difference between auto and manual instrumentation?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Auto is for production, manual is for development only</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Auto creates metrics, manual creates traces</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent)</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Auto is faster, manual produces more accurate data</span>
+            </div>
           </div>
-          <div class="quiz-option correct">
-            <span class="opt-letter">B</span>
-            <span>Processors</span>
+        </section>
+
+        <!-- Q3 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 3</div>
+          <div class="answer-explain">
+            <strong>C &mdash; Auto covers frameworks, manual covers business logic.</strong> Auto-instrumentation detects HTTP endpoints, database calls, and external requests. Manual instrumentation is needed for custom spans around LLM calls, RAG retrieval, and agent reasoning steps.
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">C</span>
-            <span>Exporters</span>
+          <aside class="notes">
+            Correct answer: C — Auto covers frameworks (HTTP, DB), manual covers business logic (LLM, agent). Auto-instrumentation detects framework-level operations; manual instrumentation wraps custom business logic like LLM calls and RAG retrieval in spans.
+          </aside>
+        </section>
+
+        <!-- Q4 - Question -->
+        <section>
+          <div class="quiz-badge">Question 4 of 5</div>
+          <p class="quiz-question">Why should you include <code>trace_id</code> in your log messages?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>It makes logs smaller and more efficient</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>It lets you jump from a log entry to its full distributed trace</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>It&rsquo;s required by the OTLP protocol specification</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>It prevents duplicate log entries across services</span>
+            </div>
           </div>
-          <div class="quiz-option wrong">
-            <span class="opt-letter">D</span>
-            <span>Extensions</span>
+        </section>
+
+        <!-- Q4 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 4</div>
+          <div class="answer-explain">
+            <strong>B &mdash; Correlate logs with traces.</strong> When you find an error in logs, the trace_id lets you click through to the distributed trace in Jaeger/Tempo, showing exactly which service and operation caused the error.
           </div>
-        </div>
-        <div class="answer-explain">
-          <strong>B &mdash; Processors.</strong> The Collector pipeline is: Receivers (accept data) &rarr; Processors (batch, filter, transform, sample) &rarr; Exporters (send to backends). Processors sit in the middle and modify or filter data in transit.
-        </div>
-        <aside class="notes">
-          Correct answer: B — Processors. The OTel Collector pipeline flows: Receivers (accept data) then Processors (batch, filter, transform, sample) then Exporters (send to backends). Processors are the middle stage that modifies data in transit.
-        </aside>
-      </section>
+          <aside class="notes">
+            Correct answer: B — It lets you jump from a log entry to its full distributed trace. Including trace_id in logs enables log-to-trace correlation — find an error in logs, click through to the full trace in Jaeger or Tempo.
+          </aside>
+        </section>
+
+        <!-- Q5 - Question -->
+        <section>
+          <div class="quiz-badge">Question 5 of 5</div>
+          <p class="quiz-question">Which OTel Collector component is responsible for batching, filtering, and transforming telemetry data?</p>
+          <div class="quiz-options">
+            <div class="quiz-option">
+              <span class="opt-letter">A</span>
+              <span>Receivers</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">B</span>
+              <span>Processors</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">C</span>
+              <span>Exporters</span>
+            </div>
+            <div class="quiz-option">
+              <span class="opt-letter">D</span>
+              <span>Extensions</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Q5 - Answer -->
+        <section>
+          <div class="quiz-badge">Answer: Question 5</div>
+          <div class="answer-explain">
+            <strong>B &mdash; Processors.</strong> The Collector pipeline is: Receivers (accept data) &rarr; Processors (batch, filter, transform, sample) &rarr; Exporters (send to backends). Processors sit in the middle and modify or filter data in transit.
+          </div>
+          <aside class="notes">
+            Correct answer: B — Processors. The OTel Collector pipeline flows: Receivers (accept data) then Processors (batch, filter, transform, sample) then Exporters (send to backends). Processors are the middle stage that modifies data in transit.
+          </aside>
+        </section>
       </section>
 
     </div>
