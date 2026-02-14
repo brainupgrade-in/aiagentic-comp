@@ -40,3 +40,9 @@ workspace/
 
 # Logs
 *.log
+
+# Presentation folder - exclude utility scripts and docs (except README)
+presentation/*.sh
+presentation/*.py
+presentation/*.md
+!presentation/README.md

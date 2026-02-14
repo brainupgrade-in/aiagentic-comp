@@ -75,13 +75,21 @@ Oracle/
 ├── .devcontainer/
 │   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
 │   └── post-create.sh                   Auto-setup: venv, pip install
-├── presentation/                        15 HTML slide decks (one per session)
+├── presentation/                        15 HTML slide decks + shared resources
+│   ├── index.html                       Course landing page
+│   ├── template.html                    Template for new sessions
 │   ├── session1-introduction-to-agentic-ai.html
 │   ├── session2-ai-coding-assistants-vibe-coding.html
-│   ├── ...
-│   ├── session13-model-context-protocol.html
-│   ├── session14-ai-safety-guardrails.html
-│   └── session15-capstone-project.html
+│   ├── ... (sessions 3-14)
+│   ├── session15-capstone-project.html
+│   ├── shared.css                       Cybernetic theme styles (~2,700 lines)
+│   ├── shared.js                        JavaScript enhancements
+│   ├── reveal-init.js                   Reveal.js configuration
+│   ├── presentation-header-footer.js    Auto-updating HUD interface
+│   ├── add-header-footer.sh             Batch update utility
+│   ├── README.md                        Presentation documentation
+│   ├── HEADER-FOOTER-GUIDE.md          Header/footer customization guide
+│   └── FIXES-APPLIED.md                Recent fixes and improvements
 ├── hands-on/                            15 session directories with .ipynb labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README (.ipynb)
 │   ├── session-2/                       8 labs + 8 solutions + README (.ipynb)
@@ -199,6 +207,58 @@ hands-on/session-NN/solutions/labXX_topic.ipynb
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
 **Totals:** 117 labs + 117 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15)
+
+## Presentation System
+
+All 15 session presentations use Reveal.js 4.6.1 with a custom **Cybernetic HUD Interface** system.
+
+### Key Features
+
+**Header (Fixed Top):**
+- Home button (links to `index.html`)
+- Course title "AGENTIC AI"
+- Auto-detected session number & day (from page `<title>`)
+- Animated scanline effect
+- Pulsing live indicator
+
+**Footer (Fixed Bottom):**
+- Auto-updating slide counter (e.g., "5/45")
+- Trainer name "Rajesh Gheware"
+- brainupgrade.in branding
+- Pulsing status indicator
+
+**Shared Resources:**
+- `shared.css` (~2,700 lines) — Cybernetic theme, components, animations
+- `shared.js` — JavaScript enhancements (index link, keyboard shortcuts)
+- `reveal-init.js` — Standardized Reveal.js configuration
+- `presentation-header-footer.js` — Auto-updating HUD interface
+
+**Design System:**
+- Electric teal (#00ffcc) primary accent
+- Dark cybernetic theme with gradient backgrounds
+- HUD-style corner brackets and glowing effects
+- Typography: Inter (body) + JetBrains Mono (code/data)
+- 30+ reusable components (cards, diagrams, callouts, quiz styles)
+- 5 animation types (scanline, pulse, card reveal, glow, hover)
+
+**Responsive:**
+- 1920×1080 base resolution with automatic scaling
+- Browser zoom support without layout breaking
+- Works on desktop, laptop, tablet, mobile
+
+**Documentation:**
+- `presentation/README.md` — Complete system documentation
+- `presentation/HEADER-FOOTER-GUIDE.md` — Customization guide
+- `presentation/FIXES-APPLIED.md` — Recent bug fixes
+
+**View Presentations:**
+```bash
+# Open course index
+firefox presentation/index.html
+
+# Open specific session
+firefox presentation/session1-introduction-to-agentic-ai.html
+```
 
 ## Error Recovery (Constrained Environment)
 

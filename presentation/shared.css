@@ -1,38 +1,77 @@
 /* =============================================================
    Shared Presentation Styles — Agentic AI Course
+   CYBERNETIC SYSTEMS AESTHETIC
    Include in all session HTML files:
      <link rel="stylesheet" href="shared.css">
    ============================================================= */
 
+/* Import Cybernetic Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
 /* =============================================================
-   CSS Variables
+   CSS Variables — CYBERNETIC SYSTEMS AESTHETIC
    ============================================================= */
 :root {
-  --accent: #4fc3f7;
-  --accent-light: #80d8ff;
-  --accent-dark: #0091ea;
-  --accent2: #81c784;
-  --accent3: #ffb74d;
-  --accent4: #e57373;
-  --bg-card: rgba(255, 255, 255, 0.07);
+  /* Cybernetic Color System */
+  --accent: #00ffcc;           /* Electric teal - primary accent */
+  --accent-light: #5fffd7;     /* Light teal */
+  --accent-dark: #00d4aa;      /* Deep teal */
+  --accent2: #ff6b35;          /* Neon orange */
+  --accent3: #a855f7;          /* Deep purple */
+  --accent4: #f43f5e;          /* Rose red */
+
+  /* Background System */
+  --bg-card: rgba(0, 255, 204, 0.05);
   --bg-dark: #0a0f1a;
+  --bg-gradient-top: #1a2332;
+  --bg-gradient-bottom: #0f1419;
+
+  /* Text System */
   --text-primary: #e0e6ed;
   --text-muted: #8899aa;
-  --success: #26a69a;
-  --warning: #ffa726;
-  --danger: #ef5350;
+  --text-glow: #00ffcc;
+
+  /* Semantic Colors */
+  --success: #00ffcc;
+  --warning: #ff6b35;
+  --danger: #f43f5e;
+
+  /* Effects */
+  --glow-primary: 0 0 20px rgba(0, 255, 204, 0.4);
+  --glow-secondary: 0 0 20px rgba(255, 107, 53, 0.4);
+  --glow-tertiary: 0 0 20px rgba(168, 85, 247, 0.4);
 }
 
 /* =============================================================
-   Base Reveal.js Overrides & Scaling
+   Base Reveal.js Overrides & Scaling — CYBERNETIC AESTHETIC
    ============================================================= */
 .reveal {
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-size: 28px;
   color: var(--text-primary);
+  background: radial-gradient(ellipse at top left, var(--bg-gradient-top) 0%, var(--bg-dark) 40%),
+              radial-gradient(ellipse at bottom right, var(--bg-gradient-bottom) 0%, var(--bg-dark) 40%);
+  background-attachment: fixed;
   /* Reveal.js handles responsive scaling using 100% width/height.
      Browser zoom now works naturally without transform conflicts.
      We do NOT add media queries that change this base font-size. */
+}
+
+/* Cybernetic grid pattern overlay */
+.reveal::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
 }
 
 .reveal h1 {
@@ -42,6 +81,8 @@
   font-weight: 700;
   margin-bottom: 0.15em;
   letter-spacing: -0.02em;
+  text-shadow: var(--glow-primary);
+  position: relative;
 }
 
 .reveal h2 {
@@ -49,14 +90,27 @@
   color: var(--accent);
   text-transform: none;
   font-weight: 700;
-  margin-bottom: 20px;
-  border-bottom: 3px solid var(--accent-dark);
-  padding-bottom: 10px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 8px;
   letter-spacing: -0.02em;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+  position: relative;
+}
+
+.reveal h2::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  box-shadow: var(--glow-primary);
 }
 
 .reveal h2.with-border {
-  border-bottom: 3px solid var(--accent-dark);
+  border-bottom: 2px solid var(--accent);
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
@@ -128,8 +182,9 @@
   flex-direction: column !important;
   justify-content: flex-start !important;
   align-items: center !important;
-  padding: 15px 40px !important;
+  padding: 12px 40px !important;
   box-sizing: border-box !important;
+  gap: 4px !important;
 }
 
 /* Header elements should be centered */
@@ -144,15 +199,15 @@
   width: 100%;
 }
 
-/* Main content area — fills middle, responsive sizing */
+/* Main content area — fills middle, responsive sizing with collision prevention */
 .reveal .slides section>*:not(h1):not(h2):not(h3):not(.subtitle):not(.section-number):not(.trainer-info):not(.takeaway):not(.tip-callout):not(.warning-callout):not(.note-callout):not(.error-callout):not(.answer-explain):not(.analogy):not(br):not(aside) {
   flex: 1 1 auto;
   width: 100%;
   margin: 4px 0;
   min-height: 0;
   max-height: 100%;
-  overflow-y: visible;
-  overflow-x: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: block;
 }
 
@@ -204,15 +259,18 @@
 }
 
 /* =============================================================
-   Inline Code Styling - Professional
+   Inline Code Styling - Cybernetic
    ============================================================= */
 .reveal code:not(pre code) {
-  background: rgba(110, 118, 129, 0.15);
-  color: #79c0ff;
-  padding: 2px 6px;
-  border-radius: 3px;
+  background: rgba(0, 255, 204, 0.1);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 4px;
   font-size: 0.88em;
-  font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  border: 1px solid rgba(0, 255, 204, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.1);
+  font-weight: 500;
 }
 
 /* =============================================================
@@ -221,17 +279,19 @@
 .reveal .slides section .card-grid {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
   max-width: 1600px;
+  margin: 8px 0;
 }
 
 .reveal .slides section .card-grid-3 {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
   max-width: 1600px;
+  margin: 8px 0;
 }
 
 /* Alternative grid layout classes */
@@ -252,30 +312,84 @@
    Browser zoom works naturally with the 100% width/height configuration. */
 
 .card {
-  background: rgba(17, 25, 39, 0.6);
-  border-radius: 8px;
-  padding: 18px;
+  background: rgba(17, 25, 39, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 14px;
   text-align: left;
-  border: 1px solid rgba(30, 58, 95, 0.5);
+  border: 1px solid rgba(0, 255, 204, 0.2);
   height: 100%;
   display: flex;
   flex-direction: column;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+              0 0 1px rgba(0, 255, 204, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0, 255, 204, 0.3), transparent 50%, rgba(0, 255, 204, 0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(0, 255, 204, 0.4);
+  border-color: rgba(0, 255, 204, 0.5);
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card-accent {
   border-left: 3px solid var(--accent);
 }
 
+.card-accent:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4),
+              -4px 0 20px rgba(0, 255, 204, 0.4);
+}
+
 .card-green {
   border-left: 3px solid var(--accent2);
+}
+
+.card-green:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4),
+              -4px 0 20px rgba(255, 107, 53, 0.4);
 }
 
 .card-orange {
   border-left: 3px solid var(--accent3);
 }
 
+.card-orange:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4),
+              -4px 0 20px rgba(168, 85, 247, 0.4);
+}
+
 .card-red {
   border-left: 3px solid var(--accent4);
+}
+
+.card-red:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4),
+              -4px 0 20px rgba(244, 63, 94, 0.4);
 }
 
 .reveal .highlight {
@@ -350,25 +464,93 @@
 }
 
 .box {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, rgba(0, 255, 204, 0.08), rgba(0, 255, 204, 0.02));
+  backdrop-filter: blur(8px);
   border: 2px solid var(--accent);
-  border-radius: 10px;
+  border-radius: 12px;
   padding: 14px 22px;
   font-size: 0.7em;
   text-align: center;
   min-width: 100px;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(0, 255, 204, 0.2);
+  transition: all 0.3s ease;
+}
+
+.box::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--accent);
+  opacity: 0.6;
+}
+
+.box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              0 0 30px rgba(0, 255, 204, 0.5);
 }
 
 .box-green {
   border-color: var(--accent2);
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.02));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(255, 107, 53, 0.2);
+}
+
+.box-green::before {
+  background: var(--accent2);
+  box-shadow: 0 0 10px var(--accent2);
+}
+
+.box-green:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              0 0 30px rgba(255, 107, 53, 0.5);
 }
 
 .box-orange {
   border-color: var(--accent3);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(168, 85, 247, 0.02));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+.box-orange::before {
+  background: var(--accent3);
+  box-shadow: 0 0 10px var(--accent3);
+}
+
+.box-orange:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              0 0 30px rgba(168, 85, 247, 0.5);
 }
 
 .box-red {
   border-color: var(--accent4);
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.08), rgba(244, 63, 94, 0.02));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.1),
+              0 0 20px rgba(244, 63, 94, 0.2);
+}
+
+.box-red::before {
+  background: var(--accent4);
+  box-shadow: 0 0 10px var(--accent4);
+}
+
+.box-red:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4),
+              0 0 30px rgba(244, 63, 94, 0.5);
 }
 
 .box-large {
@@ -379,12 +561,27 @@
 
 .arrow {
   font-size: 1.5em;
-  color: #999;
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+  animation: pulse-arrow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-arrow {
+  0%, 100% {
+    opacity: 0.6;
+    text-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 20px rgba(0, 255, 204, 0.9);
+  }
 }
 
 .arrow-down {
   font-size: 1.2em;
-  color: #999;
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.6);
+  animation: pulse-arrow 2s ease-in-out infinite;
 }
 
 /* =============================================================
@@ -606,13 +803,16 @@
    Section Elements
    ============================================================= */
 
-/* Section divider */
+/* Section divider - Cybernetic */
 .section-number {
-  font-size: 2.5em;
+  font-size: 2.8em;
   color: var(--accent);
-  opacity: 0.3;
+  opacity: 0.4;
   font-weight: bold;
   line-height: 1;
+  font-family: 'JetBrains Mono', monospace;
+  text-shadow: 0 0 30px rgba(0, 255, 204, 0.6);
+  letter-spacing: 0.1em;
 }
 
 /* Trainer info */
@@ -675,8 +875,9 @@
 }
 
 .quiz-option {
-  background: var(--bg-card);
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 255, 204, 0.03);
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(0, 255, 204, 0.2);
   border-radius: 12px;
   padding: 16px 18px;
   text-align: left;
@@ -686,6 +887,15 @@
   align-items: center;
   gap: 12px;
   min-height: 60px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.quiz-option:hover {
+  background: rgba(0, 255, 204, 0.08);
+  border-color: rgba(0, 255, 204, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 255, 204, 0.2);
+  transform: translateX(4px);
 }
 
 .quiz-option>span:not(.opt-letter) {
@@ -697,29 +907,35 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: rgba(0, 255, 204, 0.15);
+  color: var(--accent);
   font-weight: bold;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   text-align: center;
   border-radius: 50%;
   flex-shrink: 0;
+  border: 2px solid rgba(0, 255, 204, 0.3);
+  font-family: 'JetBrains Mono', monospace;
 }
 
 .quiz-option.correct {
-  border-color: var(--accent2);
-  background: rgba(129, 199, 132, 0.12);
+  border-color: var(--accent);
+  background: rgba(0, 255, 204, 0.12);
+  box-shadow: 0 0 30px rgba(0, 255, 204, 0.3);
 }
 
 .quiz-option.correct .opt-letter {
-  background: var(--accent2);
-  color: #111;
+  background: var(--accent);
+  color: #0a0f1a;
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
 }
 
 .quiz-option.wrong {
   border-color: rgba(255, 255, 255, 0.06);
-  opacity: 0.5;
+  opacity: 0.4;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .warning {
@@ -750,11 +966,12 @@
    Code Blocks - Professional Styling
    ============================================================= */
 .code-block {
-  background: #0d1117;
-  border: 1px solid #1e3a5f;
-  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(13, 17, 23, 0.95), rgba(10, 15, 26, 0.95));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 8px;
   padding: 16px 20px;
-  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   font-size: 0.8em;
   text-align: left;
   color: #e6edf3;
@@ -765,10 +982,20 @@
   line-height: 1.6;
   white-space: pre-wrap;
   word-wrap: break-word;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+              0 0 1px rgba(0, 255, 204, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
   font-variant-ligatures: common-ligatures;
   text-rendering: optimizeLegibility;
   font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.code-block:hover {
+  border-color: rgba(0, 255, 204, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+              0 0 2px rgba(0, 255, 204, 0.8),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .code-block .comment {
@@ -818,23 +1045,25 @@
   margin: 0;
 }
 
-/* Professional Copy Button - Subtle Style */
+/* Cybernetic Copy Button */
 .copy-btn {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(0, 255, 204, 0.08);
+  border: 1px solid rgba(0, 255, 204, 0.3);
   border-radius: 4px;
-  color: #8899aa;
-  font-size: 12px;
-  font-weight: 400;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 600;
   padding: 4px 12px;
   cursor: pointer;
   z-index: 10;
-  font-family: system-ui, -apple-system, sans-serif;
-  transition: all 0.2s ease;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .reveal pre:hover .copy-btn {
@@ -842,14 +1071,17 @@
 }
 
 .copy-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: rgba(0, 255, 204, 0.2);
+  color: var(--accent-light);
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+  transform: translateY(-1px);
 }
 
 .copy-btn.copied {
-  background: rgba(38, 166, 154, 0.3);
-  color: #66bb6a;
-  border-color: rgba(38, 166, 154, 0.5);
+  background: rgba(0, 255, 204, 0.2);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
 }
 
 /* Subtle Professional Scrollbar for custom code blocks */
@@ -878,36 +1110,40 @@
 }
 
 /* =============================================================
-   Highlight.js Code Blocks (pre > code) - Professional Style
+   Highlight.js Code Blocks (pre > code) - Cybernetic Style
    ============================================================= */
 .reveal pre {
   position: relative;
-  background: #0d1117;
-  border: 1px solid #1e3a5f;
-  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(13, 17, 23, 0.95), rgba(10, 15, 26, 0.95));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 8px;
   margin: 12px 0;
   width: 100%;
   max-height: 500px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+              0 0 1px rgba(0, 255, 204, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-/* Language badge - subtle styling */
+/* Language badge - cybernetic styling */
 .reveal pre::before {
   content: attr(data-lang);
   position: absolute;
   top: 8px;
   left: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #8899aa;
+  background: rgba(0, 255, 204, 0.1);
+  color: var(--accent);
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
   border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.8px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
   z-index: 5;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
 }
 
 .reveal pre[data-lang=""]::before {
@@ -915,7 +1151,7 @@
 }
 
 .reveal pre code {
-  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
   font-size: 0.8em;
   line-height: 1.6;
   padding: 40px 20px 16px 20px;
@@ -1896,4 +2132,565 @@ table.comparison-alt tr:hover td {
 .highlight-box.danger {
   background: rgba(239, 83, 80, 0.08);
   border-left-color: var(--danger);
+}
+
+/* =============================================================
+   HEADER & FOOTER — HUD INTERFACE SYSTEM
+   ============================================================= */
+
+/* Header - Fixed HUD Display */
+.presentation-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(180deg, rgba(10, 15, 26, 0.95) 0%, rgba(10, 15, 26, 0.85) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 255, 204, 0.3);
+  box-shadow: 0 2px 20px rgba(0, 255, 204, 0.15),
+              inset 0 -1px 0 rgba(0, 255, 204, 0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+}
+
+/* Header corner brackets */
+.presentation-header::before,
+.presentation-header::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+.presentation-header::before {
+  top: 8px;
+  left: 12px;
+  border-right: none;
+  border-bottom: none;
+  box-shadow: -2px -2px 8px rgba(0, 255, 204, 0.3);
+}
+
+.presentation-header::after {
+  top: 8px;
+  right: 12px;
+  border-left: none;
+  border-bottom: none;
+  box-shadow: 2px -2px 8px rgba(0, 255, 204, 0.3);
+}
+
+/* Header sections */
+.header-left,
+.header-center,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.header-left {
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.header-center {
+  flex: 2;
+  justify-content: center;
+}
+
+.header-right {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Home button */
+.header-home-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(0, 255, 204, 0.08);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+.header-home-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
+.header-home-btn:hover {
+  background: rgba(0, 255, 204, 0.15);
+  border-color: var(--accent);
+  color: var(--accent-light);
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+  transform: translateX(-2px);
+}
+
+/* Course title */
+.header-course-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+/* Session indicator */
+.header-session {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: rgba(0, 255, 204, 0.08);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.5px;
+}
+
+.header-session-label {
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.header-session-number {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Animated scanline in header */
+@keyframes header-scan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.presentation-header .scan-line {
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 255, 204, 0.8),
+    transparent
+  );
+  animation: header-scan 3s linear infinite;
+  pointer-events: none;
+}
+
+/* Footer - Fixed HUD Display */
+.presentation-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 38px;
+  background: linear-gradient(0deg, rgba(10, 15, 26, 0.95) 0%, rgba(10, 15, 26, 0.85) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(0, 255, 204, 0.3);
+  box-shadow: 0 -2px 20px rgba(0, 255, 204, 0.15),
+              inset 0 1px 0 rgba(0, 255, 204, 0.2);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-family: 'JetBrains Mono', monospace;
+  pointer-events: none;
+}
+
+/* Footer corner brackets */
+.presentation-footer::before,
+.presentation-footer::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+.presentation-footer::before {
+  bottom: 8px;
+  left: 12px;
+  border-right: none;
+  border-top: none;
+  box-shadow: -2px 2px 8px rgba(0, 255, 204, 0.3);
+}
+
+.presentation-footer::after {
+  bottom: 8px;
+  right: 12px;
+  border-left: none;
+  border-top: none;
+  box-shadow: 2px 2px 8px rgba(0, 255, 204, 0.3);
+}
+
+/* Footer sections */
+.footer-left,
+.footer-center,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.footer-left {
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.footer-center {
+  flex: 2;
+  justify-content: center;
+}
+
+.footer-right {
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* Slide counter */
+.footer-slide-number {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(0, 255, 204, 0.08);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 3px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.footer-slide-number .current {
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.footer-slide-number .separator {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.footer-slide-number .total {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* Trainer info */
+.footer-trainer {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: 0.3px;
+}
+
+.footer-trainer-label {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* Branding */
+.footer-branding {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-light);
+  letter-spacing: 0.5px;
+}
+
+.footer-branding-icon {
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #0a0f1a;
+  font-weight: 700;
+}
+
+/* Pulsing data indicator */
+@keyframes pulse-indicator {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 4px rgba(0, 255, 204, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+  }
+}
+
+.data-indicator {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-indicator 2s ease-in-out infinite;
+}
+
+/* Reposition Reveal.js navigation controls to avoid footer collision */
+.reveal .controls {
+  bottom: 50px !important;  /* Move up to avoid footer (default is 12px) */
+}
+
+/* Reposition slide number if visible */
+.reveal .slide-number {
+  bottom: 50px !important;  /* Move up to avoid footer */
+}
+
+/* Ensure slides have proper top/bottom padding to avoid header/footer overlap */
+.reveal .slides>section,
+.reveal .slides section>section {
+  padding-top: 60px !important;
+  padding-bottom: 80px !important;  /* Increased from 50px to 80px */
+}
+
+/* =============================================================
+   CYBERNETIC ENHANCEMENTS — Advanced Animations & Effects
+   ============================================================= */
+
+/* Staggered card reveal animation - reduced translateY to prevent collisions */
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Only animate cards when slide is active, not during transitions */
+.present .card-grid .card,
+.present .card-grid-3 .card {
+  animation: card-reveal 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.present .card-grid .card:nth-child(1),
+.present .card-grid-3 .card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.present .card-grid .card:nth-child(2),
+.present .card-grid-3 .card:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.present .card-grid .card:nth-child(3),
+.present .card-grid-3 .card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.present .card-grid .card:nth-child(4),
+.present .card-grid-3 .card:nth-child(4) {
+  animation-delay: 0.25s;
+}
+
+/* Pulsing node effect for network diagrams */
+@keyframes pulse-node {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 20px rgba(0, 255, 204, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(0, 255, 204, 0.5);
+  }
+}
+
+.box {
+  animation: pulse-node 3s ease-in-out infinite;
+}
+
+/* Flowing connection lines effect */
+@keyframes flow-line {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Glowing text effect for highlights */
+.highlight,
+.highlight-green,
+.highlight-orange,
+.highlight-red {
+  text-shadow: 0 0 10px currentColor;
+  transition: text-shadow 0.3s ease;
+}
+
+.highlight:hover {
+  text-shadow: 0 0 20px var(--accent);
+}
+
+.highlight-green:hover {
+  text-shadow: 0 0 20px var(--accent2);
+}
+
+.highlight-orange:hover {
+  text-shadow: 0 0 20px var(--accent3);
+}
+
+.highlight-red:hover {
+  text-shadow: 0 0 20px var(--accent4);
+}
+
+/* Cybernetic scan line effect (subtle) */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.reveal::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 255, 204, 0.3),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scan-line 8s linear infinite;
+  opacity: 0.3;
+}
+
+/* Agent node pulsing (for multi-agent diagrams) */
+.agent-supervisor,
+.agent-worker,
+.peer-node,
+.handoff-agent {
+  animation: pulse-node 3s ease-in-out infinite;
+}
+
+/* Table row hover enhancement */
+.compare-table tr:hover td {
+  background: rgba(0, 255, 204, 0.08);
+  box-shadow: inset 0 0 20px rgba(0, 255, 204, 0.1);
+}
+
+/* Enhanced quiz badge */
+.quiz-badge {
+  background: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.8);
+  }
+}
+
+/* Code block shimmer effect on hover */
+.reveal pre:hover {
+  border-color: rgba(0, 255, 204, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6),
+              0 0 2px rgba(0, 255, 204, 0.8),
+              inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Takeaway and callout glow */
+.takeaway,
+.analogy,
+.tip-callout,
+.warning-callout,
+.note-callout {
+  transition: all 0.3s ease;
+}
+
+.takeaway:hover {
+  box-shadow: 0 4px 20px rgba(0, 255, 204, 0.2);
+}
+
+.analogy:hover {
+  box-shadow: 0 4px 20px rgba(0, 255, 204, 0.2);
+}
+
+.tip-callout:hover {
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.2);
+}
+
+.warning-callout:hover {
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Evolution step glow */
+.evo-step {
+  transition: all 0.3s ease;
+}
+
+.evo-step:hover {
+  transform: scale(1.05);
+}
+
+.evo-step:hover .evo-icon {
+  filter: drop-shadow(0 0 10px var(--accent));
+}
+
+/* Home button cybernetic enhancement */
+.home-btn {
+  background: rgba(10, 15, 26, 0.8);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-btn:hover {
+  background: rgba(0, 255, 204, 0.15);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.4);
+  transform: translateX(-2px);
 }
