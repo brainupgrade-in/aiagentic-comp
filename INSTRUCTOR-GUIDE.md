@@ -2,7 +2,7 @@
 
 **Course:** Agentic AI: Comprehensive Course
 **Trainer:** Rajesh Gheware
-**Client:** Oracle
+**Client:** Enterprise client
 **Duration:** 5 Days (8 hours/day, ~40 hours total)
 
 ---
@@ -97,7 +97,7 @@
 **Teaching Notes:**
 - Session 10 (OTel fundamentals) is conceptual; keep it brief if audience has observability experience
 - Session 11 (LangFuse) uses mock mode with SDK patterns -- data logs to local JSON files
-- Session 12 (Production) bridges AI concepts with DevOps -- key for the Oracle audience
+- Session 12 (Production) bridges AI concepts with DevOps -- key for enterprise audiences
 - Day 4 is lightweight on infrastructure -- all Python in-process (~3-4 GB RAM)
 
 ### Day 5: MCP, Safety & Capstone

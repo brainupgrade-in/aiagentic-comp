@@ -1,10 +1,10 @@
-# Agentic AI Course (Oracle)
+# Agentic AI Course
 
 ## Project Overview
 
 5-day comprehensive Agentic AI training course delivered by Rajesh Gheware. Covers the full spectrum from LangChain fundamentals to production deployment with observability.
 
-**Client:** Oracle
+**Client:** Enterprise client
 **Duration:** 5 days (15 sessions, ~3 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
 **Slides:** 15 HTML presentations in `presentation/`
@@ -12,53 +12,68 @@
 
 ## Lab Environment
 
-**Platform:** GitHub Codespaces (free tier)
-- Each participant uses their own GitHub account
-- **Machine spec:** 2-core / 8 GB RAM / 32 GB storage
-- **Free tier budget:** 120 core-hours/month → 60 hours on 2-core → 40 hours needed for 5-day course
-- Default codespace image includes Python and common utilities
+**Platform:** Native Ubuntu Linux installation (NOT GitHub Codespaces)
 
-**Key constraint:** 8 GB RAM and 32 GB storage require careful resource management — never run all services simultaneously. Day-specific setup/cleanup scripts handle this.
+**Instructor machine:**
+- **CPU:** 12 threads
+- **RAM:** 16 GB
+- **OS:** Ubuntu Linux
+
+**Participant machines:**
+- **CPU:** At least 8 threads (minimum)
+- **RAM:** 16 GB (minimum)
+- **OS:** Ubuntu Linux (recommended) or Windows with WSL2/Ubuntu VM
+
+**GitHub Codespaces:** Out of scope for this training. The `.devcontainer/` configuration is maintained in the repository for other use cases but is not used for this course delivery.
+
+**Key benefits:** With 16 GB RAM, all services can run simultaneously without resource constraints. Ollama can stay installed throughout the course if desired. Multiple LLMs can be loaded for comparison. Setup/cleanup scripts are optional but still recommended for clean state between days.
 
 ## Architecture Decisions
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| LLM (Day 1) | Ollama + llama3.2:1b | Smallest model (~1.3 GB), sufficient for demos, removed after Day 1 |
-| LLM (Days 2-5) | Groq free API | Offloads inference to cloud, saves ~2 GB RAM/storage. Each participant creates own Groq API key |
+| LLM (Day 1) | Ollama + llama3.2:1b or larger models | Can use larger models (llama3.2:3b, llama3.3:70b) with 16GB RAM. Ollama can stay installed throughout course |
+| LLM (Days 2-5) | Groq free API (primary) + optional local Ollama | Groq for consistency and speed. Ollama optional for offline demos. Each participant creates own Groq API key |
 | MCP SDK | MCP Python SDK (`mcp>=1.0`) | Standard protocol for AI tool integration. Lightweight, no infrastructure overhead |
-| Observability | Python in-process (no containers) | Lowest overhead on 2-core. Mock LangFuse logs to local JSON, OTel ConsoleSpanExporter |
-| Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises |
+| Observability | Python in-process (no containers) | Clean setup without Docker complexity. Mock LangFuse logs to local JSON, OTel ConsoleSpanExporter |
+| Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises. Runs in-process |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
-| Base image | python:3.13-bookworm devcontainer | Pre-built, includes common dev tools |
+| Base environment | Python 3.13 on Ubuntu Linux | Native Python installation, faster than containers for this use case |
 
 ## Runtime
 
-- **Python:** 3.13 (via `mcr.microsoft.com/devcontainers/python:3.13-bookworm`)
+- **Python:** 3.13 (native Ubuntu installation via `apt` or `pyenv`)
+- **Virtual environment:** `.venv/` created with `python3 -m venv .venv`
+- **Package management:** `pip install -r requirements.txt`
 - Some LangChain packages may lag behind on 3.13 support — test `pip install -r requirements.txt` before the course and pin versions if needed
 
 ## Resource Management Strategy
 
-Resources are tight on the free tier. The course uses a sequential approach:
+With 16 GB RAM and 8+ CPU threads, resource management is straightforward. All services can run concurrently if needed.
+
+**Estimated RAM usage by day:**
 
 ```
-Day 1: Ollama + LangChain + Vibe Coding (~5-6 GB RAM)
-       → cleanup: remove Ollama completely
+Day 1: Ollama + LangChain + Vibe Coding (~3-6 GB RAM depending on model)
+       → cleanup: optional (can keep Ollama for offline demos)
 
-Day 2: LangChain + Groq API + ChromaDB (~3.5-4.5 GB RAM)
-       → no cleanup needed
+Day 2: LangChain + Groq API + ChromaDB (~2-3 GB RAM)
+       → cleanup: optional (temp files only)
 
-Day 3: LangGraph + Multi-Agent (~4-5 GB RAM)
-       → cleanup: stop servers + clean temp files
+Day 3: LangGraph + Multi-Agent (~3-4 GB RAM)
+       → cleanup: optional (stop servers to free ports)
 
-Day 4: Python OTel + mock LangFuse + FastAPI (~3-4 GB RAM)
+Day 4: Python OTel + mock LangFuse + FastAPI (~2-3 GB RAM)
        → all Python in-process, no containers
-       → cleanup: remove temp files
+       → cleanup: optional (temp files only)
 
 Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
        → lightweight, no containers needed
-       → cleanup: remove temp files
+       → cleanup: optional (final cleanup recommended)
 ```
+
+**Peak concurrent usage:** ~6-8 GB RAM with all services running
+**Available headroom:** 8-10 GB for browser, IDE, and other applications
 
 ## File Structure
 
@@ -72,8 +87,8 @@ Oracle/
 ├── .env.example                         Environment variable template (all 5 days)
 ├── course-outline-agentic-ai.pdf        Course outline PDF (gitignored)
 ├── CLAUDE.md                            This file
-├── .devcontainer/
-│   ├── devcontainer.json                Codespace config (2-core, port forwarding, extensions)
+├── .devcontainer/                       (Not used for this training - GitHub Codespaces only)
+│   ├── devcontainer.json                Dev container config for VS Code
 │   └── post-create.sh                   Auto-setup: venv, pip install
 ├── presentation/                        15 HTML slide decks + shared resources
 │   ├── index.html                       Course landing page
@@ -107,7 +122,10 @@ Oracle/
     ├── day4-cleanup.sh                  Clean temp files
     ├── day5-setup.sh                    Install MCP SDK, verify env
     ├── day5-cleanup.sh                  Final cleanup
-    └── check-resources.sh              Memory/storage/process status monitor
+    ├── session11-langfuse-setup.sh      Session 11 LangFuse mock setup (Bash)
+    ├── session11-langfuse-setup.ps1     Session 11 LangFuse mock setup (PowerShell)
+    ├── README-SESSION11.md              Session 11 setup documentation
+    └── check-resources.sh               Memory/storage/process status monitor
 ```
 
 ## Course Day Breakdown
@@ -275,14 +293,16 @@ cd presentation/
 ./apply-code-enhancements.sh
 ```
 
-## Error Recovery (Constrained Environment)
+## Error Recovery
 
-Common failure modes on the 8 GB Codespace and how to fix them:
+Common issues and solutions with 16 GB RAM environment:
 
-- **OOM (process killed):** Run `bash scripts/check-resources.sh` to see what's consuming memory. Stop unused Python processes. If Ollama is still running on Day 2+, run `bash scripts/day1-cleanup.sh`.
-- **Disk full (32 GB limit):** Check for leftover models: `rm -rf ~/.ollama/models` if Day 1 cleanup was incomplete. Remove temp files in `/tmp/`.
-- **ChromaDB issues:** ChromaDB runs in-process (no server needed for small datasets). Check for file lock issues.
-- **Groq rate limit (429):** Wait 60 seconds and retry. If the entire class hits limits simultaneously, stagger lab start times by a few minutes.
+- **High memory usage:** Run `bash scripts/check-resources.sh` to check current usage. With 16 GB RAM, OOM is unlikely unless multiple large models are loaded simultaneously.
+- **Disk space:** Check for large Ollama models: `du -sh ~/.ollama/models`. Remove unused models: `ollama rm <model-name>`. Clean temp files in `/tmp/`.
+- **ChromaDB issues:** ChromaDB runs in-process (no server needed for small datasets). Check for file lock issues or permission errors.
+- **Groq rate limit (429):** Free tier: 30 requests/minute, 14,400 requests/day. Wait 60 seconds and retry. If the entire class hits limits simultaneously, stagger lab start times by a few minutes.
+- **Port conflicts:** If port 8000 or 11434 is in use, check running processes: `sudo lsof -i :8000` or `sudo lsof -i :11434`. Stop conflicting services or change port in configuration.
+- **Python package conflicts:** Use virtual environment: `python3 -m venv .venv && source .venv/bin/activate`. Reinstall requirements: `pip install -r requirements.txt`.
 
 ## Commands
 
