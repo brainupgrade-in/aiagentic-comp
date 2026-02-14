@@ -82,11 +82,11 @@ Oracle/
 │   ├── session13-model-context-protocol.html
 │   ├── session14-ai-safety-guardrails.html
 │   └── session15-capstone-project.html
-├── hands-on/                            15 session directories with labs + solutions
-│   ├── session-1/                       6 labs + 6 solutions + README
-│   ├── session-2/                       8 labs + 8 solutions + README (AI Coding / Vibe Coding)
-│   ├── session-3/                       7 labs + 7 solutions + README
-│   ├── session-4/ through session-15/   8 labs + 8 solutions + README each
+├── hands-on/                            15 session directories with .ipynb labs + solutions
+│   ├── session-1/                       6 labs + 6 solutions + README (.ipynb)
+│   ├── session-2/                       8 labs + 8 solutions + README (.ipynb)
+│   ├── session-3/                       7 labs + 7 solutions + README (.ipynb)
+│   ├── session-4/ through session-15/   8 labs + 8 solutions + README each (.ipynb)
 │   └── (session-1 has 6, session-3 has 7, all others have 8)
 └── scripts/
     ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
@@ -176,19 +176,19 @@ Gaps to consider addressing:
 
 ## Hands-on Lab Pattern
 
-All labs follow a consistent Python-based pattern (no K8s cluster required):
+All labs are Jupyter notebooks (.ipynb) — no standalone .py scripts. Open them in VS Code, JupyterLab, or any notebook-compatible environment:
 
 ```bash
-# Run a student lab (has TODO markers to fill in)
-python hands-on/session-NN/labXX_topic.py
+# Open a student lab (has TODO markers to fill in)
+hands-on/session-NN/labXX_topic.ipynb
 
-# Run the completed solution (all checks pass)
-python hands-on/session-NN/solutions/labXX_topic.py
+# Open the completed solution (all checks pass)
+hands-on/session-NN/solutions/labXX_topic.ipynb
 ```
 
 **Lab structure:**
-- Educational Steps (tables, code examples, architecture diagrams)
-- TODO sections with `"___"` placeholders for answers
+- Educational Steps (tables, code examples, architecture diagrams) in markdown cells
+- TODO sections with `"___"` placeholders for answers in code cells
 - Validation with `[PASS]/[FAIL]` string matching and scoring
 - Generated files saved to:
   - `/tmp/k8s-lab-NN-XX/` (sessions 1, 3-11)

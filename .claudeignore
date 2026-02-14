@@ -7,5 +7,8 @@ __pycache__/
 .venv/
 venv/
 
+# Jupyter
+.ipynb_checkpoints/
+
 # Participant workspace
 workspace/

@@ -13,6 +13,9 @@ __pycache__/
 venv/
 *.egg-info/
 
+# Jupyter
+.ipynb_checkpoints/
+
 # IDE
 .vscode/settings.json
 .idea/

@@ -95,11 +95,11 @@ cp .env.example .env
 │   ├── session14-ai-safety-guardrails.html
 │   └── session15-capstone-project.html
 │
-├── hands-on/                  15 session directories
-│   ├── session-1/             6 labs + solutions + README
-│   ├── session-2/             8 labs + solutions + README
-│   ├── session-3/             7 labs + solutions + README
-│   ├── session-4/ ... session-15/  8 labs + solutions + README each
+├── hands-on/                  15 session directories (Jupyter notebooks)
+│   ├── session-1/             6 labs + solutions + README (.ipynb)
+│   ├── session-2/             8 labs + solutions + README (.ipynb)
+│   ├── session-3/             7 labs + solutions + README (.ipynb)
+│   ├── session-4/ ... session-15/  8 labs + solutions + README each (.ipynb)
 │   └── (117 total labs + 117 solutions)
 │
 ├── scripts/                   Day-specific automation
@@ -130,20 +130,21 @@ cp .env.example .env
 
 ## Running Labs
 
-Each session has a README with lab details. The general pattern:
+All labs are Jupyter notebooks (.ipynb). Open them in VS Code, JupyterLab, or any notebook-compatible environment:
 
 ```bash
 # Navigate to a session
 cd hands-on/session-4
 
-# Run a student lab (has TODO sections to fill in)
-python lab01_hello_langchain.py
+# Open a student lab (has TODO sections to fill in)
+# In VS Code: click the .ipynb file, or:
+jupyter notebook lab01_hello_langchain.ipynb
 
 # Check your work against the solution
-python solutions/lab01_hello_langchain.py
+jupyter notebook solutions/lab01_hello_langchain.ipynb
 ```
 
-Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` markers.
+Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` markers in code cells.
 
 ---
 
