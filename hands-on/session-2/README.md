@@ -18,9 +18,10 @@ python --version  # 3.10+
 | 03 | Context Management | Token budgeting, priority file selector, CLAUDE.md generation |
 | 04 | Prompt Engineering for Code | Vague vs precise prompts, structured prompt templates |
 | 05 | Vibe Coding Simulation | NL parser → file structure → pseudo-code generation |
-| 06 | Agent Comparison | Feature scoring for OpenCode/Claude Code/Copilot/Cursor |
-| 07 | Code Review Basics | AST-based issue detection, structured review report |
-| 08 | **Challenge** | End-to-end coding agent simulation |
+| 06 | Safety & Sandboxing | Command classification, allowlist/blocklist, permission escalation |
+| 07 | Iterative Refinement | Quality metrics, code improvement loop, reflect-iterate cycle |
+| 08 | Code Review Basics | AST-based issue detection, structured review report |
+| 09 | **Challenge** | End-to-end coding agent simulation |
 
 ## How to Run
 
@@ -33,13 +34,14 @@ hands-on/session-2/
 ├── lab03_context_management.ipynb
 ├── lab04_prompt_engineering_code.ipynb
 ├── lab05_vibe_coding_simulation.ipynb
-├── lab06_agent_comparison.ipynb
-├── lab07_code_review_basics.ipynb
-├── lab08_challenge.ipynb
+├── lab06_safety_sandboxing.ipynb
+├── lab07_iterative_refinement.ipynb
+├── lab08_code_review_basics.ipynb
+├── lab09_challenge.ipynb
 └── solutions/                           ← Completed versions
     ├── lab01_coding_agent_anatomy.ipynb
     ├── ...
-    └── lab08_challenge.ipynb
+    └── lab09_challenge.ipynb
 ```
 
 1. Open the notebook in VS Code
@@ -51,12 +53,14 @@ hands-on/session-2/
 
 - Look for `# TODO` markers and `"___"` placeholders — that's where you write code
 - Labs 01-03 cover agent internals
-- Labs 04-06 cover prompt engineering and vibe coding
-- Lab 07 covers code review
-- Lab 08 is the comprehensive challenge
+- Labs 04-05 cover prompt engineering and vibe coding
+- Lab 06 covers safety & sandboxing — how agents protect your system
+- Lab 07 covers iterative refinement — the reflect-iterate loop
+- Lab 08 covers AST-based code review
+- Lab 09 is the comprehensive challenge
 - Generated files appear in `/tmp/aidev-lab-02-XX/` directories
 - Compare your work with `solutions/` when done
 
 ## Estimated Time
 
-~60-75 minutes for all labs (including the challenge)
+~75-90 minutes for all labs (including the challenge)

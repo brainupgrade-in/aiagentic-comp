@@ -8,7 +8,7 @@
 **Duration:** 5 days (15 sessions, ~3 sessions/day + hands-on labs)
 **Course outline:** `course-outline-agentic-ai.pdf`
 **Slides:** 15 HTML presentations in `presentation/`
-**Hands-on:** 118 labs + 118 solutions in `hands-on/session-1/` through `session-15/`
+**Hands-on:** 119 labs + 119 solutions in `hands-on/session-1/` through `session-15/`
 
 ## Lab Environment
 
@@ -108,10 +108,10 @@ Oracle/
 │   └── FIXES-APPLIED.md                Recent fixes and improvements
 ├── hands-on/                            15 session directories with .ipynb labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README (.ipynb)
-│   ├── session-2/                       8 labs + 8 solutions + README (.ipynb)
+│   ├── session-2/                       9 labs + 9 solutions + README (.ipynb)
 │   ├── session-3/                       7 labs + 7 solutions + README (.ipynb)
 │   ├── session-4/ through session-15/   8 labs + 8 solutions + README each (.ipynb)
-│   └── (session-1 has 6, session-3 has 7, all others have 8)
+│   └── (session-1 has 6, session-2 has 9, session-3 has 7, session-12 has 9, all others have 8)
 └── scripts/                             Both .sh (Linux/macOS) and .ps1 (Windows) provided
     ├── initial-setup.sh / .ps1          One-time setup: Python, venv, packages, .env
     ├── install-notebook.sh / .ps1       VS Code Jupyter extension + ipykernel
@@ -146,7 +146,7 @@ Oracle/
 | Session | Title | Labs | Topics |
 |---------|-------|------|--------|
 | 1 | Introduction to Agentic AI | 6 | AI agents, reasoning, tool use, architectures |
-| 2 | AI Coding Assistants & Vibe Coding | 8 | Agent loop, context management, vibe coding, prompts |
+| 2 | AI Coding Assistants & Vibe Coding | 9 | Agent loop, context management, vibe coding, safety, iterative refinement |
 | 3 | Reasoning, Planning & Tool Use | 7 | ReAct, chain-of-thought, tool calling |
 | 4 | LangChain Fundamentals | 8 | LCEL, chains, prompts, output parsers |
 | 5 | Building RAG Applications | 8 | Document loaders, embeddings, vector stores, retrieval |
@@ -191,7 +191,7 @@ Oracle/
 
 Strengths identified:
 - Strong logical 5-day progression (foundations → LangChain → LangGraph → observability+production → MCP+capstone)
-- 118 labs + 15 challenge labs across 15 sessions
+- 119 labs + 15 challenge labs across 15 sessions
 - Production-focused with observability and capstone
 - All open-source/free tooling — no vendor lock-in
 - Vibe coding on Day 1 means students use AI assistants for 4 more days
@@ -228,7 +228,7 @@ hands-on/session-NN/solutions/labXX_topic.ipynb
   - `/tmp/capstone-lab-15-XX/` (session 15)
 - Labs build progressively within each session; the final lab is always a comprehensive challenge
 
-**Totals:** 118 labs + 118 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15, session 12 now ~90-115 min with Lab 09)
+**Totals:** 119 labs + 119 solutions across 15 sessions (~60-75 min per session, ~90-120 min for session 15, session 12 now ~90-115 min with Lab 09)
 
 ## Presentation System
 
