@@ -33,10 +33,16 @@ presentation/
 ├── reveal-init.js                      # Reveal.js initialization config
 ├── presentation-header-footer.js       # Auto-updating header/footer system
 │
+├── print.css                           # Print stylesheet (~1,000 lines) ⭐ NEW
+├── print.js                            # Print helper functions (~400 lines) ⭐ NEW
+│
 ├── README.md                           # This file
 ├── HEADER-FOOTER-GUIDE.md              # Header/footer customization guide
+├── PRINT-GUIDE.md                      # Print & PDF export guide ⭐ NEW
 ├── FIXES-APPLIED.md                    # Recent fixes and improvements
-└── add-header-footer.sh                # Utility script for batch updates
+├── add-header-footer.sh                # Utility script for batch updates
+├── add-print-to-all.sh                 # Add print support to all sessions ⭐ NEW
+└── apply-print-support.sh              # Advanced print support utility ⭐ NEW
 ```
 
 ---
@@ -66,6 +72,16 @@ presentation/
 - Copy buttons on code blocks
 - Keyboard shortcuts (H for help)
 
+### 5. **Professional Print Support** ⭐ NEW
+- Print-optimized layout showing all slides vertically
+- High-contrast colors optimized for paper/PDF export
+- Smart page breaks between sections
+- Page headers/footers with course info and page numbers
+- Print button in bottom-right corner (screen only)
+- Keyboard shortcuts: Ctrl+Shift+P or Ctrl+P
+- Ink-efficient design for cost-effective printing
+- See [PRINT-GUIDE.md](PRINT-GUIDE.md) for details
+
 ---
 
 ## 🚀 Quick Start
@@ -78,6 +94,20 @@ firefox index.html
 
 # Open specific session
 firefox session1-introduction-to-agentic-ai.html
+```
+
+### Print Presentations
+
+```bash
+# View print guide
+cat PRINT-GUIDE.md
+
+# Print any session (opens browser print dialog)
+# Method 1: Click 🖨️ Print button (bottom-right corner)
+# Method 2: Press Ctrl+Shift+P (custom shortcut)
+# Method 3: Press Ctrl+P (browser default)
+
+# All slides appear in print preview with professional layout
 ```
 
 ### Create New Session
