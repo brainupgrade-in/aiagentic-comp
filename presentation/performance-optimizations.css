@@ -1,0 +1,141 @@
+/**
+ * Performance Optimizations for Presentation
+ * Reduces CPU usage by disabling/optimizing expensive animations
+ *
+ * Add this AFTER shared.css in your HTML:
+ * <link rel="stylesheet" href="performance-optimizations.css">
+ */
+
+/* =============================================================
+   DISABLE EXPENSIVE VISUAL EFFECTS
+   ============================================================= */
+
+/* Disable cybernetic grid pattern overlay (VERY expensive on large screens) */
+.reveal::before {
+  display: none !important;
+}
+
+/* Disable text shadows with glow effects (expensive for many headings) */
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  text-shadow: none !important;
+}
+
+/* CRITICAL: Disable backdrop-filter blur (EXTREMELY CPU intensive) */
+* {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Reduce box-shadow complexity (many layered shadows are expensive) */
+.card,
+.box,
+.code-block-wrapper,
+pre {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Disable scanline animations (expensive) */
+.scanline,
+.scan-line,
+.header-scan,
+[class*="scanline"] {
+  animation: none !important;
+  display: none;
+}
+
+/* Reduce bracket pulse frequency (or disable) */
+.code-corner-tl,
+.code-corner-tr,
+.code-corner-bl,
+.code-corner-br {
+  animation: none !important; /* Disable pulsing brackets */
+}
+
+/* Disable holographic shimmer on hover */
+.reveal pre:hover code {
+  animation: none !important;
+}
+
+/* Reduce pulse effects - make them less frequent */
+.data-indicator,
+.status-dot,
+[class*="pulse"] {
+  animation-duration: 4s !important; /* Slower = less CPU */
+  animation-iteration-count: infinite !important;
+}
+
+/* =============================================================
+   OPTIMIZE REMAINING ANIMATIONS WITH GPU ACCELERATION
+   ============================================================= */
+
+/* Use transform and opacity for hardware acceleration */
+.presentation-header,
+.presentation-footer,
+.card,
+.box {
+  will-change: auto; /* Remove will-change when not animating */
+}
+
+/* Only enable hardware acceleration during transitions */
+.card:hover,
+.box:hover {
+  will-change: transform;
+}
+
+/* =============================================================
+   DISABLE ANIMATIONS ON LOW-PERFORMANCE DEVICES
+   ============================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =============================================================
+   REDUCE JAVASCRIPT RE-RENDERING
+   ============================================================= */
+
+/* Prevent layout thrashing by using transform instead of top/left */
+.reveal .slides {
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+/* Optimize code blocks */
+.reveal pre {
+  contain: layout style paint; /* CSS containment for better performance */
+  transform: translateZ(0); /* Force GPU layer */
+}
+
+/* =============================================================
+   ULTRA PERFORMANCE MODE - Enable if still experiencing issues
+   ============================================================= */
+
+/* Force simple rendering (no animations, transitions, or effects) */
+*, *::before, *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+}
+
+/* =============================================================
+   OPTIONAL: NUCLEAR OPTION (only if ultra mode isn't enough)
+   Uncomment to completely flatten all visual effects
+   ============================================================= */
+
+/*
+* {
+  box-shadow: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+*/

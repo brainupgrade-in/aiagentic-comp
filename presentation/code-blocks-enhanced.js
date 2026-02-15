@@ -211,6 +211,9 @@
       setupCopyButtons();
     });
 
+    // PERFORMANCE: Only enhance on slidechanged if needed (fragments, dynamic content)
+    // Most presentations don't need this, so commenting out to reduce CPU usage
+    /*
     Reveal.on('slidechanged', () => {
       // Small delay to ensure content is rendered
       setTimeout(() => {
@@ -218,6 +221,7 @@
         setupCopyButtons();
       }, 100);
     });
+    */
   }
 
 })();

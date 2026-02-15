@@ -595,6 +595,59 @@
         color: inherit;
       }
     }
+
+    /* =============================================================
+       PERFORMANCE OPTIMIZATIONS - Reduce CPU Usage
+       ============================================================= */
+
+    /* Disable expensive grid pattern overlay */
+    body::before {
+      display: none !important;
+    }
+
+    /* Disable expensive scan line animation */
+    body::after {
+      display: none !important;
+    }
+
+    /* CRITICAL: Disable backdrop-filter blur (EXTREMELY CPU intensive) */
+    .session-card {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background: rgba(17, 25, 39, 0.8) !important;
+    }
+
+    /* Disable pulsing dot animation on cards */
+    .session-card::after {
+      animation: none !important;
+      opacity: 0.6 !important;
+    }
+
+    /* Disable text shadows with glow */
+    header h1,
+    .stat-value {
+      text-shadow: none !important;
+    }
+
+    /* Simplify box-shadows (reduce layered shadows) */
+    .session-card,
+    .day-badge {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Disable all animations and transitions for maximum performance */
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0s !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.2s !important; /* Keep minimal transitions for UX */
+    }
+
+    /* Keep hover effects but without animations */
+    .session-card:hover {
+      transition: all 0.2s ease !important;
+    }
   </style>
 </head>
 
