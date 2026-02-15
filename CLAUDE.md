@@ -177,7 +177,7 @@ Oracle/
 
 ## Groq API Notes
 
-- Free tier: 30 requests/minute, 14,400 requests/day per API key
+- Free tier: ~1,000 requests/minute, ~250K tokens/minute per API key
 - Each participant must create their own key at https://console.groq.com
 - Env var: `GROQ_API_KEY` in `.env` (copy from `.env.example` at project root)
 - LangChain integration: `langchain-groq` package, `ChatGroq` class
@@ -299,7 +299,7 @@ Common issues and solutions with 16 GB RAM environment:
 - **High memory usage:** Run `bash scripts/check-resources.sh` to check current usage. With 16 GB RAM, OOM is unlikely unless multiple large models are loaded simultaneously.
 - **Disk space:** Check for large Ollama models: `du -sh ~/.ollama/models`. Remove unused models: `ollama rm <model-name>`. Clean temp files in `/tmp/`.
 - **ChromaDB issues:** ChromaDB runs in-process (no server needed for small datasets). Check for file lock issues or permission errors.
-- **Groq rate limit (429):** Free tier: 30 requests/minute, 14,400 requests/day. Wait 60 seconds and retry. If the entire class hits limits simultaneously, stagger lab start times by a few minutes.
+- **Groq rate limit (429):** Free tier: ~1,000 requests/minute, ~250K tokens/minute. Wait 60 seconds and retry. If the entire class hits limits simultaneously, stagger lab start times by a few minutes.
 - **Port conflicts:** If port 8000 or 11434 is in use, check running processes: `sudo lsof -i :8000` or `sudo lsof -i :11434`. Stop conflicting services or change port in configuration.
 - **Python package conflicts:** Use virtual environment: `python3 -m venv .venv && source .venv/bin/activate`. Reinstall requirements: `pip install -r requirements.txt`.
 

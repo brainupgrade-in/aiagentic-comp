@@ -60,7 +60,7 @@
           <div class="card card-accent">
             <h4>Legal Risk</h4>
             <ul>
-              <li>PII leakage violating GDPR, CCPA, HIPAA</li>
+              <li>PII leakage violating GDPR, CCPA, HIPAA, DPDPA</li>
               <li>Regulatory non-compliance in regulated industries</li>
               <li>Liability from automated decisions</li>
             </ul>
@@ -767,7 +767,63 @@ class GuardPipeline:
         </div>
       </section>
 
-      <!-- ==================== SLIDE 18: SESSION RECAP ==================== -->
+      <!-- ==================== SLIDE 18: DATA PROTECTION REGULATIONS ==================== -->
+      <section>
+        <h2>Data Protection &amp; AI Compliance</h2>
+        <p class="text-base-dim">Key regulations your AI systems must comply with</p>
+        <table class="compare-table">
+          <tr>
+            <th>Regulation</th>
+            <th>Jurisdiction</th>
+            <th>AI-Relevant Requirements</th>
+          </tr>
+          <tr>
+            <td><span class="highlight">DPDPA 2023</span></td>
+            <td>India</td>
+            <td>Consent-based processing, data principal rights, Data Protection Board oversight, significant penalties (up to &rupee;250 crore)</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-green">GDPR</span></td>
+            <td>EU / EEA</td>
+            <td>Right to explanation for automated decisions (Art. 22), data minimization, DPO requirement, 72-hour breach notification</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-orange">CCPA / CPRA</span></td>
+            <td>California, USA</td>
+            <td>Opt-out of automated decision-making, right to know what data is collected, delete on request</td>
+          </tr>
+          <tr>
+            <td><span class="highlight-red">HIPAA</span></td>
+            <td>USA (Healthcare)</td>
+            <td>PHI cannot be used in LLM training or prompts without de-identification, audit trail required</td>
+          </tr>
+        </table>
+        <div class="card-grid mt-14">
+          <div class="card card-accent p-14">
+            <h4>What This Means for AI Agents</h4>
+            <ul>
+              <li><strong>PII in prompts:</strong> Never send personal data to LLMs without consent and purpose limitation</li>
+              <li><strong>Automated decisions:</strong> Provide human review option for consequential AI decisions</li>
+              <li><strong>Audit trails:</strong> Log every AI decision with input/output for regulatory review</li>
+              <li><strong>Data residency:</strong> Know where your LLM provider processes data (DPDPA requires India-aware processing)</li>
+            </ul>
+          </div>
+          <div class="card card-green p-14">
+            <h4>Practical Guardrails</h4>
+            <ul>
+              <li><strong>Pre-guard:</strong> Strip PII before sending to external LLMs (names, Aadhaar, PAN, phone numbers)</li>
+              <li><strong>Post-guard:</strong> Scan outputs for leaked personal data before returning to users</li>
+              <li><strong>LangFuse tracing:</strong> Full request/response logging for compliance audits</li>
+              <li><strong>Consent tracking:</strong> Record user consent before AI-assisted processing of their data</li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes">
+          Key teaching point: DPDPA 2023 is India's comprehensive data protection law, effective 2023. It applies to all digital personal data processing in India. For AI applications, the key implications are: (1) you need consent before processing personal data through LLMs, (2) data principals have the right to know how their data is used in automated systems, (3) significant financial penalties for non-compliance. Ask the audience: "Does your team have a process for ensuring PII doesn't leak into LLM prompts? How would you implement that?"
+        </aside>
+      </section>
+
+      <!-- ==================== SLIDE 19: SESSION RECAP ==================== -->
       <section>
         <h2>Session 14 Recap</h2>
         <div class="flow-step">
@@ -785,6 +841,10 @@ class GuardPipeline:
         <div class="flow-step">
           <span class="flow-num" style="background:var(--accent4);">4</span>
           <div><strong class="color-red">Monitoring &amp; Red Teaming</strong> &mdash; Safety metrics, dashboard panels, red team methodology, scoring framework, production readiness gates</div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-num" style="background:var(--accent);">5</span>
+          <div><strong class="color-accent">Compliance</strong> &mdash; DPDPA 2023 (India), GDPR (EU), CCPA (US), HIPAA (Healthcare) &mdash; PII handling, consent, audit trails, data residency</div>
         </div>
         <div class="takeaway mt-16">
           AI safety is not a feature &mdash; it is a <span class="highlight">requirement</span>. Build guardrails from day one, monitor continuously, red team regularly, and never deploy without a safety checklist.

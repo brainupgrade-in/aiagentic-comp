@@ -174,6 +174,68 @@
           </p>
         </section>
 
+        <!-- WHERE AI SERVICES FIT IN YOUR ENTERPRISE -->
+        <section>
+          <h2>Where AI Services Fit</h2>
+          <p class="subtitle">How Python AI agents integrate with your existing enterprise stack</p>
+          <div class="diagram mt-16">
+            <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+              <div class="box box-green" style="min-width:320px;">
+                <strong class="color-green">Your Existing Services</strong><br>
+                <span class="text-080">Java / Spring Boot / Microservices</span>
+              </div>
+              <div style="display:flex; gap:20px; align-items:center;">
+                <span class="text-080 color-dim">&darr; REST / gRPC &darr;</span>
+              </div>
+              <div class="box box-large" style="min-width:320px; border-color:var(--accent);">
+                <strong class="color-accent">AI Agent Service</strong><br>
+                <span class="text-080">Python &middot; FastAPI &middot; LangChain &middot; LangGraph</span>
+              </div>
+              <div style="display:flex; gap:20px; align-items:center;">
+                <span class="text-080 color-dim">&darr; LLM API &darr;</span>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <div class="box box-orange" style="padding:8px 14px;">
+                  <strong>Groq</strong><br>
+                  <span class="text-080">Cloud LLM</span>
+                </div>
+                <div class="box" style="padding:8px 14px;">
+                  <strong>Ollama</strong><br>
+                  <span class="text-080">Local LLM</span>
+                </div>
+                <div class="box box-red" style="padding:8px 14px;">
+                  <strong>OpenAI</strong><br>
+                  <span class="text-080">Cloud LLM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-grid mt-14">
+            <div class="card card-green p-14">
+              <h4>Your Side (Java / Spring Boot)</h4>
+              <ul>
+                <li>Call AI service via REST endpoint</li>
+                <li>Send user query, receive structured response</li>
+                <li>No Python knowledge needed by Java devs</li>
+              </ul>
+            </div>
+            <div class="card card-accent p-14">
+              <h4>AI Service Side (Python)</h4>
+              <ul>
+                <li>FastAPI exposes <code>/api/ask</code> endpoint</li>
+                <li>LangGraph orchestrates agent workflows</li>
+                <li>LangFuse traces every request for observability</li>
+              </ul>
+            </div>
+          </div>
+          <div class="takeaway">
+            AI agents are <strong>just another microservice</strong> in your architecture. Your Java services call them over REST &mdash; same patterns you already use for service-to-service communication.
+          </div>
+          <aside class="notes">
+            Key teaching point: Participants likely work with Java/Spring Boot microservices. The AI agent is NOT a replacement — it's an additional service that sits alongside existing infrastructure. Communication is via standard REST APIs (or gRPC). On Day 4 (Session 11) you'll build the FastAPI endpoint; today we focus on the LangChain internals that power it. Ask the audience: "How many microservices does your team currently maintain? The AI agent is just one more."
+          </aside>
+        </section>
+
         <!-- DESIGN PHILOSOPHY -->
         <section>
           <h2>Core Design Philosophy</h2>
@@ -354,7 +416,7 @@ print(response.content)</code></pre>
             <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - Day 2 onwards
 from langchain_groq import ChatGroq
 
-llm = ChatGroq(model="mixtral-8x7b-32768")
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 response = llm.invoke("What is Python?")
 print(response.content)</code></pre>
           </div>
