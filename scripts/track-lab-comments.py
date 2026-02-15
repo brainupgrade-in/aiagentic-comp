@@ -118,6 +118,26 @@ def parse_issue_title(title):
         return int(match.group(1)), int(match.group(2))
     return None, None
 
+def extract_participant_name(comment_body):
+    """Extract participant name from comment body.
+
+    Looks for pattern: **Participant:** name (email) or **Participant:** name
+    Returns the name portion, or None if not found.
+    """
+    # Pattern to match: **Participant:** name (email) or **Participant:** name
+    patterns = [
+        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',  # name (email)
+        r'\*\*Participant:\*\*\s+([^\n]+)',  # just name
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, comment_body)
+        if match:
+            name = match.group(1).strip()
+            return name
+
+    return None
+
 def is_completion_comment(comment_body):
     """Check if comment indicates lab completion."""
     # Look for completion markers
@@ -155,18 +175,25 @@ def build_completion_matrix(token, issues):
 
         completed_by = []
         for comment in comments:
-            author = comment.get("user", {}).get("login", "")
+            github_author = comment.get("user", {}).get("login", "")
             body = comment.get("body", "")
             created_at = comment.get("created_at", "")
 
             # Skip bot comments
-            if author.endswith("[bot]"):
+            if github_author.endswith("[bot]"):
                 continue
 
             # Check if this is a completion comment
             if is_completion_comment(body):
+                # Extract participant name from comment body
+                participant_name = extract_participant_name(body)
+
+                # If no participant name found, fall back to GitHub username
+                if not participant_name:
+                    participant_name = github_author
+
                 completed_by.append({
-                    "author": author,
+                    "author": participant_name,
                     "date": created_at,
                     "comment_url": comment.get("html_url", "")
                 })

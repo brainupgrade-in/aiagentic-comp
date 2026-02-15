@@ -102,6 +102,27 @@ def parse_issue_title(title):
         return int(match.group(1)), int(match.group(2))
     return None, None
 
+def extract_participant_name(comment_body):
+    """Extract participant name from comment body.
+
+    Looks for pattern: **Participant:** name (email) or **Participant:** name
+    Returns the name portion, or None if not found.
+    """
+    import re
+    # Pattern to match: **Participant:** name (email) or **Participant:** name
+    patterns = [
+        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',  # name (email)
+        r'\*\*Participant:\*\*\s+([^\n]+)',  # just name
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, comment_body)
+        if match:
+            name = match.group(1).strip()
+            return name
+
+    return None
+
 def is_completion_comment(comment_body):
     """Check if comment indicates lab completion."""
     import re
@@ -131,18 +152,26 @@ def build_completion_data(token, issues):
         comments = fetch_issue_comments(token, issue_number)
 
         for comment in comments:
-            author = comment.get("user", {}).get("login", "")
+            github_author = comment.get("user", {}).get("login", "")
             body = comment.get("body", "")
             created_at = comment.get("created_at", "")
 
-            if author.endswith("[bot]"):
+            # Skip bot comments
+            if github_author.endswith("[bot]"):
                 continue
 
             if is_completion_comment(body):
-                if session_num not in completion_matrix[author]:
-                    completion_matrix[author][session_num] = {}
+                # Extract participant name from comment body
+                participant_name = extract_participant_name(body)
 
-                completion_matrix[author][session_num][lab_num] = {
+                # If no participant name found, fall back to GitHub username
+                if not participant_name:
+                    participant_name = github_author
+
+                if session_num not in completion_matrix[participant_name]:
+                    completion_matrix[participant_name][session_num] = {}
+
+                completion_matrix[participant_name][session_num][lab_num] = {
                     "issue_number": issue_number,
                     "completed_date": created_at,
                 }
@@ -197,6 +226,7 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin-bottom: 20px;
+            position: relative;
         }}
 
         .header h1 {{
@@ -214,6 +244,144 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             color: #a0aec0;
             font-size: 0.9em;
             margin-top: 10px;
+        }}
+
+        .refresh-btn {{
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }}
+
+        .refresh-btn:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }}
+
+        .refresh-btn:active {{
+            transform: translateY(0);
+        }}
+
+        .refresh-btn.refreshing {{
+            opacity: 0.7;
+            cursor: not-allowed;
+        }}
+
+        .refresh-icon {{
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }}
+
+        .refresh-btn.refreshing .refresh-icon {{
+            animation: spin 1s linear infinite;
+        }}
+
+        @keyframes spin {{
+            from {{ transform: rotate(0deg); }}
+            to {{ transform: rotate(360deg); }}
+        }}
+
+        .filter-container {{
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }}
+
+        .filter-input {{
+            flex: 1;
+            max-width: 400px;
+            padding: 12px 16px;
+            padding-left: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: white;
+        }}
+
+        .filter-input:focus {{
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }}
+
+        .filter-wrapper {{
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+        }}
+
+        .filter-icon {{
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 1.1em;
+        }}
+
+        .filter-clear {{
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 4px;
+            display: none;
+            transition: color 0.2s ease;
+        }}
+
+        .filter-clear:hover {{
+            color: #718096;
+        }}
+
+        .filter-clear.visible {{
+            display: block;
+        }}
+
+        .filter-stats {{
+            color: #718096;
+            font-size: 0.9em;
+            padding: 8px 16px;
+            background: #f7fafc;
+            border-radius: 6px;
+        }}
+
+        .no-results {{
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+            font-size: 1.1em;
+        }}
+
+        .no-results-icon {{
+            font-size: 3em;
+            margin-bottom: 10px;
+        }}
+
+        tr.hidden {{
+            display: none;
+        }}
+
+        .session-section.hidden {{
+            display: none;
         }}
 
         .stats-grid {{
@@ -434,6 +602,10 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
 <body>
     <div class="container">
         <div class="header">
+            <button class="refresh-btn" onclick="refreshDashboard()">
+                <span class="refresh-icon">🔄</span>
+                <span>Refresh</span>
+            </button>
             <h1>📊 Lab Submission Dashboard</h1>
             <div class="subtitle">Agentic AI Course - Real-time Completion Tracking</div>
             <div class="last-updated">Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
@@ -469,11 +641,21 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
 """
 
     # Completion Matrix
-    html += """
+    html += f"""
         <div class="section">
             <h2>Completion Matrix</h2>
+            <div class="filter-container">
+                <div class="filter-wrapper">
+                    <span class="filter-icon">🔍</span>
+                    <input type="text" id="userFilter" class="filter-input" placeholder="Filter by participant name...">
+                    <button class="filter-clear" id="userFilterClear" onclick="clearUserFilter()">✕</button>
+                </div>
+                <div class="filter-stats">
+                    <span id="userFilterStats">Showing <strong id="visibleUsers">{len(participants)}</strong> of <strong>{len(participants)}</strong> participants</span>
+                </div>
+            </div>
             <div class="completion-matrix">
-                <table>
+                <table id="completionTable">
                     <thead>
                         <tr>
                             <th>Participant</th>
@@ -527,9 +709,19 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
 """
 
     # Session Details
-    html += """
+    html += f"""
         <div class="section">
             <h2>Session Details</h2>
+            <div class="filter-container">
+                <div class="filter-wrapper">
+                    <span class="filter-icon">🔍</span>
+                    <input type="text" id="sessionFilter" class="filter-input" placeholder="Filter by session name or number...">
+                    <button class="filter-clear" id="sessionFilterClear" onclick="clearSessionFilter()">✕</button>
+                </div>
+                <div class="filter-stats">
+                    <span id="sessionFilterStats">Showing <strong id="visibleSessions">15</strong> of <strong>15</strong> sessions</span>
+                </div>
+            </div>
 """
 
     for session_num in range(1, 16):
@@ -597,6 +789,138 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
 
     html += """        </div>
     </div>
+
+    <script>
+        function refreshDashboard() {{
+            const btn = document.querySelector('.refresh-btn');
+            btn.classList.add('refreshing');
+            btn.disabled = true;
+
+            // Show loading state
+            btn.querySelector('span:last-child').textContent = 'Refreshing...';
+
+            // Reload the page after a brief moment to show the animation
+            setTimeout(() => {{
+                window.location.reload();
+            }}, 300);
+        }}
+
+        // User filter for Completion Matrix
+        function filterUsers() {{
+            const input = document.getElementById('userFilter');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('completionTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            const clearBtn = document.getElementById('userFilterClear');
+
+            let visibleCount = 0;
+
+            for (let i = 0; i < rows.length; i++) {{
+                const participantCell = rows[i].getElementsByClassName('participant-name')[0];
+                if (participantCell) {{
+                    const participantName = participantCell.textContent || participantCell.innerText;
+                    if (participantName.toLowerCase().indexOf(filter) > -1) {{
+                        rows[i].classList.remove('hidden');
+                        visibleCount++;
+                    }} else {{
+                        rows[i].classList.add('hidden');
+                    }}
+                }}
+            }}
+
+            // Update stats
+            document.getElementById('visibleUsers').textContent = visibleCount;
+
+            // Show/hide clear button
+            if (filter) {{
+                clearBtn.classList.add('visible');
+            }} else {{
+                clearBtn.classList.remove('visible');
+            }}
+        }}
+
+        function clearUserFilter() {{
+            document.getElementById('userFilter').value = '';
+            filterUsers();
+            document.getElementById('userFilter').focus();
+        }}
+
+        // Session filter for Session Details
+        function filterSessions() {{
+            const input = document.getElementById('sessionFilter');
+            const filter = input.value.toLowerCase();
+            const sections = document.getElementsByClassName('session-section');
+            const clearBtn = document.getElementById('sessionFilterClear');
+
+            let visibleCount = 0;
+
+            for (let i = 0; i < sections.length; i++) {{
+                const titleElement = sections[i].getElementsByClassName('session-title')[0];
+                if (titleElement) {{
+                    const titleText = titleElement.textContent || titleElement.innerText;
+                    if (titleText.toLowerCase().indexOf(filter) > -1) {{
+                        sections[i].classList.remove('hidden');
+                        visibleCount++;
+                    }} else {{
+                        sections[i].classList.add('hidden');
+                    }}
+                }}
+            }}
+
+            // Update stats
+            document.getElementById('visibleSessions').textContent = visibleCount;
+
+            // Show/hide clear button
+            if (filter) {{
+                clearBtn.classList.add('visible');
+            }} else {{
+                clearBtn.classList.remove('visible');
+            }}
+        }}
+
+        function clearSessionFilter() {{
+            document.getElementById('sessionFilter').value = '';
+            filterSessions();
+            document.getElementById('sessionFilter').focus();
+        }}
+
+        // Initialize filters on page load
+        document.addEventListener('DOMContentLoaded', function() {{
+            const userFilter = document.getElementById('userFilter');
+            const sessionFilter = document.getElementById('sessionFilter');
+
+            // Add real-time filtering
+            userFilter.addEventListener('input', filterUsers);
+            sessionFilter.addEventListener('input', filterSessions);
+
+            // Add Enter key support
+            userFilter.addEventListener('keydown', (e) => {{
+                if (e.key === 'Escape') {{
+                    clearUserFilter();
+                }}
+            }});
+
+            sessionFilter.addEventListener('keydown', (e) => {{
+                if (e.key === 'Escape') {{
+                    clearSessionFilter();
+                }}
+            }});
+        }});
+
+        // Optional: Add keyboard shortcut (Ctrl+R or F5 already work, but this adds Ctrl+Shift+R for manual refresh)
+        document.addEventListener('keydown', (e) => {{
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {{
+                e.preventDefault();
+                refreshDashboard();
+            }}
+
+            // Quick focus shortcuts
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {{
+                e.preventDefault();
+                document.getElementById('userFilter').focus();
+            }}
+        }});
+    </script>
 </body>
 </html>
 """
