@@ -63,8 +63,9 @@ Session: 1
 Lab: 1
 Issue Number: #1
 
-Detecting your GitHub username...
-✓ GitHub username: johndoe
+Detecting your information...
+✓ Username: johndoe
+✓ Email: johndoe@example.com
 
 ✓ GitHub CLI authenticated
 
@@ -73,7 +74,7 @@ Comment Preview:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✅ Completed
 
-**Participant:** johndoe
+**Participant:** johndoe (johndoe@example.com)
 **Validation:** All checks passed
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -148,20 +149,27 @@ Session 2 Lab 5 → Issue #11
 etc.
 ```
 
-### Username Detection
+### Username & Email Detection
 
 The script tries these methods in order:
 
-1. **GitHub CLI:** `gh api user --jq '.login'`
-2. **Git config:** `git config --get user.name`
+1. **Repository git config (preferred):** `git config --local user.name` and `user.email`
+2. **GitHub CLI:** `gh api user --jq '.login'` (username only)
+3. **Global git config (fallback):** `git config --global user.name` and `user.email`
 
-**Set your username:**
+**Set your information (recommended - repository-level):**
 ```bash
-# Option 1: Authenticate with gh (recommended)
-gh auth login
+# Navigate to course repository
+cd ~/aiagentic-comp
 
-# Option 2: Set git config
-git config --global user.name "your-github-username"
+# Set repository-specific username and email
+git config user.name "your-github-username"
+git config user.email "your-email@example.com"
+```
+
+**Alternatively, authenticate with GitHub CLI:**
+```bash
+gh auth login
 ```
 
 ---

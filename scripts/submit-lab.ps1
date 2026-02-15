@@ -71,35 +71,48 @@ Write-Host "Issue Number: " -NoNewline -ForegroundColor Blue
 Write-Host "#$IssueNumber"
 Write-Host ""
 
-# Detect GitHub username
-Write-Host "Detecting your GitHub username..." -ForegroundColor Yellow
+# Detect GitHub username and email
+Write-Host "Detecting your information..." -ForegroundColor Yellow
 
 $Username = ""
+$Email = ""
 
-# Try gh CLI first
+# 1st preference: Repository-level git config
 try {
-    $ghPath = Get-Command gh -ErrorAction SilentlyContinue
-    if ($ghPath) {
-        $Username = (gh api user --jq '.login' 2>$null)
-    }
+    $Username = (git config --local user.name 2>$null)
+    $Email = (git config --local user.email 2>$null)
 } catch {
-    # gh CLI not available or not authenticated
+    # Repository config not set
 }
 
-# Fallback to git config
+# 2nd preference: Global git config (if not found in repo)
 if ([string]::IsNullOrWhiteSpace($Username)) {
     try {
-        $Username = (git config --get user.name 2>$null)
+        $Username = (git config --global user.name 2>$null)
+        $Email = (git config --global user.email 2>$null)
     } catch {
-        # git config not set
+        # Global config not set
+    }
+}
+
+# 3rd preference: GitHub CLI (last resort, username only)
+if ([string]::IsNullOrWhiteSpace($Username)) {
+    try {
+        $ghPath = Get-Command gh -ErrorAction SilentlyContinue
+        if ($ghPath) {
+            $Username = (gh api user --jq '.login' 2>$null)
+        }
+    } catch {
+        # gh CLI not available or not authenticated
     }
 }
 
 if ([string]::IsNullOrWhiteSpace($Username)) {
     Write-Host "Error: Could not detect GitHub username" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Please set your GitHub username:"
-    Write-Host "  git config --global user.name `"your-github-username`""
+    Write-Host "Please set your username in this repository:"
+    Write-Host "  git config user.name `"your-github-username`""
+    Write-Host "  git config user.email `"your-email@example.com`""
     Write-Host ""
     Write-Host "Or authenticate with GitHub CLI:"
     Write-Host "  gh auth login"
@@ -107,7 +120,10 @@ if ([string]::IsNullOrWhiteSpace($Username)) {
     exit 1
 }
 
-Write-Host "✓ GitHub username: $Username" -ForegroundColor Green
+Write-Host "✓ Username: $Username" -ForegroundColor Green
+if (![string]::IsNullOrWhiteSpace($Email)) {
+    Write-Host "✓ Email: $Email" -ForegroundColor Green
+}
 Write-Host ""
 
 # Check if gh CLI is available
@@ -142,10 +158,15 @@ Write-Host "✓ GitHub CLI authenticated" -ForegroundColor Green
 Write-Host ""
 
 # Build comment body
+$ParticipantInfo = $Username
+if (![string]::IsNullOrWhiteSpace($Email)) {
+    $ParticipantInfo += " ($Email)"
+}
+
 $CommentBody = @"
 ✅ Completed
 
-**Participant:** $Username
+**Participant:** $ParticipantInfo
 **Validation:** All checks passed
 "@
 

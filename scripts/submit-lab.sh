@@ -89,26 +89,33 @@ echo -e "${BLUE}Lab:${NC} $LAB"
 echo -e "${BLUE}Issue Number:${NC} #$ISSUE_NUMBER"
 echo ""
 
-# Detect GitHub username
-echo -e "${YELLOW}Detecting your GitHub username...${NC}"
+# Detect GitHub username and email
+echo -e "${YELLOW}Detecting your information...${NC}"
 
 USERNAME=""
+EMAIL=""
 
-# Try gh CLI first
-if command -v gh &> /dev/null; then
-    USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
+# 1st preference: Repository-level git config
+USERNAME=$(git config --local user.name 2>/dev/null || echo "")
+EMAIL=$(git config --local user.email 2>/dev/null || echo "")
+
+# 2nd preference: Global git config (if not found in repo)
+if [ -z "$USERNAME" ]; then
+    USERNAME=$(git config --global user.name 2>/dev/null || echo "")
+    EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 fi
 
-# Fallback to git config
-if [ -z "$USERNAME" ]; then
-    USERNAME=$(git config --get user.name 2>/dev/null || echo "")
+# 3rd preference: GitHub CLI (last resort, username only)
+if [ -z "$USERNAME" ] && command -v gh &> /dev/null; then
+    USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
 fi
 
 if [ -z "$USERNAME" ]; then
     echo -e "${RED}Error: Could not detect GitHub username${NC}"
     echo ""
-    echo "Please set your GitHub username:"
-    echo "  git config --global user.name \"your-github-username\""
+    echo "Please set your username in this repository:"
+    echo "  git config user.name \"your-github-username\""
+    echo "  git config user.email \"your-email@example.com\""
     echo ""
     echo "Or authenticate with GitHub CLI:"
     echo "  gh auth login"
@@ -116,7 +123,10 @@ if [ -z "$USERNAME" ]; then
     exit 1
 fi
 
-echo -e "${GREEN}✓ GitHub username: $USERNAME${NC}"
+echo -e "${GREEN}✓ Username: $USERNAME${NC}"
+if [ -n "$EMAIL" ]; then
+    echo -e "${GREEN}✓ Email: $EMAIL${NC}"
+fi
 echo ""
 
 # Check if gh CLI is authenticated
@@ -146,7 +156,13 @@ echo ""
 # Build comment body
 COMMENT_BODY="✅ Completed
 
-**Participant:** $USERNAME
+**Participant:** $USERNAME"
+
+if [ -n "$EMAIL" ]; then
+    COMMENT_BODY="$COMMENT_BODY ($EMAIL)"
+fi
+
+COMMENT_BODY="$COMMENT_BODY
 **Validation:** All checks passed"
 
 if [ -n "$NOTES" ]; then
