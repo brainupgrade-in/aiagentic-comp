@@ -1,0 +1,930 @@
+/* =============================================================
+   HIGH CONTRAST PRINT STYLESHEET — Agentic AI Course Presentations
+   MAXIMUM READABILITY VERSION with improved contrast and visibility
+   Auto-included via media="print" in all session HTML files
+   ============================================================= */
+
+/* =============================================================
+   PRINT-SPECIFIC VARIABLES — HIGH CONTRAST
+   ============================================================= */
+@media print {
+  :root {
+    /* HIGH CONTRAST colors for maximum readability */
+    --print-accent: #003d99;           /* Darker blue (stronger on paper) */
+    --print-text-primary: #000000;     /* Pure black for maximum readability */
+    --print-text-secondary: #333333;   /* Dark gray (still very readable) */
+    --print-border: #666666;           /* Medium gray borders (more visible) */
+    --print-border-strong: #333333;    /* Dark borders for emphasis */
+    --print-bg-light: #e8e8e8;         /* Light gray for code blocks (stronger contrast) */
+    --print-bg-medium: #d0d0d0;        /* Medium gray for stronger backgrounds */
+    --print-bg-card: #ffffff;          /* White for cards */
+
+    /* Accent colors for different card types (darker, higher contrast) */
+    --print-accent-green: #004d26;     /* Darker green */
+    --print-accent-orange: #993d00;    /* Darker orange */
+    --print-accent-red: #990000;       /* Darker red */
+    --print-accent-purple: #4d2699;    /* Darker purple */
+  }
+
+  /* =============================================================
+     PAGE SETUP & MARGINS
+     ============================================================= */
+  @page {
+    size: A4 portrait;
+    margin: 1.5cm 1.5cm 2cm 1.5cm;
+
+    /* Page headers and footers */
+    @top-left {
+      content: "Agentic AI Course";
+      font-family: 'Inter', sans-serif;
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--print-text-primary);
+    }
+
+    @top-right {
+      content: "© 2026 brainupgrade.in";
+      font-family: 'Inter', sans-serif;
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--print-text-primary);
+    }
+
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: 'Inter', sans-serif;
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--print-text-primary);
+    }
+  }
+
+  /* First page (title slide) - different margins */
+  @page :first {
+    margin-top: 3cm;
+    @top-left { content: none; }
+    @top-right { content: none; }
+  }
+
+  /* =============================================================
+     REVEAL.JS OVERRIDES - SHOW ALL SLIDES
+     ============================================================= */
+
+  /* Reset Reveal.js viewport to show all slides vertically */
+  html {
+    width: 100% !important;
+    height: 100% !important;
+    font-size: 12pt !important;
+    overflow: visible !important;
+  }
+
+  body {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .reveal {
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+    transform: none !important;
+    background: white !important;
+    font-size: 11.5pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .reveal .slides {
+    width: 100% !important;
+    height: auto !important;
+    position: static !important;
+    transform: none !important;
+    zoom: 1 !important;
+    overflow: visible !important;
+    left: auto !important;
+    top: auto !important;
+    text-align: left !important;
+  }
+
+  /* Show all slides */
+  .reveal .slides section {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    page-break-after: always !important;
+    page-break-inside: avoid !important;
+    padding: 1.5cm 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Nested vertical slides - also show all */
+  .reveal .slides section section {
+    page-break-after: always !important;
+    padding: 1cm 0 !important;
+  }
+
+  /* Last slide in a section - avoid extra page break */
+  .reveal .slides section:last-child,
+  .reveal .slides section section:last-child {
+    page-break-after: auto !important;
+  }
+
+  /* =============================================================
+     HIDE INTERACTIVE/SCREEN-ONLY ELEMENTS
+     ============================================================= */
+
+  /* Hide Reveal.js UI controls */
+  .reveal .controls,
+  .reveal .progress,
+  .reveal .slide-number,
+  .reveal .playback,
+  .reveal .backgrounds,
+  .reveal .slide-background {
+    display: none !important;
+  }
+
+  /* Hide custom header/footer (replaced by @page rules) */
+  .presentation-header,
+  .presentation-footer,
+  .header-home-btn,
+  .footer-branding,
+  .status-indicator,
+  .scanline {
+    display: none !important;
+  }
+
+  /* Hide speaker notes */
+  aside.notes {
+    display: none !important;
+  }
+
+  /* Hide any video/iframe elements */
+  video, iframe {
+    display: none !important;
+  }
+
+  /* =============================================================
+     TYPOGRAPHY - OPTIMIZED FOR PRINT (HIGH CONTRAST)
+     ============================================================= */
+
+  .reveal h1 {
+    font-size: 26pt !important;
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+    text-shadow: none !important;
+    margin: 0 0 0.6cm 0 !important;
+    padding: 0 0 0.4cm 0 !important;
+    border-bottom: 4pt solid var(--print-accent) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    line-height: 1.2 !important;
+    page-break-after: avoid !important;
+  }
+
+  .reveal h2 {
+    font-size: 18pt !important;
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+    text-shadow: none !important;
+    margin: 0.8cm 0 0.4cm 0 !important;
+    padding: 0 0 0.3cm 0 !important;
+    border-bottom: 3pt solid var(--print-accent) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    line-height: 1.3 !important;
+    page-break-after: avoid !important;
+  }
+
+  .reveal h3 {
+    font-size: 14pt !important;
+    font-weight: 800 !important;
+    color: var(--print-text-primary) !important;
+    text-shadow: none !important;
+    margin: 0.5cm 0 0.3cm 0 !important;
+    padding: 0 0 0.1cm 0.4cm !important;
+    border-left: 5pt solid var(--print-accent) !important;
+    text-transform: none !important;
+    line-height: 1.3 !important;
+    page-break-after: avoid !important;
+  }
+
+  .reveal h4 {
+    font-size: 12pt !important;
+    font-weight: 800 !important;
+    color: var(--print-text-primary) !important;
+    text-shadow: none !important;
+    margin: 0.4cm 0 0.2cm 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    line-height: 1.3 !important;
+    page-break-after: avoid !important;
+  }
+
+  .reveal p {
+    font-size: 11.5pt !important;
+    color: var(--print-text-primary) !important;
+    margin: 0 0 0.4cm 0 !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+  }
+
+  .reveal ul,
+  .reveal ol {
+    margin: 0.3cm 0 0.5cm 1cm !important;
+    line-height: 1.7 !important;
+  }
+
+  .reveal li {
+    font-size: 11.5pt !important;
+    color: var(--print-text-primary) !important;
+    margin: 0.25cm 0 !important;
+    line-height: 1.6 !important;
+  }
+
+  .reveal strong,
+  .reveal b {
+    color: var(--print-text-primary) !important;
+    font-weight: 900 !important;
+  }
+
+  .reveal em,
+  .reveal i {
+    font-style: italic !important;
+  }
+
+  .reveal code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    background: var(--print-bg-light) !important;
+    color: var(--print-text-primary) !important;
+    padding: 0.1cm 0.3cm !important;
+    border: 2pt solid var(--print-border-strong) !important;
+    border-radius: 3pt !important;
+  }
+
+  /* =============================================================
+     SPECIAL TEXT STYLES
+     ============================================================= */
+
+  .subtitle,
+  .text-lg-dim {
+    font-size: 11pt !important;
+    color: var(--print-text-secondary) !important;
+    font-weight: 600 !important;
+    margin: 0.2cm 0 !important;
+  }
+
+  .trainer-info {
+    font-size: 11pt !important;
+    color: var(--print-text-primary) !important;
+    margin: 0.5cm 0 !important;
+    border-top: 2pt solid var(--print-border-strong) !important;
+    padding-top: 0.4cm !important;
+    font-weight: 600 !important;
+  }
+
+  .section-number {
+    font-size: 60pt !important;
+    font-weight: 900 !important;
+    color: var(--print-border) !important;
+    opacity: 0.4 !important;
+    margin: 0 !important;
+    text-shadow: none !important;
+  }
+
+  /* =============================================================
+     CARDS & COMPONENTS (HIGH CONTRAST)
+     ============================================================= */
+
+  .card-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5cm !important;
+    margin: 0.6cm 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .card {
+    background: var(--print-bg-card) !important;
+    border: 3pt solid var(--print-border-strong) !important;
+    border-radius: 6pt !important;
+    padding: 0.5cm !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .card h4 {
+    color: var(--print-text-primary) !important;
+    font-size: 12pt !important;
+    font-weight: 900 !important;
+    margin: 0 0 0.3cm 0 !important;
+    border-left: 6pt solid var(--print-accent) !important;
+    padding-left: 0.4cm !important;
+  }
+
+  .card p {
+    font-size: 10.5pt !important;
+    margin: 0 !important;
+    line-height: 1.5 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  /* Card variants - different border colors (STRONGER, MORE VISIBLE) */
+  .card-accent {
+    border-color: var(--print-accent) !important;
+    border-width: 3.5pt !important;
+  }
+
+  .card-accent h4 {
+    border-left-color: var(--print-accent) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .card-green,
+  .card.green {
+    border-color: var(--print-accent-green) !important;
+    border-width: 3.5pt !important;
+  }
+
+  .card-green h4,
+  .card.green h4 {
+    color: var(--print-text-primary) !important;
+    border-left-color: var(--print-accent-green) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .card-orange,
+  .card.orange {
+    border-color: var(--print-accent-orange) !important;
+    border-width: 3.5pt !important;
+  }
+
+  .card-orange h4,
+  .card.orange h4 {
+    color: var(--print-text-primary) !important;
+    border-left-color: var(--print-accent-orange) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .card-red,
+  .card.red {
+    border-color: var(--print-accent-red) !important;
+    border-width: 3.5pt !important;
+  }
+
+  .card-red h4,
+  .card.red h4 {
+    color: var(--print-text-primary) !important;
+    border-left-color: var(--print-accent-red) !important;
+    border-left-width: 7pt !important;
+  }
+
+  /* =============================================================
+     CALLOUTS (Tips, Warnings, Notes, Errors) — HIGH CONTRAST
+     ============================================================= */
+
+  .callout,
+  .callout-tip,
+  .callout-warning,
+  .callout-note,
+  .callout-error {
+    background: var(--print-bg-light) !important;
+    border: 2.5pt solid var(--print-border-strong) !important;
+    border-radius: 6pt !important;
+    padding: 0.5cm !important;
+    margin: 0.5cm 0 !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .callout-tip {
+    border-left: 7pt solid var(--print-accent-green) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .callout-warning {
+    border-left: 7pt solid var(--print-accent-orange) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .callout-error {
+    border-left: 7pt solid var(--print-accent-red) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .callout-note {
+    border-left: 7pt solid var(--print-accent) !important;
+    border-left-width: 7pt !important;
+  }
+
+  .callout h4 {
+    font-size: 12pt !important;
+    font-weight: 900 !important;
+    margin: 0 0 0.3cm 0 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .callout p {
+    font-size: 11pt !important;
+    margin: 0 !important;
+    color: var(--print-text-primary) !important;
+    line-height: 1.6 !important;
+  }
+
+  /* =============================================================
+     CODE BLOCKS — HIGH CONTRAST
+     ============================================================= */
+
+  .reveal pre {
+    margin: 0.5cm 0 !important;
+    padding: 0 !important;
+    background: var(--print-bg-light) !important;
+    border: 3pt solid var(--print-border-strong) !important;
+    border-radius: 6pt !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+    width: 100% !important;
+  }
+
+  .reveal pre code {
+    font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+    font-size: 9.5pt !important;
+    font-weight: 700 !important;
+    line-height: 1.6 !important;
+    color: var(--print-text-primary) !important;
+    background: var(--print-bg-light) !important;
+    padding: 0.5cm !important;
+    display: block !important;
+    overflow-x: auto !important;
+    border: none !important;
+    max-height: none !important;
+  }
+
+  /* Hide code block enhancements (copy buttons, terminal effects) */
+  .code-toolbar,
+  .code-copy-btn,
+  .terminal-header,
+  .terminal-corners,
+  .code-scanline {
+    display: none !important;
+  }
+
+  /* Syntax highlighting - optimized for B&W printing */
+  .hljs-keyword,
+  .hljs-selector-tag,
+  .hljs-built_in {
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .hljs-string,
+  .hljs-attr,
+  .hljs-title {
+    font-weight: 700 !important;
+    font-style: italic !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .hljs-comment {
+    color: var(--print-text-secondary) !important;
+    font-style: italic !important;
+  }
+
+  /* =============================================================
+     TABLES — HIGH CONTRAST
+     ============================================================= */
+
+  .reveal table {
+    width: 100% !important;
+    margin: 0.6cm 0 !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+    font-size: 11pt !important;
+    border: 3pt solid var(--print-border-strong) !important;
+  }
+
+  .reveal thead {
+    background: var(--print-bg-medium) !important;
+  }
+
+  .reveal th {
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+    background: var(--print-bg-medium) !important;
+    border: 2pt solid var(--print-border-strong) !important;
+    padding: 0.4cm !important;
+    text-align: left !important;
+  }
+
+  .reveal td {
+    color: var(--print-text-primary) !important;
+    border: 1.5pt solid var(--print-border) !important;
+    padding: 0.35cm !important;
+    vertical-align: top !important;
+    line-height: 1.5 !important;
+  }
+
+  .reveal tr:nth-child(even) {
+    background: var(--print-bg-light) !important;
+  }
+
+  /* =============================================================
+     DIAGRAMS & ARCHITECTURE BOXES
+     ============================================================= */
+
+  .diagram-box,
+  .arch-box,
+  .flow-box {
+    background: var(--print-bg-card) !important;
+    border: 2.5pt solid var(--print-border-strong) !important;
+    border-radius: 6pt !important;
+    padding: 0.4cm !important;
+    margin: 0.4cm !important;
+    display: inline-block !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .diagram-box h4,
+  .arch-box h4,
+  .flow-box h4 {
+    font-size: 11pt !important;
+    font-weight: 900 !important;
+    margin: 0 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .diagram-box p,
+  .arch-box p,
+  .flow-box p {
+    font-size: 10pt !important;
+    margin: 0.1cm 0 0 0 !important;
+  }
+
+  /* Arrows between boxes - simplified for print */
+  .diagram-arrow,
+  .flow-arrow {
+    display: inline-block !important;
+    margin: 0 0.3cm !important;
+    font-size: 18pt !important;
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .diagram-arrow::before,
+  .flow-arrow::before {
+    content: "→" !important;
+  }
+
+  /* =============================================================
+     QUIZ ELEMENTS — HIGH CONTRAST
+     ============================================================= */
+
+  .quiz-badge {
+    display: inline-block !important;
+    background: var(--print-bg-medium) !important;
+    color: var(--print-text-primary) !important;
+    border: 2.5pt solid var(--print-border-strong) !important;
+    padding: 0.3cm 0.5cm !important;
+    border-radius: 4pt !important;
+    font-size: 10pt !important;
+    font-weight: 900 !important;
+    margin-bottom: 0.5cm !important;
+  }
+
+  .quiz-question {
+    font-size: 13pt !important;
+    font-weight: 900 !important;
+    color: var(--print-text-primary) !important;
+    margin: 0.4cm 0 0.6cm 0 !important;
+    padding: 0.5cm 0.6cm !important;
+    background: var(--print-bg-light) !important;
+    border: 3pt solid var(--print-border-strong) !important;
+    border-left: 7pt solid var(--print-accent) !important;
+    border-radius: 6pt !important;
+  }
+
+  .quiz-options {
+    margin: 0.5cm 0 !important;
+  }
+
+  .quiz-option {
+    display: flex !important;
+    align-items: flex-start !important;
+    padding: 0.5cm !important;
+    margin: 0.3cm 0 !important;
+    background: var(--print-bg-card) !important;
+    border: 2.5pt solid var(--print-border-strong) !important;
+    border-radius: 6pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .opt-letter {
+    display: inline-block !important;
+    width: 0.9cm !important;
+    height: 0.9cm !important;
+    line-height: 0.9cm !important;
+    text-align: center !important;
+    background: var(--print-bg-medium) !important;
+    border: 3pt solid var(--print-border-strong) !important;
+    border-radius: 50% !important;
+    font-weight: 900 !important;
+    font-size: 12pt !important;
+    margin-right: 0.5cm !important;
+    flex-shrink: 0 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  .quiz-option span:not(.opt-letter) {
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+    line-height: 1.6 !important;
+    flex: 1 !important;
+    color: var(--print-text-primary) !important;
+  }
+
+  /* Correct/Wrong answer indicators for answer slides — MAXIMUM VISIBILITY */
+  .quiz-option.correct {
+    border-color: var(--print-accent-green) !important;
+    border-width: 5pt !important;
+    background: var(--print-bg-light) !important;
+  }
+
+  .quiz-option.correct .opt-letter {
+    background: var(--print-accent-green) !important;
+    color: white !important;
+    border-color: var(--print-accent-green) !important;
+    border-width: 4pt !important;
+    font-weight: 900 !important;
+  }
+
+  .quiz-option.correct::after {
+    content: "✓ CORRECT" !important;
+    font-size: 11pt !important;
+    font-weight: 900 !important;
+    color: var(--print-accent-green) !important;
+    margin-left: 0.5cm !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5pt !important;
+  }
+
+  .quiz-option.wrong {
+    opacity: 0.45 !important;
+    border-style: dashed !important;
+    border-width: 2pt !important;
+  }
+
+  .quiz-option.wrong .opt-letter {
+    background: var(--print-bg-light) !important;
+    color: var(--print-text-secondary) !important;
+    border-width: 2pt !important;
+    border-style: dashed !important;
+  }
+
+  .answer-explain {
+    margin: 0.7cm 0 !important;
+    padding: 0.6cm !important;
+    background: var(--print-bg-light) !important;
+    border: 3pt solid var(--print-border-strong) !important;
+    border-left: 7pt solid var(--print-accent-green) !important;
+    page-break-inside: avoid !important;
+    border-radius: 6pt !important;
+  }
+
+  .answer-explain strong {
+    color: var(--print-text-primary) !important;
+    font-weight: 900 !important;
+  }
+
+  .answer-explain p {
+    font-size: 11pt !important;
+    margin: 0.3cm 0 0 0 !important;
+    color: var(--print-text-primary) !important;
+    line-height: 1.6 !important;
+  }
+
+  /* =============================================================
+     SPECIAL LAYOUT CLASSES
+     ============================================================= */
+
+  .two-column,
+  .columns-2 {
+    column-count: 2 !important;
+    column-gap: 0.7cm !important;
+    column-rule: 2pt solid var(--print-border-strong) !important;
+  }
+
+  .three-column,
+  .columns-3 {
+    column-count: 3 !important;
+    column-gap: 0.5cm !important;
+    column-rule: 2pt solid var(--print-border-strong) !important;
+  }
+
+  /* Force page breaks */
+  .page-break-before {
+    page-break-before: always !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+  }
+
+  .no-break {
+    page-break-inside: avoid !important;
+  }
+
+  /* =============================================================
+     IMAGES & MEDIA
+     ============================================================= */
+
+  .reveal img {
+    max-width: 100% !important;
+    height: auto !important;
+    border: 2pt solid var(--print-border-strong) !important;
+    page-break-inside: avoid !important;
+    margin: 0.5cm 0 !important;
+  }
+
+  .reveal figure {
+    page-break-inside: avoid !important;
+    margin: 0.6cm 0 !important;
+  }
+
+  .reveal figcaption {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    color: var(--print-text-secondary) !important;
+    text-align: center !important;
+    margin-top: 0.3cm !important;
+  }
+
+  /* =============================================================
+     LINKS & REFERENCES
+     ============================================================= */
+
+  .reveal a {
+    color: var(--print-accent) !important;
+    text-decoration: underline !important;
+    font-weight: 700 !important;
+  }
+
+  /* Print URLs after links */
+  .reveal a[href^="http"]::after {
+    content: " (" attr(href) ")" !important;
+    font-size: 9pt !important;
+    color: var(--print-text-secondary) !important;
+  }
+
+  /* Don't print URLs for internal navigation */
+  .reveal a[href^="#"]::after {
+    content: none !important;
+  }
+
+  /* =============================================================
+     UTILITY CLASSES
+     ============================================================= */
+
+  .text-center {
+    text-align: center !important;
+  }
+
+  .text-left {
+    text-align: left !important;
+  }
+
+  .text-right {
+    text-align: right !important;
+  }
+
+  .text-small,
+  .text-sm {
+    font-size: 10pt !important;
+  }
+
+  .text-large,
+  .text-lg {
+    font-size: 13pt !important;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', 'Courier New', monospace !important;
+  }
+
+  /* Hide elements that shouldn't print */
+  .no-print,
+  .screen-only {
+    display: none !important;
+  }
+
+  /* =============================================================
+     ORPHAN & WIDOW CONTROL
+     ============================================================= */
+
+  p, li, h2, h3, h4 {
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+
+  h1, h2, h3, h4 {
+    page-break-after: avoid !important;
+  }
+
+  h1 + *, h2 + *, h3 + *, h4 + * {
+    page-break-before: avoid !important;
+  }
+
+  /* =============================================================
+     PERFORMANCE OPTIMIZATION
+     ============================================================= */
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* =============================================================
+     TITLE SLIDE SPECIAL FORMATTING
+     ============================================================= */
+
+  .reveal .slides section:first-child {
+    text-align: center !important;
+    padding-top: 2.5cm !important;
+  }
+
+  .reveal .slides section:first-child h1 {
+    font-size: 30pt !important;
+    text-align: center !important;
+    border-bottom: 5pt solid var(--print-accent) !important;
+    padding-bottom: 0.6cm !important;
+    margin-bottom: 1cm !important;
+  }
+
+  /* =============================================================
+     CUSTOM PRINT-SPECIFIC ADDITIONS
+     ============================================================= */
+
+  /* Add section info at bottom of each section */
+  .reveal .slides section::after {
+    content: "" !important;
+    display: block !important;
+    margin-top: 1cm !important;
+    padding-top: 0.4cm !important;
+    border-top: 2pt solid var(--print-border-strong) !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    color: var(--print-text-secondary) !important;
+    text-align: right !important;
+  }
+
+  /* First section (title slide) - no border */
+  .reveal .slides section:first-child::after {
+    border-top: none !important;
+  }
+
+} /* End @media print */
+
+/* =============================================================
+   PRINT BUTTON STYLE (visible on screen only)
+   ============================================================= */
+@media screen {
+  .print-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: var(--accent, #00ffcc);
+    color: var(--bg-dark, #0a0f1a);
+    border: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 25px rgba(0, 255, 204, 0.4);
+    z-index: 10000;
+    transition: all 0.3s ease;
+  }
+
+  .print-button:hover {
+    background: var(--accent-light, #5fffd7);
+    box-shadow: 0 8px 35px rgba(0, 255, 204, 0.6);
+    transform: translateY(-3px);
+  }
+
+  .print-button::before {
+    content: "🖨️ ";
+    margin-right: 10px;
+    font-size: 18px;
+  }
+}
