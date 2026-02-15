@@ -1,0 +1,11 @@
+# Generated dashboard files
+dashboard.html
+dashboard-*.html
+*.html
+
+# Archive directory
+archive/
+
+# Python cache
+__pycache__/
+*.pyc
