@@ -64,24 +64,50 @@ bash scripts/check-resources.sh   # Check memory/storage anytime
 |--------|---------|
 | `check-resources` | Show memory, storage, running Python processes, top consumers |
 | `install-notebook` | Install VS Code Jupyter extension + ipykernel + verify setup |
+| `populate_langfuse_data.py` | Generate comprehensive demo data for LangFuse dashboard (Session 12) |
+
+### populate_langfuse_data.py
+
+**Purpose:** Instructor utility to populate LangFuse cloud dashboard with comprehensive observability data for Session 12 Lab 09 demonstrations.
+
+**Usage:**
+```bash
+source .venv/bin/activate
+python scripts/populate_langfuse_data.py
+```
+
+**Prerequisites:**
+- `.env` file with: `LANGFUSE_SECRET_KEY`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_HOST`, `GROQ_API_KEY`
+- Packages: `langfuse`, `langchain-groq`, `langgraph`, `python-dotenv`
+
+**Generated Data:**
+- 35 traces with user_id and session_id
+- 15+ unique users (Priya, Vikram, Amit, etc.)
+- 15-20 sessions (including multi-turn conversations)
+- 70 LLM generations (supervisor + worker)
+
+**Populates:** Traces, Sessions, Users, and Generations views in LangFuse dashboard
+
+**When to Use:** Before Session 12 to show students a fully populated observability dashboard
 
 ## File Listing
 
 ```
 scripts/
-├── README.md                  ← You are here
-├── install-notebook.sh        ← Notebook setup (Linux/macOS/Codespaces)
-├── install-notebook.ps1       ← Notebook setup (Windows)
-├── check-resources.sh         ← Resource monitor (Linux/macOS/Codespaces)
-├── check-resources.ps1        ← Resource monitor (Windows)
-├── day1-setup.sh / .ps1       ← Ollama + local LLM
-├── day1-cleanup.sh / .ps1     ← Remove Ollama (~2 GB freed)
-├── day2-setup.sh / .ps1       ← Groq API + LangChain verification
-├── day2-cleanup.sh / .ps1     ← Clean temp files
-├── day3-setup.sh / .ps1       ← LangGraph verification
-├── day3-cleanup.sh / .ps1     ← Stop servers + clean temp files
-├── day4-setup.sh / .ps1       ← OTel + FastAPI + LangFuse verification
-├── day4-cleanup.sh / .ps1     ← Stop FastAPI + clean temp files
-├── day5-setup.sh / .ps1       ← MCP SDK install
-└── day5-cleanup.sh / .ps1     ← Final cleanup
+├── README.md                    ← You are here
+├── populate_langfuse_data.py    ← LangFuse demo data generator (Session 12)
+├── install-notebook.sh          ← Notebook setup (Linux/macOS/Codespaces)
+├── install-notebook.ps1         ← Notebook setup (Windows)
+├── check-resources.sh           ← Resource monitor (Linux/macOS/Codespaces)
+├── check-resources.ps1          ← Resource monitor (Windows)
+├── day1-setup.sh / .ps1         ← Ollama + local LLM
+├── day1-cleanup.sh / .ps1       ← Remove Ollama (~2 GB freed)
+├── day2-setup.sh / .ps1         ← Groq API + LangChain verification
+├── day2-cleanup.sh / .ps1       ← Clean temp files
+├── day3-setup.sh / .ps1         ← LangGraph verification
+├── day3-cleanup.sh / .ps1       ← Stop servers + clean temp files
+├── day4-setup.sh / .ps1         ← OTel + FastAPI + LangFuse verification
+├── day4-cleanup.sh / .ps1       ← Stop FastAPI + clean temp files
+├── day5-setup.sh / .ps1         ← MCP SDK install
+└── day5-cleanup.sh / .ps1       ← Final cleanup
 ```

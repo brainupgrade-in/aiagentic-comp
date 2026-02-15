@@ -1,6 +1,33 @@
 #!/usr/bin/env python3
 """
-Execute Lab 09 with manual LangFuse trace creation
+LangFuse Demo Data Population Script
+
+Purpose: Instructor utility to populate LangFuse dashboard with comprehensive
+         observability data for Session 12 Lab 09 demonstrations.
+
+Usage:
+    python scripts/populate_langfuse_data.py
+
+Prerequisites:
+    - .env file with LANGFUSE_SECRET_KEY, LANGFUSE_PUBLIC_KEY, LANGFUSE_HOST
+    - GROQ_API_KEY for LLM calls
+    - Virtual environment with required packages installed
+
+Generated Data:
+    - 35 traces with user_id and session_id properly set
+    - 15+ unique users (Priya, Vikram, Amit, Kavya, etc.)
+    - 15-20 sessions including multi-turn conversations
+    - 70 LLM generations (supervisor + worker per trace)
+
+This populates the LangFuse dashboard with realistic data for demonstrating:
+    - Traces view: All support requests with full execution details
+    - Sessions view: Multi-turn conversations grouped by session_id
+    - Users view: Per-employee activity and patterns
+    - Generations view: LLM calls with token usage and costs
+    - Scores view: User feedback ratings (added separately if needed)
+
+Note: This uses propagate_attributes() to ensure proper user_id and session_id
+      tracking, which is the recommended LangFuse pattern for user/session tracking.
 """
 import os
 import time
