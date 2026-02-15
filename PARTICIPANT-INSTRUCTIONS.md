@@ -61,7 +61,41 @@ cd aiagentic-comp
 gh issue list --repo brainupgrade-in/aiagentic-comp --limit 5
 ```
 
-### Step 4: Setup Python Environment
+### Step 4: Set Your Identity (Required)
+
+**⚠️ IMPORTANT:** This identifies YOU in submissions and dashboard tracking.
+
+```bash
+# Make sure you're in the repository directory
+cd ~/aiagentic-comp
+
+# Set YOUR GitHub username and email (for this repository only)
+git config user.name "your-github-username"
+git config user.email "your-email@example.com"
+
+# Verify it's set correctly
+git config user.name
+git config user.email
+```
+
+**Example:**
+```bash
+git config user.name "johndoe"
+git config user.email "johndoe@gmail.com"
+```
+
+**Important Notes:**
+- ✅ Use your **actual GitHub username** (not your full name)
+- ✅ This sets config **only for this repository** (doesn't affect your system)
+- ✅ This is how you'll appear in the dashboard and tracking
+- ✅ Include your email for verification
+
+**Why this matters:**
+- Your submissions will show as: `johndoe (johndoe@gmail.com)`
+- Dashboard will track YOUR progress (not instructor's)
+- Instructor can verify your identity
+
+### Step 5: Setup Python Environment
 
 ```bash
 # Create virtual environment
@@ -103,114 +137,165 @@ jupyter notebook hands-on/session-1/
 
 ### 3. Submit Completion
 
-**After completing each lab:**
+**After completing each lab, use the automated submission script:**
 
+**Linux/Mac:**
 ```bash
-# Example: Completed Session 1 Lab 01
+# Basic submission
+./scripts/submit-lab.sh <session> <lab>
 
-# Find the issue number (reference table below)
-# Session 1 Lab 01 = Issue #1
+# With optional notes (recommended)
+./scripts/submit-lab.sh <session> <lab> "your notes here"
 
-# Submit completion comment
-gh issue comment 1 \
-  --repo brainupgrade-in/aiagentic-comp \
-  --body "✅ Completed
-
-**Validation:** All checks passed"
+# Examples
+./scripts/submit-lab.sh 1 1
+./scripts/submit-lab.sh 1 2 "Great lab on AI agents!"
+./scripts/submit-lab.sh 2 5 "Learned about RAG"
 ```
 
-**That's it!** Your GitHub username is automatically recorded.
+**Windows PowerShell:**
+```powershell
+# Basic submission
+.\scripts\submit-lab.ps1 <session> <lab>
 
----
+# With optional notes
+.\scripts\submit-lab.ps1 <session> <lab> "your notes here"
 
-## Issue Number Reference
-
-| Session | Labs | Issue Numbers |
-|---------|------|---------------|
-| 1 | 1-6 | #1 - #6 |
-| 2 | 1-8 | #7 - #14 |
-| 3 | 1-7 | #15 - #21 |
-| 4 | 1-8 | #22 - #29 |
-| 5 | 1-8 | #30 - #37 |
-| 6 | 1-8 | #38 - #45 |
-| 7 | 1-8 | #46 - #53 |
-| 8 | 1-8 | #54 - #61 |
-| 9 | 1-8 | #62 - #69 |
-| 10 | 1-8 | #70 - #77 |
-| 11 | 1-8 | #78 - #85 |
-| 12 | 1-9 | #86 - #94 |
-| 13 | 1-8 | #95 - #102 |
-| 14 | 1-8 | #103 - #110 |
-| 15 | 1-8 | #111 - #118 |
-
-**Quick formula:**
-- Session 1 Lab 01 = Issue #1
-- Session 2 Lab 01 = Issue #7
-- Session 3 Lab 01 = Issue #15
-- etc.
-
----
-
-## Submission Examples
-
-### Basic Submission
-
-```bash
-gh issue comment 1 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed"
+# Examples
+.\scripts\submit-lab.ps1 1 1
+.\scripts\submit-lab.ps1 1 2 "Great lab on AI agents!"
 ```
 
-### Detailed Submission (Recommended)
+**What the script does:**
+- ✅ Auto-detects your GitHub username and email (from Step 4)
+- ✅ Calculates correct issue number automatically
+- ✅ Shows preview before submitting
+- ✅ Asks for confirmation (y/N)
+- ✅ Posts comment with your information
+- ✅ Provides submission URL
 
-```bash
-gh issue comment 1 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed
-
-**Validation:** All checks passed ([PASS] markers present)
-**Time taken:** ~20 minutes
-**Notes:** Great introduction to AI agents!"
+**Sample output:**
 ```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Lab Submission - Agentic AI Course
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-### With Screenshot
+Session: 1
+Lab: 1
+Issue Number: #1
 
-```bash
-# Take screenshot of validation output
-# Then comment:
-gh issue comment 1 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed
+Detecting your information...
+✓ Username: johndoe
+✓ Email: johndoe@gmail.com
+✓ GitHub CLI authenticated
 
+Comment Preview:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Completed
+
+**Participant:** johndoe (johndoe@gmail.com)
 **Validation:** All checks passed
-**Screenshot:** Attached below"
+**Notes:** Great introduction to AI!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# Upload image in web UI at:
-# https://github.com/brainupgrade-in/aiagentic-comp/issues/1
+Submit this lab? (y/N): y
+
+✓ Submission Successful!
+Your submission has been recorded!
 ```
 
-### Reporting Issues
+---
 
+## Submission Script Reference
+
+### Quick Command Reference
+
+**Linux/Mac:**
 ```bash
-gh issue comment 1 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed
-
-**Validation:** Mostly passed
-**Note:** Lab 01 TODO section 3 was unclear about the expected format.
-Made my best guess and it passed validation."
+./scripts/submit-lab.sh <session> <lab> ["optional notes"]
 ```
+
+**Windows:**
+```powershell
+.\scripts\submit-lab.ps1 <session> <lab> "optional notes"
+```
+
+### Common Usage Examples
+
+**Session 1 - All Labs:**
+```bash
+./scripts/submit-lab.sh 1 1
+./scripts/submit-lab.sh 1 2
+./scripts/submit-lab.sh 1 3
+./scripts/submit-lab.sh 1 4
+./scripts/submit-lab.sh 1 5
+./scripts/submit-lab.sh 1 6
+```
+
+**With Notes (Recommended):**
+```bash
+./scripts/submit-lab.sh 2 1 "Excellent introduction to LangChain"
+./scripts/submit-lab.sh 2 2 "LCEL is very powerful!"
+./scripts/submit-lab.sh 5 3 "RAG implementation works great"
+```
+
+**Batch Submission (After completing multiple labs):**
+```bash
+# Linux/Mac
+for lab in {1..6}; do
+  ./scripts/submit-lab.sh 1 $lab
+done
+```
+
+```powershell
+# Windows PowerShell
+1..6 | ForEach-Object {
+  .\scripts\submit-lab.ps1 1 $_
+}
+```
+
+### Issue Number Mapping
+
+**The script automatically calculates issue numbers - you don't need to look these up!**
+
+But for reference:
+
+| Session | Labs | Issue Range | Example |
+|---------|------|-------------|---------|
+| 1 | 1-6 | #1 - #6 | `./scripts/submit-lab.sh 1 1` → Issue #1 |
+| 2 | 1-8 | #7 - #14 | `./scripts/submit-lab.sh 2 1` → Issue #7 |
+| 3 | 1-7 | #15 - #21 | `./scripts/submit-lab.sh 3 1` → Issue #15 |
+| 12 | 1-9 | #86 - #94 | `./scripts/submit-lab.sh 12 9` → Issue #94 |
+| 15 | 1-8 | #111 - #118 | `./scripts/submit-lab.sh 15 8` → Issue #118 |
 
 ---
 
 ## Quick Commands
 
-### Find Issue Number
+### Check Your Identity
 
-**Method 1: Use the reference table above**
-
-**Method 2: Search by title**
 ```bash
-# List all Session 1 issues
-gh issue list --repo brainupgrade-in/aiagentic-comp --label "session-1"
-
-# Search for specific lab
-gh issue list --repo brainupgrade-in/aiagentic-comp --search "Session 1 - Lab 01"
+# Verify what will be used for submissions
+git config user.name
+git config user.email
 ```
 
-### View Issue Details
+### View Your Submissions
+
+```bash
+# See all your lab submissions
+gh issue list --repo brainupgrade-in/aiagentic-comp \
+  --label lab-tracking \
+  --search "commenter:@me"
+
+# Count how many labs you've submitted
+gh issue list --repo brainupgrade-in/aiagentic-comp \
+  --search "commenter:@me" \
+  --label lab-tracking \
+  --json number | jq 'length'
+```
+
+### View Specific Lab Issue
 
 ```bash
 # View issue in terminal
@@ -220,13 +305,14 @@ gh issue view 1 --repo brainupgrade-in/aiagentic-comp
 gh issue view 1 --repo brainupgrade-in/aiagentic-comp --web
 ```
 
-### Check Your Submissions
+### Script Help
 
 ```bash
-# See all your comments across all issues
-gh issue list --repo brainupgrade-in/aiagentic-comp \
-  --label lab-tracking \
-  --search "commenter:@me"
+# Linux/Mac - view usage
+./scripts/submit-lab.sh
+
+# Windows - view usage
+.\scripts\submit-lab.ps1
 ```
 
 ---
@@ -235,18 +321,20 @@ gh issue list --repo brainupgrade-in/aiagentic-comp \
 
 ### ✅ Do
 
-- Submit immediately after validation passes
-- Include brief notes about challenges or learnings
-- Use the exact issue numbers from the reference table
-- Keep comments concise but informative
-- Mention if you found any unclear instructions
+- ✅ Set your git config (Step 4) before first submission
+- ✅ Submit immediately after validation passes
+- ✅ Include notes about challenges or key learnings
+- ✅ Use the submission script (automatic and error-free)
+- ✅ Verify your username/email before submitting
+- ✅ Review the preview before confirming submission
 
 ### ❌ Don't
 
-- Submit without running validation (all [PASS] markers)
-- Leave TODO placeholders (___) unfilled
-- Post multiple "completed" comments on same issue
-- Use issues for asking questions (use Zoom chat or discussions)
+- ❌ Submit without running validation (all [PASS] markers)
+- ❌ Leave TODO placeholders (___) unfilled
+- ❌ Skip setting git config (submissions won't have your name)
+- ❌ Post multiple "completed" comments on same issue
+- ❌ Use issues for asking questions (use Zoom chat)
 
 ---
 
@@ -287,9 +375,43 @@ gh auth login
 # Use the token shared in Zoom
 ```
 
-### "Cannot find issue #X"
+### "Could not detect GitHub username"
 
-**Fix:** Check the reference table above for correct issue number.
+**Cause:** Git config not set
+
+**Fix:**
+```bash
+cd ~/aiagentic-comp
+git config user.name "your-github-username"
+git config user.email "your-email@example.com"
+```
+
+### "Submission Failed" or "GitHub CLI not authenticated"
+
+**Cause:** Not logged in with the shared token
+
+**Fix:**
+```bash
+gh auth login
+# Use the token shared by instructor
+gh auth status  # Verify authentication
+```
+
+### Script shows wrong username
+
+**Cause:** Using system-wide git config instead of repository config
+
+**Fix:**
+```bash
+# Set repository-specific config (overrides global)
+cd ~/aiagentic-comp
+git config user.name "your-correct-username"
+git config user.email "your-correct-email"
+
+# Verify
+git config user.name
+git config user.email
+```
 
 ### Forgot to activate virtual environment
 
@@ -310,28 +432,34 @@ source .venv/bin/activate
 cd ~/aiagentic-comp
 git pull
 source .venv/bin/activate
+
+# Open Jupyter and complete labs
 jupyter notebook hands-on/session-1/
 
 # Complete Lab 01
 # ... work through notebook ...
 # All validation cells show [PASS]
 
-# Submit Lab 01 (Issue #1)
-gh issue comment 1 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed
-
-**Validation:** All checks passed"
+# Submit Lab 01
+./scripts/submit-lab.sh 1 1 "Great introduction to AI agents!"
+# Confirm with 'y' when prompted
 
 # Complete Lab 02
 # ... work through notebook ...
+# All validation cells show [PASS]
 
-# Submit Lab 02 (Issue #2)
-gh issue comment 2 --repo brainupgrade-in/aiagentic-comp --body "✅ Completed
+# Submit Lab 02
+./scripts/submit-lab.sh 1 2 "Learned about reasoning patterns"
 
-**Validation:** All checks passed"
+# Continue for Labs 03-06
+./scripts/submit-lab.sh 1 3
+./scripts/submit-lab.sh 1 4
+./scripts/submit-lab.sh 1 5
+./scripts/submit-lab.sh 1 6
 
-# Continue for Labs 03-06 (Issues #3-6)
-
-# End of Session 1: You should have commented on Issues #1-6
+# End of Session 1: You've submitted all 6 labs
+# Check your progress:
+gh issue list --repo brainupgrade-in/aiagentic-comp --search "commenter:@me"
 ```
 
 ---
