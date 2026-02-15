@@ -21,17 +21,19 @@ if (Get-Command ollama -ErrorAction SilentlyContinue) {
     Write-Host ""
 }
 
-# Check Python venv
+# Check Python venv (relative to repo root)
+$RepoDir = Split-Path -Parent $PSScriptRoot
 Write-Host "[1/3] Verifying Python environment..."
-$venvPython = Join-Path $env:USERPROFILE ".venv\Scripts\python.exe"
-if (Test-Path $venvPython) {
-    & (Join-Path $env:USERPROFILE ".venv\Scripts\Activate.ps1")
+$venvActivate = Join-Path $RepoDir ".venv\Scripts\Activate.ps1"
+if (Test-Path $venvActivate) {
+    & $venvActivate
     $pyVer = python --version
     Write-Host "  Virtual environment active: $pyVer"
 } else {
     try {
         $pyVer = python --version
         Write-Host "  Using system Python: $pyVer"
+        Write-Host "  TIP: Create a venv with: python -m venv $RepoDir\.venv"
     } catch {
         Write-Host "  ERROR: Python not found. Install Python 3.10+ from https://python.org"
         exit 1
@@ -57,7 +59,7 @@ foreach ($pkg in $packages) {
 # Check Groq API key
 Write-Host "[3/3] Checking Groq API key..."
 if (-not $env:GROQ_API_KEY) {
-    $envFile = Join-Path (Get-Location) ".env"
+    $envFile = Join-Path $RepoDir ".env"
     if (Test-Path $envFile) {
         Get-Content $envFile | ForEach-Object {
             if ($_ -match '^\s*GROQ_API_KEY\s*=\s*(.+)$') {

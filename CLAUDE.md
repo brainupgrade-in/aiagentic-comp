@@ -112,18 +112,23 @@ Oracle/
 │   ├── session-3/                       7 labs + 7 solutions + README (.ipynb)
 │   ├── session-4/ through session-15/   8 labs + 8 solutions + README each (.ipynb)
 │   └── (session-1 has 6, session-3 has 7, all others have 8)
-└── scripts/
-    ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
-    ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
-    ├── day2-setup.sh                    Verify Groq API key + LangChain packages
-    ├── day2-cleanup.sh                  Clean temp files
-    ├── day3-setup.sh                    Verify LangGraph packages
-    ├── day3-cleanup.sh                  Stop servers + clean up for Day 4
-    ├── day4-setup.sh                    Verify OTel + LangFuse + FastAPI packages
-    ├── day4-cleanup.sh                  Clean temp files
-    ├── day5-setup.sh                    Install MCP SDK, verify env
-    ├── day5-cleanup.sh                  Final cleanup
-    └── check-resources.sh               Memory/storage/process status monitor
+└── scripts/                             Both .sh (Linux/macOS) and .ps1 (Windows) provided
+    ├── initial-setup.sh / .ps1          One-time setup: Python, venv, packages, .env
+    ├── install-notebook.sh / .ps1       VS Code Jupyter extension + ipykernel
+    ├── install-jupyter-kernel.sh / .ps1 Named kernel spec for the course
+    ├── check-resources.sh / .ps1        Memory/storage/process status monitor
+    ├── submit-lab.sh / .ps1             Lab submission to GitHub Issues
+    ├── test-langfuse-server.sh / .ps1   LangFuse server verification (instructor)
+    ├── day1-setup.sh / .ps1             Install Ollama + pull llama3.2:1b
+    ├── day1-cleanup.sh / .ps1           Remove Ollama + model (~2 GB freed)
+    ├── day2-setup.sh / .ps1             Verify Groq API key + LangChain packages
+    ├── day2-cleanup.sh / .ps1           Clean temp files
+    ├── day3-setup.sh / .ps1             Verify LangGraph packages
+    ├── day3-cleanup.sh / .ps1           Stop servers + clean up for Day 4
+    ├── day4-setup.sh / .ps1             Verify OTel + LangFuse + FastAPI + start server
+    ├── day4-cleanup.sh / .ps1           Stop LangFuse + FastAPI + clean temp files
+    ├── day5-setup.sh / .ps1             Install MCP SDK, verify env
+    └── day5-cleanup.sh / .ps1           Final cleanup
 ```
 
 ## Course Day Breakdown
@@ -305,7 +310,12 @@ Common issues and solutions with 16 GB RAM environment:
 
 ## Commands
 
+### Linux / macOS
+
 ```bash
+# First-time setup (run once)
+bash scripts/initial-setup.sh
+
 # Check resource usage anytime
 bash scripts/check-resources.sh
 
@@ -313,15 +323,45 @@ bash scripts/check-resources.sh
 bash scripts/day1-setup.sh      # Ollama + model
 bash scripts/day2-setup.sh      # Verify Groq API + LangChain packages
 bash scripts/day3-setup.sh      # Verify LangGraph packages
-bash scripts/day4-setup.sh      # OTel + LangFuse + FastAPI packages
+bash scripts/day4-setup.sh      # OTel + LangFuse + FastAPI + start server
 bash scripts/day5-setup.sh      # MCP SDK + verify env
 
 # Day-specific cleanup
 bash scripts/day1-cleanup.sh    # Remove Ollama
 bash scripts/day2-cleanup.sh    # Clean temp files
 bash scripts/day3-cleanup.sh    # Stop servers
-bash scripts/day4-cleanup.sh    # Clean temp files
+bash scripts/day4-cleanup.sh    # Stop LangFuse + clean temp files
 bash scripts/day5-cleanup.sh    # Final cleanup
+
+# Lab submission
+bash scripts/submit-lab.sh 1 1 "notes"
+```
+
+### Windows (PowerShell)
+
+```powershell
+# First-time setup (run once)
+.\scripts\initial-setup.ps1
+
+# Check resource usage anytime
+.\scripts\check-resources.ps1
+
+# Day-specific setup
+.\scripts\day1-setup.ps1        # Ollama + model
+.\scripts\day2-setup.ps1        # Verify Groq API + LangChain packages
+.\scripts\day3-setup.ps1        # Verify LangGraph packages
+.\scripts\day4-setup.ps1        # OTel + LangFuse + FastAPI + start server
+.\scripts\day5-setup.ps1        # MCP SDK + verify env
+
+# Day-specific cleanup
+.\scripts\day1-cleanup.ps1      # Remove Ollama
+.\scripts\day2-cleanup.ps1      # Clean temp files
+.\scripts\day3-cleanup.ps1      # Stop servers
+.\scripts\day4-cleanup.ps1      # Stop LangFuse + clean temp files
+.\scripts\day5-cleanup.ps1      # Final cleanup
+
+# Lab submission
+.\scripts\submit-lab.ps1 1 1 "notes"
 ```
 
 ## Git Remote

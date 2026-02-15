@@ -17,14 +17,22 @@ $totalGB = [math]::Round($disk.Size / 1GB, 1)
 Write-Host "  Storage: ${usedGB} GB used / ${totalGB} GB total"
 Write-Host ""
 
-# Verify Python
+# Verify Python (relative to repo root)
+$RepoDir = Split-Path -Parent $PSScriptRoot
 Write-Host "[1/3] Verifying Python..."
-try {
+$venvActivate = Join-Path $RepoDir ".venv\Scripts\Activate.ps1"
+if (Test-Path $venvActivate) {
+    & $venvActivate
     $pyVer = python --version
-    Write-Host "  $pyVer"
-} catch {
-    Write-Host "  ERROR: Python 3 not found"
-    exit 1
+    Write-Host "  Virtual environment active: $pyVer"
+} else {
+    try {
+        $pyVer = python --version
+        Write-Host "  Using system Python: $pyVer"
+    } catch {
+        Write-Host "  ERROR: Python 3 not found"
+        exit 1
+    }
 }
 
 # Install MCP SDK
@@ -37,7 +45,7 @@ if ($LASTEXITCODE -ne 0) {
 # Verify GROQ_API_KEY
 Write-Host "[3/3] Checking GROQ_API_KEY..."
 if (-not $env:GROQ_API_KEY) {
-    $envFile = Join-Path (Get-Location) ".env"
+    $envFile = Join-Path $RepoDir ".env"
     if (Test-Path $envFile) {
         Get-Content $envFile | ForEach-Object {
             if ($_ -match '^\s*GROQ_API_KEY\s*=\s*(.+)$') {

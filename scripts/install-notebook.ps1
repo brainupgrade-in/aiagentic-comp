@@ -24,7 +24,8 @@ Write-Host ""
 
 # Step 2: Install ipykernel
 Write-Host "[2/3] Installing ipykernel..."
-$venvActivate = Join-Path $env:USERPROFILE ".venv\Scripts\Activate.ps1"
+$RepoDir = Split-Path -Parent $PSScriptRoot
+$venvActivate = Join-Path $RepoDir ".venv\Scripts\Activate.ps1"
 if (Test-Path $venvActivate) {
     & $venvActivate
 }
