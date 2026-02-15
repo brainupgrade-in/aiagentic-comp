@@ -62,7 +62,7 @@ hands-on/session-12/
 - Lab 07 covers cost analysis with LangFuse API
 - Lab 08 is the challenge combining all concepts
 - **Lab 09 is the production capstone** — integrates Session 11 FastAPI app with LangFuse
-- Generated files appear in `/tmp/k8s-lab-12-XX/` or `/tmp/prod-lab-12-XX/` directories
+- Generated files appear in `/tmp/ailab-12-XX/` or `/tmp/prod-lab-12-XX/` directories
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time

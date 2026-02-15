@@ -38,9 +38,9 @@ Remove-Item "$env:USERPROFILE\.ollama" -Recurse -Force -ErrorAction SilentlyCont
 
 # Clean temp files from Day 1 labs
 Write-Host "[4/4] Cleaning lab temp files..."
-Remove-Item "$env:TEMP\k8s-lab-01-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-01-*" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "$env:TEMP\aidev-lab-02-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-03-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-03-*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "After cleanup:"

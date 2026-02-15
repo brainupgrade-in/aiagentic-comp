@@ -26,9 +26,9 @@ Get-Process -Name "fastapi" -ErrorAction SilentlyContinue | Stop-Process -Force 
 Write-Host "[2/2] Cleaning temp files..."
 Get-ChildItem -Path (Get-Location) -Recurse -Directory -Filter "__pycache__" -ErrorAction SilentlyContinue |
     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-07-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-08-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-09-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-07-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-08-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-09-*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "After cleanup:"

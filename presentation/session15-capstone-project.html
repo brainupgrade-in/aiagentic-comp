@@ -418,7 +418,7 @@
           <h2>Phase 5: Health &amp; Monitoring</h2>
           <p class="subtitle">Lab 05 &middot; Probes + metrics from Session 12</p>
           <aside class="notes">
-            Health probes are what Kubernetes uses to decide whether to restart your pod or remove it from the load balancer. Participants should implement a liveness probe that returns 200 if the process is alive, and a readiness probe that checks whether the LLM API is reachable and ChromaDB is connected. Remind them of the three-probe model from Session 12 and that a process can be alive but not ready.
+            Health probes are used by orchestration systems to monitor application health and availability. Participants should implement a liveness probe that returns 200 if the process is alive, and a readiness probe that checks whether the LLM API is reachable and ChromaDB is connected. Remind them of the three-probe model from Session 12 and that a process can be alive but not ready.
           </aside>
         </section>
 
@@ -472,7 +472,7 @@
           <h2>Phase 6: Deployment Config</h2>
           <p class="subtitle">Lab 06 &middot; Containerization and deployment manifests</p>
           <aside class="notes">
-            This phase covers the deployment configuration -- uvicorn settings, environment variable management with .env files, and process startup sequencing. In the Codespace environment, participants will use Python process management rather than Docker containers due to resource constraints. Remind them that API keys must never be hardcoded -- use python-dotenv and the .env.example pattern from Session 12.
+            This phase covers the deployment configuration -- uvicorn settings, environment variable management with .env files, and process startup sequencing. Participants will use Python process management with systemd or supervisord for production deployments. Remind them that API keys must never be hardcoded -- use python-dotenv and the .env.example pattern from Session 12.
           </aside>
         </section>
 
@@ -767,9 +767,9 @@
           <a href="https://devops.gheware.com/ai-agent-design-patterns-implementation-guide-2026.html" target="_blank" style="color: var(--accent);">Agent Design Patterns</a>
           &middot;
           <a href="https://devops.gheware.com/langgraph-vs-crewai-vs-autogen-comparison-2026.html" target="_blank" style="color: var(--accent);">Framework Comparison</a><br>
-          <a href="https://devops.gheware.com/rag-systems-kubernetes-deployment-2026.html" target="_blank" style="color: var(--accent);">RAG Deployment</a>
+          <a href="https://devops.gheware.com/rag-production-deployment-guide-2026.html" target="_blank" style="color: var(--accent);">RAG Deployment</a>
           &middot;
-          <a href="https://devops.gheware.com/vector-databases-kubernetes-production-guide-2026.html" target="_blank" style="color: var(--accent);">Vector Databases</a>
+          <a href="https://devops.gheware.com/vector-databases-production-guide-2026.html" target="_blank" style="color: var(--accent);">Vector Databases</a>
           &middot;
           <a href="https://devops.gheware.com/claude-code-for-devops-engineers-2026.html" target="_blank" style="color: var(--accent);">Claude Code for DevOps</a>
         </p>

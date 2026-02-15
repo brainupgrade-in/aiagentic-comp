@@ -19,8 +19,8 @@ Write-Host ""
 
 # Clean up lab temp files
 Write-Host "[1/2] Removing lab temp files..."
-Remove-Item "$env:TEMP\k8s-lab-10-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-11-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-10-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-11-*" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "$env:TEMP\prod-lab-12-*" -Recurse -Force -ErrorAction SilentlyContinue
 Write-Host "  Removed temp directories"
 

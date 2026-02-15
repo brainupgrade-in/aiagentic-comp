@@ -40,7 +40,7 @@ echo "  ✓ Removed database and logs"
 
 # Clean up lab temp files
 echo "[3/4] Removing lab temp files..."
-rm -rf /tmp/k8s-lab-10-* /tmp/k8s-lab-11-* /tmp/prod-lab-12-* /tmp/k8s-lab-12-*
+rm -rf /tmp/ailab-10-* /tmp/ailab-11-* /tmp/prod-lab-12-* /tmp/ailab-12-*
 echo "  ✓ Removed temp directories"
 
 # Stop stale processes

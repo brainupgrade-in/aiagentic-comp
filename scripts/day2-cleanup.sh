@@ -15,7 +15,7 @@ echo ""
 echo "[1/1] Cleaning temp files..."
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 find "$REPO_DIR" -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-rm -rf /tmp/k8s-lab-04-* /tmp/k8s-lab-05-* /tmp/k8s-lab-06-*
+rm -rf /tmp/ailab-04-* /tmp/ailab-05-* /tmp/ailab-06-*
 
 echo ""
 echo "After cleanup:"

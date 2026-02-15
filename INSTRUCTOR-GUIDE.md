@@ -126,7 +126,7 @@
 
 ## Resource Management
 
-The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB storage. Resources are tight.
+The lab environment runs on native Ubuntu Linux installations with 16 GB RAM. Resource constraints are minimal compared to cloud-hosted environments.
 
 ### Memory Budget by Day
 
@@ -143,7 +143,7 @@ The lab environment runs on GitHub Codespaces with 2-core / 8 GB RAM / 32 GB sto
 1. Run `bash scripts/check-resources.sh` to diagnose
 2. Stop unnecessary Python processes
 3. Clear Python cache: `find ~ -name __pycache__ -exec rm -rf {} +`
-4. Remove temp files: `rm -rf /tmp/k8s-lab-* /tmp/prod-lab-* /tmp/capstone-lab-*`
+4. Remove temp files: `rm -rf /tmp/ailab-* /tmp/prod-lab-* /tmp/capstone-lab-*`
 5. Check for leftover services from previous days (e.g., Ollama on Day 2+)
 
 ---

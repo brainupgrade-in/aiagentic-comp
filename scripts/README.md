@@ -1,13 +1,13 @@
 # Scripts
 
-Setup, cleanup, and utility scripts for the 5-day Agentic AI course. Both **Bash** (Linux/macOS/Codespaces) and **PowerShell** (Windows) versions are provided.
+Setup, cleanup, and utility scripts for the 5-day Agentic AI course. Both **Bash** (Linux/macOS) and **PowerShell** (Windows) versions are provided.
 
 ## Quick Start — Notebook Setup
 
 Labs use Jupyter notebooks (`.ipynb`). Run the appropriate script to install everything needed:
 
 ```bash
-# Linux / macOS / Codespaces
+# Linux / macOS
 bash scripts/install-notebook.sh
 
 # Windows (PowerShell)
@@ -19,13 +19,13 @@ This installs the VS Code Jupyter extension, `ipykernel`, and verifies the setup
 ## Running Notebooks
 
 1. Open any `.ipynb` file in VS Code
-2. Select the Python kernel when prompted (`~/.venv/bin/python` on Codespaces, or your local venv)
+2. Select the Python kernel when prompted (`.venv/bin/python` from your virtual environment)
 3. Run cells with **Shift+Enter**
 4. Fill in TODO sections, then compare with `solutions/`
 
 ## Day-by-Day Scripts
 
-Each day has a **setup** script (run at start of day) and a **cleanup** script (run at end of day) to manage the 8 GB RAM / 32 GB storage Codespace constraints.
+Each day has a **setup** script (run at start of day) and a **cleanup** script (run at end of day) to ensure a clean environment between sessions.
 
 | Day | Setup | Cleanup | Purpose |
 |-----|-------|---------|---------|
@@ -35,7 +35,7 @@ Each day has a **setup** script (run at start of day) and a **cleanup** script (
 | 4 | `day4-setup` | `day4-cleanup` | Verify OTel + FastAPI + LangFuse |
 | 5 | `day5-setup` | `day5-cleanup` | Install MCP SDK, final cleanup |
 
-### Linux / macOS / Codespaces
+### Linux / macOS
 
 ```bash
 bash scripts/day1-setup.sh        # Start of Day 1
@@ -96,9 +96,9 @@ python scripts/populate_langfuse_data.py
 scripts/
 ├── README.md                    ← You are here
 ├── populate_langfuse_data.py    ← LangFuse demo data generator (Session 12)
-├── install-notebook.sh          ← Notebook setup (Linux/macOS/Codespaces)
+├── install-notebook.sh          ← Notebook setup (Linux/macOS)
 ├── install-notebook.ps1         ← Notebook setup (Windows)
-├── check-resources.sh           ← Resource monitor (Linux/macOS/Codespaces)
+├── check-resources.sh           ← Resource monitor (Linux/macOS)
 ├── check-resources.ps1          ← Resource monitor (Windows)
 ├── day1-setup.sh / .ps1         ← Ollama + local LLM
 ├── day1-cleanup.sh / .ps1       ← Remove Ollama (~2 GB freed)

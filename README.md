@@ -8,29 +8,18 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development -
 
 ## Quick Start
 
-### Option 1: GitHub Codespaces (Recommended)
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&repo=brainupgrade-in/aiagentic-comp)
-
-The Codespace auto-configures Python 3.13 and all dependencies. After launch:
-
-```bash
-# 1. Add your Groq API key (https://console.groq.com)
-nano .env
-
-# 2. Run day-specific setup
-bash scripts/day1-setup.sh
-```
-
-### Option 2: Local Setup
+### Local Setup (Ubuntu Linux)
 
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
-python -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# Edit .env with your API keys
+# Edit .env with your API keys (Groq, etc.)
+
+# Run day-specific setup
+bash scripts/day1-setup.sh
 ```
 
 ---
@@ -112,8 +101,8 @@ cp .env.example .env
 │   ├── day5-cleanup.sh        Final cleanup
 │   └── check-resources.sh     Monitor memory/storage/processes
 │
-├── .devcontainer/             GitHub Codespaces config
-│   ├── devcontainer.json      2-core, 8 GB RAM, Python 3.13
+├── .devcontainer/             Dev container config (not used for training)
+│   ├── devcontainer.json      VS Code dev container settings
 │   └── post-create.sh         Auto-setup script
 │
 ├── requirements.txt           Python dependencies
@@ -208,7 +197,7 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 - Basic understanding of APIs and REST
 - Familiarity with command line / terminal
 - Familiarity with AI coding assistants helpful but not required
-- GitHub account (for Codespaces)
+- Ubuntu Linux environment (native installation, WSL2, or VM)
 
 ---
 

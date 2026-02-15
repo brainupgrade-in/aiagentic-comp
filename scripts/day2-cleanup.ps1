@@ -21,9 +21,9 @@ Write-Host ""
 Write-Host "[1/1] Cleaning temp files..."
 Get-ChildItem -Path (Get-Location) -Recurse -Directory -Filter "__pycache__" -ErrorAction SilentlyContinue |
     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-04-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-05-*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "$env:TEMP\k8s-lab-06-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-04-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-05-*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:TEMP\ailab-06-*" -Recurse -Force -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "After cleanup:"

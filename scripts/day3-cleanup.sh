@@ -20,7 +20,7 @@ pkill -f "fastapi" 2>/dev/null || true
 echo "[2/2] Cleaning temp files..."
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 find "$REPO_DIR" -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-rm -rf /tmp/k8s-lab-07-* /tmp/k8s-lab-08-* /tmp/k8s-lab-09-*
+rm -rf /tmp/ailab-07-* /tmp/ailab-08-* /tmp/ailab-09-*
 
 echo ""
 echo "After cleanup:"

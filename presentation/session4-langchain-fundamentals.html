@@ -557,9 +557,9 @@ parser = StrOutputParser()
 chain = prompt | llm | parser
 
 # 5. Run it!
-result = chain.invoke({"question": "What is Docker?"})
+result = chain.invoke({"question": "What is Flask?"})
 print(result)
-# "Docker is a platform for containerizing applications..."</code></pre>
+# "Flask is a lightweight Python web framework..."</code></pre>
         </section>
 
         <!-- DATA FLOW -->
@@ -576,7 +576,7 @@ print(result)
             <tr>
               <td><strong>1</strong></td>
               <td>Prompt Template</td>
-              <td><code>{"question": "What is Docker?"}</code></td>
+              <td><code>{"question": "What is Flask?"}</code></td>
               <td>List of formatted messages</td>
             </tr>
             <tr>
@@ -589,7 +589,7 @@ print(result)
               <td><strong>3</strong></td>
               <td>StrOutputParser</td>
               <td>AIMessage object</td>
-              <td>Plain string: <code>"Docker is a platform..."</code></td>
+              <td>Plain string: <code>"Flask is a framework..."</code></td>
             </tr>
           </table>
           <div class="takeaway">
@@ -607,17 +607,17 @@ print(result)
             <div class="card card-accent p-14">
               <h4>StrOutputParser</h4>
               <p>Extracts plain text from the response</p>
-              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>"Docker is..."</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>"Flask is..."</code></pre>
             </div>
             <div class="card card-green p-14">
               <h4>JsonOutputParser</h4>
               <p>Parses JSON from the response</p>
-              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-json" data-trim data-noescape>{"name": "Docker"}</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-json" data-trim data-noescape>{"name": "Flask"}</code></pre>
             </div>
             <div class="card card-orange p-14">
               <h4>PydanticOutputParser</h4>
               <p>Validates into a Python class</p>
-              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>Tool(name="Docker")</code></pre>
+              <pre class="text-085" style="margin:6px 0 0 0;"><code class="language-python" data-trim data-noescape>Tool(name="Flask")</code></pre>
             </div>
           </div>
           <div class="analogy">
