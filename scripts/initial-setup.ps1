@@ -90,6 +90,8 @@ Write-Host "[5/6] Installing Python packages (this may take a few minutes)..."
 $reqFile = Join-Path $RepoDir "requirements.txt"
 if (Test-Path $reqFile) {
     pip install --upgrade pip --quiet 2>$null
+    # Install CPU-only PyTorch first to avoid downloading multi-GB NVIDIA/CUDA packages
+    pip install torch --index-url https://download.pytorch.org/whl/cpu --quiet 2>$null
     pip install -r $reqFile
     Write-Host ""
     Write-Host "  Packages installed successfully"

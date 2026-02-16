@@ -52,6 +52,8 @@ echo ""
 echo "[3/4] Installing Python packages (this may take a few minutes)..."
 if [ -f "$REPO_DIR/requirements.txt" ]; then
     pip install --upgrade pip --quiet
+    # Install CPU-only PyTorch first to avoid downloading multi-GB NVIDIA/CUDA packages
+    pip install torch --index-url https://download.pytorch.org/whl/cpu --quiet
     pip install -r "$REPO_DIR/requirements.txt"
     echo ""
     echo "  Packages installed successfully"
