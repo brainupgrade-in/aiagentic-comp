@@ -88,9 +88,19 @@ Oracle/
 ├── .env.example                         Environment variable template (all 5 days)
 ├── course-outline-agentic-ai.pdf        Course outline PDF (gitignored)
 ├── CLAUDE.md                            This file
+├── .gitignore                           Git ignore rules
+├── .claudeignore                        Claude Code ignore rules
+├── INSTRUCTOR-SUMMARY.md               Condensed instructor reference
+├── PARTICIPANT-INSTRUCTIONS.md          Setup & workflow guide for participants
+├── PARTICIPANT-QUICK-REFERENCE.md       One-page cheat sheet for participants
+├── LAB-TRACKING-COMMENT-BASED.md        Lab submission tracking via GitHub Issues
+├── co2-aiagenticavin.txt                Course order reference
+├── .github/                             GitHub Issues templates, workflows
 ├── .devcontainer/                       (Not used for this training - GitHub Codespaces only)
 │   ├── devcontainer.json                Dev container config for VS Code
 │   └── post-create.sh                   Auto-setup: venv, pip install
+├── reporting/                           Lab progress reporting & dashboards
+├── todo/                                Task tracking notes
 ├── presentation/                        15 HTML slide decks + shared resources
 │   ├── index.html                       Course landing page
 │   ├── template.html                    Template for new sessions
@@ -102,10 +112,16 @@ Oracle/
 │   ├── shared.js                        JavaScript enhancements
 │   ├── reveal-init.js                   Reveal.js configuration
 │   ├── presentation-header-footer.js    Auto-updating HUD interface
-│   ├── add-header-footer.sh             Batch update utility
+│   ├── code-blocks-enhanced.js          Cyberpunk terminal code block enhancements
+│   ├── performance-optimizations.css    Performance tuning styles
+│   ├── print.css                        Print stylesheet for slide decks
+│   ├── print.js                         Print support JavaScript
+│   ├── add-print-to-all.sh             Batch add print support to all sessions
+│   ├── apply-print-support.sh          Apply print CSS/JS to presentations
+│   ├── verify-print-support.sh         Verify print support is applied
 │   ├── README.md                        Presentation documentation
-│   ├── HEADER-FOOTER-GUIDE.md          Header/footer customization guide
-│   └── FIXES-APPLIED.md                Recent fixes and improvements
+│   ├── PRINT-GUIDE.md                  Print/export guide for slides
+│   └── PRINT-QUICK-REFERENCE.md        Quick reference for printing
 ├── hands-on/                            15 session directories with .ipynb labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README (.ipynb)
 │   ├── session-2/                       9 labs + 9 solutions + README (.ipynb)
@@ -128,7 +144,17 @@ Oracle/
     ├── day4-setup.sh / .ps1             Verify OTel + LangFuse + FastAPI + start server
     ├── day4-cleanup.sh / .ps1           Stop LangFuse + FastAPI + clean temp files
     ├── day5-setup.sh / .ps1             Install MCP SDK, verify env
-    └── day5-cleanup.sh / .ps1           Final cleanup
+    ├── day5-cleanup.sh / .ps1           Final cleanup
+    ├── langfuse-server.py               LangFuse server implementation (FastAPI + SQLite)
+    ├── populate_langfuse_data.py         Seed LangFuse with sample trace data
+    ├── configure-all-notebooks.py        Configure kernel for all .ipynb files
+    ├── configure-notebook-kernels.py     Set kernel specs per session
+    ├── setup-notebook-kernel.py          Install named Jupyter kernel
+    ├── create-lab-issues.py              Create GitHub Issues for lab tracking
+    ├── track-lab-comments.py             Parse lab submission comments
+    ├── README.md                         Scripts documentation
+    ├── README-langfuse-server.md         LangFuse server setup guide
+    └── SUBMIT-LAB-GUIDE.md              Lab submission instructions
 ```
 
 ## Course Day Breakdown
@@ -279,10 +305,13 @@ All 15 session presentations use Reveal.js 4.6.1 with a custom **Cybernetic HUD 
 - Browser zoom support without layout breaking
 - Works on desktop, laptop, tablet, mobile
 
+**Print Support:**
+- `print.css` + `print.js` — Print/export slides to PDF
+- `add-print-to-all.sh` — Batch apply print support
+- `PRINT-GUIDE.md` / `PRINT-QUICK-REFERENCE.md` — Print documentation
+
 **Documentation:**
 - `presentation/README.md` — Complete system documentation
-- `presentation/HEADER-FOOTER-GUIDE.md` — Customization guide
-- `presentation/FIXES-APPLIED.md` — Recent bug fixes
 
 **View Presentations:**
 ```bash
@@ -291,10 +320,6 @@ firefox presentation/index.html
 
 # Open specific session
 firefox presentation/session1-introduction-to-agentic-ai.html
-
-# Apply code block enhancements (if needed)
-cd presentation/
-./apply-code-enhancements.sh
 ```
 
 ## Error Recovery
