@@ -23,7 +23,7 @@ pip install sentence-transformers
 # Verify everything is ready
 python -c "from langchain_groq import ChatGroq; print('Groq ready!')"
 python -c "import chromadb; print(f'ChromaDB {chromadb.__version__}')"
-python -c "from langchain_community.embeddings import HuggingFaceEmbeddings; print('Embeddings ready!')"
+python -c "from langchain_huggingface import HuggingFaceEmbeddings; print('Embeddings ready!')"
 ```
 
 ## Labs Overview
