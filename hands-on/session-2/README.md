@@ -19,8 +19,8 @@ python --version  # 3.10+
 | 04 | Prompt Engineering for Code | Vague vs precise prompts, structured prompt templates |
 | 05 | Vibe Coding Simulation | NL parser → file structure → pseudo-code generation |
 | 06 | Safety & Sandboxing | Command classification, allowlist/blocklist, permission escalation |
-| 07 | Iterative Refinement | Quality metrics, code improvement loop, reflect-iterate cycle |
-| 08 | Code Review Basics | AST-based issue detection, structured review report |
+| 07 | Code Review Basics | AST-based issue detection, structured review report |
+| 08 | Iterative Refinement | Quality metrics, code improvement loop, reflect-iterate cycle |
 | 09 | **Challenge** | End-to-end coding agent simulation |
 
 ## How to Run
@@ -35,8 +35,8 @@ hands-on/session-2/
 ├── lab04_prompt_engineering_code.ipynb
 ├── lab05_vibe_coding_simulation.ipynb
 ├── lab06_safety_sandboxing.ipynb
-├── lab07_iterative_refinement.ipynb
-├── lab08_code_review_basics.ipynb
+├── lab07_code_review_basics.ipynb
+├── lab08_iterative_refinement.ipynb
 ├── lab09_challenge.ipynb
 └── solutions/                           ← Completed versions
     ├── lab01_coding_agent_anatomy.ipynb
@@ -55,8 +55,8 @@ hands-on/session-2/
 - Labs 01-03 cover agent internals
 - Labs 04-05 cover prompt engineering and vibe coding
 - Lab 06 covers safety & sandboxing — how agents protect your system
-- Lab 07 covers iterative refinement — the reflect-iterate loop
-- Lab 08 covers AST-based code review
+- Lab 07 covers AST-based code review — the foundation for automated analysis
+- Lab 08 covers iterative refinement — the reflect-iterate loop (builds on Lab 07's AST skills)
 - Lab 09 is the comprehensive challenge
 - Generated files appear in `/tmp/aidev-lab-02-XX/` directories
 - Compare your work with `solutions/` when done
