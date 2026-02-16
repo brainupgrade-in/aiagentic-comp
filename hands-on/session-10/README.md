@@ -57,7 +57,7 @@ hands-on/session-10/
 - Labs 01-04 cover observability concepts
 - Labs 05-07 cover OpenTelemetry implementation
 - Lab 08 is the challenge combining all concepts
-- Generated files appear in `/tmp/ailab-10-XX/` directories
+- Generated files appear in `/tmp/k8s-lab-10-XX/` directories
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time

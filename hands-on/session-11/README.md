@@ -29,7 +29,7 @@ python --version  # 3.10+
 Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
 ```
-hands-on/session-12/
+hands-on/session-11/
 ├── lab01_fastapi_basics.ipynb             ← Start here
 ├── lab02_fastapi_langgraph.ipynb
 ├── lab03_health_probes.ipynb
@@ -58,7 +58,7 @@ hands-on/session-12/
 - **Read the markdown cells** — they explain production concepts step by step
 - **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
-- Generated files appear in `/tmp/prod-lab-12-XX/` directories
+- Generated files appear in `/tmp/prod-lab-11-XX/` directories
 - **Compare with solutions** — solutions are in the `solutions/` folder if you get stuck
 
 ## Estimated Time
