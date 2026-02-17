@@ -372,7 +372,7 @@ def route_turn(state) -> str:
         <!-- HANDOFF CODE -->
         <section>
           <h2>Handoff &mdash; Code Pattern</h2>
-          <pre><code class="language-yaml" data-trim data-noescape>def triage_agent(state):
+          <pre><code class="language-python" data-trim data-noescape>def triage_agent(state):
     prompt = f"""Analyze this request. Can you handle it?
 Request: {state['request']}
 Reply: HANDLE if simple, HANDOFF:specialist_name if complex"""
