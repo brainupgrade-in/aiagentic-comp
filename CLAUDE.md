@@ -22,7 +22,7 @@
 **Participant machines:**
 - **CPU:** At least 8 threads (minimum)
 - **RAM:** 16 GB (minimum)
-- **OS:** Ubuntu Linux (recommended) or Windows with WSL2/Ubuntu VM
+- **OS:** Ubuntu Linux (recommended), macOS, or Windows (Git Bash via `windows-bootstrap.ps1`)
 
 **GitHub Codespaces:** Out of scope for this training. The `.devcontainer/` configuration is maintained in the repository for other use cases but is not used for this course delivery.
 
@@ -38,11 +38,11 @@
 | Observability | Python-based LangFuse server + SQLite | No Docker needed. Labs 01-08 use MockLangFuse (JSON files), Lab 09 uses real LangFuse server (Python FastAPI + SQLite) on port 3000 |
 | Vector DB | ChromaDB | Open-source, lightweight, sufficient for course exercises. Runs in-process |
 | API framework | FastAPI | Lightweight, async-native, good fit for AI application serving |
-| Base environment | Python 3.13 on Ubuntu Linux | Native Python installation, faster than containers for this use case |
+| Base environment | Python 3.12 on Ubuntu Linux | Native Python installation, faster than containers for this use case |
 
 ## Runtime
 
-- **Python:** 3.13 (native Ubuntu installation via `apt` or `pyenv`)
+- **Python:** 3.12 (native Ubuntu installation via `apt` or `pyenv`)
 - **Virtual environment:** `.venv/` created with `python3 -m venv .venv`
 - **Package management:** `pip install -r requirements.txt`
 - Some LangChain packages may lag behind on 3.13 support — test `pip install -r requirements.txt` before the course and pin versions if needed
@@ -111,45 +111,42 @@ Oracle/
 │   ├── performance-optimizations.css    Performance tuning styles
 │   ├── print.css                        Print stylesheet for slide decks
 │   ├── print.js                         Print support JavaScript
-│   ├── add-print-to-all.sh             Batch add print support to all sessions
-│   ├── apply-print-support.sh          Apply print CSS/JS to presentations
-│   ├── verify-print-support.sh         Verify print support is applied
-│   ├── README.md                        Presentation documentation
-│   ├── PRINT-GUIDE.md                  Print/export guide for slides
-│   └── PRINT-QUICK-REFERENCE.md        Quick reference for printing
+│   └── README.md                        Presentation documentation
 ├── hands-on/                            15 session directories with .ipynb labs + solutions
 │   ├── session-1/                       6 labs + 6 solutions + README (.ipynb)
 │   ├── session-2/                       9 labs + 9 solutions + README (.ipynb)
 │   ├── session-3/                       7 labs + 7 solutions + README (.ipynb)
 │   ├── session-4/ through session-15/   8 labs + 8 solutions + README each (.ipynb)
 │   └── (session-1 has 6, session-2 has 9, session-3 has 7, session-12 has 9, all others have 8)
-└── scripts/                             Both .sh (Linux/macOS) and .ps1 (Windows) provided
-    ├── initial-setup.sh / .ps1          One-time setup: Python, venv, packages, .env
-    ├── install-notebook.sh / .ps1       VS Code Jupyter extension + ipykernel
-    ├── install-jupyter-kernel.sh / .ps1 Named kernel spec for the course
-    ├── check-resources.sh / .ps1        Memory/storage/process status monitor
-    ├── submit-lab.sh / .ps1             Lab submission to GitHub Issues
-    ├── test-langfuse-server.sh / .ps1   LangFuse server verification (instructor)
-    ├── day1-setup.sh / .ps1             Install Ollama + pull llama3.2:1b
-    ├── day1-cleanup.sh / .ps1           Remove Ollama + model (~2 GB freed)
-    ├── day2-setup.sh / .ps1             Verify Groq API key + LangChain packages
-    ├── day2-cleanup.sh / .ps1           Clean temp files
-    ├── day3-setup.sh / .ps1             Verify LangGraph packages
-    ├── day3-cleanup.sh / .ps1           Stop servers + clean up for Day 4
-    ├── day4-setup.sh / .ps1             Verify OTel + LangFuse + FastAPI + start server
-    ├── day4-cleanup.sh / .ps1           Stop LangFuse + FastAPI + clean temp files
-    ├── day5-setup.sh / .ps1             Install MCP SDK, verify env
-    ├── day5-cleanup.sh / .ps1           Final cleanup
+└── scripts/                             Shell scripts (Linux/macOS/Windows Git Bash)
+    ├── initial-setup.sh                 One-time setup: Python, venv, packages, .env, kernel
+    ├── windows-bootstrap.ps1            Windows only: installs Git Bash, configures VS Code, runs initial-setup.sh
+    ├── set-notebook-kernels.sh          Re-embed gheware-agentic-ai kernel in all notebooks
+    ├── install-notebook.sh              VS Code Jupyter extension + ipykernel
+    ├── install-jupyter-kernel.sh        Named kernel spec for the course
+    ├── check-resources.sh               Memory/storage/process status monitor
+    ├── submit-lab.sh                    Lab submission to GitHub Issues
+    ├── test-langfuse-server.sh          LangFuse server verification
+    ├── day1-setup.sh                    Install Ollama + pull llama3.2:1b
+    ├── day1-cleanup.sh                  Remove Ollama + model (~2 GB freed)
+    ├── day2-setup.sh                    Verify Groq API key + LangChain packages
+    ├── day2-cleanup.sh                  Clean temp files
+    ├── day3-setup.sh                    Verify LangGraph packages
+    ├── day3-cleanup.sh                  Stop servers + clean up for Day 4
+    ├── day4-setup.sh                    Verify OTel + LangFuse + FastAPI + start server
+    ├── day4-cleanup.sh                  Stop LangFuse + FastAPI + clean temp files
+    ├── day5-setup.sh                    Install MCP SDK, verify env
+    ├── day5-cleanup.sh                  Final cleanup
     ├── langfuse-server.py               LangFuse server implementation (FastAPI + SQLite)
-    ├── populate_langfuse_data.py         Seed LangFuse with sample trace data
-    ├── configure-all-notebooks.py        Configure kernel for all .ipynb files
-    ├── configure-notebook-kernels.py     Set kernel specs per session
-    ├── setup-notebook-kernel.py          Install named Jupyter kernel
-    ├── create-lab-issues.py              Create GitHub Issues for lab tracking
-    ├── track-lab-comments.py             Parse lab submission comments
-    ├── README.md                         Scripts documentation
-    ├── README-langfuse-server.md         LangFuse server setup guide
-    └── SUBMIT-LAB-GUIDE.md              Lab submission instructions
+    ├── populate_langfuse_data.py        Seed LangFuse with sample trace data
+    ├── configure-all-notebooks.py       Configure kernel for all .ipynb files
+    ├── configure-notebook-kernels.py    Set kernel specs per session
+    ├── setup-notebook-kernel.py         Install named Jupyter kernel
+    ├── create-lab-issues.py             Create GitHub Issues for lab tracking
+    ├── track-lab-comments.py            Parse lab submission comments
+    ├── README.md                        Scripts documentation
+    ├── README-langfuse-server.md        LangFuse server setup guide
+    └── SUBMIT-LAB-GUIDE.md             Lab submission instructions
 ```
 
 ## Course Day Breakdown
@@ -192,14 +189,13 @@ Oracle/
 
 ## OpenCode — AI Coding Assistant
 
-[OpenCode](https://opencode.ai/) is pre-installed in the devcontainer so participants can use AI-assisted coding directly in the terminal during labs and assignments.
+[OpenCode](https://opencode.ai/) is an optional AI coding assistant participants can install for terminal-based AI help during labs.
 
-- **Install:** `curl -fsSL https://opencode.ai/install | bash` (done automatically in post-create.sh)
+- **Install:** `curl -fsSL https://opencode.ai/install | bash`
 - **Launch:** `opencode` (TUI mode) or `opencode 'your prompt'` (non-interactive)
-- **Auth:** Run `/connect` inside OpenCode and select GitHub Copilot (works with Copilot Pro/Business/Enterprise subscriptions), or set `GROQ_API_KEY` in environment for Groq models
+- **Auth:** Run `/connect` inside OpenCode and select GitHub Copilot, or set `GROQ_API_KEY` for Groq models
 - **Agents:** `build` (default, full access) and `plan` (read-only analysis) — switch with Tab
-- **Use cases:** Fix TODO sections in labs, debug failing code, generate YAML configs, explain concepts
-- **Note:** Verify the install URL and auth flow work before the course begins, as OpenCode updates may change the setup process
+- **Use cases:** Fix TODO sections in labs, debug failing code, explain concepts
 
 ## Groq API Notes
 
@@ -301,9 +297,7 @@ All 15 session presentations use Reveal.js 4.6.1 with a custom **Cybernetic HUD 
 - Works on desktop, laptop, tablet, mobile
 
 **Print Support:**
-- `print.css` + `print.js` — Print/export slides to PDF
-- `add-print-to-all.sh` — Batch apply print support
-- `PRINT-GUIDE.md` / `PRINT-QUICK-REFERENCE.md` — Print documentation
+- `print.css` + `print.js` — Print/export slides to PDF (Ctrl+Shift+P or print button)
 
 **Documentation:**
 - `presentation/README.md` — Complete system documentation
@@ -357,31 +351,22 @@ bash scripts/day5-cleanup.sh    # Final cleanup
 bash scripts/submit-lab.sh 1 1 "notes"
 ```
 
-### Windows (PowerShell)
+### Windows
+
+Run bootstrap once in PowerShell, then use Git Bash terminal in VS Code for all subsequent commands:
 
 ```powershell
-# First-time setup (run once)
-.\scripts\initial-setup.ps1
+# One-time bootstrap (PowerShell) — installs Git Bash, configures VS Code, runs initial-setup.sh
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+.\scripts\windows-bootstrap.ps1
+```
 
-# Check resource usage anytime
-.\scripts\check-resources.ps1
+After bootstrap, open a Git Bash terminal in VS Code and use the same commands as Linux/macOS:
 
-# Day-specific setup
-.\scripts\day1-setup.ps1        # Ollama + model
-.\scripts\day2-setup.ps1        # Verify Groq API + LangChain packages
-.\scripts\day3-setup.ps1        # Verify LangGraph packages
-.\scripts\day4-setup.ps1        # OTel + LangFuse + FastAPI + start server
-.\scripts\day5-setup.ps1        # MCP SDK + verify env
-
-# Day-specific cleanup
-.\scripts\day1-cleanup.ps1      # Remove Ollama
-.\scripts\day2-cleanup.ps1      # Clean temp files
-.\scripts\day3-cleanup.ps1      # Stop servers
-.\scripts\day4-cleanup.ps1      # Stop LangFuse + clean temp files
-.\scripts\day5-cleanup.ps1      # Final cleanup
-
-# Lab submission
-.\scripts\submit-lab.ps1 1 1 "notes"
+```bash
+# All day scripts, cleanup, and submission work identically in Git Bash
+bash scripts/day1-setup.sh
+bash scripts/submit-lab.sh 1 1 "notes"
 ```
 
 ## Git Remote
