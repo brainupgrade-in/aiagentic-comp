@@ -141,8 +141,8 @@ etc.
 The script tries these methods in order:
 
 1. **Repository git config (preferred):** `git config --local user.name` and `user.email`
-2. **GitHub CLI:** `gh api user --jq '.login'` (username only)
-3. **Global git config (fallback):** `git config --global user.name` and `user.email`
+2. **Global git config:** `git config --global user.name` and `user.email` (used if not set at repo level)
+3. **GitHub CLI (last resort):** `gh api user --jq '.login'` (username only)
 
 **Set your information (recommended - repository-level):**
 ```bash

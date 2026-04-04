@@ -99,9 +99,11 @@ EMAIL=""
 USERNAME=$(git config --local user.name 2>/dev/null || echo "")
 EMAIL=$(git config --local user.email 2>/dev/null || echo "")
 
-# 2nd preference: Global git config (if not found in repo)
+# 2nd preference: Global git config (username or email not found in repo)
 if [ -z "$USERNAME" ]; then
     USERNAME=$(git config --global user.name 2>/dev/null || echo "")
+fi
+if [ -z "$EMAIL" ]; then
     EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 fi
 

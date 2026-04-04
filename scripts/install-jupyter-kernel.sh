@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Install Jupyter kernel spec for Oracle Agentic AI course
+# Install Jupyter kernel spec for Gheware Agentic AI course
 # This creates a kernel that VS Code and Jupyter can discover
 #
 

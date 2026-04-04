@@ -27,8 +27,8 @@ def register_kernel():
             "ipykernel",
             "install",
             "--user",
-            "--name=oracle-agentic-ai",
-            "--display-name=Python 3 (Oracle Agentic AI)"
+            "--name=gheware-agentic-ai",
+            "--display-name=Python 3 (Gheware Agentic AI)"
         ], check=True)
         print("✓ Kernel registered successfully")
         return True
@@ -51,9 +51,9 @@ def update_notebook_kernel(notebook_path):
             notebook['metadata'] = {}
 
         notebook['metadata']['kernelspec'] = {
-            "display_name": "Python 3 (Oracle Agentic AI)",
+            "display_name": "Python 3 (Gheware Agentic AI)",
             "language": "python",
-            "name": "oracle-agentic-ai"
+            "name": "gheware-agentic-ai"
         }
 
         # Update language_info if present
@@ -109,7 +109,7 @@ def main():
     if failed > 0:
         sys.exit(1)
 
-    print("\n✓ All notebooks configured to use: Python 3 (Oracle Agentic AI)")
+    print("\n✓ All notebooks configured to use: Python 3 (Gheware Agentic AI)")
     print("  Kernel location: .venv/bin/python")
 
 if __name__ == "__main__":

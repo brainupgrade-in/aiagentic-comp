@@ -13,7 +13,7 @@ echo ""
 
 # Verify Python (relative to repo root)
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-echo "[1/3] Verifying Python environment..."
+echo "[1/4] Verifying Python environment..."
 if [ -f "$REPO_DIR/.venv/bin/python" ]; then
   source "$REPO_DIR/.venv/bin/activate"
   echo "  Virtual environment active: $(python --version)"
@@ -22,7 +22,7 @@ else
 fi
 
 # Verify FastAPI and production packages
-echo "[2/3] Verifying production packages..."
+echo "[2/4] Verifying production packages..."
 python -c "import fastapi; print(f'  fastapi {fastapi.__version__}')" 2>/dev/null || echo "  WARNING: fastapi not installed"
 python -c "import uvicorn; print(f'  uvicorn {uvicorn.__version__}')" 2>/dev/null || echo "  WARNING: uvicorn not installed"
 python -c "import pydantic; print(f'  pydantic {pydantic.__version__}')" 2>/dev/null || echo "  WARNING: pydantic not installed"
@@ -31,10 +31,10 @@ python -c "import langfuse; print(f'  langfuse {langfuse.__version__}')" 2>/dev/
 python -c "import opentelemetry; print(f'  opentelemetry-api installed')" 2>/dev/null || echo "  WARNING: opentelemetry not installed"
 
 # Verify GROQ_API_KEY
-echo "[3/3] Checking GROQ_API_KEY..."
+echo "[3/4] Checking GROQ_API_KEY..."
 if [ -z "$GROQ_API_KEY" ]; then
-    if [ -f .env ]; then
-        source .env
+    if [ -f "$REPO_DIR/.env" ]; then
+        source "$REPO_DIR/.env"
     fi
     if [ -z "$GROQ_API_KEY" ]; then
         echo ""

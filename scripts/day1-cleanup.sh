@@ -28,7 +28,7 @@ rm -rf ~/.ollama
 
 # Clean temp files from Day 1 labs
 echo "[4/4] Cleaning lab temp files..."
-rm -rf /tmp/ailab-01-* /tmp/aidev-lab-02-* /tmp/ailab-03-*
+rm -rf /tmp/aidev-lab-02-* /tmp/k8s-lab-03-*
 
 echo ""
 echo "After cleanup:"

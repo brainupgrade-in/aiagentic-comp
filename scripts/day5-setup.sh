@@ -12,18 +12,25 @@ df -h / | tail -1 | awk '{print "Storage: "$3" used / "$2" total ("$5" used)"}'
 echo ""
 
 # Verify Python
-echo "[1/3] Verifying Python..."
-python3 --version || { echo "ERROR: Python 3 not found"; exit 1; }
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+echo "[1/3] Verifying Python environment..."
+if [ -f "$REPO_DIR/.venv/bin/python" ]; then
+  source "$REPO_DIR/.venv/bin/activate"
+  echo "  Virtual environment active: $(python --version)"
+else
+  echo "  ERROR: Virtual environment not found. Run: bash scripts/initial-setup.sh"
+  exit 1
+fi
 
-# Verify pip and install MCP SDK
+# Install MCP SDK into the venv
 echo "[2/3] Installing MCP Python SDK..."
-pip install --quiet mcp>=1.0 2>/dev/null || pip install mcp>=1.0
+pip install --quiet "mcp>=1.0"
 
 # Verify GROQ_API_KEY
 echo "[3/3] Checking GROQ_API_KEY..."
 if [ -z "$GROQ_API_KEY" ]; then
-    if [ -f .env ]; then
-        source .env
+    if [ -f "$REPO_DIR/.env" ]; then
+        source "$REPO_DIR/.env"
     fi
     if [ -z "$GROQ_API_KEY" ]; then
         echo ""

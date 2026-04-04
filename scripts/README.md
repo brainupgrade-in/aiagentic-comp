@@ -96,9 +96,12 @@ scripts/
 │
 ├── initial-setup.sh                 ← One-time setup (venv + packages + kernel + notebooks)
 ├── install-notebook.sh              ← Re-register kernel + reconfigure notebooks
+├── install-jupyter-kernel.sh        ← Register Jupyter kernel only (no notebook reconfiguration)
+├── set-notebook-kernels.sh          ← Force all notebooks to use gheware-agentic-ai kernel
 ├── check-resources.sh               ← Resource monitor
 ├── submit-lab.sh                    ← Lab submission to GitHub Issues
 ├── test-langfuse-server.sh          ← LangFuse server verification (instructor)
+├── windows-bootstrap.ps1            ← One-time Windows setup: install Git Bash + run initial-setup.sh
 │
 ├── day1-setup.sh / day1-cleanup.sh  ← Ollama + local LLM
 ├── day2-setup.sh / day2-cleanup.sh  ← Groq API + LangChain
@@ -108,6 +111,9 @@ scripts/
 │
 ├── langfuse-server.py               ← LangFuse-compatible server (Python + SQLite)
 ├── populate_langfuse_data.py        ← LangFuse demo data generator
+├── configure-all-notebooks.py       ← Configure kernel in all notebooks (student + solutions)
+├── configure-notebook-kernels.py    ← Configure kernel in solution notebooks only
+├── setup-notebook-kernel.py         ← Register kernel + configure all notebooks (legacy helper)
 ├── create-lab-issues.py             ← Create GitHub Issues (already run once)
 └── track-lab-comments.py            ← Track participant progress
 ```
