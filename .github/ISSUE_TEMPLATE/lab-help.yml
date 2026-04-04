@@ -1,0 +1,60 @@
+name: Lab Help / Question
+description: Ask for help with a lab exercise
+title: "[HELP] Session [N] Lab [N] — brief description"
+labels: ["question"]
+body:
+  - type: dropdown
+    id: session
+    attributes:
+      label: Session
+      options:
+        - Session 1 - Introduction to Agentic AI
+        - Session 2 - AI Coding Assistants & Vibe Coding
+        - Session 3 - Reasoning, Planning & Tool Use
+        - Session 4 - LangChain Fundamentals
+        - Session 5 - Building RAG Applications
+        - Session 6 - LangChain Agents & Memory
+        - Session 7 - LangGraph Stateful Workflows
+        - Session 8 - Advanced LangGraph Workflows
+        - Session 9 - Multi-Agent Systems
+        - Session 10 - Observability Fundamentals
+        - Session 11 - Production Development & Deployment
+        - Session 12 - LangFuse Observability
+        - Session 13 - Model Context Protocol (MCP)
+        - Session 14 - AI Safety & Guardrails
+        - Session 15 - Capstone Project
+    validations:
+      required: true
+
+  - type: input
+    id: lab
+    attributes:
+      label: Lab Number
+      placeholder: "e.g. Lab 03"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question / Problem
+      description: Describe what you're stuck on
+      placeholder: |
+        I'm trying to complete the TODO in cell 5 but getting this error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message (if any)
+      render: shell
+      placeholder: Paste the full error traceback here
+
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What I've Tried
+      placeholder: |
+        - Read the solution notebook but still confused about...
+        - Tried changing X to Y but...

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Submit a completed lab
+    url: https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue+label:lab-tracking
+    about: Find your lab issue and comment "✅ Completed" using scripts/submit-lab.sh

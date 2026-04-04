@@ -1,0 +1,72 @@
+name: Bug Report
+description: Report a broken lab, incorrect solution, or setup issue
+title: "[BUG] Session [N] Lab [N] — brief description"
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: session
+    attributes:
+      label: Session
+      options:
+        - Session 1 - Introduction to Agentic AI
+        - Session 2 - AI Coding Assistants & Vibe Coding
+        - Session 3 - Reasoning, Planning & Tool Use
+        - Session 4 - LangChain Fundamentals
+        - Session 5 - Building RAG Applications
+        - Session 6 - LangChain Agents & Memory
+        - Session 7 - LangGraph Stateful Workflows
+        - Session 8 - Advanced LangGraph Workflows
+        - Session 9 - Multi-Agent Systems
+        - Session 10 - Observability Fundamentals
+        - Session 11 - Production Development & Deployment
+        - Session 12 - LangFuse Observability
+        - Session 13 - Model Context Protocol (MCP)
+        - Session 14 - AI Safety & Guardrails
+        - Session 15 - Capstone Project
+    validations:
+      required: true
+
+  - type: input
+    id: lab
+    attributes:
+      label: Lab Number
+      placeholder: "e.g. Lab 03"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Ubuntu Linux
+        - macOS
+        - Windows (Git Bash)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What's broken and what did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Output
+      render: shell
+      placeholder: Paste the full error here
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Open lab notebook
+        2. Run cell 3
+        3. See error
+    validations:
+      required: true
