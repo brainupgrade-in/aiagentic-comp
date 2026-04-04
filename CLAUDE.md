@@ -45,7 +45,7 @@
 - **Python:** 3.12 (native Ubuntu installation via `apt` or `pyenv`)
 - **Virtual environment:** `.venv/` created with `python3 -m venv .venv`
 - **Package management:** `pip install -r requirements.txt`
-- Some LangChain packages may lag behind on 3.13 support — test `pip install -r requirements.txt` before the course and pin versions if needed
+- Some LangChain packages may lag behind on 3.12 support — test `pip install -r requirements.txt` before the course and pin versions if needed
 
 ## Resource Management Strategy
 
@@ -79,7 +79,7 @@ Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
 ## File Structure
 
 ```
-Oracle/
+aiagentic-comp/
 ├── README.md                            GitHub landing page
 ├── LICENSE                              Gheware UniGPS Solutions LLP, All Rights Reserved
 ├── requirements.txt                     Python packages (LangChain, FastAPI, OTel, etc.)
@@ -90,11 +90,17 @@ Oracle/
 ├── .claudeignore                        Claude Code ignore rules
 ├── PARTICIPANT-INSTRUCTIONS.md          Setup & workflow guide for participants
 ├── LAB-TRACKING-COMMENT-BASED.md        Lab submission tracking via GitHub Issues
-├── co2-aiagenticavin.txt                Course order reference
-├── .github/                             GitHub Issues templates, workflows
-├── .devcontainer/                       (Not used for this training - GitHub Codespaces only)
-│   ├── devcontainer.json                Dev container config for VS Code
-│   └── post-create.sh                   Auto-setup: venv, pip install
+├── .github/
+│   └── ISSUE_TEMPLATE/
+│       ├── lab-help.yml                 Lab question / help request template
+│       ├── bug-report.yml               Broken lab / setup bug template
+│       └── config.yml                   Disable blank issues; link to lab-tracking
+├── .vscode/
+│   ├── settings.json                    Workspace settings (interpreter, kernel, terminal)
+│   └── extensions.json                  Recommended extensions
+├── .devcontainer/                       (Not used for this training — Codespaces only)
+│   ├── devcontainer.json                Python 3.12 container config
+│   └── post-create.sh                   Delegates to scripts/initial-setup.sh
 ├── reporting/                           Lab progress reporting & dashboards
 ├── presentation/                        15 HTML slide decks + shared resources
 │   ├── index.html                       Course landing page
