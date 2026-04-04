@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Create GitHub Issues for all labs in the course.
-One issue per lab (117 total) for participants to comment on when completed.
+One issue per lab (119 total) for participants to comment on when completed.
 
 Usage: python3 create-lab-issues.py
 Requires: GITHUB_TOKEN environment variable with repo write access
@@ -18,7 +18,7 @@ REPO_NAME = "aiagentic-comp"
 # Lab structure: session_number -> (session_title, num_labs)
 COURSE_STRUCTURE = {
     1: ("Introduction to Agentic AI", 6),
-    2: ("AI Coding Assistants & Vibe Coding", 8),
+    2: ("AI Coding Assistants & Vibe Coding", 9),
     3: ("Reasoning, Planning & Tool Use", 7),
     4: ("LangChain Fundamentals", 8),
     5: ("Building RAG Applications", 8),

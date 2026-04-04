@@ -57,28 +57,39 @@ if ! [[ "$LAB" =~ ^[0-9]+$ ]] || [ "$LAB" -lt 1 ] || [ "$LAB" -gt 9 ]; then
 fi
 
 # Calculate issue number
-# Session 1: Labs 1-6 = Issues 1-6
-# Session 2: Labs 1-8 = Issues 7-14
-# Session 3: Labs 1-7 = Issues 15-21
-# etc.
+# Session 1:  Labs 1-6  = Issues 1-6    (6 labs)
+# Session 2:  Labs 1-9  = Issues 7-15   (9 labs)
+# Session 3:  Labs 1-7  = Issues 16-22  (7 labs)
+# Session 4:  Labs 1-8  = Issues 23-30  (8 labs)
+# Session 5:  Labs 1-8  = Issues 31-38  (8 labs)
+# Session 6:  Labs 1-8  = Issues 39-46  (8 labs)
+# Session 7:  Labs 1-8  = Issues 47-54  (8 labs)
+# Session 8:  Labs 1-8  = Issues 55-62  (8 labs)
+# Session 9:  Labs 1-8  = Issues 63-70  (8 labs)
+# Session 10: Labs 1-8  = Issues 71-78  (8 labs)
+# Session 11: Labs 1-8  = Issues 79-86  (8 labs)
+# Session 12: Labs 1-9  = Issues 87-95  (9 labs)
+# Session 13: Labs 1-8  = Issues 96-103 (8 labs)
+# Session 14: Labs 1-8  = Issues 104-111 (8 labs)
+# Session 15: Labs 1-8  = Issues 112-119 (8 labs)
 
 ISSUE_MAP=(
     0    # placeholder
     1    # Session 1 starts at issue 1
     7    # Session 2 starts at issue 7
-    15   # Session 3 starts at issue 15
-    22   # Session 4 starts at issue 22
-    30   # Session 5 starts at issue 30
-    38   # Session 6 starts at issue 38
-    46   # Session 7 starts at issue 46
-    54   # Session 8 starts at issue 54
-    62   # Session 9 starts at issue 62
-    70   # Session 10 starts at issue 70
-    78   # Session 11 starts at issue 78
-    86   # Session 12 starts at issue 86
-    95   # Session 13 starts at issue 95
-    103  # Session 14 starts at issue 103
-    111  # Session 15 starts at issue 111
+    16   # Session 3 starts at issue 16
+    23   # Session 4 starts at issue 23
+    31   # Session 5 starts at issue 31
+    39   # Session 6 starts at issue 39
+    47   # Session 7 starts at issue 47
+    55   # Session 8 starts at issue 55
+    63   # Session 9 starts at issue 63
+    71   # Session 10 starts at issue 71
+    79   # Session 11 starts at issue 79
+    87   # Session 12 starts at issue 87
+    96   # Session 13 starts at issue 96
+    104  # Session 14 starts at issue 104
+    112  # Session 15 starts at issue 112
 )
 
 SESSION_START=${ISSUE_MAP[$SESSION]}

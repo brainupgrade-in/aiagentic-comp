@@ -9,8 +9,8 @@ Usage: python3 generate-dashboard.py [--output dashboard.html] [--auto-refresh]
 """
 
 import os
+import re
 import sys
-import json
 import argparse
 from datetime import datetime
 from collections import defaultdict
@@ -21,7 +21,7 @@ REPO_NAME = "aiagentic-comp"
 
 COURSE_STRUCTURE = {
     1: ("Introduction to Agentic AI", 6),
-    2: ("AI Coding Assistants & Vibe Coding", 8),
+    2: ("AI Coding Assistants & Vibe Coding", 9),
     3: ("Reasoning, Planning & Tool Use", 7),
     4: ("LangChain Fundamentals", 8),
     5: ("Building RAG Applications", 8),
@@ -38,10 +38,16 @@ COURSE_STRUCTURE = {
 }
 
 def get_github_token():
-    """Get GitHub token from environment."""
+    """Get GitHub token from environment or instructor PAT file."""
     token = os.getenv("GITHUB_TOKEN")
     if not token:
+        pat_file = os.path.expanduser("~/.rajesh/.github_bu")
+        if os.path.exists(pat_file):
+            with open(pat_file) as f:
+                token = f.read().strip()
+    if not token:
         print("Error: GITHUB_TOKEN environment variable not set")
+        print("Set it with: export GITHUB_TOKEN='your_token'")
         sys.exit(1)
     return token
 
@@ -80,7 +86,7 @@ def fetch_lab_issues(token):
     return all_issues
 
 def fetch_issue_comments(token, issue_number):
-    """Fetch all comments for a specific issue."""
+    """Fetch all comments for a specific issue (paginated)."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues/{issue_number}/comments"
     headers = {
         "Authorization": f"Bearer {token}",
@@ -88,15 +94,25 @@ def fetch_issue_comments(token, issue_number):
         "X-GitHub-Api-Version": "2022-11-28"
     }
 
-    response = requests.get(url, headers=headers, params={"per_page": 100})
-    if response.status_code != 200:
-        return []
+    all_comments = []
+    page = 1
 
-    return response.json()
+    while True:
+        response = requests.get(url, headers=headers, params={"per_page": 100, "page": page})
+        if response.status_code != 200:
+            return all_comments
+
+        comments = response.json()
+        if not comments:
+            break
+
+        all_comments.extend(comments)
+        page += 1
+
+    return all_comments
 
 def parse_issue_title(title):
     """Extract session and lab number from issue title."""
-    import re
     match = re.search(r'Session (\d+) - Lab (\d+)', title)
     if match:
         return int(match.group(1)), int(match.group(2))
@@ -108,7 +124,6 @@ def extract_participant_name(comment_body):
     Looks for pattern: **Participant:** name (email) or **Participant:** name
     Returns the name portion, or None if not found.
     """
-    import re
     # Pattern to match: **Participant:** name (email) or **Participant:** name
     patterns = [
         r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',  # name (email)
@@ -124,14 +139,18 @@ def extract_participant_name(comment_body):
     return None
 
 def is_completion_comment(comment_body):
-    """Check if comment indicates lab completion."""
-    import re
+    """Check if comment indicates lab completion.
+
+    Matches the format produced by submit-lab.sh:
+      ✅ Completed
+      **Participant:** name (email)
+      **Validation:** All checks passed
+      **Notes:** optional notes
+    """
     patterns = [
-        r'✅.*completed',
-        r'completed.*✅',
+        r'✅\s+completed',
+        r'completed\s+✅',
         r'\[x\].*done',
-        r'done',
-        r'finished',
         r'all checks passed',
     ]
     comment_lower = comment_body.lower()

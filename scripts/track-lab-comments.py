@@ -20,7 +20,7 @@ REPO_NAME = "aiagentic-comp"
 
 COURSE_STRUCTURE = {
     1: ("Introduction to Agentic AI", 6),
-    2: ("AI Coding Assistants & Vibe Coding", 8),
+    2: ("AI Coding Assistants & Vibe Coding", 9),
     3: ("Reasoning, Planning & Tool Use", 7),
     4: ("LangChain Fundamentals", 8),
     5: ("Building RAG Applications", 8),
@@ -139,14 +139,20 @@ def extract_participant_name(comment_body):
     return None
 
 def is_completion_comment(comment_body):
-    """Check if comment indicates lab completion."""
-    # Look for completion markers
+    """Check if comment indicates lab completion.
+
+    Matches the format produced by submit-lab.sh:
+      ✅ Completed
+      **Participant:** name (email)
+      **Validation:** All checks passed
+      **Notes:** optional notes
+    """
+    # Primary: exact format from submit-lab.sh
+    # Secondary: manual completions with common completion phrases
     patterns = [
-        r'✅.*completed',
-        r'completed.*✅',
+        r'✅\s+completed',
+        r'completed\s+✅',
         r'\[x\].*done',
-        r'done',
-        r'finished',
         r'all checks passed',
     ]
 
