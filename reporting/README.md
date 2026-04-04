@@ -170,7 +170,7 @@ python3 reporting/generate-dashboard.py --output reporting/final-completion-repo
 
 ## Dependencies
 
-- Python 3.6+
+- Python 3.12+
 - `requests` library (installed via `requirements.txt`)
 - GitHub token with read access to repository
 

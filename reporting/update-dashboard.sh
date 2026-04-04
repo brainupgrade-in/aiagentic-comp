@@ -39,17 +39,26 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Generate dashboard
-echo "Generating dashboard..."
-python3 generate-dashboard.py --output dashboard.html $AUTO_REFRESH
-
-# Archive previous dashboard
-if [ -f dashboard.html ] && [ -f dashboard-previous.html ]; then
-    mv dashboard-previous.html "archive/dashboard-$(date +%Y%m%d-%H%M%S).html" 2>/dev/null || true
+# Activate virtual environment if present
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+VENV_PYTHON="$SCRIPT_DIR/../.venv/bin/python3"
+if [ -f "$VENV_PYTHON" ]; then
+    PYTHON="$VENV_PYTHON"
+else
+    PYTHON="python3"
 fi
 
 # Create archive directory if needed
 mkdir -p archive
+
+# Archive previous dashboard before regenerating
+if [ -f dashboard.html ]; then
+    cp dashboard.html "archive/dashboard-$(date +%Y%m%d-%H%M%S).html" 2>/dev/null || true
+fi
+
+# Generate dashboard
+echo "Generating dashboard..."
+"$PYTHON" "$SCRIPT_DIR/generate-dashboard.py" --output dashboard.html $AUTO_REFRESH
 
 echo ""
 echo "✓ Dashboard updated: dashboard.html"
