@@ -1,9 +1,9 @@
 {
   "name": "Agentic AI Course",
-  "image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
 
   "hostRequirements": {
-    "cpus": 2,
+    "cpus": 4,
     "memory": "8gb",
     "storage": "32gb"
   },
@@ -24,29 +24,28 @@
         "ms-toolsai.jupyter",
         "redhat.vscode-yaml"
       ],
-      "unwantedRecommendations": [
-        "VisualStudioExptTeam.vscodeintellicode",
-        "VisualStudioExptTeam.intellicode-api-usage-examples"
-      ],
       "settings": {
         "python.defaultInterpreterPath": "${containerWorkspaceFolder}/.venv/bin/python",
+        "jupyter.kernelPicker.type": "default",
         "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
 
   "containerEnv": {
-    "PYTHONDONTWRITEBYTECODE": "1",
-    "VIRTUAL_ENV": "${containerWorkspaceFolder}/.venv",
-    "PATH": "${containerWorkspaceFolder}/.venv/bin:${localEnv:PATH}"
+    "PYTHONDONTWRITEBYTECODE": "1"
   },
 
   "forwardPorts": [
-    8000
+    8000,
+    3000,
+    11434
   ],
 
   "portsAttributes": {
-    "8000": { "label": "FastAPI App" }
+    "8000":  { "label": "FastAPI App" },
+    "3000":  { "label": "LangFuse Server" },
+    "11434": { "label": "Ollama" }
   },
 
   "remoteUser": "vscode"
