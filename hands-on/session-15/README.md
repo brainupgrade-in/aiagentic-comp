@@ -25,15 +25,28 @@ python --version  # 3.10+
 
 ## How to Run
 
-```bash
-cd hands-on/session-15
+Labs are Jupyter notebooks (`.ipynb`). Open them in **VS Code** (built-in Jupyter support) or any Jupyter-compatible tool.
 
-# Run a lab (fill in the TODO sections)
-python lab01_capstone_architecture.py
-
-# Check the solution (all checks pass)
-python solutions/lab01_capstone_architecture.py
 ```
+hands-on/session-15/
+├── lab01_capstone_architecture.ipynb    ← Start here
+├── lab02_mcp_server_tools.ipynb
+├── lab03_fastapi_endpoint.ipynb
+├── lab04_langfuse_instrumentation.ipynb
+├── lab05_health_probes_monitoring.ipynb
+├── lab06_production_deployment.ipynb
+├── lab07_testing_validation.ipynb
+├── lab08_challenge.ipynb
+└── solutions/                           ← Completed versions
+    ├── lab01_capstone_architecture.ipynb
+    ├── ...
+    └── lab08_challenge.ipynb
+```
+
+1. Open the notebook in VS Code
+2. Select the kernel: **Python 3 (Gheware Agentic AI)**
+3. Run cells one at a time with **Shift+Enter**
+4. Fill in the TODO sections, then compare with `solutions/`
 
 ## Tips
 

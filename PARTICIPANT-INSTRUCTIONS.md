@@ -1,115 +1,109 @@
-# Lab Submission Instructions - Agentic AI Course
+# Participant Instructions — Agentic AI Course
 
 ## Overview
 
-You'll submit labs by **commenting on GitHub issues**. Each lab has its own issue where you'll post "✅ Completed" when done.
+5-day hands-on course. Each session has Jupyter notebook labs with `TODO` placeholders to fill in.
+Labs are submitted by commenting on GitHub Issues using the `submit-lab.sh` script.
 
-**Token:** You'll receive a shared access token during the Zoom session
+**Before Day 1:** Complete the one-time setup below for your OS.
 
 ---
 
-## One-Time Setup (Before Day 1)
+## One-Time Setup
 
-### Step 1: Install GitHub CLI
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update
-sudo apt install gh
-```
-
-**macOS:**
-```bash
-brew install gh
-```
-
-**Windows:**
-Download from: https://cli.github.com/
-
-### Step 2: Authenticate with Shared Token
+### Linux / macOS
 
 ```bash
-# Start authentication
-gh auth login
-
-# Select these options:
-# - What account? → GitHub.com
-# - Protocol? → HTTPS
-# - Authenticate? → Paste an authentication token
-# - Paste token: [USE THE TOKEN SHARED IN ZOOM]
-
-# Verify it works
-gh auth status
-```
-
-Expected output:
-```
-✓ Logged in to github.com as your-username
-✓ Token: github_pat_...
-```
-
-### Step 3: Clone Course Repository
-
-```bash
-# Clone repository (read-only access)
+# Clone the repository
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
-
-# Navigate to course directory
 cd aiagentic-comp
 
-# Verify access
-gh issue list --repo brainupgrade-in/aiagentic-comp --limit 5
+# Run setup (creates .venv, installs packages, registers Jupyter kernel)
+source scripts/initial-setup.sh
+
+# Edit .env and add your Groq API key
+# Get one free at https://console.groq.com
+nano .env   # or open in VS Code
 ```
 
-### Step 4: Set Your Identity (Required)
+### Windows
 
-**⚠️ IMPORTANT:** This identifies YOU in submissions and dashboard tracking.
+Open **PowerShell** (not Command Prompt) in the repo folder and run:
+
+```powershell
+# Allow script execution (one-time)
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+
+# Clone the repository
+git clone https://github.com/brainupgrade-in/aiagentic-comp.git
+cd aiagentic-comp
+
+# Bootstrap: installs Git Bash if needed, configures VS Code, runs initial-setup.sh
+.\scripts\windows-bootstrap.ps1
+```
+
+This script:
+- Installs **Git for Windows** (Git Bash) automatically via `winget` if not present
+- Configures **VS Code** to use Git Bash as the default integrated terminal
+- Runs `initial-setup.sh` through Git Bash — same setup as Linux/Mac
+
+After bootstrap, **always use the Git Bash terminal in VS Code** to run course scripts.
+
+> **No Git / winget?** Install Git for Windows manually from https://git-scm.com/download/win, then re-run the bootstrap script.
+
+---
+
+## Setting Up Your Identity (Required for Lab Submission)
 
 ```bash
-# Make sure you're in the repository directory
-cd ~/aiagentic-comp
+cd ~/aiagentic-comp   # or cd aiagentic-comp on Windows Git Bash
 
-# Set YOUR GitHub username and email (for this repository only)
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
 
-# Verify it's set correctly
+# Verify
 git config user.name
 git config user.email
 ```
 
-**Example:**
-```bash
-git config user.name "johndoe"
-git config user.email "johndoe@gmail.com"
-```
+Use your **actual GitHub username** — this is how you appear in the instructor dashboard.
 
-**Important Notes:**
-- ✅ Use your **actual GitHub username** (not your full name)
-- ✅ This sets config **only for this repository** (doesn't affect your system)
-- ✅ This is how you'll appear in the dashboard and tracking
-- ✅ Include your email for verification
+---
 
-**Why this matters:**
-- Your submissions will show as: `johndoe (johndoe@gmail.com)`
-- Dashboard will track YOUR progress (not instructor's)
-- Instructor can verify your identity
+## GitHub CLI Authentication (Required for Lab Submission)
 
-### Step 5: Setup Python Environment
+You will receive a shared access token during the Zoom session.
 
 ```bash
-# Create virtual environment
-python3 -m venv .venv
+gh auth login
+# Select: GitHub.com → HTTPS → Paste an authentication token
+# Paste the token shared by the instructor
 
-# Activate it
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Verify installation
-jupyter --version
+# Verify
+gh auth status
 ```
+
+---
+
+## Opening Labs in VS Code
+
+All labs are Jupyter notebooks (`.ipynb`). Open VS Code from the repo root:
+
+```bash
+code .
+```
+
+Navigate to `hands-on/session-1/lab01_meet_your_llm.ipynb` and open it.
+
+**Kernel selection:** The setup script pre-configures every notebook to use the
+`Python 3 (Gheware Agentic AI)` kernel (your `.venv`). If VS Code prompts you to
+select a kernel, choose **Python 3 (Gheware Agentic AI)** from the list.
+
+> If the kernel is missing after a fresh setup, run:
+> ```bash
+> bash scripts/set-notebook-kernels.sh
+> ```
+> Then reload VS Code: `Ctrl+Shift+P` → `Developer: Reload Window`.
 
 ---
 
@@ -119,402 +113,160 @@ jupyter --version
 
 ```bash
 cd ~/aiagentic-comp
-git pull origin main
-source .venv/bin/activate
+git pull
+source .venv/bin/activate   # Linux/macOS
+# Windows Git Bash: source .venv/Scripts/activate
 ```
 
-### 2. Complete Labs
+### 2. Run Day Setup Script
 
 ```bash
-# Open Jupyter
-jupyter notebook hands-on/session-1/
-
-# Work through labs
-# Fill in ___ placeholders
-# Run all cells
-# Verify [PASS] markers appear
+bash scripts/day1-setup.sh   # Day 1 (Ollama + local LLM)
+bash scripts/day2-setup.sh   # Day 2 (verify Groq + LangChain)
+bash scripts/day3-setup.sh   # Day 3 (verify LangGraph)
+bash scripts/day4-setup.sh   # Day 4 (start LangFuse server)
+bash scripts/day5-setup.sh   # Day 5 (MCP SDK)
 ```
 
-### 3. Submit Completion
+### 3. Complete Labs
 
-**After completing each lab, use the automated submission script:**
+Open the notebook in VS Code, fill in `___` placeholders, and run all cells.
+Each lab ends with `[PASS]` / `[FAIL]` validation cells — aim for all `[PASS]`.
 
-**Linux/Mac:**
+### 4. Submit Each Lab
+
 ```bash
-# Basic submission
-./scripts/submit-lab.sh <session> <lab>
-
-# With optional notes (recommended)
-./scripts/submit-lab.sh <session> <lab> "your notes here"
+# Linux / macOS / Windows Git Bash
+bash scripts/submit-lab.sh <session> <lab> "optional notes"
 
 # Examples
-./scripts/submit-lab.sh 1 1
-./scripts/submit-lab.sh 1 2 "Great lab on AI agents!"
-./scripts/submit-lab.sh 2 5 "Learned about RAG"
+bash scripts/submit-lab.sh 1 1
+bash scripts/submit-lab.sh 1 2 "Learned about reasoning patterns"
+bash scripts/submit-lab.sh 2 5 "RAG pipeline working"
 ```
 
-**Windows PowerShell:**
-```powershell
-# Basic submission
-.\scripts\submit-lab.ps1 <session> <lab>
+The script auto-detects your GitHub username, shows a preview, and asks for confirmation before posting.
 
-# With optional notes
-.\scripts\submit-lab.ps1 <session> <lab> "your notes here"
+### 5. End-of-Day Cleanup (Optional)
 
-# Examples
-.\scripts\submit-lab.ps1 1 1
-.\scripts\submit-lab.ps1 1 2 "Great lab on AI agents!"
-```
-
-**What the script does:**
-- ✅ Auto-detects your GitHub username and email (from Step 4)
-- ✅ Calculates correct issue number automatically
-- ✅ Shows preview before submitting
-- ✅ Asks for confirmation (y/N)
-- ✅ Posts comment with your information
-- ✅ Provides submission URL
-
-**Sample output:**
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   Lab Submission - Agentic AI Course
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Session: 1
-Lab: 1
-Issue Number: #1
-
-Detecting your information...
-✓ Username: johndoe
-✓ Email: johndoe@gmail.com
-✓ GitHub CLI authenticated
-
-Comment Preview:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✅ Completed
-
-**Participant:** johndoe (johndoe@gmail.com)
-**Validation:** All checks passed
-**Notes:** Great introduction to AI!
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Submit this lab? (y/N): y
-
-✓ Submission Successful!
-Your submission has been recorded!
+```bash
+bash scripts/day1-cleanup.sh   # frees ~2 GB (removes Ollama model)
+bash scripts/day2-cleanup.sh
+# etc.
 ```
 
 ---
 
-## Submission Script Reference
+## Lab Structure
 
-### Quick Command Reference
+| Path | Purpose |
+|------|---------|
+| `hands-on/session-N/labXX_topic.ipynb` | Lab to complete (has `___` TODOs) |
+| `hands-on/session-N/solutions/labXX_topic.ipynb` | Reference solution |
 
-**Linux/Mac:**
-```bash
-./scripts/submit-lab.sh <session> <lab> ["optional notes"]
-```
-
-**Windows:**
-```powershell
-.\scripts\submit-lab.ps1 <session> <lab> "optional notes"
-```
-
-### Common Usage Examples
-
-**Session 1 - All Labs:**
-```bash
-./scripts/submit-lab.sh 1 1
-./scripts/submit-lab.sh 1 2
-./scripts/submit-lab.sh 1 3
-./scripts/submit-lab.sh 1 4
-./scripts/submit-lab.sh 1 5
-./scripts/submit-lab.sh 1 6
-```
-
-**With Notes (Recommended):**
-```bash
-./scripts/submit-lab.sh 2 1 "Excellent introduction to LangChain"
-./scripts/submit-lab.sh 2 2 "LCEL is very powerful!"
-./scripts/submit-lab.sh 5 3 "RAG implementation works great"
-```
-
-**Batch Submission (After completing multiple labs):**
-```bash
-# Linux/Mac
-for lab in {1..6}; do
-  ./scripts/submit-lab.sh 1 $lab
-done
-```
-
-```powershell
-# Windows PowerShell
-1..6 | ForEach-Object {
-  .\scripts\submit-lab.ps1 1 $_
-}
-```
-
-### Issue Number Mapping
-
-**The script automatically calculates issue numbers - you don't need to look these up!**
-
-But for reference:
-
-| Session | Labs | Issue Range | Example |
-|---------|------|-------------|---------|
-| 1 | 1-6 | #1 - #6 | `./scripts/submit-lab.sh 1 1` → Issue #1 |
-| 2 | 1-8 | #7 - #14 | `./scripts/submit-lab.sh 2 1` → Issue #7 |
-| 3 | 1-7 | #15 - #21 | `./scripts/submit-lab.sh 3 1` → Issue #15 |
-| 12 | 1-9 | #86 - #94 | `./scripts/submit-lab.sh 12 9` → Issue #94 |
-| 15 | 1-8 | #111 - #118 | `./scripts/submit-lab.sh 15 8` → Issue #118 |
-
----
-
-## Quick Commands
-
-### Check Your Identity
-
-```bash
-# Verify what will be used for submissions
-git config user.name
-git config user.email
-```
-
-### View Your Submissions
-
-```bash
-# See all your lab submissions
-gh issue list --repo brainupgrade-in/aiagentic-comp \
-  --label lab-tracking \
-  --search "commenter:@me"
-
-# Count how many labs you've submitted
-gh issue list --repo brainupgrade-in/aiagentic-comp \
-  --search "commenter:@me" \
-  --label lab-tracking \
-  --json number | jq 'length'
-```
-
-### View Specific Lab Issue
-
-```bash
-# View issue in terminal
-gh issue view 1 --repo brainupgrade-in/aiagentic-comp
-
-# View issue in browser
-gh issue view 1 --repo brainupgrade-in/aiagentic-comp --web
-```
-
-### Script Help
-
-```bash
-# Linux/Mac - view usage
-./scripts/submit-lab.sh
-
-# Windows - view usage
-.\scripts\submit-lab.ps1
-```
-
----
-
-## Tips & Best Practices
-
-### ✅ Do
-
-- ✅ Set your git config (Step 4) before first submission
-- ✅ Submit immediately after validation passes
-- ✅ Include notes about challenges or key learnings
-- ✅ Use the submission script (automatic and error-free)
-- ✅ Verify your username/email before submitting
-- ✅ Review the preview before confirming submission
-
-### ❌ Don't
-
-- ❌ Submit without running validation (all [PASS] markers)
-- ❌ Leave TODO placeholders (___) unfilled
-- ❌ Skip setting git config (submissions won't have your name)
-- ❌ Post multiple "completed" comments on same issue
-- ❌ Use issues for asking questions (use Zoom chat)
-
----
-
-## Completion Tracking
-
-**View all lab issues:**
-https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue+label:lab-tracking
-
-**Your progress is visible to the instructor who tracks:**
-- Which labs you've completed (based on your comments)
-- When you completed them (comment timestamp)
-- Your completion rate across all sessions
+Labs build progressively within each session. The last lab in each session is a challenge lab.
 
 ---
 
 ## Troubleshooting
 
-### "Resource not accessible by personal access token"
+### `ModuleNotFoundError` in notebooks
 
-**Fix:** Token expired or has wrong permissions. Get a new token from instructor.
+Virtual environment not active.
 
-### "gh: command not found"
+```bash
+source .venv/bin/activate          # Linux/macOS
+source .venv/Scripts/activate      # Windows Git Bash
+```
 
-**Fix:** Install GitHub CLI:
+### Kernel shows wrong Python / "Unable to handle ... Oracle/.venv"
+
+Another workspace's kernel is cached. Run:
+
+```bash
+bash scripts/set-notebook-kernels.sh
+```
+
+Then reload VS Code (`Ctrl+Shift+P` → `Developer: Reload Window`).
+
+### Groq rate limit (429 error)
+
+Free tier limit hit. Wait 60 seconds and retry. If the whole class hits limits simultaneously, stagger lab start times by a few minutes.
+
+### `gh: command not found`
+
 ```bash
 # Ubuntu/Debian
 sudo apt install gh
 
 # macOS
 brew install gh
+
+# Windows — already included in Git for Windows (Git Bash)
 ```
 
-### "Repository not found"
+### "Resource not accessible by personal access token"
 
-**Fix:** Token not authenticated properly. Re-run:
+Token expired. Ask the instructor for a new token, then re-authenticate:
+
 ```bash
 gh auth login
-# Use the token shared in Zoom
 ```
 
 ### "Could not detect GitHub username"
 
-**Cause:** Git config not set
+Git config not set. Re-run the identity setup:
 
-**Fix:**
 ```bash
-cd ~/aiagentic-comp
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
 ```
 
-### "Submission Failed" or "GitHub CLI not authenticated"
+### Port conflict (8000 or 11434 already in use)
 
-**Cause:** Not logged in with the shared token
-
-**Fix:**
 ```bash
-gh auth login
-# Use the token shared by instructor
-gh auth status  # Verify authentication
+sudo lsof -i :8000    # find what's using port 8000
+sudo lsof -i :11434   # find what's using Ollama port
 ```
 
-### Script shows wrong username
-
-**Cause:** Using system-wide git config instead of repository config
-
-**Fix:**
-```bash
-# Set repository-specific config (overrides global)
-cd ~/aiagentic-comp
-git config user.name "your-correct-username"
-git config user.email "your-correct-email"
-
-# Verify
-git config user.name
-git config user.email
-```
-
-### Forgot to activate virtual environment
-
-**Symptoms:** `ModuleNotFoundError` when running labs
-
-**Fix:**
-```bash
-cd ~/aiagentic-comp
-source .venv/bin/activate
-```
+Stop the conflicting process, then re-run the day setup script.
 
 ---
 
-## Example: Complete Session 1 Workflow
+## Session Summary
+
+| Day | Sessions | Key Tech |
+|-----|----------|----------|
+| 1 | 1–3 | Ollama, ReAct, Chain-of-Thought |
+| 2 | 4–6 | LangChain, LCEL, ChromaDB, RAG |
+| 3 | 7–9 | LangGraph, Multi-Agent |
+| 4 | 10–12 | OTel, LangFuse, FastAPI |
+| 5 | 13–15 | MCP, AI Safety, Capstone |
+
+---
+
+## Quick Reference
 
 ```bash
-# Day 1 morning
-cd ~/aiagentic-comp
-git pull
-source .venv/bin/activate
+# One-time setup
+source scripts/initial-setup.sh          # Linux/macOS
+.\scripts\windows-bootstrap.ps1          # Windows PowerShell
 
-# Open Jupyter and complete labs
-jupyter notebook hands-on/session-1/
+# Daily
+git pull && source .venv/bin/activate
+bash scripts/dayN-setup.sh
 
-# Complete Lab 01
-# ... work through notebook ...
-# All validation cells show [PASS]
+# Submit a lab
+bash scripts/submit-lab.sh <session> <lab> "notes"
 
-# Submit Lab 01
-./scripts/submit-lab.sh 1 1 "Great introduction to AI agents!"
-# Confirm with 'y' when prompted
-
-# Complete Lab 02
-# ... work through notebook ...
-# All validation cells show [PASS]
-
-# Submit Lab 02
-./scripts/submit-lab.sh 1 2 "Learned about reasoning patterns"
-
-# Continue for Labs 03-06
-./scripts/submit-lab.sh 1 3
-./scripts/submit-lab.sh 1 4
-./scripts/submit-lab.sh 1 5
-./scripts/submit-lab.sh 1 6
-
-# End of Session 1: You've submitted all 6 labs
-# Check your progress:
-gh issue list --repo brainupgrade-in/aiagentic-comp --search "commenter:@me"
+# Check resource usage
+bash scripts/check-resources.sh
 ```
 
 ---
 
-## Support
+**Course Repository:** https://github.com/brainupgrade-in/aiagentic-comp  
+**Lab Issues:** https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue+label:lab-tracking  
+**Groq API Keys:** https://console.groq.com  
 
-**During sessions:**
-- Ask questions in Zoom chat
-- Raise hand for clarification
-
-**Technical issues:**
-- Check this troubleshooting section first
-- Contact instructor during breaks
-
-**GitHub issues:**
-- Only use for lab submissions
-- Not for questions or discussion
-
----
-
-## Quick Reference Card
-
-```bash
-# Setup (once)
-gh auth login                    # Use token from Zoom
-git clone https://github.com/brainupgrade-in/aiagentic-comp.git
-cd aiagentic-comp
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# Daily workflow
-cd ~/aiagentic-comp
-git pull
-source .venv/bin/activate
-jupyter notebook                 # Complete labs
-
-# Submit (for each lab)
-gh issue comment <issue-number> \
-  --repo brainupgrade-in/aiagentic-comp \
-  --body "✅ Completed"
-
-# Check progress
-gh issue list --repo brainupgrade-in/aiagentic-comp \
-  --search "commenter:@me"
-```
-
----
-
-**Ready to start?** Complete the setup steps before Day 1!
-
-**Questions?** Ask in Zoom before we begin.
-
----
-
-**Course Repository:** https://github.com/brainupgrade-in/aiagentic-comp
-**Lab Issues:** https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue+label:lab-tracking
-**Sessions:** 15 sessions × 6-9 labs = 118 total labs to complete
+**Questions?** Ask in Zoom chat during sessions or raise your hand.

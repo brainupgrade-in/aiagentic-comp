@@ -1,8 +1,8 @@
 # Agentic AI: Comprehensive Course
 
-A 5-day hands-on training covering the full spectrum of Agentic AI development -- from LangChain fundamentals to production deployment with enterprise-grade observability.
+A 5-day hands-on training covering the full spectrum of Agentic AI development — from LangChain fundamentals to production deployment with enterprise-grade observability.
 
-**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 117 hands-on exercises
+**Trainer:** Rajesh Gheware | **Duration:** 5 Days | **Labs:** 119 hands-on exercises
 
 ---
 
@@ -13,10 +13,13 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development -
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-# Edit .env with your API keys (Groq, etc.)
+
+# One command: creates .venv, installs all packages, registers Jupyter kernel,
+# configures all notebooks, and activates the venv in your shell
+source scripts/initial-setup.sh
+
+# Edit .env and add your Groq API key
+# GROQ_API_KEY=gsk_your_key_here  (get one free at https://console.groq.com)
 
 # Run day-specific setup
 bash scripts/day1-setup.sh
@@ -31,7 +34,7 @@ bash scripts/day1-setup.sh
 | Session | Topic | Labs |
 |---------|-------|------|
 | 1 | Introduction to Agentic AI | 6 |
-| 2 | AI Coding Assistants & Vibe Coding | 8 |
+| 2 | AI Coding Assistants & Vibe Coding | 9 |
 | 3 | Reasoning, Planning & Tool Use | 7 |
 
 ### Day 2: LangChain, RAG & Agents
@@ -55,8 +58,8 @@ bash scripts/day1-setup.sh
 | Session | Topic | Labs |
 |---------|-------|------|
 | 10 | Observability Fundamentals | 8 |
-| 11 | LangFuse Observability | 8 |
-| 12 | Production Development & Deployment | 8 |
+| 11 | Production Development & Deployment | 8 |
+| 12 | LangFuse Observability | 9 |
 
 ### Day 5: MCP, Safety & Capstone
 
@@ -66,7 +69,7 @@ bash scripts/day1-setup.sh
 | 14 | AI Safety & Guardrails | 8 |
 | 15 | Capstone Project (2 time slots) | 8 |
 
-**Total: 15 sessions, 117 labs, 117 solutions**
+**Total: 15 sessions, 119 labs, 119 solutions**
 
 ---
 
@@ -83,12 +86,13 @@ bash scripts/day1-setup.sh
 │
 ├── hands-on/                  15 session directories (Jupyter notebooks)
 │   ├── session-1/             6 labs + solutions + README (.ipynb)
-│   ├── session-2/             8 labs + solutions + README (.ipynb)
+│   ├── session-2/             9 labs + solutions + README (.ipynb)
 │   ├── session-3/             7 labs + solutions + README (.ipynb)
-│   ├── session-4/ ... session-15/  8 labs + solutions + README each (.ipynb)
-│   └── (117 total labs + 117 solutions)
+│   ├── session-12/            9 labs + solutions + README (.ipynb)
+│   └── session-4 to session-15/  8 labs + solutions + README each (.ipynb)
 │
-├── scripts/                   Day-specific automation
+├── scripts/                   Setup, cleanup, and utility scripts
+│   ├── initial-setup.sh       One-time setup (venv + packages + kernel + notebooks)
 │   ├── day1-setup.sh          Install Ollama + llama3.2:1b
 │   ├── day1-cleanup.sh        Remove Ollama (~2 GB freed)
 │   ├── day2-setup.sh          Verify Groq API + packages
@@ -97,40 +101,31 @@ bash scripts/day1-setup.sh
 │   ├── day3-cleanup.sh        Stop servers + clean up
 │   ├── day4-setup.sh          Verify OTel + LangFuse + FastAPI packages
 │   ├── day4-cleanup.sh        Clean temp files
-│   ├── day5-setup.sh          MCP SDK + capstone setup
+│   ├── day5-setup.sh          MCP SDK + verify env
 │   ├── day5-cleanup.sh        Final cleanup
 │   └── check-resources.sh     Monitor memory/storage/processes
 │
-├── .devcontainer/             Dev container config (not used for training)
-│   ├── devcontainer.json      VS Code dev container settings
-│   └── post-create.sh         Auto-setup script
-│
 ├── requirements.txt           Python dependencies
 ├── .env.example               Environment variable template
-├── COURSE-OUTLINE.md          Full course outline
-├── INSTRUCTOR-GUIDE.md        Teaching notes & schedule
-└── LICENSE                    Proprietary license
+├── PARTICIPANT-INSTRUCTIONS.md    Setup & workflow guide for participants
+└── LICENSE                        Proprietary license
 ```
 
 ---
 
 ## Running Labs
 
-All labs are Jupyter notebooks (.ipynb). Open them in VS Code, JupyterLab, or any notebook-compatible environment:
+All labs are Jupyter notebooks (.ipynb). Open them in VS Code — the kernel auto-selects after setup:
 
 ```bash
-# Navigate to a session
-cd hands-on/session-4
-
 # Open a student lab (has TODO sections to fill in)
-# In VS Code: click the .ipynb file, or:
-jupyter notebook lab01_hello_langchain.ipynb
+code hands-on/session-4/lab01_hello_langchain.ipynb
 
-# Check your work against the solution
-jupyter notebook solutions/lab01_hello_langchain.ipynb
+# Compare with the solution
+code hands-on/session-4/solutions/lab01_hello_langchain.ipynb
 ```
 
-Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` markers in code cells.
+Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` markers and `"___"` placeholders in code cells.
 
 ---
 
@@ -165,19 +160,6 @@ bash scripts/check-resources.sh
 
 ---
 
-## AI Coding Assistant
-
-[OpenCode](https://opencode.ai/) is pre-installed in the Codespace for AI-assisted coding during labs:
-
-```bash
-opencode                    # Launch TUI
-opencode 'fix this error'  # Non-interactive mode
-```
-
-Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
-
----
-
 ## Technology Stack
 
 | Category | Tools |
@@ -186,7 +168,7 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 | **AI Framework** | LangChain, LangGraph |
 | **Vector DB** | ChromaDB |
 | **API** | FastAPI, Uvicorn |
-| **AI Dev Tools** | MCP Python SDK, AI Coding Agents |
+| **MCP** | MCP Python SDK |
 | **Observability** | OpenTelemetry, LangFuse |
 
 ---
@@ -196,16 +178,17 @@ Inside OpenCode, type `/connect` and select GitHub Copilot to authenticate.
 - Basic Python programming
 - Basic understanding of APIs and REST
 - Familiarity with command line / terminal
-- Familiarity with AI coding assistants helpful but not required
-- Ubuntu Linux environment (native installation, WSL2, or VM)
+- Ubuntu Linux (native installation, WSL2, or VM) with 16 GB RAM
 
 ---
 
 ## Key Ports
 
-| Port | Service |
-|------|---------|
-| 8000 | FastAPI App |
+| Port | Service | Day |
+|------|---------|-----|
+| 11434 | Ollama | Day 1 only |
+| 8000 | FastAPI App | Day 4 |
+| 3000 | LangFuse server | Day 4 (Session 12 Lab 09) |
 
 ---
 

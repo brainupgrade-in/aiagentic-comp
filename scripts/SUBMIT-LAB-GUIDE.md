@@ -1,47 +1,34 @@
-# Lab Submission Scripts - Usage Guide
+# Lab Submission Script — Usage Guide
 
-Easy-to-use scripts for participants to submit lab completions with a single command.
+Easy-to-use script for participants to submit lab completions with a single command.
 
 ## Overview
 
-Instead of manually finding issue numbers and typing gh commands, participants can use these scripts:
+Instead of manually finding issue numbers and typing `gh` commands, use:
 
-- **`submit-lab.sh`** - For Linux/Mac users
-- **`submit-lab.ps1`** - For Windows PowerShell users
+- **`submit-lab.sh`** — Linux, macOS, and Windows (Git Bash)
 
-Both scripts:
-- ✅ Auto-detect your GitHub username
-- ✅ Calculate correct issue number automatically
-- ✅ Submit with consistent format
-- ✅ Show confirmation and URL
-- ✅ Colorful, user-friendly output
+The script:
+- Auto-detects your GitHub username
+- Calculates the correct issue number automatically
+- Submits with consistent format
+- Shows a confirmation preview and asks before posting
 
 ---
 
 ## Quick Start
 
-### Linux / Mac
+### Linux / macOS / Windows Git Bash
 
 ```bash
-# Make executable (first time only)
-chmod +x scripts/submit-lab.sh
-
 # Submit a lab
-./scripts/submit-lab.sh 1 1
+bash scripts/submit-lab.sh 1 1
 
 # With optional notes
-./scripts/submit-lab.sh 1 2 "Great lab on AI agents!"
+bash scripts/submit-lab.sh 1 2 "Great lab on AI agents!"
 ```
 
-### Windows PowerShell
-
-```powershell
-# Submit a lab
-.\scripts\submit-lab.ps1 1 1
-
-# With optional notes
-.\scripts\submit-lab.ps1 1 2 "Great lab on AI agents!"
-```
+> **Windows users:** Open the Git Bash terminal in VS Code (configured by `windows-bootstrap.ps1`) and use the same `bash scripts/submit-lab.sh` commands as Linux/macOS.
 
 ---
 
@@ -50,7 +37,7 @@ chmod +x scripts/submit-lab.sh
 ### Example 1: Basic Submission
 
 ```bash
-./scripts/submit-lab.sh 1 1
+bash scripts/submit-lab.sh 1 1
 ```
 
 **Output:**
@@ -95,7 +82,7 @@ Your submission has been recorded!
 ### Example 2: With Notes
 
 ```bash
-./scripts/submit-lab.sh 2 3 "Learned a lot about LangChain!"
+bash scripts/submit-lab.sh 2 3 "Learned a lot about LangChain!"
 ```
 
 **Comment posted:**
@@ -110,7 +97,7 @@ Your submission has been recorded!
 ### Example 3: Session 12 Lab 9
 
 ```bash
-./scripts/submit-lab.sh 12 9 "LangFuse integration works great"
+bash scripts/submit-lab.sh 12 9 "LangFuse integration works great"
 ```
 
 Automatically submits to Issue #94 (Session 12 Lab 9).
@@ -211,10 +198,9 @@ sudo apt install gh
 
 # macOS
 brew install gh
-
-# Windows
-winget install GitHub.cli
 ```
+
+Windows users: `gh` is included with Git for Windows (installed by `windows-bootstrap.ps1`). If missing, run `winget install GitHub.cli` in PowerShell.
 
 ### "Submission Failed"
 
@@ -245,19 +231,11 @@ gh issue view 1 --repo brainupgrade-in/aiagentic-comp
 Submit multiple labs at once:
 
 ```bash
-# Linux/Mac
+# Linux/macOS/Windows Git Bash
 for lab in {1..6}; do
-  ./scripts/submit-lab.sh 1 $lab
+  bash scripts/submit-lab.sh 1 $lab
   sleep 1
 done
-```
-
-```powershell
-# Windows PowerShell
-1..6 | ForEach-Object {
-  .\scripts\submit-lab.ps1 1 $_
-  Start-Sleep -Seconds 1
-}
 ```
 
 ### Check Your Progress
@@ -282,28 +260,13 @@ gh issue list \
 Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias submit-lab='cd ~/aiagentic-comp && ./scripts/submit-lab.sh'
+alias submit-lab='cd ~/aiagentic-comp && bash scripts/submit-lab.sh'
 ```
 
 Then use anywhere:
 ```bash
 submit-lab 1 1
 ```
-
----
-
-## Script Comparison
-
-| Feature | submit-lab.sh | submit-lab.ps1 |
-|---------|---------------|----------------|
-| **Platform** | Linux, macOS | Windows |
-| **Shell** | Bash | PowerShell 5.1+ |
-| **Colors** | ✅ ANSI codes | ✅ Write-Host |
-| **Auto username** | ✅ Yes | ✅ Yes |
-| **Confirmation** | ✅ Yes | ✅ Yes |
-| **Error handling** | ✅ Yes | ✅ Yes |
-
-Both scripts have identical functionality!
 
 ---
 
@@ -319,12 +282,12 @@ git pull
 # 2. Activate environment
 source .venv/bin/activate
 
-# 3. Complete labs
-jupyter notebook hands-on/session-1/
+# 3. Complete labs in VS Code
+code hands-on/session-1/
 
 # 4. Submit completed labs
-./scripts/submit-lab.sh 1 1
-./scripts/submit-lab.sh 1 2
+bash scripts/submit-lab.sh 1 1
+bash scripts/submit-lab.sh 1 2
 # etc.
 ```
 
@@ -362,4 +325,4 @@ jupyter notebook hands-on/session-1/
 ---
 
 **Repository:** https://github.com/brainupgrade-in/aiagentic-comp
-**Scripts Location:** `scripts/submit-lab.sh` and `scripts/submit-lab.ps1`
+**Script:** `scripts/submit-lab.sh` (Linux, macOS, Windows Git Bash)

@@ -30,7 +30,7 @@ from langfuse.callback import CallbackHandler
 langfuse = Langfuse(
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
     public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
-    host=os.getenv("LANGFUSE_BASE_URL", "https://cloud.langfuse.com"),
+    host=os.getenv("LANGFUSE_HOST", "https://cloud.langfuse.com"),
 )
 ```
 
@@ -48,7 +48,7 @@ langfuse = Langfuse(
 langfuse_handler = CallbackHandler(
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
     public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
-    host=os.getenv("LANGFUSE_BASE_URL"),
+    host=os.getenv("LANGFUSE_HOST"),
     session_id=session_id,
     user_id=req.employee_name,
     tags=["production", "support", "fastapi"],
@@ -87,7 +87,7 @@ return SupportResponse(
 # LangFuse Cloud Credentials
 LANGFUSE_SECRET_KEY=sk-lf-your-secret-key-here
 LANGFUSE_PUBLIC_KEY=pk-lf-your-public-key-here
-LANGFUSE_BASE_URL=https://cloud.langfuse.com
+LANGFUSE_HOST=https://cloud.langfuse.com
 ```
 
 ## Lab Structure
@@ -114,7 +114,7 @@ async def health():
     return {
         "status": "healthy",
         "observability": "langfuse-cloud",
-        "langfuse_host": os.getenv("LANGFUSE_BASE_URL"),
+        "langfuse_host": os.getenv("LANGFUSE_HOST"),
     }
 ```
 
@@ -207,7 +207,7 @@ cat .env | grep LANGFUSE
 # Should show:
 # LANGFUSE_SECRET_KEY=sk-lf-...
 # LANGFUSE_PUBLIC_KEY=pk-lf-...
-# LANGFUSE_BASE_URL=https://cloud.langfuse.com
+# LANGFUSE_HOST=https://cloud.langfuse.com
 ```
 
 ### Step 2: Run the Lab

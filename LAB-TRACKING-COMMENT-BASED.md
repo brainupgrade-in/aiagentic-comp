@@ -3,12 +3,12 @@
 ## Overview
 
 **Architecture:**
-- **117 lab issues** created by instructor (one per lab)
+- **119 lab issues** created by instructor (one per lab)
 - **20 participants** comment "done" on each issue when completed
 - **Dashboard/filters** track completion per participant per lab
 
 **Benefits:**
-- ✅ Centralized tracking (117 issues vs 300+ individual submissions)
+- ✅ Centralized tracking (119 issues vs 300+ individual submissions)
 - ✅ Easy filtering by specific lab
 - ✅ All questions/discussion about a lab in one place
 - ✅ Simple participant workflow (just comment)
@@ -76,7 +76,7 @@ for i in $(seq -w 1 9); do
 done
 ```
 
-### Step 2: Create 117 Lab Issues
+### Step 2: Create 119 Lab Issues
 
 ```bash
 # Install dependencies
@@ -90,20 +90,20 @@ python3 scripts/create-lab-issues.py
 ```
 Creating lab tracking issues...
 Repository: brainupgrade-in/aiagentic-comp
-Total issues to create: 117
+Total issues to create: 119
 
 Session 1: Introduction to Agentic AI (6 labs)
-  ✓ Created issue #101: Session 1 Lab 01
-  ✓ Created issue #102: Session 1 Lab 02
+  ✓ Created issue #1: Session 1 Lab 01
+  ✓ Created issue #2: Session 1 Lab 02
   ...
 
 Session 15: Capstone Project (8 labs)
-  ✓ Created issue #217: Session 15 Lab 08
+  ✓ Created issue #119: Session 15 Lab 08
 
 Summary:
-  Created: 117
+  Created: 119
   Failed: 0
-  Total: 117
+  Total: 119
 
 View issues: https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue+label:lab-tracking
 ```
@@ -260,9 +260,9 @@ python3 scripts/track-lab-comments.py --participant john-doe
 
 | Participant | S1 | S2 | S3 | S4 | S5 | ... | Total | Progress |
 |-------------|----|----|----|----|----|----|-------|----------|
-| john-doe    | 6/6 | 8/8 | 5/7 | 0/8 | 0/8 | ... | 19/117 | 16% |
-| jane-smith  | 6/6 | 8/8 | 7/7 | 8/8 | 0/8 | ... | 29/117 | 25% |
-| bob-jones   | 6/6 | 7/8 | 0/7 | 0/8 | 0/8 | ... | 13/117 | 11% |
+| john-doe    | 6/6 | 8/8 | 5/7 | 0/8 | 0/8 | ... | 19/119 | 16% |
+| jane-smith  | 6/6 | 8/8 | 7/7 | 8/8 | 0/8 | ... | 29/119 | 24% |
+| bob-jones   | 6/6 | 7/8 | 0/7 | 0/8 | 0/8 | ... | 13/119 | 11% |
 
 ## Session Details
 
@@ -392,7 +392,7 @@ gh issue list \
 
 | Aspect | Comment-Based (This Approach) | PR-Based (Previous) |
 |--------|------------------------------|---------------------|
-| **Issues Created** | 117 (one per lab) | 300+ (20 participants × 15 sessions) |
+| **Issues Created** | 119 (one per lab) | 300+ (20 participants × 15 sessions) |
 | **Participant Workflow** | Comment on issue | Create PR with branch |
 | **Centralization** | All feedback for Lab 01 in one place | Scattered across 20 PRs |
 | **Filtering** | Easy: `label:lab-01` | Harder: Need to aggregate |
@@ -454,7 +454,7 @@ gh issue list \
 ## Quick Reference
 
 ```bash
-# Instructor: Create all 117 issues
+# Instructor: Create all 119 issues
 python3 scripts/create-lab-issues.py
 
 # Instructor: Generate completion report

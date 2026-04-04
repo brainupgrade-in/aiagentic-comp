@@ -44,7 +44,7 @@ hands-on/session-10/
 ```
 
 1. Open the notebook in VS Code
-2. Select the Python kernel (`~/.venv/bin/python`)
+2. Select the kernel: **Python 3 (Gheware Agentic AI)**
 3. Run cells one at a time with **Shift+Enter**
 4. Fill in the TODO sections, then compare with `solutions/`
 

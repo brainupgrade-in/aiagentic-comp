@@ -5,7 +5,7 @@ Built with [Reveal.js 4.6.1](https://revealjs.com/) | Cybernetic Systems Aesthet
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 presentation/
@@ -22,8 +22,8 @@ presentation/
 ├── session8-advanced-langgraph-workflows.html
 ├── session9-multi-agent-systems.html
 ├── session10-observability-fundamentals.html
-├── session11-langfuse-observability.html
-├── session12-production-development-deployment.html
+├── session11-production-development-deployment.html
+├── session12-langfuse-observability.html
 ├── session13-model-context-protocol.html
 ├── session14-ai-safety-guardrails.html
 ├── session15-capstone-project.html
@@ -32,59 +32,52 @@ presentation/
 ├── shared.js                           # Shared JavaScript enhancements
 ├── reveal-init.js                      # Reveal.js initialization config
 ├── presentation-header-footer.js       # Auto-updating header/footer system
+├── code-blocks-enhanced.js             # Cyberpunk terminal code block enhancements
 │
-├── print.css                           # Print stylesheet (~1,000 lines) ⭐ NEW
-├── print.js                            # Print helper functions (~400 lines) ⭐ NEW
+├── print.css                           # Print stylesheet (~1,000 lines)
+├── print.js                            # Print helper functions (~400 lines)
+├── performance-optimizations.css       # Performance tuning styles
 │
-├── README.md                           # This file
-├── HEADER-FOOTER-GUIDE.md              # Header/footer customization guide
-├── PRINT-GUIDE.md                      # Print & PDF export guide ⭐ NEW
-├── FIXES-APPLIED.md                    # Recent fixes and improvements
-├── add-header-footer.sh                # Utility script for batch updates
-├── add-print-to-all.sh                 # Add print support to all sessions ⭐ NEW
-└── apply-print-support.sh              # Advanced print support utility ⭐ NEW
+└── README.md                           # This file
 ```
 
 ---
 
-## 🎨 Key Features
+## Key Features
 
-### 1. **Cybernetic HUD Interface**
+### Cybernetic HUD Interface
 - Fixed header with Home button, course title, and session info
 - Fixed footer with slide counter, trainer name, and branding
 - Auto-updating slide numbers and session detection
 - Animated scanlines and glowing effects
 
-### 2. **Professional Styling**
+### Professional Styling
 - Electric teal (#00ffcc) primary accent color
 - Dark cybernetic theme with gradient backgrounds
 - HUD-style corner brackets and glowing borders
 - Consistent typography (Inter + JetBrains Mono)
 
-### 3. **Responsive Layout**
+### Responsive Layout
 - 1920×1080 base resolution with automatic scaling
 - Works on desktop, laptop, tablet, and mobile
 - Browser zoom support without breaking layout
 
-### 4. **Interactive Elements**
+### Interactive Elements
 - Clickable Home button (returns to index.html)
 - Navigation arrows positioned above footer
 - Copy buttons on code blocks
 - Keyboard shortcuts (H for help)
 
-### 5. **Professional Print Support** ⭐ NEW
+### Print Support
 - Print-optimized layout showing all slides vertically
 - High-contrast colors optimized for paper/PDF export
 - Smart page breaks between sections
-- Page headers/footers with course info and page numbers
 - Print button in bottom-right corner (screen only)
 - Keyboard shortcuts: Ctrl+Shift+P or Ctrl+P
-- Ink-efficient design for cost-effective printing
-- See [PRINT-GUIDE.md](PRINT-GUIDE.md) for details
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### View Presentations
 
@@ -99,14 +92,9 @@ firefox session1-introduction-to-agentic-ai.html
 ### Print Presentations
 
 ```bash
-# View print guide
-cat PRINT-GUIDE.md
-
-# Print any session (opens browser print dialog)
-# Method 1: Click 🖨️ Print button (bottom-right corner)
+# Method 1: Click the Print button (bottom-right corner)
 # Method 2: Press Ctrl+Shift+P (custom shortcut)
 # Method 3: Press Ctrl+P (browser default)
-
 # All slides appear in print preview with professional layout
 ```
 
@@ -115,101 +103,57 @@ cat PRINT-GUIDE.md
 ```bash
 # Copy template
 cp template.html session16-new-topic.html
-
-# Edit the content
-# - Update title
-# - Add slides
-# - Save and refresh browser
+# Edit the content — update title, add slides, save and refresh browser
 ```
 
 ---
 
-## 📚 Shared Resources
+## Shared Resources
 
 ### `shared.css` (~2,700 lines)
 
-**Centralized stylesheet includes:**
-- CSS variables for cybernetic color system
-- Header/footer HUD interface styles
-- Reveal.js layout overrides (15-70-15 vertical split)
-- Reusable components:
-  - Cards (accent, green, orange, red variants)
-  - Diagrams (boxes, arrows, flows)
-  - Callouts (tips, warnings, notes, errors)
-  - Quiz styles with hover effects
-  - Code blocks with syntax highlighting
-- Utility classes (typography, colors, spacing)
-- Animations (scanlines, pulses, card reveals)
+Centralized stylesheet including CSS variables for the cybernetic color system, header/footer HUD interface styles, Reveal.js layout overrides, and 30+ reusable components (cards, diagrams, callouts, quiz styles, code blocks).
 
-**Auto-included in all sessions:**
+Auto-included in all sessions:
 ```html
 <link rel="stylesheet" href="shared.css">
 ```
 
----
-
 ### `shared.js` (~66 lines)
 
-**JavaScript enhancements:**
-- Adds "⌂ Index" link to bottom-left corner
-- Keyboard shortcut hints on title slides
-- Accessibility improvements (ARIA labels)
-- IIFE pattern for namespace isolation
+JavaScript enhancements: index link, keyboard shortcuts, accessibility improvements.
 
-**Auto-included in all sessions:**
 ```html
 <script src="shared.js"></script>
 ```
 
----
-
 ### `reveal-init.js` (~66 lines)
 
-**Standardized Reveal.js configuration:**
-- Navigation settings (hash routing, slide numbers)
-- Layout dimensions (1920×1080 base)
-- Transitions (slide, 300ms)
-- Scaling behavior (responsive)
-- Plugin initialization (highlight, notes, search, zoom)
+Standardized Reveal.js configuration: navigation, layout (1920×1080), transitions, plugins.
 
-**Auto-included in all sessions:**
 ```html
 <script src="reveal-init.js"></script>
 ```
 
----
+### `presentation-header-footer.js` (~200 lines)
 
-### `presentation-header-footer.js` (~200 lines) ⭐ NEW
+Auto-updating header/footer system. Extracts session info from `<title>`, updates slide counter live, shows trainer name and branding. Zero manual configuration required.
 
-**Auto-updating header/footer system:**
-- **Header (Top):**
-  - Home button (links to index.html)
-  - Course title "AGENTIC AI"
-  - Session number & day (auto-detected from page title)
-  - Pulsing live indicator
-  - Animated scanline effect
-
-- **Footer (Bottom):**
-  - Slide counter (auto-updates: "5/45")
-  - Trainer name "Rajesh Gheware"
-  - brainupgrade.in branding
-  - Pulsing status indicator
-
-**Auto-included in all sessions:**
 ```html
 <script src="presentation-header-footer.js"></script>
 ```
 
-**Features:**
-- ✅ Auto-extracts session info from `<title>` tag
-- ✅ Live slide number updates on navigation
-- ✅ Always visible on all slides (including title slides)
-- ✅ Cybernetic HUD aesthetic with glowing effects
-- ✅ Zero manual configuration required
+### `code-blocks-enhanced.js`
+
+Cyberpunk terminal code block enhancements: HUD-style corner brackets, terminal header bars, animated scanlines, copy buttons.
+
+```html
+<script src="code-blocks-enhanced.js"></script>
+```
 
 ---
 
-## 🎯 Course Structure
+## Course Structure
 
 ### 15 Sessions Across 5 Days
 
@@ -218,16 +162,16 @@ cp template.html session16-new-topic.html
 | **1** | 1-3 | Introduction, Vibe Coding, Reasoning & Planning |
 | **2** | 4-6 | LangChain Fundamentals, RAG, Agents & Memory |
 | **3** | 7-9 | LangGraph Workflows, Advanced Patterns, Multi-Agent |
-| **4** | 10-12 | Observability, LangFuse, Production Deployment |
+| **4** | 10-12 | Observability, Production Deployment, LangFuse |
 | **5** | 13-15 | Model Context Protocol, AI Safety, Capstone Project |
 
 **Total Slides:** ~600+ across all sessions
 **Duration:** 60-90 minutes per session
-**Hands-on Labs:** 117 labs + 117 solutions
+**Hands-on Labs:** 119 labs + 119 solutions
 
 ---
 
-## 🛠️ Customization
+## Customization
 
 ### Change Colors
 
@@ -244,38 +188,15 @@ Edit CSS variables in `shared.css`:
 
 ### Change Trainer Name
 
-Edit `presentation-header-footer.js`:
-
-```javascript
-<div class="footer-trainer">
-  <span class="footer-trainer-label">Trainer:</span> Your Name
-</div>
-```
+Edit `presentation-header-footer.js` — find the `footer-trainer` div and update the name.
 
 ### Change Branding
 
-Edit `presentation-header-footer.js`:
-
-```javascript
-<div class="footer-branding">
-  <div class="footer-branding-icon">Y</div>
-  <span>yoursite.com</span>
-</div>
-```
-
-### Add Logo
-
-Replace Home button in `presentation-header-footer.js`:
-
-```javascript
-<div class="header-left">
-  <img src="your-logo.svg" alt="Logo" style="height: 24px;">
-</div>
-```
+Edit `presentation-header-footer.js` — find the `footer-branding` div and update the site name.
 
 ---
 
-## 🎨 Design System
+## Design System
 
 ### Color Palette
 
@@ -298,30 +219,14 @@ Replace Home button in `presentation-header-footer.js`:
 | Code/Data | JetBrains Mono | 400-600 | 0.8em |
 | Monospace UI | JetBrains Mono | 600 | 11-13px |
 
-### Spacing
-
-- **Slide Padding:** 60px top, 80px bottom (for header/footer clearance)
-- **Card Gap:** 12px
-- **Section Margin:** 16px
-- **Element Gap:** 4-8px
-
 ---
 
-## 🔧 Maintenance
+## Maintenance
 
-### Update All Sessions
-
-Use the batch script:
+### Verify Shared Resources
 
 ```bash
-# Add header/footer to new sessions
-./add-header-footer.sh
-```
-
-### Check for Issues
-
-```bash
-# Verify shared resources are linked
+# Verify shared resources are linked in all sessions
 grep 'shared.css' session*.html
 grep 'shared.js' session*.html
 grep 'reveal-init.js' session*.html
@@ -331,31 +236,14 @@ grep 'presentation-header-footer.js' session*.html
 ### Test in Browser
 
 ```bash
-# Check rendering
 firefox session1-introduction-to-agentic-ai.html
-
-# Verify:
-# - Header/footer visible
-# - Home button clickable
-# - Slide numbers update
-# - Navigation arrows visible
-# - Content doesn't overlap footer
+# Verify: header/footer visible, Home button clickable,
+# slide numbers update, navigation arrows visible
 ```
 
 ---
 
-## 📖 Documentation
-
-| File | Purpose |
-|------|---------|
-| **README.md** | Main documentation (this file) |
-| **HEADER-FOOTER-GUIDE.md** | Detailed guide for header/footer customization |
-| **FIXES-APPLIED.md** | Recent bug fixes and improvements |
-| **.archive/** | Historical documentation (archived) |
-
----
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Slide Numbers Not Updating
 - Check browser console for JavaScript errors
@@ -363,80 +251,35 @@ firefox session1-introduction-to-agentic-ai.html
 - Refresh the page (Ctrl+R)
 
 ### Content Overlapping Footer
-- Increase `padding-bottom` in `shared.css`
-- Current: 80px, try 90px or 100px
+- Increase `padding-bottom` in `shared.css` (current: 80px, try 90-100px)
 
 ### Navigation Arrows Hidden
-- Increase `.reveal .controls { bottom: }` value in `shared.css`
-- Current: 50px, try 60px
+- Increase `.reveal .controls { bottom: }` in `shared.css` (current: 50px, try 60px)
 
 ### Home Button Not Clickable
 - Verify `.header-home-btn { pointer-events: auto; }` in `shared.css`
-- Check no other CSS is overriding it
 
 ---
 
-## 📊 Statistics
-
-- **Total Sessions:** 15
-- **Total Slides:** ~600+
-- **Total CSS Lines:** ~2,700
-- **Total JS Lines:** ~330
-- **Color Palette:** 7 core colors
-- **Component Types:** 30+ reusable components
-- **Animations:** 5 types (scanline, pulse, reveal, glow, hover)
-
----
-
-## 🎓 Usage Tips
+## Usage Tips
 
 ### For Trainers
 
-1. **Session Numbers Auto-Update:** Just ensure page title has "Session N:" format
-2. **Navigate Efficiently:** Use arrow keys or click navigation controls
-3. **Presenter Mode:** Press 'S' to open speaker notes in separate window
-4. **Help Menu:** Press 'H' to see keyboard shortcuts
-5. **Search Slides:** Press Ctrl+Shift+F to search across slides
+1. Session numbers auto-update — ensure page title has "Session N:" format
+2. Navigate with arrow keys or click navigation controls
+3. Press 'S' to open speaker notes in a separate window
+4. Press 'H' to see keyboard shortcuts
+5. Press Ctrl+Shift+F to search across slides
 
 ### For Students
 
-1. **Home Button:** Click top-left to return to course index
-2. **Slide Progress:** Check bottom-left for current position (e.g., "12/45")
-3. **Resources:** brainupgrade.in link in bottom-right corner
-4. **Code Blocks:** Hover to see copy button
-5. **Full Screen:** Press 'F' for distraction-free viewing
+1. Home button in top-left returns to the course index
+2. Slide progress shown at bottom-left (e.g., "12/45")
+3. Hover over code blocks to see copy button
+4. Press 'F' for full-screen viewing
 
 ---
 
-## 🚀 Performance
-
-- **Load Time:** ~1.2s (including all resources)
-- **Slide Transitions:** 60fps smooth
-- **Responsive Scaling:** Automatic, no lag
-- **Memory Usage:** ~200KB (header/footer system)
-- **Browser Support:** Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
-
----
-
-## 📝 License
+## License
 
 © 2026 Gheware UniGPS Solutions LLP. All Rights Reserved.
-
-**Course:** Agentic AI Training
-**Trainer:** Rajesh Gheware
-**Organization:** brainupgrade.in
-**Design:** Cybernetic Systems Aesthetic
-
----
-
-## 🔗 Quick Links
-
-- [Reveal.js Documentation](https://revealjs.com/)
-- [Course Outline](../COURSE-OUTLINE.md)
-- [Instructor Guide](../INSTRUCTOR-GUIDE.md)
-- [Hands-on Labs](../hands-on/)
-
----
-
-_Last Updated: February 14, 2026_
-_Version: 2.0 (Header/Footer System Integration)_

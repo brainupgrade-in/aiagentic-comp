@@ -81,8 +81,6 @@ Day 5: MCP SDK + AI Safety + Capstone (~3-4 GB RAM)
 ```
 Oracle/
 ├── README.md                            GitHub landing page
-├── COURSE-OUTLINE.md                    Full course outline (markdown version)
-├── INSTRUCTOR-GUIDE.md                  Teaching notes, schedule, day-session mapping
 ├── LICENSE                              Gheware UniGPS Solutions LLP, All Rights Reserved
 ├── requirements.txt                     Python packages (LangChain, FastAPI, OTel, etc.)
 ├── .env.example                         Environment variable template (all 5 days)
@@ -90,9 +88,7 @@ Oracle/
 ├── CLAUDE.md                            This file
 ├── .gitignore                           Git ignore rules
 ├── .claudeignore                        Claude Code ignore rules
-├── INSTRUCTOR-SUMMARY.md               Condensed instructor reference
 ├── PARTICIPANT-INSTRUCTIONS.md          Setup & workflow guide for participants
-├── PARTICIPANT-QUICK-REFERENCE.md       One-page cheat sheet for participants
 ├── LAB-TRACKING-COMMENT-BASED.md        Lab submission tracking via GitHub Issues
 ├── co2-aiagenticavin.txt                Course order reference
 ├── .github/                             GitHub Issues templates, workflows
@@ -100,7 +96,6 @@ Oracle/
 │   ├── devcontainer.json                Dev container config for VS Code
 │   └── post-create.sh                   Auto-setup: venv, pip install
 ├── reporting/                           Lab progress reporting & dashboards
-├── todo/                                Task tracking notes
 ├── presentation/                        15 HTML slide decks + shared resources
 │   ├── index.html                       Course landing page
 │   ├── template.html                    Template for new sessions

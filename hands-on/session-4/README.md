@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Codespace is running with Day 1 setup complete (`bash scripts/day1-setup.sh`)
+- Day 1 setup complete (`bash scripts/day1-setup.sh`)
 - Ollama is running with `llama3.2:1b` model pulled
 - Python virtual environment is activated
 
@@ -12,7 +12,7 @@ Verify your setup:
 ollama list
 
 # Activate virtual environment (if not already)
-source ~/.venv/bin/activate
+source .venv/bin/activate
 
 # Verify LangChain is installed
 python -c "import langchain; print(f'LangChain {langchain.__version__}')"
@@ -52,7 +52,7 @@ hands-on/session-4/
 ```
 
 1. Open the notebook in VS Code
-2. Select the Python kernel (`~/.venv/bin/python`)
+2. Select the kernel: **Python 3 (Gheware Agentic AI)**
 3. Run cells one at a time with **Shift+Enter**
 4. Fill in the TODO sections, then compare with `solutions/`
 
