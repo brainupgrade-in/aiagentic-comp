@@ -1,6 +1,10 @@
 # Large binary files
 *.pdf
 
+# Sensitive local files (never expose to Claude context)
+.env
+.mcp.json
+
 # Python artifacts
 __pycache__/
 *.pyc

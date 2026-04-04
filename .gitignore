@@ -5,6 +5,9 @@ course-outline-agentic-ai.pdf
 !.env.template
 !.env.example
 
+# MCP config (contains tokens)
+.mcp.json
+
 # Python
 __pycache__/
 *.pyc
