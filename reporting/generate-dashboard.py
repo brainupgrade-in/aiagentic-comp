@@ -330,8 +330,8 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
   --border:       #1a2235;
   --border-hi:    #263048;
   --text:         #c0ccdf;
-  --text-muted:   #465268;
-  --text-dim:     #252f44;
+  --text-muted:   #8090b0;
+  --text-dim:     #3a4860;
   --accent:       #00c9a7;
   --accent-glow:  rgba(0,201,167,.15);
   --green:        #22c55e;
@@ -393,7 +393,7 @@ body {{
   white-space: nowrap;
 }}
 .hdr-sub {{
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
@@ -427,9 +427,9 @@ body {{
 }}
 .kpi-val.accent {{ color: var(--accent); }}
 .kpi-lbl {{
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
   margin-top: 2px;
@@ -459,7 +459,7 @@ body {{
 }}
 .overall-pct {{
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
   font-weight: 600;
 }}
@@ -473,7 +473,7 @@ body {{
 }}
 .hdr-time {{
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   white-space: nowrap;
 }}
@@ -482,7 +482,7 @@ body {{
   border: 1px solid var(--border-hi);
   color: var(--text-muted);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   padding: 5px 12px;
@@ -533,7 +533,7 @@ body {{
   border: none;
   color: var(--text-muted);
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -559,7 +559,7 @@ body {{
   gap: 8px;
   max-width: 360px;
 }}
-.filter-ico {{ color: var(--text-dim); font-size: 12px; flex-shrink: 0; }}
+.filter-ico {{ color: var(--text-muted); font-size: 13px; flex-shrink: 0; }}
 .filter-in {{
   flex: 1;
   background: none;
@@ -567,17 +567,17 @@ body {{
   border-bottom: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   padding: 4px 0;
   outline: none;
   transition: border-color .2s;
 }}
-.filter-in::placeholder {{ color: var(--text-dim); }}
+.filter-in::placeholder {{ color: var(--text-muted); }}
 .filter-in:focus {{ border-bottom-color: var(--accent); }}
 .filter-clr {{
   background: none;
   border: none;
-  color: var(--text-dim);
+  color: var(--text-muted);
   cursor: pointer;
   font-size: 12px;
   padding: 2px;
@@ -588,7 +588,7 @@ body {{
 .filter-clr.show {{ display: block; }}
 .filter-stat {{
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--text-muted);
   padding-left: 8px;
   border-left: 1px solid var(--border);
@@ -613,7 +613,7 @@ table.matrix {{
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }}
 
@@ -626,7 +626,7 @@ table.matrix thead {{
 table.matrix th {{
   background: var(--surface-2);
   color: var(--text-muted);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -683,15 +683,15 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
 }}
 
 /* Heatmap cells */
-.cell {{ font-size: 11px; font-weight: 500; }}
-.cell .cell-denom {{ font-size: 9px; opacity: .6; }}
+.cell {{ font-size: 12px; font-weight: 500; }}
+.cell .cell-denom {{ font-size: 11px; opacity: .75; }}
 .c-full  {{ background: var(--green-bg);  color: var(--green); }}
 .c-high  {{ background: var(--amber-bg);  color: var(--amber); }}
-.c-low   {{ background: rgba(245,158,11,.05); color: #8a6a20; }}
-.c-none  {{ color: var(--text-dim); }}
+.c-low   {{ background: rgba(245,158,11,.05); color: #d49b10; }}
+.c-none  {{ color: var(--text-muted); }}
 
-.total-cell {{ font-size: 12px; font-weight: 600; color: var(--text); }}
-.of-t {{ font-size: 9px; opacity: .5; font-weight: 400; }}
+.total-cell {{ font-size: 13px; font-weight: 600; color: var(--text); }}
+.of-t {{ font-size: 11px; opacity: .6; font-weight: 400; }}
 
 .prog-cell {{
   display: flex;
@@ -708,17 +708,17 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
   overflow: hidden;
 }}
 .prog-fill {{ height: 100%; border-radius: 2px; }}
-.prog-pct {{ font-size: 10px; font-weight: 600; min-width: 30px; text-align: right; }}
+.prog-pct {{ font-size: 12px; font-weight: 600; min-width: 32px; text-align: right; }}
 
 .s-full {{ background: var(--green); color: var(--green); }}
 .s-high {{ background: var(--amber); color: var(--amber); }}
-.s-low  {{ background: #8a6a20; color: #8a6a20; }}
-.s-none {{ background: var(--text-dim); color: var(--text-dim); }}
+.s-low  {{ background: #d49b10; color: #d49b10; }}
+.s-none {{ background: var(--text-muted); color: var(--text-muted); }}
 
 /* For prog-fill, bg is the color */
 .prog-fill.s-full {{ background: var(--green); }}
 .prog-fill.s-high {{ background: var(--amber); }}
-.prog-fill.s-low  {{ background: #8a6a20; }}
+.prog-fill.s-low  {{ background: #d49b10; }}
 .prog-fill.s-none {{ background: var(--border-hi); }}
 
 .empty-msg {{
@@ -759,7 +759,7 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
 
 .sess-id {{
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--accent);
   letter-spacing: 0.06em;
@@ -767,7 +767,7 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
   flex-shrink: 0;
 }}
 .sess-name {{
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text);
   flex: 1;
@@ -791,19 +791,19 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
 .sess-prog-fill {{ height: 100%; border-radius: 2px; }}
 .sess-prog-fill.s-full {{ background: var(--green); }}
 .sess-prog-fill.s-high {{ background: var(--amber); }}
-.sess-prog-fill.s-low  {{ background: #8a6a20; }}
-.sess-prog-fill.s-none {{ background: var(--text-dim); }}
+.sess-prog-fill.s-low  {{ background: #d49b10; }}
+.sess-prog-fill.s-none {{ background: var(--border-hi); }}
 .sess-count {{
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   min-width: 44px;
   text-align: right;
 }}
 .sess-count.s-full {{ color: var(--green); }}
 .sess-count.s-high {{ color: var(--amber); }}
-.sess-count.s-low  {{ color: #8a6a20; }}
-.sess-count.s-none {{ color: var(--text-dim); }}
+.sess-count.s-low  {{ color: #d49b10; }}
+.sess-count.s-none {{ color: var(--text-muted); }}
 
 .sess-ref-btn {{
   background: none;
@@ -845,12 +845,12 @@ table.matrix tr:last-child td {{ border-bottom: none; }}
 table.dot-table {{
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }}
 table.dot-table th {{
-  color: var(--text-dim);
-  font-size: 9px;
+  color: var(--text-muted);
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -864,7 +864,7 @@ table.dot-table td {{ padding: 4px 6px; border-bottom: 1px solid var(--border); 
 table.dot-table tr:last-child td {{ border-bottom: none; }}
 .pname-sm {{
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text);
   padding-left: 0 !important;
@@ -876,15 +876,15 @@ table.dot-table tr:last-child td {{ border-bottom: none; }}
 .dot-cell {{ text-align: center; }}
 .dot {{
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 2px;
 }}
 .dot-done {{ background: var(--green); }}
-.dot-todo {{ background: var(--border-hi); }}
+.dot-todo {{ background: transparent; border: 1.5px solid var(--text-muted); }}
 .no-data {{
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 12px;
   font-family: var(--font-mono);
   padding: 8px 0;
   text-align: center;
