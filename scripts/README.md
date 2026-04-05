@@ -101,8 +101,6 @@ scripts/
 ├── check-resources.sh               ← Resource monitor
 ├── submit-lab.sh                    ← Lab submission to GitHub Issues
 ├── test-langfuse-server.sh          ← LangFuse server verification (instructor)
-├── windows-bootstrap.ps1            ← One-time Windows setup: install Git Bash + run initial-setup.sh
-│
 ├── day1-setup.sh / day1-cleanup.sh  ← Ollama + local LLM
 ├── day2-setup.sh / day2-cleanup.sh  ← Groq API + LangChain
 ├── day3-setup.sh / day3-cleanup.sh  ← LangGraph

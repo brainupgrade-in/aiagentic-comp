@@ -19,30 +19,18 @@
 
 ## Token Setup
 
-### Option A: Individual Tokens (Recommended - More Secure)
+### Shared Token (Instructor-Provided)
 
-**Each participant creates their own token:**
+The instructor creates one fine-grained PAT and shares it with all participants during the Zoom session.
+
+**Token permissions required:**
 - **Contents:** Read-only
 - **Issues:** Read and write
 - **Repository:** `brainupgrade-in/aiagentic-comp`
 
-**Benefits:**
-- If one token leaked, only that participant affected
-- Better security audit trail
-- Standard GitHub best practice
+**If the token is compromised:** Regenerate it in GitHub → Settings → Fine-grained tokens, then reshare the new token with participants via Zoom chat.
 
-### Option B: Shared Token (Simpler - Less Secure)
-
-**You create one token and share with all participants:**
-- **Contents:** Read-only
-- **Issues:** Read and write
-
-**Risks:**
-- ⚠️ If token leaked, all participants affected
-- ⚠️ Need to regenerate and reshare if compromised
-- ⚠️ Cannot track individual token usage
-
-**Recommendation:** Use **Option A** unless you have specific constraints
+> Participants authenticate once at the start of the course using `gh auth login` and paste the token when prompted.
 
 ---
 
@@ -140,21 +128,14 @@ View issues: https://github.com/brainupgrade-in/aiagentic-comp/issues?q=is:issue
 
 ### Setup (One-Time)
 
-**1. Create fine-grained token** (if using Option A):
-- Go to: https://github.com/settings/tokens?type=beta
-- Token name: "Agentic AI Course"
-- Repository: `brainupgrade-in/aiagentic-comp`
-- Permissions:
-  - Contents: Read-only
-  - Issues: Read and write
-
-**2. Authenticate GitHub CLI:**
+**1. Authenticate GitHub CLI** using the shared token from the instructor:
 ```bash
 gh auth login
-# Paste your token
+# Select: GitHub.com → HTTPS → Paste an authentication token
+# Paste the token shared by the instructor
 ```
 
-**3. Clone repository:**
+**2. Clone repository:**
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
@@ -162,47 +143,27 @@ cd aiagentic-comp
 
 ### Daily Workflow
 
-**After completing each lab:**
+**After completing each lab, run the submit script:**
 
 ```bash
-# Example: Completed Session 1 Lab 01
+# Usage
+bash scripts/submit-lab.sh <session> <lab> "optional notes"
 
-# Method 1: Using GitHub CLI (recommended)
-gh issue comment <issue-number> \
-  --repo brainupgrade-in/aiagentic-comp \
-  --body "✅ Completed
-
-**Validation:** All checks passed ([PASS] markers present)
-**Notes:** Great introduction to agentic AI concepts!"
-
-# Method 2: Using GitHub web UI
-# 1. Go to issue page
-# 2. Add comment
-# 3. Submit
+# Examples
+bash scripts/submit-lab.sh 1 1
+bash scripts/submit-lab.sh 1 2 "Learned about reasoning patterns"
+bash scripts/submit-lab.sh 2 5 "RAG pipeline working"
 ```
 
-**Find issue number:**
-```bash
-# List all Session 1 labs
-gh issue list \
-  --repo brainupgrade-in/aiagentic-comp \
-  --label "session-1,lab-tracking"
+The script auto-detects your GitHub username, shows a comment preview, and asks for confirmation before posting.
 
-# Search for specific lab
-gh issue list \
-  --repo brainupgrade-in/aiagentic-comp \
-  --search "Session 1 - Lab 01"
-```
-
-**Comment template:**
+**What gets posted to the issue:**
 ```markdown
 ✅ Completed
 
+**Participant:** your-github-username (your@email.com)
 **Validation:** All checks passed
-**Screenshot:** [Optional: Attach output screenshot]
-**Challenges:** [Optional: Any difficulties faced]
-**Time taken:** [Optional: Approximate time]
-**Notes:** [Optional: Key learnings]
+**Notes:** your optional notes
 ```
 
 ---
@@ -260,9 +221,9 @@ python3 scripts/track-lab-comments.py --participant john-doe
 
 | Participant | S1 | S2 | S3 | S4 | S5 | ... | Total | Progress |
 |-------------|----|----|----|----|----|----|-------|----------|
-| john-doe    | 6/6 | 8/8 | 5/7 | 0/8 | 0/8 | ... | 19/119 | 16% |
-| jane-smith  | 6/6 | 8/8 | 7/7 | 8/8 | 0/8 | ... | 29/119 | 24% |
-| bob-jones   | 6/6 | 7/8 | 0/7 | 0/8 | 0/8 | ... | 13/119 | 11% |
+| john-doe    | 6/6 | 9/9 | 5/7 | 0/8 | 0/8 | ... | 20/119 | 17% |
+| jane-smith  | 6/6 | 9/9 | 7/7 | 8/8 | 0/8 | ... | 30/119 | 25% |
+| bob-jones   | 6/6 | 7/9 | 0/7 | 0/8 | 0/8 | ... | 13/119 | 11% |
 
 ## Session Details
 
@@ -289,11 +250,13 @@ python3 scripts/track-lab-comments.py --participant john-doe
 | 06  | ✅       | ✅         | ✅        | ... |
 | 07  | ✅       | ✅         | ✅        | ... |
 | 08  | ✅       | ✅         | —         | ... |
+| 09  | ✅       | ✅         | —         | ... |
 
 ## Pending Labs
 
 ### bob-jones
 - Session 2 Lab 08
+- Session 2 Lab 09
 - Session 3 Lab 01
 - Session 3 Lab 02
 - ... and 104 more
@@ -463,11 +426,8 @@ python3 scripts/track-lab-comments.py
 # Instructor: Check Session 1 progress
 python3 scripts/track-lab-comments.py --session 1
 
-# Participant: Find issue number
-gh issue list --label "session-1" --search "Lab 01"
-
 # Participant: Submit completion
-gh issue comment <number> --body "✅ Completed"
+bash scripts/submit-lab.sh <session> <lab> "optional notes"
 
 # View dashboard
 https://github.com/brainupgrade-in/aiagentic-comp/projects/1

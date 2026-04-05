@@ -22,7 +22,7 @@
 **Participant machines:**
 - **CPU:** At least 8 threads (minimum)
 - **RAM:** 16 GB (minimum)
-- **OS:** Ubuntu Linux (recommended), macOS, or Windows (Git Bash via `windows-bootstrap.ps1`)
+- **OS:** Ubuntu Linux (recommended), macOS, or Windows (Git Bash)
 
 **GitHub Codespaces:** Out of scope for this training. The `.devcontainer/` configuration is maintained in the repository for other use cases but is not used for this course delivery.
 
@@ -126,7 +126,6 @@ aiagentic-comp/
 │   └── (session-1 has 6, session-2 has 9, session-3 has 7, session-12 has 9, all others have 8)
 └── scripts/                             Shell scripts (Linux/macOS/Windows Git Bash)
     ├── initial-setup.sh                 One-time setup: Python, venv, packages, .env, kernel
-    ├── windows-bootstrap.ps1            Windows only: installs Git Bash, configures VS Code, runs initial-setup.sh
     ├── set-notebook-kernels.sh          Re-embed gheware-agentic-ai kernel in all notebooks
     ├── install-notebook.sh              VS Code Jupyter extension + ipykernel
     ├── install-jupyter-kernel.sh        Named kernel spec for the course
@@ -359,15 +358,7 @@ bash scripts/submit-lab.sh 1 1 "notes"
 
 ### Windows
 
-Run bootstrap once in PowerShell, then use Git Bash terminal in VS Code for all subsequent commands:
-
-```powershell
-# One-time bootstrap (PowerShell) — installs Git Bash, configures VS Code, runs initial-setup.sh
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-.\scripts\windows-bootstrap.ps1
-```
-
-After bootstrap, open a Git Bash terminal in VS Code and use the same commands as Linux/macOS:
+Install Git for Windows from https://git-scm.com/download/win (includes Git Bash), then open Git Bash and use the same commands as Linux/macOS:
 
 ```bash
 # All day scripts, cleanup, and submission work identically in Git Bash

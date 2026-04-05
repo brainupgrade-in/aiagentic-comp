@@ -1,5 +1,5 @@
 #!/bin/bash
-# initial-setup.sh — One-time environment setup for Linux/macOS participants
+# initial-setup.sh — One-time environment setup for Linux/macOS/Windows Git Bash participants
 # Sets up Python venv, installs all packages, registers the Jupyter kernel,
 # and configures every notebook to auto-select it.
 #
@@ -16,11 +16,19 @@ KERNEL_NAME="gheware-agentic-ai"
 KERNEL_DISPLAY="Python 3 (Gheware Agentic AI)"
 
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-VENV_PYTHON="$REPO_DIR/.venv/bin/python"
+
+# Detect Windows Git Bash (MSYS/MINGW) vs Linux/macOS
+if [[ "$(uname -s)" == MINGW* ]] || [[ "$(uname -s)" == MSYS* ]] || [[ "$(uname -s)" == CYGWIN* ]]; then
+    VENV_ACTIVATE="$REPO_DIR/.venv/Scripts/activate"
+    VENV_PYTHON="$REPO_DIR/.venv/Scripts/python"
+else
+    VENV_ACTIVATE="$REPO_DIR/.venv/bin/activate"
+    VENV_PYTHON="$REPO_DIR/.venv/bin/python"
+fi
 
 echo "============================================"
 echo "  Agentic AI Course — Initial Setup"
-echo "  (Linux/macOS)"
+echo "  (Linux/macOS/Windows Git Bash)"
 echo "============================================"
 echo ""
 
@@ -52,7 +60,7 @@ else
     python3 -m venv "$REPO_DIR/.venv"
     echo "  Virtual environment created"
 fi
-source "$REPO_DIR/.venv/bin/activate"
+source "$VENV_ACTIVATE"
 echo "  Activated: $(python --version)"
 echo ""
 
@@ -170,10 +178,10 @@ echo ""
 
 # Activate venv in the current shell if the script was sourced
 if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
-    source "$REPO_DIR/.venv/bin/activate"
+    source "$VENV_ACTIVATE"
     echo "  Virtual environment activated in this shell: $(python --version)"
 else
     echo "To activate the virtual environment in this terminal, run:"
-    echo "  source $REPO_DIR/.venv/bin/activate"
+    echo "  source $VENV_ACTIVATE"
 fi
 echo ""

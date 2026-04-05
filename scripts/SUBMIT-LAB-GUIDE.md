@@ -28,7 +28,7 @@ bash scripts/submit-lab.sh 1 1
 bash scripts/submit-lab.sh 1 2 "Great lab on AI agents!"
 ```
 
-> **Windows users:** Open the Git Bash terminal in VS Code (configured by `windows-bootstrap.ps1`) and use the same `bash scripts/submit-lab.sh` commands as Linux/macOS.
+> **Windows users:** Open Git Bash and use the same `bash scripts/submit-lab.sh` commands as Linux/macOS.
 
 ---
 
@@ -200,7 +200,7 @@ sudo apt install gh
 brew install gh
 ```
 
-Windows users: `gh` is included with Git for Windows (installed by `windows-bootstrap.ps1`). If missing, run `winget install GitHub.cli` in PowerShell.
+Windows users: Install `gh` with `winget install --id GitHub.cli` in Git Bash, or download from https://cli.github.com/
 
 ### "Submission Failed"
 

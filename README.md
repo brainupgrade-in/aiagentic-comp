@@ -8,7 +8,7 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development �
 
 ## Quick Start
 
-### Local Setup (Ubuntu Linux)
+### Local Setup (Linux / macOS / Windows Git Bash)
 
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
@@ -89,7 +89,7 @@ bash scripts/day1-setup.sh
 │   ├── session-2/             9 labs + solutions + README (.ipynb)
 │   ├── session-3/             7 labs + solutions + README (.ipynb)
 │   ├── session-12/            9 labs + solutions + README (.ipynb)
-│   └── session-4 to session-15/  8 labs + solutions + README each (.ipynb)
+│   └── session-4 to session-11, session-13 to session-15/  8 labs + solutions + README each (.ipynb)
 │
 ├── scripts/                   Setup, cleanup, and utility scripts
 │   ├── initial-setup.sh       One-time setup (venv + packages + kernel + notebooks)
@@ -178,7 +178,7 @@ bash scripts/check-resources.sh
 - Basic Python programming
 - Basic understanding of APIs and REST
 - Familiarity with command line / terminal
-- Ubuntu Linux (native installation, WSL2, or VM) with 16 GB RAM
+- Linux (Ubuntu recommended), macOS, or Windows with Git Bash — all with 16 GB RAM
 
 ---
 
@@ -188,7 +188,6 @@ bash scripts/check-resources.sh
 |------|---------|-----|
 | 11434 | Ollama | Day 1 only |
 | 8000 | FastAPI App | Day 4 |
-| 3000 | LangFuse server | Day 4 (Session 12 Lab 09) |
 
 ---
 

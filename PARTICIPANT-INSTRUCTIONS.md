@@ -26,30 +26,30 @@ source scripts/initial-setup.sh
 nano .env   # or open in VS Code
 ```
 
-### Windows
+### Windows (Git Bash)
 
-Open **PowerShell** (not Command Prompt) in the repo folder and run:
+1. Install **Git for Windows** from https://git-scm.com/download/win — this includes Git Bash
+2. Open **Git Bash** (search "Git Bash" in the Start menu)
+3. Run the same setup as Linux/macOS:
 
-```powershell
-# Allow script execution (one-time)
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
-
+```bash
 # Clone the repository
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
 
-# Bootstrap: installs Git Bash if needed, configures VS Code, runs initial-setup.sh
-.\scripts\windows-bootstrap.ps1
+# Run setup (creates .venv, installs packages, registers Jupyter kernel)
+source scripts/initial-setup.sh
+
+# Edit .env and add your Groq API key
+nano .env   # or open in VS Code
 ```
 
-This script:
-- Installs **Git for Windows** (Git Bash) automatically via `winget` if not present
-- Configures **VS Code** to use Git Bash as the default integrated terminal
-- Runs `initial-setup.sh` through Git Bash — same setup as Linux/Mac
+> **Always use Git Bash** for all course scripts — not PowerShell or Command Prompt.
 
-After bootstrap, **always use the Git Bash terminal in VS Code** to run course scripts.
-
-> **No Git / winget?** Install Git for Windows manually from https://git-scm.com/download/win, then re-run the bootstrap script.
+> **Activating the venv on Windows Git Bash:** Python on Windows creates the venv under `Scripts/` instead of `bin/`. Use:
+> ```bash
+> source .venv/Scripts/activate
+> ```
 
 ---
 
@@ -124,7 +124,7 @@ source .venv/bin/activate   # Linux/macOS
 bash scripts/day1-setup.sh   # Day 1 (Ollama + local LLM)
 bash scripts/day2-setup.sh   # Day 2 (verify Groq + LangChain)
 bash scripts/day3-setup.sh   # Day 3 (verify LangGraph)
-bash scripts/day4-setup.sh   # Day 4 (start LangFuse server)
+bash scripts/day4-setup.sh   # Day 4 (OTel + LangFuse + FastAPI)
 bash scripts/day5-setup.sh   # Day 5 (MCP SDK)
 ```
 
@@ -202,7 +202,9 @@ sudo apt install gh
 # macOS
 brew install gh
 
-# Windows — already included in Git for Windows (Git Bash)
+# Windows (Git Bash)
+winget install --id GitHub.cli
+# or download from https://cli.github.com/
 ```
 
 ### "Resource not accessible by personal access token"
@@ -248,9 +250,8 @@ Stop the conflicting process, then re-run the day setup script.
 ## Quick Reference
 
 ```bash
-# One-time setup
-source scripts/initial-setup.sh          # Linux/macOS
-.\scripts\windows-bootstrap.ps1          # Windows PowerShell
+# One-time setup (Linux/macOS/Windows Git Bash)
+source scripts/initial-setup.sh
 
 # Daily
 git pull && source .venv/bin/activate
