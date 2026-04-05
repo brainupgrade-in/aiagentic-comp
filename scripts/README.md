@@ -57,7 +57,7 @@ bash scripts/submit-lab.sh 1 1
 bash scripts/submit-lab.sh 2 3 "LCEL makes chaining elegant"
 ```
 
-Requires: GitHub CLI (`gh`) authenticated with the token shared during Zoom. See `SUBMIT-LAB-GUIDE.md` for details.
+Requires: `GITHUB_TOKEN` set in `.env` or exported. See `PARTICIPANT-INSTRUCTIONS.md` for details.
 
 ## Utility Scripts
 
@@ -91,7 +91,6 @@ Generates: 35 traces, 15+ unique users, 70 LLM generations across Traces/Session
 ```
 scripts/
 ├── README.md                        ← You are here
-├── SUBMIT-LAB-GUIDE.md              ← Lab submission instructions
 ├── README-langfuse-server.md        ← LangFuse server documentation
 │
 ├── initial-setup.sh                 ← One-time setup (venv + packages + kernel + notebooks)

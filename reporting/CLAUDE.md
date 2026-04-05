@@ -66,11 +66,10 @@ Issue titles must follow the format `Session N - Lab MM` (e.g. `Session 3 - Lab 
 
 ```bash
 # Verify lab-tracking issues exist
-gh issue list --repo brainupgrade-in/aiagentic-comp --label lab-tracking --limit 5
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  "https://api.github.com/repos/brainupgrade-in/aiagentic-comp/issues?labels=lab-tracking&per_page=5" \
+  | python3 -c "import json,sys; [print(i['number'], i['title']) for i in json.load(sys.stdin)]"
 
-# Inspect comments on a specific issue
-gh issue view <issue_number> --repo brainupgrade-in/aiagentic-comp --comments
-
-# Dashboard shows no data: check token has read access to issues
-# track-lab-comments.py only reads $GITHUB_TOKEN (no file fallback)
+# Dashboard shows no data: check GITHUB_TOKEN has read access to issues
+# track-lab-comments.py reads $GITHUB_TOKEN (env var or .env file)
 ```
