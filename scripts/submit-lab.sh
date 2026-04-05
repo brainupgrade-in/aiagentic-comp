@@ -118,20 +118,12 @@ if [ -z "$EMAIL" ]; then
     EMAIL=$(git config --global user.email 2>/dev/null || echo "")
 fi
 
-# 3rd preference: GitHub CLI (last resort, username only)
-if [ -z "$USERNAME" ] && command -v gh &> /dev/null; then
-    USERNAME=$(gh api user --jq '.login' 2>/dev/null || echo "")
-fi
-
 if [ -z "$USERNAME" ]; then
     echo -e "${RED}Error: Could not detect GitHub username${NC}"
     echo ""
     echo "Please set your username in this repository:"
     echo "  git config user.name \"your-github-username\""
     echo "  git config user.email \"your-email@example.com\""
-    echo ""
-    echo "Or authenticate with GitHub CLI:"
-    echo "  gh auth login"
     echo ""
     exit 1
 fi
@@ -142,28 +134,24 @@ if [ -n "$EMAIL" ]; then
 fi
 echo ""
 
-# Check if gh CLI is authenticated
-if ! command -v gh &> /dev/null; then
-    echo -e "${RED}Error: GitHub CLI (gh) not found${NC}"
-    echo ""
-    echo "Please install GitHub CLI:"
-    echo "  Ubuntu/Debian: sudo apt install gh"
-    echo "  macOS: brew install gh"
-    echo ""
-    echo "Or download from: https://cli.github.com/"
-    exit 1
+# Load GITHUB_TOKEN from .env if not already set
+if [ -z "$GITHUB_TOKEN" ] && [ -f ".env" ]; then
+    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
 fi
 
-if ! gh auth status &> /dev/null; then
-    echo -e "${YELLOW}GitHub CLI not authenticated${NC}"
+if [ -z "$GITHUB_TOKEN" ]; then
+    echo -e "${RED}Error: GITHUB_TOKEN not set${NC}"
     echo ""
-    echo "Please authenticate with the shared token:"
-    echo "  gh auth login"
+    echo "Either export it:"
+    echo "  export GITHUB_TOKEN=ghp_xxxx"
+    echo ""
+    echo "Or add it to .env:"
+    echo "  GITHUB_TOKEN=ghp_xxxx"
     echo ""
     exit 1
 fi
 
-echo -e "${GREEN}✓ GitHub CLI authenticated${NC}"
+echo -e "${GREEN}✓ GitHub token found${NC}"
 echo ""
 
 # Build comment body
@@ -204,9 +192,21 @@ fi
 echo ""
 echo -e "${YELLOW}Submitting to Issue #$ISSUE_NUMBER...${NC}"
 
-COMMENT_URL=$(gh issue comment "$ISSUE_NUMBER" \
-    --repo "$REPO" \
-    --body "$COMMENT_BODY" 2>&1 | grep -oP 'https://[^ ]+' || echo "")
+API_RESPONSE=$(curl -s -w "\n%{http_code}" \
+    -X POST \
+    -H "Authorization: token $GITHUB_TOKEN" \
+    -H "Accept: application/vnd.github+json" \
+    -H "Content-Type: application/json" \
+    "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/comments" \
+    -d "{\"body\": $(echo "$COMMENT_BODY" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}")
+
+HTTP_CODE=$(echo "$API_RESPONSE" | tail -1)
+RESPONSE_BODY=$(echo "$API_RESPONSE" | head -n -1)
+
+COMMENT_URL=""
+if [ "$HTTP_CODE" = "201" ]; then
+    COMMENT_URL=$(echo "$RESPONSE_BODY" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("html_url",""))' 2>/dev/null || echo "")
+fi
 
 if [ -n "$COMMENT_URL" ]; then
     echo ""
@@ -226,7 +226,7 @@ else
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     echo "Please check:"
-    echo "  1. GitHub CLI is authenticated (gh auth status)"
+    echo "  1. GITHUB_TOKEN is valid and has 'public_repo' scope"
     echo "  2. You have access to the repository"
     echo "  3. Issue #$ISSUE_NUMBER exists"
     echo ""
@@ -235,5 +235,5 @@ fi
 
 # Check your progress
 echo -e "${BLUE}💡 Tip:${NC} Check your progress:"
-echo "  gh issue list --repo $REPO --search \"commenter:$USERNAME\" --label lab-tracking"
+echo "  https://github.com/$REPO/issues?q=label%3Alab-tracking"
 echo ""
