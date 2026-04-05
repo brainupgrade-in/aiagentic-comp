@@ -175,7 +175,7 @@
           </tr>
           <tr>
             <td><strong>FastAPI + Production</strong></td>
-            <td>Session 12</td>
+            <td>Session 11</td>
             <td>REST API endpoints, error handling, health probes, deployment</td>
           </tr>
           <tr>
@@ -307,9 +307,9 @@
         <section>
           <div class="section-number">03</div>
           <h2>Phase 3: API Endpoint</h2>
-          <p class="subtitle">Lab 03 &middot; FastAPI endpoint from Session 12</p>
+          <p class="subtitle">Lab 03 &middot; FastAPI endpoint from Session 11</p>
           <aside class="notes">
-            The FastAPI application is the front door. Participants should implement the POST /agent/query endpoint with Pydantic validation, health and readiness probes, and proper error handling with specific HTTP status codes from Session 12. Remind them: if the front door is broken, nothing else matters. Get a basic endpoint returning a hardcoded response first, then wire in the real agent.
+            The FastAPI application is the front door. Participants should implement the POST /agent/query endpoint with Pydantic validation, health and readiness probes, and proper error handling with specific HTTP status codes from Session 11. Remind them: if the front door is broken, nothing else matters. Get a basic endpoint returning a hardcoded response first, then wire in the real agent.
           </aside>
         </section>
 
@@ -416,9 +416,9 @@
         <section>
           <div class="section-number">05</div>
           <h2>Phase 5: Health &amp; Monitoring</h2>
-          <p class="subtitle">Lab 05 &middot; Probes + metrics from Session 12</p>
+          <p class="subtitle">Lab 05 &middot; Probes + metrics from Session 11</p>
           <aside class="notes">
-            Health probes are used by orchestration systems to monitor application health and availability. Participants should implement a liveness probe that returns 200 if the process is alive, and a readiness probe that checks whether the LLM API is reachable and ChromaDB is connected. Remind them of the three-probe model from Session 12 and that a process can be alive but not ready.
+            Health probes are used by orchestration systems to monitor application health and availability. Participants should implement a liveness probe that returns 200 if the process is alive, and a readiness probe that checks whether the LLM API is reachable and ChromaDB is connected. Remind them of the three-probe model from Session 11 and that a process can be alive but not ready.
           </aside>
         </section>
 
@@ -472,7 +472,7 @@
           <h2>Phase 6: Deployment Config</h2>
           <p class="subtitle">Lab 06 &middot; Containerization and deployment manifests</p>
           <aside class="notes">
-            This phase covers the deployment configuration -- uvicorn settings, environment variable management with .env files, and process startup sequencing. Participants will use Python process management with systemd or supervisord for production deployments. Remind them that API keys must never be hardcoded -- use python-dotenv and the .env.example pattern from Session 12.
+            This phase covers the deployment configuration -- uvicorn settings, environment variable management with .env files, and process startup sequencing. Participants will use Python process management with systemd or supervisord for production deployments. Remind them that API keys must never be hardcoded -- use python-dotenv and the .env.example pattern from Session 11.
           </aside>
         </section>
 

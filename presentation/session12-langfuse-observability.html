@@ -343,14 +343,14 @@ pip install langfuse
 # Environment variables
 LANGFUSE_PUBLIC_KEY="pk-lf-..."      # From LangFuse project settings
 LANGFUSE_SECRET_KEY="sk-lf-..."      # From LangFuse project settings
-LANGFUSE_HOST="http://langfuse:3000" # Self-hosted URL</code></pre>
+LANGFUSE_HOST="http://localhost:3000" # Self-hosted (local Python server)</code></pre>
         <pre><code class="language-python" data-trim data-noescape># Initialize LangFuse client
 from langfuse import Langfuse
 
 langfuse = Langfuse(
     public_key="pk-lf-...",
     secret_key="sk-lf-...",
-    host="http://langfuse:3000",
+    host="http://localhost:3000",
 )
 
 # Verify connection
@@ -367,7 +367,7 @@ langfuse.auth_check()  # Returns True if connected</code></pre>
 handler = CallbackHandler(
     public_key="pk-lf-...",
     secret_key="sk-lf-...",
-    host="http://langfuse:3000",
+    host="http://localhost:3000",
     # Metadata for this trace
     user_id="alice",
     session_id="chat_42",
@@ -392,19 +392,21 @@ result = chain.invoke(
         <h2>Tracing a RAG Pipeline</h2>
         <pre><code class="language-python" data-trim data-noescape>from langchain_community.vectorstores import Chroma
 from langchain_groq import ChatGroq
-from langchain.chains import RetrievalQA
+from langchain.chains import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate
 from langfuse.callback import CallbackHandler
 
-# Setup RAG chain
+# Setup RAG chain (modern LCEL approach — RetrievalQA is deprecated)
 vectorstore = Chroma(persist_directory="./chroma_db")
 retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
-llm = ChatGroq(model="llama3-70b-8192")
+llm = ChatGroq(model="llama-3.3-70b-versatile")
 
-chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever=retriever,
-    return_source_documents=True,
+prompt = ChatPromptTemplate.from_template(
+    "Use the following context to answer the question.\n\nContext: {context}\n\nQuestion: {input}"
 )
+stuff_chain = create_stuff_documents_chain(llm, prompt)
+chain = create_retrieval_chain(retriever, stuff_chain)
 
 # Create LangFuse handler
 handler = CallbackHandler(
@@ -415,7 +417,7 @@ handler = CallbackHandler(
 
 # Invoke with tracing
 result = chain.invoke(
-    {"query": "How do Python health checks work?"},
+    {"input": "How do Python health checks work?"},
     config={"callbacks": [handler]}
 )</code></pre>
       </section>
@@ -425,13 +427,13 @@ result = chain.invoke(
         <h2>What LangFuse Captures from RAG</h2>
         <div class="trace-tree">
           <span class="trace-root">TRACE</span> <span class="trace-meta">session_123 &mdash; user: alice &mdash; pipeline: rag_v2</span><br>
-          &nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">RetrievalQA</span> <span class="trace-time">[0ms &rarr; 2340ms]</span><br>
+          &nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">retrieval_chain</span> <span class="trace-time">[0ms &rarr; 2340ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">Retriever</span> <span class="trace-time">[5ms &rarr; 120ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">query: "How do Python health checks work?"</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">documents: 5 retrieved (doc1, doc2, ...)</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-span">SPAN</span> <span class="trace-meta">StuffDocumentsChain</span> <span class="trace-time">[125ms &rarr; 2300ms]</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-gen">GENERATION</span> <span class="trace-meta">ChatGroq</span> <span class="trace-time">[130ms &rarr; 2280ms]</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">model: llama3-70b-8192</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">model: llama-3.3-70b-versatile</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">input: 1,240 tokens &mdash; output: 380 tokens</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">cost: $0.0010 &mdash; latency: 2,150ms</span><br>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="trace-meta">prompt: "Use the following context to answer..."</span><br>
