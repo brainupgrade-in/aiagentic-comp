@@ -141,34 +141,19 @@ def parse_issue_title(title):
     return None, None
 
 def extract_participant_name(comment_body):
-    """Extract participant name from comment body.
-
-    Looks for pattern: **Participant:** name (email) or **Participant:** name
-    Returns the name portion, or None if not found.
-    """
-    # Pattern to match: **Participant:** name (email) or **Participant:** name
+    """Extract participant name from comment body."""
     patterns = [
-        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',  # name (email)
-        r'\*\*Participant:\*\*\s+([^\n]+)',  # just name
+        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',
+        r'\*\*Participant:\*\*\s+([^\n]+)',
     ]
-
     for pattern in patterns:
         match = re.search(pattern, comment_body)
         if match:
-            name = match.group(1).strip()
-            return name
-
+            return match.group(1).strip()
     return None
 
 def is_completion_comment(comment_body):
-    """Check if comment indicates lab completion.
-
-    Matches the format produced by submit-lab.sh:
-      ✅ Completed
-      **Participant:** name (email)
-      **Validation:** All checks passed
-      **Notes:** optional notes
-    """
+    """Check if comment indicates lab completion."""
     patterns = [
         r'✅\s+completed',
         r'completed\s+✅',
@@ -179,7 +164,7 @@ def is_completion_comment(comment_body):
     return any(re.search(pattern, comment_lower) for pattern in patterns)
 
 def fetch_issue_data(token, issue):
-    """Fetch and process comments for a single issue. Returns (session_num, lab_num, completions)."""
+    """Fetch and process comments for a single issue."""
     title = issue.get("title", "")
     issue_number = issue.get("number")
     session_num, lab_num = parse_issue_title(title)
@@ -220,812 +205,957 @@ def build_completion_data(token, issues):
 
     return completion_matrix
 
+
 def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
-    """Generate interactive HTML dashboard."""
+    """Generate interactive HTML dashboard — dark industrial mission-control design."""
 
     total_labs = sum(count for _, count in COURSE_STRUCTURE.values())
     participants = sorted(completion_matrix.keys())
-
-    # Calculate statistics
     total_participants = len(participants)
     total_completions = sum(
         len([lab for labs in sessions.values() for lab in labs])
         for sessions in completion_matrix.values()
     )
+    overall_progress = (
+        total_completions / (total_labs * total_participants) * 100
+        if total_participants > 0 else 0
+    )
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    overall_progress = (total_completions / (total_labs * total_participants) * 100) if total_participants > 0 else 0
+    # ── Completion matrix rows ──────────────────────────────────────────────
+    matrix_rows = ""
+    for participant in participants:
+        sessions = completion_matrix[participant]
+        total_completed = sum(len(labs) for labs in sessions.values())
+        pct = (total_completed / total_labs * 100) if total_labs > 0 else 0
+        bar_w = int(pct)
+        p_cls = "s-full" if pct >= 90 else "s-high" if pct >= 50 else "s-low" if pct > 0 else "s-none"
 
-    # Generate HTML
+        matrix_rows += f'<tr data-name="{participant.lower()}">\n'
+        matrix_rows += f'<td class="pname">{participant}</td>\n'
+
+        for sn in range(1, 16):
+            _, num_labs = COURSE_STRUCTURE[sn]
+            done = len(sessions.get(sn, {}))
+            ratio = done / num_labs if num_labs else 0
+            c_cls = "c-full" if ratio >= 0.9 else "c-high" if ratio >= 0.5 else "c-low" if ratio > 0 else "c-none"
+            matrix_rows += (
+                f'<td class="cell {c_cls}" title="S{sn}: {done}/{num_labs} labs">'
+                f'{done}<span class="cell-denom">/{num_labs}</span></td>\n'
+            )
+
+        matrix_rows += (
+            f'<td class="total-cell"><b>{total_completed}</b>'
+            f'<span class="of-t">/{total_labs}</span></td>\n'
+            f'<td class="prog-cell">'
+            f'<div class="prog-track"><div class="prog-fill {p_cls}" style="width:{bar_w}%"></div></div>'
+            f'<span class="prog-pct {p_cls}">{pct:.0f}%</span>'
+            f'</td>\n</tr>\n'
+        )
+
+    if not matrix_rows:
+        matrix_rows = (
+            '<tr><td colspan="18" class="empty-msg">'
+            'No submissions yet — waiting for participants to submit labs'
+            '</td></tr>'
+        )
+
+    # ── Session accordion cards ─────────────────────────────────────────────
+    session_cards = ""
+    for sn in range(1, 16):
+        title, num_labs = COURSE_STRUCTURE[sn]
+        sess_done = sum(len(completion_matrix[p].get(sn, {})) for p in participants)
+        sess_total = num_labs * total_participants if total_participants else num_labs
+        sess_pct = (sess_done / sess_total * 100) if sess_total else 0
+        bar_cls = "s-full" if sess_pct >= 90 else "s-high" if sess_pct >= 50 else "s-low" if sess_pct > 0 else "s-none"
+
+        # Build per-participant dot rows
+        if participants:
+            dot_headers = "".join(f'<th class="lab-th">L{ln:02d}</th>' for ln in range(1, num_labs + 1))
+            dot_rows = ""
+            for p in participants:
+                p_sess = completion_matrix[p].get(sn, {})
+                dots = "".join(
+                    f'<td class="dot-cell"><span class="dot {"dot-done" if ln in p_sess else "dot-todo"}"></span></td>'
+                    for ln in range(1, num_labs + 1)
+                )
+                dot_rows += f'<tr><td class="pname-sm">{p}</td>{dots}</tr>\n'
+            dot_table = (
+                f'<div class="dot-scroll"><table class="dot-table">'
+                f'<thead><tr><th class="pname-th">Participant</th>{dot_headers}</tr></thead>'
+                f'<tbody>{dot_rows}</tbody></table></div>'
+            )
+        else:
+            dot_table = '<p class="no-data">No submissions for this session</p>'
+
+        session_cards += f"""
+<div class="sess-card" data-sn="{sn}" data-title="{title.lower()}">
+  <div class="sess-head" onclick="toggleSess(this)">
+    <span class="sess-id">S{sn:02d}</span>
+    <span class="sess-name">{title}</span>
+    <div class="sess-prog-wrap">
+      <div class="sess-prog-track">
+        <div class="sess-prog-fill {bar_cls}" style="width:{sess_pct:.1f}%"></div>
+      </div>
+      <span class="sess-count {bar_cls}">{sess_done}/{sess_total}</span>
+    </div>
+    <button class="sess-ref-btn" id="rsess-{sn}"
+            onclick="event.stopPropagation();refreshSession({sn})"
+            title="Refresh session {sn}">↻</button>
+    <span class="sess-chevron">›</span>
+  </div>
+  <div class="sess-body">{dot_table}</div>
+</div>"""
+
+    # ── Full HTML ───────────────────────────────────────────────────────────
+    auto_meta = '<meta http-equiv="refresh" content="60">' if auto_refresh else ""
+    participants_count = total_participants
+    possible = total_labs * total_participants if total_participants else 0
+
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab Submission Dashboard - Agentic AI Course</title>
-    {'<meta http-equiv="refresh" content="60">' if auto_refresh else ''}
-    <style>
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Tracker · Agentic AI</title>
+{auto_meta}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {{
+  --bg:           #080b10;
+  --surface:      #0e1218;
+  --surface-2:    #141922;
+  --border:       #1a2235;
+  --border-hi:    #263048;
+  --text:         #c0ccdf;
+  --text-muted:   #465268;
+  --text-dim:     #252f44;
+  --accent:       #00c9a7;
+  --accent-glow:  rgba(0,201,167,.15);
+  --green:        #22c55e;
+  --green-bg:     rgba(34,197,94,.12);
+  --green-dim:    rgba(34,197,94,.06);
+  --amber:        #f59e0b;
+  --amber-bg:     rgba(245,158,11,.12);
+  --amber-dim:    rgba(245,158,11,.06);
+  --red:          #ef4444;
+  --red-bg:       rgba(239,68,68,.08);
+  --font-ui:      'Syne', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --header-h:     52px;
+  --nav-h:        40px;
+}}
 
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }}
+*, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
 
-        .container {{
-            max-width: 1400px;
-            margin: 0 auto;
-        }}
+html {{ scroll-behavior: smooth; }}
 
-        .header {{
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            position: relative;
-        }}
+body {{
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}}
 
-        .header h1 {{
-            color: #2d3748;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }}
+/* ── HEADER ─────────────────────────────────────── */
+.dash-header {{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+  backdrop-filter: blur(12px);
+}}
 
-        .header .subtitle {{
-            color: #718096;
-            font-size: 1.1em;
-        }}
+.hdr-brand {{
+  display: flex;
+  flex-direction: column;
+  padding-right: 20px;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+  flex-shrink: 0;
+}}
+.hdr-title {{
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  line-height: 1;
+  white-space: nowrap;
+}}
+.hdr-sub {{
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+  white-space: nowrap;
+}}
 
-        .header .last-updated {{
-            color: #a0aec0;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }}
+.hdr-kpis {{
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+  padding: 0 16px;
+  overflow: hidden;
+}}
+.kpi {{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  min-width: 0;
+}}
+.kpi:first-child {{ padding-left: 8px; }}
+.kpi-val {{
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1;
+}}
+.kpi-val.accent {{ color: var(--accent); }}
+.kpi-lbl {{
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}}
 
-        .refresh-btn {{
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }}
+.hdr-progress {{
+  padding: 0 16px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 120px;
+  flex-shrink: 0;
+}}
+.overall-bar-track {{
+  height: 4px;
+  background: var(--border-hi);
+  border-radius: 2px;
+  overflow: hidden;
+}}
+.overall-bar-fill {{
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  border-radius: 2px;
+  transition: width .6s ease;
+}}
+.overall-pct {{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 600;
+}}
 
-        .refresh-btn:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }}
+.hdr-right {{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 16px;
+  flex-shrink: 0;
+}}
+.hdr-time {{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}}
+.ref-btn {{
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all .2s ease;
+  white-space: nowrap;
+}}
+.ref-btn:hover {{
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}}
+.ref-btn:disabled {{
+  opacity: .4;
+  cursor: not-allowed;
+}}
+.ref-icon {{ display: inline-block; transition: transform .3s; }}
+.ref-btn.spinning .ref-icon {{ animation: spin .7s linear infinite; }}
+@keyframes spin {{ to {{ transform: rotate(360deg); }} }}
 
-        .refresh-btn:active {{
-            transform: translateY(0);
-        }}
+/* ── NAV ─────────────────────────────────────────── */
+.dash-nav {{
+  position: sticky;
+  top: var(--header-h);
+  z-index: 90;
+  height: var(--nav-h);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 16px;
+}}
 
-        .refresh-btn.refreshing {{
-            opacity: 0.7;
-            cursor: not-allowed;
-        }}
+.nav-tabs {{
+  display: flex;
+  gap: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 16px;
+  flex-shrink: 0;
+}}
+.tab-btn {{
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0 14px;
+  height: var(--nav-h);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .2s ease;
+  position: relative;
+  top: 1px;
+}}
+.tab-btn:hover {{ color: var(--text); }}
+.tab-btn.active {{
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}}
 
-        .refresh-icon {{
-            display: inline-block;
-            transition: transform 0.3s ease;
-        }}
+.nav-filter {{
+  flex: 1;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+}}
+.filter-ico {{ color: var(--text-dim); font-size: 12px; flex-shrink: 0; }}
+.filter-in {{
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 0;
+  outline: none;
+  transition: border-color .2s;
+}}
+.filter-in::placeholder {{ color: var(--text-dim); }}
+.filter-in:focus {{ border-bottom-color: var(--accent); }}
+.filter-clr {{
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px;
+  display: none;
+  transition: color .2s;
+}}
+.filter-clr:hover {{ color: var(--text-muted); }}
+.filter-clr.show {{ display: block; }}
+.filter-stat {{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}}
 
-        .refresh-btn.refreshing .refresh-icon {{
-            animation: spin 1s linear infinite;
-        }}
+/* ── MAIN ─────────────────────────────────────────── */
+.dash-main {{ padding: 16px; }}
 
-        @keyframes spin {{
-            from {{ transform: rotate(0deg); }}
-            to {{ transform: rotate(360deg); }}
-        }}
+.view {{ display: none; }}
+.view.active {{ display: block; }}
 
-        .filter-container {{
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }}
+/* ── MATRIX TABLE ─────────────────────────────────── */
+.matrix-scroll {{
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}}
 
-        .filter-input {{
-            flex: 1;
-            max-width: 400px;
-            padding: 12px 16px;
-            padding-left: 40px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.95em;
-            transition: all 0.3s ease;
-            background: white;
-        }}
+table.matrix {{
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}}
 
-        .filter-input:focus {{
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }}
+table.matrix thead {{
+  position: sticky;
+  top: calc(var(--header-h) + var(--nav-h));
+  z-index: 80;
+}}
 
-        .filter-wrapper {{
-            position: relative;
-            flex: 1;
-            max-width: 400px;
-        }}
+table.matrix th {{
+  background: var(--surface-2);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 6px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}}
+table.matrix th:first-child {{
+  text-align: left;
+  padding-left: 12px;
+  min-width: 140px;
+  position: sticky;
+  left: 0;
+  z-index: 81;
+  background: var(--surface-2);
+}}
+table.matrix th:last-child,
+table.matrix th:nth-last-child(2) {{
+  border-right: none;
+}}
 
-        .filter-icon {{
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0aec0;
-            font-size: 1.1em;
-        }}
+table.matrix td {{
+  padding: 6px 5px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  transition: background .15s;
+}}
+table.matrix td:first-child {{
+  text-align: left;
+  padding-left: 12px;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-right: 1px solid var(--border-hi);
+}}
+table.matrix tr:hover td {{ background: var(--surface-2); }}
+table.matrix tr:hover td:first-child {{ background: var(--surface-2); }}
+table.matrix td:last-child,
+table.matrix td:nth-last-child(2) {{ border-right: none; }}
+table.matrix tr:last-child td {{ border-bottom: none; }}
 
-        .filter-clear {{
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #a0aec0;
-            cursor: pointer;
-            font-size: 1.2em;
-            padding: 4px;
-            display: none;
-            transition: color 0.2s ease;
-        }}
+.pname {{
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}}
 
-        .filter-clear:hover {{
-            color: #718096;
-        }}
+/* Heatmap cells */
+.cell {{ font-size: 11px; font-weight: 500; }}
+.cell .cell-denom {{ font-size: 9px; opacity: .6; }}
+.c-full  {{ background: var(--green-bg);  color: var(--green); }}
+.c-high  {{ background: var(--amber-bg);  color: var(--amber); }}
+.c-low   {{ background: rgba(245,158,11,.05); color: #8a6a20; }}
+.c-none  {{ color: var(--text-dim); }}
 
-        .filter-clear.visible {{
-            display: block;
-        }}
+.total-cell {{ font-size: 12px; font-weight: 600; color: var(--text); }}
+.of-t {{ font-size: 9px; opacity: .5; font-weight: 400; }}
 
-        .filter-stats {{
-            color: #718096;
-            font-size: 0.9em;
-            padding: 8px 16px;
-            background: #f7fafc;
-            border-radius: 6px;
-        }}
+.prog-cell {{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 12px !important;
+  min-width: 90px;
+}}
+.prog-track {{
+  flex: 1;
+  height: 3px;
+  background: var(--border-hi);
+  border-radius: 2px;
+  overflow: hidden;
+}}
+.prog-fill {{ height: 100%; border-radius: 2px; }}
+.prog-pct {{ font-size: 10px; font-weight: 600; min-width: 30px; text-align: right; }}
 
-        .no-results {{
-            text-align: center;
-            padding: 40px;
-            color: #a0aec0;
-            font-size: 1.1em;
-        }}
+.s-full {{ background: var(--green); color: var(--green); }}
+.s-high {{ background: var(--amber); color: var(--amber); }}
+.s-low  {{ background: #8a6a20; color: #8a6a20; }}
+.s-none {{ background: var(--text-dim); color: var(--text-dim); }}
 
-        .no-results-icon {{
-            font-size: 3em;
-            margin-bottom: 10px;
-        }}
+/* For prog-fill, bg is the color */
+.prog-fill.s-full {{ background: var(--green); }}
+.prog-fill.s-high {{ background: var(--amber); }}
+.prog-fill.s-low  {{ background: #8a6a20; }}
+.prog-fill.s-none {{ background: var(--border-hi); }}
 
-        tr.hidden {{
-            display: none;
-        }}
+.empty-msg {{
+  padding: 40px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+}}
 
-        .session-section.hidden {{
-            display: none;
-        }}
+/* ── SESSION ACCORDIONS ───────────────────────────── */
+.sessions-list {{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}}
 
-        .stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }}
+.sess-card {{
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--surface);
+  overflow: hidden;
+  transition: border-color .2s;
+}}
+.sess-card.open {{ border-color: var(--border-hi); }}
+.sess-card.hidden {{ display: none; }}
 
-        .stat-card {{
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }}
+.sess-head {{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .15s;
+}}
+.sess-head:hover {{ background: var(--surface-2); }}
 
-        .stat-card .label {{
-            color: #718096;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }}
+.sess-id {{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  min-width: 26px;
+  flex-shrink: 0;
+}}
+.sess-name {{
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}}
+.sess-prog-wrap {{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}}
+.sess-prog-track {{
+  width: 80px;
+  height: 3px;
+  background: var(--border-hi);
+  border-radius: 2px;
+  overflow: hidden;
+}}
+.sess-prog-fill {{ height: 100%; border-radius: 2px; }}
+.sess-prog-fill.s-full {{ background: var(--green); }}
+.sess-prog-fill.s-high {{ background: var(--amber); }}
+.sess-prog-fill.s-low  {{ background: #8a6a20; }}
+.sess-prog-fill.s-none {{ background: var(--text-dim); }}
+.sess-count {{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 44px;
+  text-align: right;
+}}
+.sess-count.s-full {{ color: var(--green); }}
+.sess-count.s-high {{ color: var(--amber); }}
+.sess-count.s-low  {{ color: #8a6a20; }}
+.sess-count.s-none {{ color: var(--text-dim); }}
 
-        .stat-card .value {{
-            color: #2d3748;
-            font-size: 2.5em;
-            font-weight: bold;
-        }}
+.sess-ref-btn {{
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-muted);
+  font-size: 12px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
+  line-height: 1;
+}}
+.sess-ref-btn:hover {{
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}}
+.sess-ref-btn:disabled {{ opacity: .35; cursor: not-allowed; }}
 
-        .stat-card .sub-value {{
-            color: #a0aec0;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }}
+.sess-chevron {{
+  color: var(--text-muted);
+  font-size: 16px;
+  transition: transform .25s ease;
+  flex-shrink: 0;
+  line-height: 1;
+}}
+.sess-card.open .sess-chevron {{ transform: rotate(90deg); }}
 
-        .stat-card.progress {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }}
+.sess-body {{ display: none; border-top: 1px solid var(--border); padding: 12px; }}
+.sess-card.open .sess-body {{ display: block; }}
 
-        .stat-card.progress .label,
-        .stat-card.progress .value,
-        .stat-card.progress .sub-value {{
-            color: white;
-        }}
+.dot-scroll {{ overflow-x: auto; }}
 
-        .progress-bar {{
-            background: rgba(255,255,255,0.3);
-            height: 10px;
-            border-radius: 5px;
-            margin-top: 15px;
-            overflow: hidden;
-        }}
+table.dot-table {{
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  white-space: nowrap;
+}}
+table.dot-table th {{
+  color: var(--text-dim);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}}
+.pname-th {{ text-align: left !important; min-width: 130px; padding-left: 0 !important; }}
+.lab-th {{ min-width: 28px; }}
+table.dot-table td {{ padding: 4px 6px; border-bottom: 1px solid var(--border); }}
+table.dot-table tr:last-child td {{ border-bottom: none; }}
+.pname-sm {{
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  padding-left: 0 !important;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}}
+.dot-cell {{ text-align: center; }}
+.dot {{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}}
+.dot-done {{ background: var(--green); }}
+.dot-todo {{ background: var(--border-hi); }}
+.no-data {{
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  padding: 8px 0;
+  text-align: center;
+}}
 
-        .progress-bar-fill {{
-            background: white;
-            height: 100%;
-            border-radius: 5px;
-            transition: width 0.3s ease;
-        }}
+/* ── FADE-IN ANIMATION ───────────────────────────── */
+@keyframes fadeUp {{
+  from {{ opacity: 0; transform: translateY(6px); }}
+  to   {{ opacity: 1; transform: translateY(0); }}
+}}
+.matrix-scroll {{ animation: fadeUp .35s ease both; }}
+.sess-card {{ animation: fadeUp .3s ease both; }}
+.sess-card:nth-child(1)  {{ animation-delay: .02s; }}
+.sess-card:nth-child(2)  {{ animation-delay: .04s; }}
+.sess-card:nth-child(3)  {{ animation-delay: .06s; }}
+.sess-card:nth-child(4)  {{ animation-delay: .08s; }}
+.sess-card:nth-child(5)  {{ animation-delay: .10s; }}
+.sess-card:nth-child(6)  {{ animation-delay: .12s; }}
+.sess-card:nth-child(7)  {{ animation-delay: .14s; }}
+.sess-card:nth-child(8)  {{ animation-delay: .16s; }}
+.sess-card:nth-child(9)  {{ animation-delay: .18s; }}
+.sess-card:nth-child(10) {{ animation-delay: .20s; }}
+.sess-card:nth-child(11) {{ animation-delay: .22s; }}
+.sess-card:nth-child(12) {{ animation-delay: .24s; }}
+.sess-card:nth-child(13) {{ animation-delay: .26s; }}
+.sess-card:nth-child(14) {{ animation-delay: .28s; }}
+.sess-card:nth-child(15) {{ animation-delay: .30s; }}
 
-        .section {{
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }}
-
-        .section h2 {{
-            color: #2d3748;
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }}
-
-        .completion-matrix {{
-            overflow-x: auto;
-        }}
-
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9em;
-        }}
-
-        th {{
-            background: #f7fafc;
-            color: #4a5568;
-            font-weight: 600;
-            padding: 12px 8px;
-            text-align: left;
-            position: sticky;
-            top: 0;
-            border-bottom: 2px solid #e2e8f0;
-        }}
-
-        td {{
-            padding: 10px 8px;
-            border-bottom: 1px solid #e2e8f0;
-        }}
-
-        tr:hover {{
-            background: #f7fafc;
-        }}
-
-        .status-badge {{
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 600;
-        }}
-
-        .status-complete {{
-            background: #c6f6d5;
-            color: #22543d;
-        }}
-
-        .status-partial {{
-            background: #feebc8;
-            color: #7c2d12;
-        }}
-
-        .status-none {{
-            background: #fed7d7;
-            color: #742a2a;
-        }}
-
-        .session-progress {{
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }}
-
-        .session-progress-bar {{
-            flex: 1;
-            background: #e2e8f0;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }}
-
-        .session-progress-fill {{
-            background: linear-gradient(90deg, #48bb78, #38a169);
-            height: 100%;
-            border-radius: 4px;
-        }}
-
-        .session-progress-text {{
-            font-size: 0.85em;
-            color: #718096;
-            min-width: 60px;
-            text-align: right;
-        }}
-
-        .lab-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-            gap: 4px;
-        }}
-
-        .lab-cell {{
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75em;
-            font-weight: 600;
-        }}
-
-        .lab-cell.completed {{
-            background: #48bb78;
-            color: white;
-        }}
-
-        .lab-cell.pending {{
-            background: #e2e8f0;
-            color: #a0aec0;
-        }}
-
-        .participant-name {{
-            font-weight: 600;
-            color: #2d3748;
-        }}
-
-        .session-section {{
-            margin-bottom: 30px;
-        }}
-
-        .session-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 10px;
-        }}
-
-        .session-refresh-btn {{
-            background: none;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            padding: 4px 10px;
-            cursor: pointer;
-            font-size: 0.85em;
-            color: #718096;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }}
-
-        .session-refresh-btn:hover {{
-            background: #f7fafc;
-            border-color: #667eea;
-            color: #667eea;
-        }}
-
-        .session-refresh-btn:disabled {{
-            opacity: 0.5;
-            cursor: not-allowed;
-        }}
-
-        .session-title {{
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #2d3748;
-        }}
-
-        @media (max-width: 768px) {{
-            .stats-grid {{
-                grid-template-columns: 1fr;
-            }}
-
-            .lab-grid {{
-                grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
-            }}
-        }}
-    </style>
+@media (max-width: 600px) {{
+  .hdr-kpis .kpi:nth-child(n+3) {{ display: none; }}
+  .hdr-progress {{ display: none; }}
+  .hdr-time {{ display: none; }}
+}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <button class="refresh-btn" onclick="refreshDashboard()">
-                <span class="refresh-icon">🔄</span>
-                <span>Refresh</span>
-            </button>
-            <h1>📊 Lab Submission Dashboard</h1>
-            <div class="subtitle">Agentic AI Course - Real-time Completion Tracking</div>
-            <div class="last-updated">Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
-        </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="label">Total Participants</div>
-                <div class="value">{total_participants}</div>
-                <div class="sub-value">Enrolled in course</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="label">Total Labs</div>
-                <div class="value">{total_labs}</div>
-                <div class="sub-value">Across 15 sessions</div>
-            </div>
-
-            <div class="stat-card">
-                <div class="label">Completions</div>
-                <div class="value">{total_completions}</div>
-                <div class="sub-value">Out of {total_labs * total_participants if total_participants > 0 else 0} possible</div>
-            </div>
-
-            <div class="stat-card progress">
-                <div class="label">Overall Progress</div>
-                <div class="value">{overall_progress:.1f}%</div>
-                <div class="progress-bar">
-                    <div class="progress-bar-fill" style="width: {overall_progress}%"></div>
-                </div>
-            </div>
-        </div>
-"""
-
-    # Completion Matrix
-    html += f"""
-        <div class="section">
-            <h2>Completion Matrix</h2>
-            <div class="filter-container">
-                <div class="filter-wrapper">
-                    <span class="filter-icon">🔍</span>
-                    <input type="text" id="userFilter" class="filter-input" placeholder="Filter by participant name...">
-                    <button class="filter-clear" id="userFilterClear" onclick="clearUserFilter()">✕</button>
-                </div>
-                <div class="filter-stats">
-                    <span id="userFilterStats">Showing <strong id="visibleUsers">{len(participants)}</strong> of <strong>{len(participants)}</strong> participants</span>
-                </div>
-            </div>
-            <div class="completion-matrix">
-                <table id="completionTable">
-                    <thead>
-                        <tr>
-                            <th>Participant</th>
-"""
-
-    for session_num in range(1, 16):
-        html += f"                            <th>S{session_num}</th>\n"
-
-    html += """                            <th>Total</th>
-                            <th>Progress</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-"""
-
-    if not participants:
-        html += """                        <tr>
-                            <td colspan="18" style="text-align: center; color: #a0aec0; padding: 40px;">
-                                No submissions yet. Waiting for participants to submit labs...
-                            </td>
-                        </tr>
-"""
-    else:
-        for participant in participants:
-            sessions = completion_matrix[participant]
-            total_completed = sum(len(labs) for labs in sessions.values())
-            progress_pct = (total_completed / total_labs * 100) if total_labs > 0 else 0
-
-            html += f"""                        <tr>
-                            <td class="participant-name">{participant}</td>
-"""
-
-            for session_num in range(1, 16):
-                _, num_labs = COURSE_STRUCTURE[session_num]
-                completed = len(sessions.get(session_num, {}))
-                html += f"                            <td>{completed}/{num_labs}</td>\n"
-
-            status_class = "status-complete" if progress_pct >= 90 else "status-partial" if progress_pct >= 50 else "status-none"
-
-            html += f"""                            <td><strong>{total_completed}/{total_labs}</strong></td>
-                            <td>
-                                <span class="status-badge {status_class}">{progress_pct:.0f}%</span>
-                            </td>
-                        </tr>
-"""
-
-    html += """                    </tbody>
-                </table>
-            </div>
-        </div>
-"""
-
-    # Session Details
-    html += f"""
-        <div class="section">
-            <h2>Session Details</h2>
-            <div class="filter-container">
-                <div class="filter-wrapper">
-                    <span class="filter-icon">🔍</span>
-                    <input type="text" id="sessionFilter" class="filter-input" placeholder="Filter by session name or number...">
-                    <button class="filter-clear" id="sessionFilterClear" onclick="clearSessionFilter()">✕</button>
-                </div>
-                <div class="filter-stats">
-                    <span id="sessionFilterStats">Showing <strong id="visibleSessions">15</strong> of <strong>15</strong> sessions</span>
-                </div>
-            </div>
-"""
-
-    for session_num in range(1, 16):
-        session_title, num_labs = COURSE_STRUCTURE[session_num]
-
-        # Calculate session completion
-        session_completions = 0
-        for participant in participants:
-            session_completions += len(completion_matrix[participant].get(session_num, {}))
-
-        session_total = num_labs * total_participants if total_participants > 0 else num_labs
-        session_progress = (session_completions / session_total * 100) if session_total > 0 else 0
-
-        html += f"""
-            <div class="session-section">
-                <div class="session-header">
-                    <div class="session-title">Session {session_num}: {session_title}</div>
-                    <div class="session-progress">
-                        <div class="session-progress-bar">
-                            <div class="session-progress-fill" style="width: {session_progress}%"></div>
-                        </div>
-                        <div class="session-progress-text">{session_completions}/{session_total}</div>
-                    </div>
-                    <button id="refresh-s{session_num}" class="session-refresh-btn" onclick="refreshSession({session_num})" title="Refresh Session {session_num} only">🔄 S{session_num}</button>
-                </div>
-"""
-
-        if participants:
-            html += """                <table>
-                    <thead>
-                        <tr>
-                            <th>Participant</th>
-"""
-
-            for lab_num in range(1, num_labs + 1):
-                html += f"                            <th>L{lab_num:02d}</th>\n"
-
-            html += """                        </tr>
-                    </thead>
-                    <tbody>
-"""
-
-            for participant in participants:
-                html += f"""                        <tr>
-                            <td class="participant-name">{participant}</td>
-"""
-
-                participant_session = completion_matrix[participant].get(session_num, {})
-                for lab_num in range(1, num_labs + 1):
-                    completed = lab_num in participant_session
-                    symbol = "✅" if completed else "—"
-                    html += f"                            <td style='text-align: center;'>{symbol}</td>\n"
-
-                html += """                        </tr>
-"""
-
-            html += """                    </tbody>
-                </table>
-"""
-        else:
-            html += """                <p style="color: #a0aec0; text-align: center; padding: 20px;">No submissions yet</p>
-"""
-
-        html += """            </div>
-"""
-
-    html += """        </div>
+<!-- HEADER -->
+<header class="dash-header">
+  <div class="hdr-brand">
+    <span class="hdr-title">Lab Tracker</span>
+    <span class="hdr-sub">Agentic AI · 15 Sessions</span>
+  </div>
+  <div class="hdr-kpis">
+    <div class="kpi">
+      <span class="kpi-val">{participants_count}</span>
+      <span class="kpi-lbl">Participants</span>
     </div>
+    <div class="kpi">
+      <span class="kpi-val">{total_labs}</span>
+      <span class="kpi-lbl">Total Labs</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-val">{total_completions}</span>
+      <span class="kpi-lbl">Completions</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-val">{possible}</span>
+      <span class="kpi-lbl">Possible</span>
+    </div>
+  </div>
+  <div class="hdr-progress">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">
+      <span class="kpi-lbl" style="margin:0;">Overall</span>
+      <span class="overall-pct">{overall_progress:.1f}%</span>
+    </div>
+    <div class="overall-bar-track">
+      <div class="overall-bar-fill" style="width:{overall_progress:.1f}%"></div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-time" id="clock">{now_str}</span>
+    <button class="ref-btn" id="ref-all-btn" onclick="refreshDashboard()">
+      <span class="ref-icon" id="ref-icon">↻</span>
+      <span id="ref-label">Refresh</span>
+    </button>
+  </div>
+</header>
 
-    <script>
-        const SERVER = 'http://localhost:8888';
+<!-- NAV -->
+<nav class="dash-nav">
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="tab-matrix" onclick="switchTab('matrix')">Matrix</button>
+    <button class="tab-btn" id="tab-sessions" onclick="switchTab('sessions')">Sessions</button>
+  </div>
+  <div class="nav-filter">
+    <span class="filter-ico">⌕</span>
+    <input class="filter-in" id="filter-in" type="text"
+           placeholder="filter participants or sessions…"
+           oninput="onFilter(this.value)"
+           onkeydown="if(event.key==='Escape')clearFilter()">
+    <button class="filter-clr" id="filter-clr" onclick="clearFilter()">✕</button>
+  </div>
+  <span class="filter-stat" id="filter-stat"></span>
+</nav>
 
-        function callRefresh(url, onDone) {{
-            fetch(url)
-                .then(r => r.json())
-                .then(data => {{
-                    if (data.status === 'ok') {{
-                        window.location.reload();
-                    }} else {{
-                        alert('Refresh failed: ' + (data.message || 'unknown error'));
-                        if (onDone) onDone();
-                    }}
-                }})
-                .catch(() => {{
-                    alert('Dashboard server not running.\\nStart it with:\\n  python3 reporting/server.py');
-                    if (onDone) onDone();
-                }});
-        }}
+<!-- MAIN -->
+<main class="dash-main">
 
-        function refreshDashboard() {{
-            const btn = document.querySelector('.refresh-btn');
-            btn.classList.add('refreshing');
-            btn.disabled = true;
-            btn.querySelector('span:last-child').textContent = 'Refreshing...';
-            callRefresh(SERVER + '/refresh', () => {{
-                btn.classList.remove('refreshing');
-                btn.disabled = false;
-                btn.querySelector('span:last-child').textContent = 'Refresh';
-            }});
-        }}
+  <!-- MATRIX VIEW -->
+  <div class="view active" id="view-matrix">
+    <div class="matrix-scroll">
+      <table class="matrix" id="matrix-table">
+        <thead>
+          <tr>
+            <th>Participant</th>
+            {''.join(f'<th title="Session {sn}: {COURSE_STRUCTURE[sn][0]}">S{sn:02d}</th>' for sn in range(1,16))}
+            <th>Done</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+{matrix_rows}        </tbody>
+      </table>
+    </div>
+  </div>
 
-        function refreshSession(sessionNum) {{
-            const btn = document.getElementById('refresh-s' + sessionNum);
-            const orig = btn.textContent;
-            btn.disabled = true;
-            btn.textContent = '⏳ S' + sessionNum;
-            callRefresh(SERVER + '/refresh/session/' + sessionNum, () => {{
-                btn.disabled = false;
-                btn.textContent = orig;
-            }});
-        }}
+  <!-- SESSIONS VIEW -->
+  <div class="view" id="view-sessions">
+    <div class="sessions-list" id="sessions-list">
+{session_cards}
+    </div>
+    <p class="empty-msg" id="sess-empty" style="display:none;">No sessions match your filter</p>
+  </div>
 
-        // User filter for Completion Matrix
-        function filterUsers() {{
-            const input = document.getElementById('userFilter');
-            const filter = input.value.toLowerCase();
-            const table = document.getElementById('completionTable');
-            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-            const clearBtn = document.getElementById('userFilterClear');
+</main>
 
-            let visibleCount = 0;
+<script>
+const SERVER = 'http://localhost:8888';
 
-            for (let i = 0; i < rows.length; i++) {{
-                const participantCell = rows[i].getElementsByClassName('participant-name')[0];
-                if (participantCell) {{
-                    const participantName = participantCell.textContent || participantCell.innerText;
-                    if (participantName.toLowerCase().indexOf(filter) > -1) {{
-                        rows[i].classList.remove('hidden');
-                        visibleCount++;
-                    }} else {{
-                        rows[i].classList.add('hidden');
-                    }}
-                }}
-            }}
+// ── Tab switching ──────────────────────────────────
+let currentTab = 'matrix';
+function switchTab(tab) {{
+  currentTab = tab;
+  document.getElementById('view-matrix').classList.toggle('active', tab === 'matrix');
+  document.getElementById('view-sessions').classList.toggle('active', tab === 'sessions');
+  document.getElementById('tab-matrix').classList.toggle('active', tab === 'matrix');
+  document.getElementById('tab-sessions').classList.toggle('active', tab === 'sessions');
+  document.getElementById('filter-in').value = '';
+  clearFilter();
+}}
 
-            // Update stats
-            document.getElementById('visibleUsers').textContent = visibleCount;
+// ── Filter ─────────────────────────────────────────
+function onFilter(val) {{
+  const q = val.toLowerCase().trim();
+  const clr = document.getElementById('filter-clr');
+  clr.classList.toggle('show', q.length > 0);
 
-            // Show/hide clear button
-            if (filter) {{
-                clearBtn.classList.add('visible');
-            }} else {{
-                clearBtn.classList.remove('visible');
-            }}
-        }}
+  if (currentTab === 'matrix') filterMatrix(q);
+  else filterSessions(q);
+}}
 
-        function clearUserFilter() {{
-            document.getElementById('userFilter').value = '';
-            filterUsers();
-            document.getElementById('userFilter').focus();
-        }}
+function clearFilter() {{
+  document.getElementById('filter-in').value = '';
+  document.getElementById('filter-clr').classList.remove('show');
+  document.getElementById('filter-stat').textContent = '';
+  if (currentTab === 'matrix') filterMatrix('');
+  else filterSessions('');
+}}
 
-        // Session filter for Session Details
-        function filterSessions() {{
-            const input = document.getElementById('sessionFilter');
-            const filter = input.value.toLowerCase();
-            const sections = document.getElementsByClassName('session-section');
-            const clearBtn = document.getElementById('sessionFilterClear');
+function filterMatrix(q) {{
+  const rows = document.querySelectorAll('#matrix-table tbody tr[data-name]');
+  let shown = 0;
+  rows.forEach(r => {{
+    const match = !q || r.dataset.name.includes(q);
+    r.style.display = match ? '' : 'none';
+    if (match) shown++;
+  }});
+  const stat = document.getElementById('filter-stat');
+  stat.textContent = q ? shown + ' of {len(participants)} participants' : '';
+}}
 
-            let visibleCount = 0;
+function filterSessions(q) {{
+  const cards = document.querySelectorAll('#sessions-list .sess-card');
+  let shown = 0;
+  cards.forEach(c => {{
+    const match = !q || c.dataset.title.includes(q) ||
+                  ('s' + c.dataset.sn).includes(q) ||
+                  ('session ' + c.dataset.sn).includes(q);
+    c.classList.toggle('hidden', !match);
+    if (match) shown++;
+  }});
+  const empty = document.getElementById('sess-empty');
+  empty.style.display = (shown === 0 && q) ? 'block' : 'none';
+  const stat = document.getElementById('filter-stat');
+  stat.textContent = q ? shown + ' of 15 sessions' : '';
+}}
 
-            for (let i = 0; i < sections.length; i++) {{
-                const titleElement = sections[i].getElementsByClassName('session-title')[0];
-                if (titleElement) {{
-                    const titleText = titleElement.textContent || titleElement.innerText;
-                    if (titleText.toLowerCase().indexOf(filter) > -1) {{
-                        sections[i].classList.remove('hidden');
-                        visibleCount++;
-                    }} else {{
-                        sections[i].classList.add('hidden');
-                    }}
-                }}
-            }}
+// ── Session accordion ──────────────────────────────
+function toggleSess(head) {{
+  const card = head.closest('.sess-card');
+  card.classList.toggle('open');
+}}
 
-            // Update stats
-            document.getElementById('visibleSessions').textContent = visibleCount;
+// ── Refresh ────────────────────────────────────────
+function callRefresh(url, onDone) {{
+  fetch(url)
+    .then(r => r.json())
+    .then(d => {{
+      if (d.status === 'ok') window.location.reload();
+      else {{ alert('Refresh failed: ' + (d.message || 'unknown error')); if (onDone) onDone(); }}
+    }})
+    .catch(() => {{
+      alert('Dashboard server not running.\\nStart it with:\\n  python3 reporting/server.py');
+      if (onDone) onDone();
+    }});
+}}
 
-            // Show/hide clear button
-            if (filter) {{
-                clearBtn.classList.add('visible');
-            }} else {{
-                clearBtn.classList.remove('visible');
-            }}
-        }}
+function refreshDashboard() {{
+  const btn = document.getElementById('ref-all-btn');
+  const ico = document.getElementById('ref-icon');
+  const lbl = document.getElementById('ref-label');
+  btn.classList.add('spinning');
+  btn.disabled = true;
+  lbl.textContent = 'Refreshing…';
+  ico.style.display = 'inline-block';
+  ico.classList.add('ref-icon');
+  btn.querySelector('.ref-icon').style.animation = 'spin .7s linear infinite';
+  callRefresh(SERVER + '/refresh', () => {{
+    btn.classList.remove('spinning');
+    btn.disabled = false;
+    lbl.textContent = 'Refresh';
+  }});
+}}
 
-        function clearSessionFilter() {{
-            document.getElementById('sessionFilter').value = '';
-            filterSessions();
-            document.getElementById('sessionFilter').focus();
-        }}
+function refreshSession(sn) {{
+  const btn = document.getElementById('rsess-' + sn);
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = '⏳';
+  callRefresh(SERVER + '/refresh/session/' + sn, () => {{
+    btn.disabled = false;
+    btn.textContent = orig;
+  }});
+}}
 
-        // Initialize filters on page load
-        document.addEventListener('DOMContentLoaded', function() {{
-            const userFilter = document.getElementById('userFilter');
-            const sessionFilter = document.getElementById('sessionFilter');
+// ── Live clock ─────────────────────────────────────
+function updateClock() {{
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) +
+    ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+}}
+setInterval(updateClock, 10000);
 
-            // Add real-time filtering
-            userFilter.addEventListener('input', filterUsers);
-            sessionFilter.addEventListener('input', filterSessions);
+// ── Keyboard shortcuts ─────────────────────────────
+document.addEventListener('keydown', e => {{
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {{
+    e.preventDefault(); refreshDashboard();
+  }}
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {{
+    e.preventDefault();
+    document.getElementById('filter-in').focus();
+  }}
+  if (e.key === '1' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') switchTab('matrix');
+  if (e.key === '2' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') switchTab('sessions');
+}});
 
-            // Add Enter key support
-            userFilter.addEventListener('keydown', (e) => {{
-                if (e.key === 'Escape') {{
-                    clearUserFilter();
-                }}
-            }});
-
-            sessionFilter.addEventListener('keydown', (e) => {{
-                if (e.key === 'Escape') {{
-                    clearSessionFilter();
-                }}
-            }});
-        }});
-
-        // Optional: Add keyboard shortcut (Ctrl+R or F5 already work, but this adds Ctrl+Shift+R for manual refresh)
-        document.addEventListener('keydown', (e) => {{
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'R') {{
-                e.preventDefault();
-                refreshDashboard();
-            }}
-
-            // Quick focus shortcuts
-            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {{
-                e.preventDefault();
-                document.getElementById('userFilter').focus();
-            }}
-        }});
-    </script>
+// ── Update stats display ───────────────────────────
+filterMatrix('');
+</script>
 </body>
-</html>
-"""
+</html>"""
 
-    # Write HTML file
     with open(output_file, 'w') as f:
         f.write(html)
 
     print(f"✓ Dashboard generated: {output_file}")
     print(f"✓ Open in browser: file://{os.path.abspath(output_file)}")
+
 
 def main():
     """Main function."""
@@ -1042,7 +1172,6 @@ def main():
         issues = fetch_lab_issues(token, session=args.session)
         print(f"Found {len(issues)} issues for session {args.session}")
 
-        # Load cached matrix, drop stale session data, merge fresh data
         completion_matrix = load_cache()
         for participant in list(completion_matrix.keys()):
             completion_matrix[participant].pop(args.session, None)
@@ -1060,6 +1189,7 @@ def main():
     save_cache(completion_matrix)
     print("Generating HTML dashboard...")
     generate_html_dashboard(completion_matrix, args.output, args.auto_refresh)
+
 
 if __name__ == "__main__":
     main()
