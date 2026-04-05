@@ -70,18 +70,23 @@ Use your **actual GitHub username** — this is how you appear in the instructor
 
 ---
 
-## GitHub CLI Authentication (Required for Lab Submission)
+## GitHub Token Setup (Required for Lab Submission)
 
 You will receive a shared access token during the Zoom session.
 
-```bash
-gh auth login
-# Select: GitHub.com → HTTPS → Paste an authentication token
-# Paste the token shared by the instructor
+Add it to your `.env` file in the repo root:
 
-# Verify
-gh auth status
+```bash
+echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
 ```
+
+Or export it for the session:
+
+```bash
+export GITHUB_TOKEN=ghp_xxxx
+```
+
+> The token needs **`public_repo`** scope. `.env` is gitignored — your token stays local.
 
 ---
 
@@ -193,26 +198,23 @@ Then reload VS Code (`Ctrl+Shift+P` → `Developer: Reload Window`).
 
 Free tier limit hit. Wait 60 seconds and retry. If the whole class hits limits simultaneously, stagger lab start times by a few minutes.
 
-### `gh: command not found`
+### "GITHUB_TOKEN not set"
+
+Add the token to `.env` or export it:
 
 ```bash
-# Ubuntu/Debian
-sudo apt install gh
-
-# macOS
-brew install gh
-
-# Windows (Git Bash)
-winget install --id GitHub.cli
-# or download from https://cli.github.com/
+echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
+# or
+export GITHUB_TOKEN=ghp_xxxx
 ```
 
-### "Resource not accessible by personal access token"
+### "Submission Failed" / token expired
 
-Token expired. Ask the instructor for a new token, then re-authenticate:
+Ask the instructor for a new token, then update `.env`:
 
 ```bash
-gh auth login
+# Replace the old value in .env
+nano .env
 ```
 
 ### "Could not detect GitHub username"

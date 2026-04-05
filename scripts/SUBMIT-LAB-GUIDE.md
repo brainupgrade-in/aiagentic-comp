@@ -18,10 +18,24 @@ The script:
 
 ## Quick Start
 
-### Linux / macOS / Windows Git Bash
+### 1. Add your GitHub PAT to `.env`
 
 ```bash
-# Submit a lab
+# In the repo root, open .env and add:
+GITHUB_TOKEN=ghp_xxxx
+```
+
+Or export it for the session:
+
+```bash
+export GITHUB_TOKEN=ghp_xxxx
+```
+
+> Get a token at https://github.com/settings/tokens — needs **`public_repo`** scope (or use the token shared by the instructor).
+
+### 2. Submit a lab
+
+```bash
 bash scripts/submit-lab.sh 1 1
 
 # With optional notes
@@ -54,7 +68,7 @@ Detecting your information...
 ✓ Username: johndoe
 ✓ Email: johndoe@example.com
 
-✓ GitHub CLI authenticated
+✓ GitHub token found
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Comment Preview:
@@ -141,23 +155,20 @@ etc.
 The script tries these methods in order:
 
 1. **Repository git config (preferred):** `git config --local user.name` and `user.email`
-2. **Global git config:** `git config --global user.name` and `user.email` (used if not set at repo level)
-3. **GitHub CLI (last resort):** `gh api user --jq '.login'` (username only)
+2. **Global git config:** `git config --global user.name` and `user.email`
 
-**Set your information (recommended - repository-level):**
+**Set your information (recommended):**
 ```bash
-# Navigate to course repository
 cd ~/aiagentic-comp
 
-# Set repository-specific username and email
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
 ```
 
-**Alternatively, authenticate with GitHub CLI:**
-```bash
-gh auth login
-```
+### Token Resolution Order
+
+1. `GITHUB_TOKEN` environment variable (if already exported)
+2. `GITHUB_TOKEN=` entry in `.env` file in the repo root
 
 ---
 
@@ -165,61 +176,40 @@ gh auth login
 
 ### "Could not detect GitHub username"
 
-**Cause:** Neither gh CLI nor git config has your username
+**Cause:** Git config not set
 
 **Solution:**
 ```bash
-# Set your GitHub username
-git config --global user.name "johndoe"
-
-# Or authenticate with gh
-gh auth login
+git config user.name "your-github-username"
+git config user.email "your-email@example.com"
 ```
 
-### "GitHub CLI not authenticated"
+### "GITHUB_TOKEN not set"
 
-**Cause:** Not logged in with the shared token
+**Cause:** Token not in environment or `.env`
 
 **Solution:**
 ```bash
-gh auth login
-# Select: GitHub.com → HTTPS → Paste token
-# Use the token shared by instructor
+# Option A: add to .env
+echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
+
+# Option B: export for current session
+export GITHUB_TOKEN=ghp_xxxx
 ```
-
-### "GitHub CLI (gh) not found"
-
-**Cause:** GitHub CLI not installed
-
-**Solution:**
-```bash
-# Ubuntu/Debian
-sudo apt install gh
-
-# macOS
-brew install gh
-```
-
-Windows users: Install `gh` with `winget install --id GitHub.cli` in Git Bash, or download from https://cli.github.com/
 
 ### "Submission Failed"
 
 **Possible causes:**
-1. Wrong session/lab number
-2. Not authenticated
-3. No access to repository
-4. Issue doesn't exist
+1. Token expired or lacks `public_repo` scope
+2. Wrong session/lab number
+3. Issue doesn't exist
 
 **Debug:**
 ```bash
-# Check authentication
-gh auth status
-
-# Check if you can access repo
-gh repo view brainupgrade-in/aiagentic-comp
-
-# Check if issue exists
-gh issue view 1 --repo brainupgrade-in/aiagentic-comp
+# Test token manually
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/brainupgrade-in/aiagentic-comp/issues/1 \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('title', d.get('message')))"
 ```
 
 ---
@@ -240,19 +230,9 @@ done
 
 ### Check Your Progress
 
-```bash
-# View all your submissions
-gh issue list \
-  --repo brainupgrade-in/aiagentic-comp \
-  --search "commenter:@me" \
-  --label lab-tracking
-
-# Count completed labs
-gh issue list \
-  --repo brainupgrade-in/aiagentic-comp \
-  --search "commenter:@me" \
-  --label lab-tracking \
-  --json number | jq 'length'
+Visit:
+```
+https://github.com/brainupgrade-in/aiagentic-comp/issues?q=label%3Alab-tracking
 ```
 
 ### Create Alias
@@ -303,10 +283,10 @@ bash scripts/submit-lab.sh 1 2
 ## Security Notes
 
 - ✅ Script only **reads** your username (no modifications)
-- ✅ Uses GitHub CLI authentication (secure)
+- ✅ Token read from env or `.env` — never hardcoded in script
 - ✅ Shows preview before submitting
 - ✅ Requires confirmation (y/N)
-- ✅ No credentials stored in script
+- ✅ `.env` is gitignored — token stays local
 
 ---
 
@@ -314,8 +294,7 @@ bash scripts/submit-lab.sh 1 2
 
 **Issues with script:**
 - Check SUBMIT-LAB-GUIDE.md (this file)
-- Verify GitHub CLI installation: `gh --version`
-- Check authentication: `gh auth status`
+- Test your token with the curl debug command above
 
 **Issues with labs:**
 - Review session presentations
