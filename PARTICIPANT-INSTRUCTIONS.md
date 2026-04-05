@@ -51,7 +51,7 @@ nano .env   # or open in VS Code
 ## Setting Up Your Identity (Required for Lab Submission)
 
 ```bash
-cd ~/aiagentic-comp   # or cd aiagentic-comp on Windows Git Bash
+cd aiagentic-comp
 
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
@@ -112,7 +112,7 @@ select a kernel, choose **Python 3 (Gheware Agentic AI)** from the list.
 ### 1. Pull Latest Updates
 
 ```bash
-cd ~/aiagentic-comp
+cd aiagentic-comp   # or wherever you cloned the repo
 git pull
 source .venv/bin/activate   # Linux/macOS
 # Windows Git Bash: source .venv/Scripts/activate
@@ -297,7 +297,7 @@ done
 Add to `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias submit-lab='cd ~/aiagentic-comp && bash scripts/submit-lab.sh'
+alias submit-lab='cd /path/to/aiagentic-comp && bash scripts/submit-lab.sh'
 ```
 
 Then use from anywhere: `submit-lab 1 1`
