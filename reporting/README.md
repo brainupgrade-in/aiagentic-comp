@@ -94,7 +94,7 @@ firefox reporting/live-dashboard.html
 export GITHUB_TOKEN='your_token'
 
 # Text report
-python3 scripts/track-lab-comments.py > reports/text-report.md
+python3 reporting/track-lab-comments.py > reports/text-report.md
 
 # Visual dashboard
 python3 reporting/generate-dashboard.py --output reports/dashboard.html
@@ -176,6 +176,5 @@ python3 reporting/generate-dashboard.py --output reporting/final-completion-repo
 
 ## Related Tools
 
-- `scripts/track-lab-comments.py` — text-based completion report
+- `reporting/track-lab-comments.py` — text-based completion report
 - `scripts/create-lab-issues.py` — create lab tracking issues
-- `LAB-TRACKING-COMMENT-BASED.md` — full tracking system documentation

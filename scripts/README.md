@@ -71,7 +71,7 @@ Requires: GitHub CLI (`gh`) authenticated with the token shared during Zoom. See
 | `langfuse-server.py` | LangFuse-compatible server (FastAPI + SQLite) |
 | `populate_langfuse_data.py` | Generate demo data for LangFuse dashboard (instructor use) |
 | `create-lab-issues.py` | Create GitHub Issues for lab tracking (already run) |
-| `track-lab-comments.py` | Track participant lab completion via issue comments |
+| `reporting/track-lab-comments.py` | Track participant lab completion via issue comments |
 
 ### populate_langfuse_data.py
 
@@ -113,5 +113,5 @@ scripts/
 ├── configure-notebook-kernels.py    ← Configure kernel in solution notebooks only
 ├── setup-notebook-kernel.py         ← Register kernel + configure all notebooks (legacy helper)
 ├── create-lab-issues.py             ← Create GitHub Issues (already run once)
-└── track-lab-comments.py            ← Track participant progress
+└── (track-lab-comments.py moved to reporting/)
 ```

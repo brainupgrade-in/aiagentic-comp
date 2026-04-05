@@ -11,13 +11,16 @@ Usage: python3 generate-dashboard.py [--output dashboard.html] [--auto-refresh]
 import os
 import re
 import sys
+import json
 import argparse
 from datetime import datetime
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 
 REPO_OWNER = "brainupgrade-in"
 REPO_NAME = "aiagentic-comp"
+CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".completion_cache.json")
 
 COURSE_STRUCTURE = {
     1: ("Introduction to Agentic AI", 6),
@@ -51,25 +54,44 @@ def get_github_token():
         sys.exit(1)
     return token
 
-def fetch_lab_issues(token):
-    """Fetch all lab tracking issues."""
+def load_cache():
+    """Load cached completion matrix from disk."""
+    if not os.path.exists(CACHE_FILE):
+        return defaultdict(lambda: defaultdict(dict))
+    with open(CACHE_FILE) as f:
+        data = json.load(f)
+    matrix = defaultdict(lambda: defaultdict(dict))
+    for participant, sessions in data.items():
+        for session_str, labs in sessions.items():
+            matrix[participant][int(session_str)] = {int(k): v for k, v in labs.items()}
+    return matrix
+
+def save_cache(matrix):
+    """Persist completion matrix to disk."""
+    data = {}
+    for participant, sessions in matrix.items():
+        data[participant] = {
+            str(snum): {str(lnum): v for lnum, v in labs.items()}
+            for snum, labs in sessions.items()
+        }
+    with open(CACHE_FILE, "w") as f:
+        json.dump(data, f)
+
+def fetch_lab_issues(token, session=None):
+    """Fetch lab tracking issues, optionally filtered to one session."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28"
     }
+    labels = f"lab-tracking,session-{session}" if session else "lab-tracking"
 
     all_issues = []
     page = 1
 
     while True:
-        params = {
-            "state": "all",
-            "labels": "lab-tracking",
-            "per_page": 100,
-            "page": page
-        }
+        params = {"state": "all", "labels": labels, "per_page": 100, "page": page}
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code != 200:
@@ -156,40 +178,41 @@ def is_completion_comment(comment_body):
     comment_lower = comment_body.lower()
     return any(re.search(pattern, comment_lower) for pattern in patterns)
 
-def build_completion_data(token, issues):
-    """Build completion data from issues and comments."""
-    completion_matrix = defaultdict(lambda: defaultdict(dict))
+def fetch_issue_data(token, issue):
+    """Fetch and process comments for a single issue. Returns (session_num, lab_num, completions)."""
+    title = issue.get("title", "")
+    issue_number = issue.get("number")
+    session_num, lab_num = parse_issue_title(title)
 
-    for issue in issues:
-        title = issue.get("title", "")
-        issue_number = issue.get("number")
-        session_num, lab_num = parse_issue_title(title)
+    if session_num is None or lab_num is None:
+        return None
 
-        if session_num is None or lab_num is None:
+    completions = []
+    for comment in fetch_issue_comments(token, issue_number):
+        github_author = comment.get("user", {}).get("login", "")
+        body = comment.get("body", "")
+        created_at = comment.get("created_at", "")
+
+        if github_author.endswith("[bot]"):
             continue
 
-        comments = fetch_issue_comments(token, issue_number)
+        if is_completion_comment(body):
+            participant_name = extract_participant_name(body) or github_author
+            completions.append((participant_name, session_num, lab_num, issue_number, created_at))
 
-        for comment in comments:
-            github_author = comment.get("user", {}).get("login", "")
-            body = comment.get("body", "")
-            created_at = comment.get("created_at", "")
+    return completions
 
-            # Skip bot comments
-            if github_author.endswith("[bot]"):
+def build_completion_data(token, issues):
+    """Build completion data from issues and comments (parallel fetch)."""
+    completion_matrix = defaultdict(lambda: defaultdict(dict))
+
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        futures = {executor.submit(fetch_issue_data, token, issue): issue for issue in issues}
+        for future in as_completed(futures):
+            result = future.result()
+            if not result:
                 continue
-
-            if is_completion_comment(body):
-                # Extract participant name from comment body
-                participant_name = extract_participant_name(body)
-
-                # If no participant name found, fall back to GitHub username
-                if not participant_name:
-                    participant_name = github_author
-
-                if session_num not in completion_matrix[participant_name]:
-                    completion_matrix[participant_name][session_num] = {}
-
+            for participant_name, session_num, lab_num, issue_number, created_at in result:
                 completion_matrix[participant_name][session_num][lab_num] = {
                     "issue_number": issue_number,
                     "completed_date": created_at,
@@ -599,6 +622,30 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            gap: 10px;
+        }}
+
+        .session-refresh-btn {{
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #718096;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }}
+
+        .session-refresh-btn:hover {{
+            background: #f7fafc;
+            border-color: #667eea;
+            color: #667eea;
+        }}
+
+        .session-refresh-btn:disabled {{
+            opacity: 0.5;
+            cursor: not-allowed;
         }}
 
         .session-title {{
@@ -764,6 +811,7 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
                         </div>
                         <div class="session-progress-text">{session_completions}/{session_total}</div>
                     </div>
+                    <button id="refresh-s{session_num}" class="session-refresh-btn" onclick="refreshSession({session_num})" title="Refresh Session {session_num} only">🔄 S{session_num}</button>
                 </div>
 """
 
@@ -810,18 +858,46 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
     </div>
 
     <script>
+        const SERVER = 'http://localhost:8888';
+
+        function callRefresh(url, onDone) {{
+            fetch(url)
+                .then(r => r.json())
+                .then(data => {{
+                    if (data.status === 'ok') {{
+                        window.location.reload();
+                    }} else {{
+                        alert('Refresh failed: ' + (data.message || 'unknown error'));
+                        if (onDone) onDone();
+                    }}
+                }})
+                .catch(() => {{
+                    alert('Dashboard server not running.\\nStart it with:\\n  python3 reporting/server.py');
+                    if (onDone) onDone();
+                }});
+        }}
+
         function refreshDashboard() {{
             const btn = document.querySelector('.refresh-btn');
             btn.classList.add('refreshing');
             btn.disabled = true;
-
-            // Show loading state
             btn.querySelector('span:last-child').textContent = 'Refreshing...';
+            callRefresh(SERVER + '/refresh', () => {{
+                btn.classList.remove('refreshing');
+                btn.disabled = false;
+                btn.querySelector('span:last-child').textContent = 'Refresh';
+            }});
+        }}
 
-            // Reload the page after a brief moment to show the animation
-            setTimeout(() => {{
-                window.location.reload();
-            }}, 300);
+        function refreshSession(sessionNum) {{
+            const btn = document.getElementById('refresh-s' + sessionNum);
+            const orig = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ S' + sessionNum;
+            callRefresh(SERVER + '/refresh/session/' + sessionNum, () => {{
+                btn.disabled = false;
+                btn.textContent = orig;
+            }});
         }}
 
         // User filter for Completion Matrix
@@ -956,16 +1032,32 @@ def main():
     parser = argparse.ArgumentParser(description="Generate lab submission dashboard")
     parser.add_argument("--output", default="dashboard.html", help="Output HTML file")
     parser.add_argument("--auto-refresh", action="store_true", help="Enable auto-refresh (60s)")
+    parser.add_argument("--session", type=int, help="Refresh only this session (1-15)")
     args = parser.parse_args()
 
-    print("Fetching lab tracking data...")
     token = get_github_token()
-    issues = fetch_lab_issues(token)
-    print(f"Found {len(issues)} lab issues")
 
-    print("Processing completions...")
-    completion_matrix = build_completion_data(token, issues)
+    if args.session:
+        print(f"Fetching session {args.session} issues only...")
+        issues = fetch_lab_issues(token, session=args.session)
+        print(f"Found {len(issues)} issues for session {args.session}")
 
+        # Load cached matrix, drop stale session data, merge fresh data
+        completion_matrix = load_cache()
+        for participant in list(completion_matrix.keys()):
+            completion_matrix[participant].pop(args.session, None)
+
+        new_data = build_completion_data(token, issues)
+        for participant, sessions in new_data.items():
+            completion_matrix[participant].update(sessions)
+    else:
+        print("Fetching all lab tracking data...")
+        issues = fetch_lab_issues(token)
+        print(f"Found {len(issues)} lab issues")
+        print("Processing completions...")
+        completion_matrix = build_completion_data(token, issues)
+
+    save_cache(completion_matrix)
     print("Generating HTML dashboard...")
     generate_html_dashboard(completion_matrix, args.output, args.auto_refresh)
 
