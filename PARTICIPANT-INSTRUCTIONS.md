@@ -33,14 +33,9 @@ nano .env   # or open in VS Code
 3. Run the same setup as Linux/macOS:
 
 ```bash
-# Clone the repository
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
-
-# Run setup (creates .venv, installs packages, registers Jupyter kernel)
 source scripts/initial-setup.sh
-
-# Edit .env and add your Groq API key
 nano .env   # or open in VS Code
 ```
 
@@ -72,9 +67,7 @@ Use your **actual GitHub username** — this is how you appear in the instructor
 
 ## GitHub Token Setup (Required for Lab Submission)
 
-You will receive a shared access token during the Zoom session.
-
-Add it to your `.env` file in the repo root:
+You will receive a shared access token during the Zoom session. Add it to `.env`:
 
 ```bash
 echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
@@ -87,6 +80,8 @@ export GITHUB_TOKEN=ghp_xxxx
 ```
 
 > The token needs **`public_repo`** scope. `.env` is gitignored — your token stays local.
+>
+> Token resolution order: environment variable first, then `.env` file.
 
 ---
 
@@ -141,7 +136,6 @@ Each lab ends with `[PASS]` / `[FAIL]` validation cells — aim for all `[PASS]`
 ### 4. Submit Each Lab
 
 ```bash
-# Linux / macOS / Windows Git Bash
 bash scripts/submit-lab.sh <session> <lab> "optional notes"
 
 # Examples
@@ -150,7 +144,29 @@ bash scripts/submit-lab.sh 1 2 "Learned about reasoning patterns"
 bash scripts/submit-lab.sh 2 5 "RAG pipeline working"
 ```
 
-The script auto-detects your GitHub username, shows a preview, and asks for confirmation before posting.
+The script auto-detects your username from git config, shows a preview, and asks for confirmation before posting.
+
+**Sample output:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   Lab Submission - Agentic AI Course
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Session: 1  Lab: 1  Issue Number: #1
+
+✓ Username: johndoe
+✓ GitHub token found
+
+Comment Preview:
+✅ Completed
+**Participant:** johndoe (johndoe@example.com)
+**Validation:** All checks passed
+
+Submit this lab? (y/N): y
+
+✓ Submission Successful!
+Comment: https://github.com/brainupgrade-in/aiagentic-comp/issues/1#issuecomment-...
+```
 
 ### 5. End-of-Day Cleanup (Optional)
 
@@ -159,6 +175,13 @@ bash scripts/day1-cleanup.sh   # frees ~2 GB (removes Ollama model)
 bash scripts/day2-cleanup.sh
 # etc.
 ```
+
+### End-of-Session Checklist
+
+- [ ] All lab notebooks run without errors
+- [ ] All validation cells show `[PASS]`
+- [ ] Submitted all labs using `submit-lab.sh`
+- [ ] Verified submissions on GitHub
 
 ---
 
@@ -170,6 +193,28 @@ bash scripts/day2-cleanup.sh
 | `hands-on/session-N/solutions/labXX_topic.ipynb` | Reference solution |
 
 Labs build progressively within each session. The last lab in each session is a challenge lab.
+
+### Issue Number Reference
+
+The script calculates the issue number automatically:
+
+| Session | Lab Range | Issue Range |
+|---------|-----------|-------------|
+| 1 | 1–6 | #1 – #6 |
+| 2 | 1–9 | #7 – #15 |
+| 3 | 1–7 | #16 – #22 |
+| 4 | 1–8 | #23 – #30 |
+| 5 | 1–8 | #31 – #38 |
+| 6 | 1–8 | #39 – #46 |
+| 7 | 1–8 | #47 – #54 |
+| 8 | 1–8 | #55 – #62 |
+| 9 | 1–8 | #63 – #70 |
+| 10 | 1–8 | #71 – #78 |
+| 11 | 1–8 | #79 – #86 |
+| 12 | 1–9 | #87 – #95 |
+| 13 | 1–8 | #96 – #103 |
+| 14 | 1–8 | #104 – #111 |
+| 15 | 1–8 | #112 – #119 |
 
 ---
 
@@ -200,40 +245,62 @@ Free tier limit hit. Wait 60 seconds and retry. If the whole class hits limits s
 
 ### "GITHUB_TOKEN not set"
 
-Add the token to `.env` or export it:
-
 ```bash
 echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
 # or
 export GITHUB_TOKEN=ghp_xxxx
 ```
 
-### "Submission Failed" / token expired
-
-Ask the instructor for a new token, then update `.env`:
-
-```bash
-# Replace the old value in .env
-nano .env
-```
-
 ### "Could not detect GitHub username"
-
-Git config not set. Re-run the identity setup:
 
 ```bash
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
 ```
 
+### "Submission Failed" / token expired
+
+Ask the instructor for a new token, update `.env`, then retry.
+
+To debug the token manually:
+
+```bash
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/brainupgrade-in/aiagentic-comp/issues/1 \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('title', d.get('message')))"
+```
+
 ### Port conflict (8000 or 11434 already in use)
 
 ```bash
-sudo lsof -i :8000    # find what's using port 8000
-sudo lsof -i :11434   # find what's using Ollama port
+sudo lsof -i :8000
+sudo lsof -i :11434
 ```
 
 Stop the conflicting process, then re-run the day setup script.
+
+---
+
+## Advanced
+
+### Batch Submission
+
+```bash
+for lab in {1..6}; do
+  bash scripts/submit-lab.sh 1 $lab
+  sleep 1
+done
+```
+
+### Shell Alias
+
+Add to `~/.bashrc` or `~/.zshrc`:
+
+```bash
+alias submit-lab='cd ~/aiagentic-comp && bash scripts/submit-lab.sh'
+```
+
+Then use from anywhere: `submit-lab 1 1`
 
 ---
 
@@ -252,7 +319,7 @@ Stop the conflicting process, then re-run the day setup script.
 ## Quick Reference
 
 ```bash
-# One-time setup (Linux/macOS/Windows Git Bash)
+# One-time setup
 source scripts/initial-setup.sh
 
 # Daily
