@@ -50,9 +50,17 @@ if ! [[ "$SESSION" =~ ^[0-9]+$ ]] || [ "$SESSION" -lt 1 ] || [ "$SESSION" -gt 15
     exit 1
 fi
 
-# Validate lab number
+# Validate lab number (basic range)
 if ! [[ "$LAB" =~ ^[0-9]+$ ]] || [ "$LAB" -lt 1 ] || [ "$LAB" -gt 9 ]; then
     echo -e "${RED}Error: Lab must be between 1 and 9${NC}"
+    exit 1
+fi
+
+# Per-session lab counts
+SESSION_LAB_COUNT=(0 6 9 7 8 8 8 8 8 8 8 8 9 8 8 8)
+MAX_LAB=${SESSION_LAB_COUNT[$SESSION]}
+if [ "$LAB" -gt "$MAX_LAB" ]; then
+    echo -e "${RED}Error: Session $SESSION only has $MAX_LAB labs (lab must be 1-$MAX_LAB)${NC}"
     exit 1
 fi
 
@@ -134,11 +142,22 @@ if [ -n "$EMAIL" ]; then
 fi
 echo ""
 
-# Load GITHUB_TOKEN from .env if not already set
+# Load GITHUB_TOKEN — try 3 sources in order:
+# 1. Already set in environment
+# 2. .env file
+# 3. Embedded in git remote URL (e.g. cloned via https://<token>@github.com/...)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../.env"
+
 if [ -z "$GITHUB_TOKEN" ] && [ -f "$ENV_FILE" ]; then
     GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+fi
+
+if [ -z "$GITHUB_TOKEN" ]; then
+    REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+    if [[ "$REMOTE_URL" =~ https://([^@]+)@github\.com ]]; then
+        GITHUB_TOKEN="${BASH_REMATCH[1]}"
+    fi
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
@@ -231,7 +250,7 @@ else
     echo "API response: $(echo "$RESPONSE_BODY" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("message", d))' 2>/dev/null || echo "$RESPONSE_BODY")"
     echo ""
     echo "Please check:"
-    echo "  1. GITHUB_TOKEN is valid and has 'public_repo' scope"
+    echo "  1. GITHUB_TOKEN is a fine-grained PAT with 'Issues' read/write permission"
     echo "  2. You have access to the repository"
     echo "  3. Issue #$ISSUE_NUMBER exists"
     echo ""
