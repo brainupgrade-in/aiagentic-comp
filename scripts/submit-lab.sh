@@ -135,8 +135,10 @@ fi
 echo ""
 
 # Load GITHUB_TOKEN from .env if not already set
-if [ -z "$GITHUB_TOKEN" ] && [ -f ".env" ]; then
-    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' .env | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="$SCRIPT_DIR/../.env"
+if [ -z "$GITHUB_TOKEN" ] && [ -f "$ENV_FILE" ]; then
+    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
@@ -192,16 +194,16 @@ fi
 echo ""
 echo -e "${YELLOW}Submitting to Issue #$ISSUE_NUMBER...${NC}"
 
-API_RESPONSE=$(curl -s -w "\n%{http_code}" \
+RESPONSE_FILE=$(mktemp)
+HTTP_CODE=$(curl -s -o "$RESPONSE_FILE" -w "%{http_code}" \
     -X POST \
     -H "Authorization: token $GITHUB_TOKEN" \
     -H "Accept: application/vnd.github+json" \
     -H "Content-Type: application/json" \
     "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/comments" \
     -d "{\"body\": $(echo "$COMMENT_BODY" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}")
-
-HTTP_CODE=$(echo "$API_RESPONSE" | tail -1)
-RESPONSE_BODY=$(echo "$API_RESPONSE" | head -n -1)
+RESPONSE_BODY=$(cat "$RESPONSE_FILE")
+rm -f "$RESPONSE_FILE"
 
 COMMENT_URL=""
 if [ "$HTTP_CODE" = "201" ]; then
@@ -224,6 +226,9 @@ else
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo -e "${RED}✗ Submission Failed${NC}"
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo ""
+    echo "HTTP status: $HTTP_CODE"
+    echo "API response: $(echo "$RESPONSE_BODY" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("message", d))' 2>/dev/null || echo "$RESPONSE_BODY")"
     echo ""
     echo "Please check:"
     echo "  1. GITHUB_TOKEN is valid and has 'public_repo' scope"
