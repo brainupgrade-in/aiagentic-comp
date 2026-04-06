@@ -11,11 +11,16 @@
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
+bash scripts/install-python.sh       # installs Python 3.12 (skips if already installed)
 source scripts/initial-setup.sh      # creates .venv, installs packages, registers kernel
-nano .env                             # add GROQ_API_KEY (get free at https://console.groq.com)
 ```
 
-> Windows Git Bash: activate venv with `source .venv/Scripts/activate` (not `bin/`).
+Edit `.env` and add your keys:
+```bash
+code .env    # or: nano .env (Linux/Mac)  |  notepad .env (Windows)
+```
+
+> `.env` is gitignored. Get your Groq key free at https://console.groq.com
 
 ---
 
@@ -32,9 +37,7 @@ Add the GitHub token shared by the instructor to `.env`:
 echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
 ```
 
-Or export it: `export GITHUB_TOKEN=ghp_xxxx`
-
-> Token needs `public_repo` scope. `.env` is gitignored.
+> Token needs `public_repo` scope.
 
 ---
 
@@ -43,7 +46,7 @@ Or export it: `export GITHUB_TOKEN=ghp_xxxx`
 ```bash
 git pull
 source .venv/bin/activate            # Windows: source .venv/Scripts/activate
-bash scripts/dayN-setup.sh           # N = 1..5
+bash scripts/dayN-setup.sh           # N = 1..5  (e.g. day1-setup.sh starts Ollama)
 ```
 
 Open labs in VS Code (`code .`), complete all `___` TODOs, run all cells.
@@ -73,17 +76,6 @@ End-of-day cleanup (optional): `bash scripts/dayN-cleanup.sh`
 | `hands-on/session-N/labXX_topic.ipynb` | Student lab (`___` TODOs) |
 | `hands-on/session-N/solutions/labXX_topic.ipynb` | Reference solution |
 
-### Session → Issue Mapping
-
-| Session | Labs | Issues |
-|---------|------|--------|
-| 1 | 1–6 | #1–6 |
-| 2 | 1–9 | #7–15 |
-| 3 | 1–7 | #16–22 |
-| 4–11 | 1–8 each | #23–86 |
-| 12 | 1–9 | #87–95 |
-| 13–15 | 1–8 each | #96–119 |
-
 ---
 
 ## Troubleshooting
@@ -97,8 +89,14 @@ End-of-day cleanup (optional): `bash scripts/dayN-cleanup.sh`
 | `Could not detect username` | `git config user.name "your-github-username"` |
 | Submission failed / token expired | Get new token from instructor, update `.env` |
 | Port conflict | `sudo lsof -i :8000` or `:11434`; stop the conflicting process |
+| Wrong Python version | `bash scripts/install-python.sh` — reinstalls Python 3.12 |
 
-Debug token: `curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/brainupgrade-in/aiagentic-comp/issues/1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('title', d.get('message')))"`
+Debug GitHub token:
+```bash
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/brainupgrade-in/aiagentic-comp/issues/1 \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('title', d.get('message')))"
+```
 
 ---
 
