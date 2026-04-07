@@ -12,6 +12,8 @@
 set -e
 
 REPO="brainupgrade-in/aiagentic-comp"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # Color output
 RED='\033[0;31m'
@@ -163,11 +165,14 @@ fi
 if [ -z "$GITHUB_TOKEN" ]; then
     echo -e "${RED}Error: GITHUB_TOKEN not set${NC}"
     echo ""
-    echo "Either export it:"
-    echo "  export GITHUB_TOKEN=ghp_xxxx"
+    echo "Either embed it in your git remote URL:"
+    echo "  git remote set-url origin https://YOUR_TOKEN@github.com/$REPO.git"
     echo ""
-    echo "Or add it to .env:"
+    echo "Or add it to your .env file at: $ENV_FILE"
     echo "  GITHUB_TOKEN=ghp_xxxx"
+    echo ""
+    echo "Get a token at: https://github.com/settings/tokens"
+    echo "  → 'Generate new token (classic)' → check 'public_repo'"
     echo ""
     exit 1
 fi
