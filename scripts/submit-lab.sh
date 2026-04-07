@@ -144,22 +144,32 @@ if [ -n "$EMAIL" ]; then
 fi
 echo ""
 
-# Load GITHUB_TOKEN — try 3 sources in order:
-# 1. Already set in environment
-# 2. .env file
-# 3. Embedded in git remote URL (e.g. cloned via https://<token>@github.com/...)
+# Load GITHUB_TOKEN — try sources in order (later sources win to override Codespace defaults):
+# Note: GitHub Codespaces injects its own GITHUB_TOKEN env var (scoped to user's repos only).
+# We must prefer the pre-provisioned token from .env or git remote URL over that default.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../.env"
 
-if [ -z "$GITHUB_TOKEN" ] && [ -f "$ENV_FILE" ]; then
-    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+# Start with env var (lowest priority — Codespace default token lands here)
+_TOKEN_FROM_ENV="$GITHUB_TOKEN"
+
+# .env file overrides env var (pre-provisioned token for this private repo)
+if [ -f "$ENV_FILE" ]; then
+    _TOKEN_FROM_FILE=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+    if [ -n "$_TOKEN_FROM_FILE" ] && [[ "$_TOKEN_FROM_FILE" != *"your_token"* ]]; then
+        GITHUB_TOKEN="$_TOKEN_FROM_FILE"
+    fi
 fi
 
+# Git remote URL overrides everything (highest priority — explicit embed)
+REMOTE_URL=$(git -C "$SCRIPT_DIR/.." remote get-url origin 2>/dev/null || echo "")
+if [[ "$REMOTE_URL" =~ https://([^@]+)@github\.com ]]; then
+    GITHUB_TOKEN="${BASH_REMATCH[1]}"
+fi
+
+# Fall back to original env var if nothing better was found
 if [ -z "$GITHUB_TOKEN" ]; then
-    REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
-    if [[ "$REMOTE_URL" =~ https://([^@]+)@github\.com ]]; then
-        GITHUB_TOKEN="${BASH_REMATCH[1]}"
-    fi
+    GITHUB_TOKEN="$_TOKEN_FROM_ENV"
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
