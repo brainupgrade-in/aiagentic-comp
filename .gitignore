@@ -1,4 +1,9 @@
 course-outline-agentic-ai.pdf
+
+# Internal — not for public repo
+todo/
+collab/
+
 # Environment
 .env
 .env.*
