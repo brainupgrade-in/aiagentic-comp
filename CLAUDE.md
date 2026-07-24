@@ -14,12 +14,15 @@
 
 | Component | Choice | Note |
 |-----------|--------|------|
-| LLM Day 1 | Ollama + llama3.2:1b+ | Stays installed; 3b/70b also viable |
-| LLM Days 2-5 | Groq free API | Each participant gets own key at console.groq.com |
+| LLM Day 1 | Ollama + llama3.2:1b+ | Local inference; 3b/70b also viable |
+| LLM Days 2-5 | Groq free API (primary) | Each participant gets own key at console.groq.com |
+| LLM alt providers | OpenRouter, Big Pickle, Claude, OpenAI | Taught as provider-agnostic patterns — fallback chains, cost/latency tradeoffs |
+| Vibe coding | OpenCode (opencode.ai), Claude CLI | Day 1 — agent-assisted dev, prompt-to-code |
 | Observability | LangFuse (FastAPI+SQLite) | Labs 01-08: MockLangFuse (JSON); Lab 09: real server :3000 |
 | Vector DB | ChromaDB | In-process, no server |
 | API | FastAPI | Async, AI-native |
 | Agents | MCP Python SDK `mcp>=1.0` | Standard protocol |
+| Deployment | Docker + Kubernetes | Day 4: containerize FastAPI agent, deploy to K8s (Deployments, Services, Ingress, HPA, Secrets, NetworkPolicies) |
 
 ## Resource Usage by Day
 

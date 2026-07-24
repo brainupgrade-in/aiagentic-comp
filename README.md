@@ -134,7 +134,7 @@ Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` marker
 Run the setup script at the start of each day and cleanup at the end:
 
 ```bash
-# Day 1: Ollama + Local LLM + Vibe Coding
+# Day 1: Ollama + Local LLM + Vibe Coding (OpenCode, Claude CLI) + Multi-provider (Groq/OpenRouter/Big Pickle)
 bash scripts/day1-setup.sh
 bash scripts/day1-cleanup.sh    # End of day
 
@@ -146,7 +146,7 @@ bash scripts/day2-cleanup.sh    # End of day
 bash scripts/day3-setup.sh
 bash scripts/day3-cleanup.sh    # End of day
 
-# Day 4: Observability + Production
+# Day 4: Observability (OpenTelemetry + LangFuse) + FastAPI + Cloud-Native Deployment (Docker + Kubernetes)
 bash scripts/day4-setup.sh
 bash scripts/day4-cleanup.sh    # End of day
 
@@ -164,12 +164,14 @@ bash scripts/check-resources.sh
 
 | Category | Tools |
 |----------|-------|
-| **LLM** | Ollama (Day 1), Groq API (Days 2-5) |
-| **AI Framework** | LangChain, LangGraph |
+| **LLM providers (multi-provider, vendor-agnostic)** | Ollama (local, Day 1), Groq (Days 2-5), OpenRouter, Big Pickle, Claude, OpenAI GPT |
+| **AI coding assistants (vibe coding)** | OpenCode, Claude CLI |
+| **AI framework** | LangChain, LangGraph |
+| **Agent protocol** | MCP (Model Context Protocol) Python SDK |
 | **Vector DB** | ChromaDB |
 | **API** | FastAPI, Uvicorn |
-| **MCP** | MCP Python SDK |
-| **Observability** | OpenTelemetry, LangFuse |
+| **Observability** | OpenTelemetry, LangFuse (self-hostable) |
+| **Cloud-native deployment** | Docker, Kubernetes (Deployments, Services, Ingress, HPA, Secrets, NetworkPolicies) |
 
 ---
 
