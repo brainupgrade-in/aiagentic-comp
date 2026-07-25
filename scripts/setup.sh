@@ -134,6 +134,13 @@ PYEOF
         [ -n "$GITHUB_TOKEN" ] && [ "$GITHUB_TOKEN" != "ghp_your_lab_submit_token_here" ] \
             && ok "GITHUB_TOKEN set (lab submission)" \
             || warn "GITHUB_TOKEN not set — needed by scripts/submit-lab.sh"
+        # Day 4 Session 12 Lab 09 only; Labs 01-08 run in mock mode
+        if [ -n "$LANGFUSE_PUBLIC_KEY" ] && [ "$LANGFUSE_PUBLIC_KEY" != "pk-lf-your-public-key-here" ]; then
+            ok "LANGFUSE keys set, host=${LANGFUSE_HOST:-https://cloud.langfuse.com} (Day 4 Lab 09)"
+        else
+            warn "LANGFUSE_PUBLIC_KEY/SECRET_KEY not set — needed for Day 4 Session 12 Lab 09"
+            echo "         Get a free project + keys at https://cloud.langfuse.com"
+        fi
     else
         warn ".env not found — copy it: cp .env.example .env"
     fi

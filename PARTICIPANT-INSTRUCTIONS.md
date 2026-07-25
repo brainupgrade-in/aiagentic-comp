@@ -39,7 +39,17 @@ source scripts/setup.sh
 code .env    # or: nano .env (Linux/Mac)  |  notepad .env (Windows)
 ```
 
-> `.env` is gitignored. Get your Groq key free at https://console.groq.com
+> `.env` is gitignored.
+
+You need **two free accounts of your own** — sign up before Day 2 and Day 4:
+
+| Key | Where to get it | Needed for |
+|-----|-----------------|------------|
+| `GROQ_API_KEY` | https://console.groq.com | Days 2-5 (all LLM calls) |
+| `LANGFUSE_PUBLIC_KEY` + `LANGFUSE_SECRET_KEY` | https://cloud.langfuse.com → create a project → Settings → API Keys | Day 4, Session 12 Lab 09 |
+
+Leave `LANGFUSE_HOST=https://cloud.langfuse.com` as-is. Session 12 Labs 01-08 run
+in mock mode and need no LangFuse keys — only Lab 09 sends real traces.
 
 Check the environment any time:
 
@@ -78,7 +88,8 @@ That's it — the one-time setup already covered all five days.
 Open labs in VS Code (`code .`), complete all `___` TODOs, run all cells.
 Kernel: **Python 3 (Gheware Agentic AI)**. If missing: `bash scripts/setup.sh --kernel-only` then reload VS Code.
 
-Day 4 only, for Session 12 Lab 09: `bash scripts/langfuse-server.sh start`
+Day 4, before Session 12 Lab 09: make sure your own LangFuse Cloud keys are in
+`.env` (see the table above), then confirm with `bash scripts/setup.sh --verify`.
 
 Submit each lab when done:
 
@@ -117,7 +128,7 @@ End-of-day cleanup (optional): `bash scripts/cleanup.sh <day>` — e.g. `bash sc
 | `Could not detect username` | `git config user.name "your-github-username"` |
 | Submission failed / token expired | Get new token from instructor, update `.env` |
 | Port conflict | `sudo lsof -i :8000` or `:11434`; stop the conflicting process |
-| Port 3000 in use (Day 4) | `bash scripts/langfuse-server.sh stop` |
+| Lab 09 traces not appearing | Check `LANGFUSE_HOST=https://cloud.langfuse.com` and your own keys are in `.env`; `bash scripts/setup.sh --verify` |
 | Wrong Python version | `bash scripts/setup.sh` — recreates `.venv` on Python 3.12 |
 | `uv: command not found` (Windows) | Run `scripts\bootstrap.ps1` in PowerShell first |
 

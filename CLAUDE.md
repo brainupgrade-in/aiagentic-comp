@@ -18,7 +18,7 @@
 | LLM Days 2-5 | Groq free API (primary) | Each participant gets own key at console.groq.com |
 | LLM alt providers | OpenRouter, Big Pickle, Claude, OpenAI | Taught as provider-agnostic patterns — fallback chains, cost/latency tradeoffs |
 | Vibe coding | OpenCode (opencode.ai), Claude CLI | Day 1 — agent-assisted dev, prompt-to-code |
-| Observability | LangFuse | S12 Labs 01-08: MockLangFuse (JSON). Lab 09: real backend via `LANGFUSE_HOST` — cloud (default) or bundled local server on :3000 (`langfuse-server.sh`) |
+| Observability | LangFuse Cloud (free tier) | S12 Labs 01-08: MockLangFuse (JSON). Lab 09: real traces to each participant's **own** cloud project — they self-register at cloud.langfuse.com and put their keys in `.env`. Offline fallback: `langfuse-server.sh` (local FastAPI+SQLite, set `LANGFUSE_HOST=http://localhost:3000`) |
 | Vector DB | ChromaDB | In-process, no server |
 | API | FastAPI | Async, AI-native |
 | Agents | MCP Python SDK `mcp>=1.0` | Standard protocol |
@@ -38,7 +38,7 @@
 
 | Port | Service | Active |
 |------|---------|--------|
-| 3000 | LangFuse (Python+SQLite) | Day 4 Session 12 Lab 09 |
+| 3000 | LangFuse local server — **offline fallback only** (course uses cloud) | Day 4 Session 12 Lab 09 |
 | 8000 | FastAPI app | Day 4 Session 11 |
 | 11434 | Ollama | Day 1 only |
 
@@ -77,8 +77,8 @@ powershell -File scripts/bootstrap.ps1  # Windows: Git Bash + uv + Ollama, then 
 bash scripts/check-resources.sh         # memory/storage/process status
 
 # Per-day
-bash scripts/langfuse-server.sh start   # Day 4 Session 12 Lab 09 (:3000)
-bash scripts/cleanup.sh [1-5|all]       # end-of-day cleanup (day4 stops LangFuse)
+bash scripts/cleanup.sh [1-5|all]       # end-of-day cleanup
+bash scripts/langfuse-server.sh start   # offline fallback only — course uses LangFuse Cloud
 
 # Lab submission
 bash scripts/submit-lab.sh <session> <lab> "notes"

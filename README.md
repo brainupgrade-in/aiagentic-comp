@@ -112,7 +112,7 @@ bash scripts/setup.sh --verify
 │   ├── setup.sh               One-time setup for all 5 days (--verify, --kernel-only)
 │   ├── cleanup.sh             End-of-day cleanup: cleanup.sh [1-5|all]
 │   ├── configure-notebooks.py Point every notebook at the course kernel
-│   ├── langfuse-server.sh     start | stop | status (Day 4 Session 12 Lab 09)
+│   ├── langfuse-server.sh     Local LangFuse — offline fallback for Day 4 Lab 09
 │   ├── submit-lab.sh          Submit a lab to GitHub Issues
 │   └── check-resources.sh     Monitor memory/storage/processes
 │
@@ -154,7 +154,7 @@ source .venv/bin/activate       # Windows Git Bash: source .venv/Scripts/activat
 | 1 | Ollama local LLM, vibe coding (OpenCode, Claude CLI), multi-provider (Groq/OpenRouter/Big Pickle) | — |
 | 2 | LangChain + RAG + Agents | — |
 | 3 | LangGraph + Multi-Agent | — |
-| 4 | OpenTelemetry + LangFuse + FastAPI + Docker/Kubernetes | `bash scripts/langfuse-server.sh start` for Session 12 Lab 09 |
+| 4 | OpenTelemetry + LangFuse + FastAPI + Docker/Kubernetes | Session 12 Lab 09 needs your own free [LangFuse Cloud](https://cloud.langfuse.com) keys in `.env` |
 | 5 | MCP + Safety + Capstone | — |
 
 End-of-day cleanup is optional — it removes that day's `/tmp` lab dirs and stops
@@ -199,7 +199,7 @@ bash scripts/check-resources.sh    # memory / storage / processes
 |------|---------|-----|
 | 11434 | Ollama | Day 1 only |
 | 8000 | FastAPI App | Day 4 |
-| 3000 | LangFuse local server (optional) | Day 4, Session 12 Lab 09 |
+| 3000 | LangFuse local server — offline fallback only | Day 4, Session 12 Lab 09 |
 
 ---
 

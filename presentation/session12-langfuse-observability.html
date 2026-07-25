@@ -343,14 +343,14 @@ pip install langfuse
 # Environment variables
 LANGFUSE_PUBLIC_KEY="pk-lf-..."      # From LangFuse project settings
 LANGFUSE_SECRET_KEY="sk-lf-..."      # From LangFuse project settings
-LANGFUSE_HOST="http://localhost:3000" # Self-hosted (local Python server)</code></pre>
+LANGFUSE_HOST="https://cloud.langfuse.com" # LangFuse Cloud (free tier)</code></pre>
         <pre><code class="language-python" data-trim data-noescape># Initialize LangFuse client
 from langfuse import Langfuse
 
 langfuse = Langfuse(
     public_key="pk-lf-...",
     secret_key="sk-lf-...",
-    host="http://localhost:3000",
+    host="https://cloud.langfuse.com",
 )
 
 # Verify connection
@@ -367,7 +367,7 @@ langfuse.auth_check()  # Returns True if connected</code></pre>
 handler = CallbackHandler(
     public_key="pk-lf-...",
     secret_key="sk-lf-...",
-    host="http://localhost:3000",
+    host="https://cloud.langfuse.com",
     # Metadata for this trace
     user_id="alice",
     session_id="chat_42",
