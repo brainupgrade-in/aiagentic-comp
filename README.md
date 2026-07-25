@@ -8,21 +8,37 @@ A 5-day hands-on training covering the full spectrum of Agentic AI development �
 
 ## Quick Start
 
-### Local Setup (Linux / macOS / Windows Git Bash)
+One setup run covers all five days — there are no per-day setup scripts.
+
+### Linux / macOS
 
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
 
-# One command: creates .venv, installs all packages, registers Jupyter kernel,
-# configures all notebooks, and activates the venv in your shell
-source scripts/initial-setup.sh
+# Installs uv + Python 3.12, creates .venv, installs every package for all 5 days,
+# registers the Jupyter kernel, configures all notebooks, installs Ollama + llama3.2:1b
+source scripts/setup.sh
 
 # Edit .env and add your Groq API key
 # GROQ_API_KEY=gsk_your_key_here  (get one free at https://console.groq.com)
+```
 
-# Run day-specific setup
-bash scripts/day1-setup.sh
+### Windows
+
+One script, in PowerShell from the repo root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap.ps1
+```
+
+It installs Git for Windows (Git Bash + curl), `uv`, and Ollama, then runs
+`scripts/setup.sh` under Git Bash. Use Git Bash for everything afterwards.
+
+### Verify any time
+
+```bash
+bash scripts/setup.sh --verify
 ```
 
 ---
@@ -92,17 +108,12 @@ bash scripts/day1-setup.sh
 │   └── session-4 to session-11, session-13 to session-15/  8 labs + solutions + README each (.ipynb)
 │
 ├── scripts/                   Setup, cleanup, and utility scripts
-│   ├── initial-setup.sh       One-time setup (venv + packages + kernel + notebooks)
-│   ├── day1-setup.sh          Install Ollama + llama3.2:1b
-│   ├── day1-cleanup.sh        Remove Ollama (~2 GB freed)
-│   ├── day2-setup.sh          Verify Groq API + packages
-│   ├── day2-cleanup.sh        Clean temp files
-│   ├── day3-setup.sh          Verify LangGraph packages
-│   ├── day3-cleanup.sh        Stop servers + clean up
-│   ├── day4-setup.sh          Verify OTel + LangFuse + FastAPI packages
-│   ├── day4-cleanup.sh        Clean temp files
-│   ├── day5-setup.sh          MCP SDK + verify env
-│   ├── day5-cleanup.sh        Final cleanup
+│   ├── bootstrap.ps1          Windows: Git Bash + uv + Ollama, then setup.sh
+│   ├── setup.sh               One-time setup for all 5 days (--verify, --kernel-only)
+│   ├── cleanup.sh             End-of-day cleanup: cleanup.sh [1-5|all]
+│   ├── configure-notebooks.py Point every notebook at the course kernel
+│   ├── langfuse-server.sh     start | stop | status (Day 4 Session 12 Lab 09)
+│   ├── submit-lab.sh          Submit a lab to GitHub Issues
 │   └── check-resources.sh     Monitor memory/storage/processes
 │
 ├── requirements.txt           Python dependencies
@@ -129,33 +140,31 @@ Labs validate your answers with `[PASS]/[FAIL]` checks. Look for `# TODO` marker
 
 ---
 
-## Day-by-Day Setup
+## Day-by-Day
 
-Run the setup script at the start of each day and cleanup at the end:
+No per-day setup — `scripts/setup.sh` already installed everything for all five days.
+Each morning, just activate the venv:
 
 ```bash
-# Day 1: Ollama + Local LLM + Vibe Coding (OpenCode, Claude CLI) + Multi-provider (Groq/OpenRouter/Big Pickle)
-bash scripts/day1-setup.sh
-bash scripts/day1-cleanup.sh    # End of day
+source .venv/bin/activate       # Windows Git Bash: source .venv/Scripts/activate
+```
 
-# Day 2: LangChain + RAG + Agents
-bash scripts/day2-setup.sh
-bash scripts/day2-cleanup.sh    # End of day
+| Day | Topics | Anything extra to run |
+|-----|--------|-----------------------|
+| 1 | Ollama local LLM, vibe coding (OpenCode, Claude CLI), multi-provider (Groq/OpenRouter/Big Pickle) | — |
+| 2 | LangChain + RAG + Agents | — |
+| 3 | LangGraph + Multi-Agent | — |
+| 4 | OpenTelemetry + LangFuse + FastAPI + Docker/Kubernetes | `bash scripts/langfuse-server.sh start` for Session 12 Lab 09 |
+| 5 | MCP + Safety + Capstone | — |
 
-# Day 3: LangGraph + Multi-Agent
-bash scripts/day3-setup.sh
-bash scripts/day3-cleanup.sh    # End of day
+End-of-day cleanup is optional — it removes that day's `/tmp` lab dirs and stops
+the servers the course started. The `.venv` is never touched.
 
-# Day 4: Observability (OpenTelemetry + LangFuse) + FastAPI + Cloud-Native Deployment (Docker + Kubernetes)
-bash scripts/day4-setup.sh
-bash scripts/day4-cleanup.sh    # End of day
-
-# Day 5: MCP + Safety + Capstone
-bash scripts/day5-setup.sh
-bash scripts/day5-cleanup.sh    # End of day
-
-# Check resources anytime
-bash scripts/check-resources.sh
+```bash
+bash scripts/cleanup.sh 4          # end of Day 4 (stops LangFuse, drops its DB)
+bash scripts/cleanup.sh            # all days (end of course)
+bash scripts/setup.sh --verify     # check the environment
+bash scripts/check-resources.sh    # memory / storage / processes
 ```
 
 ---
@@ -190,6 +199,7 @@ bash scripts/check-resources.sh
 |------|---------|-----|
 | 11434 | Ollama | Day 1 only |
 | 8000 | FastAPI App | Day 4 |
+| 3000 | LangFuse local server (optional) | Day 4, Session 12 Lab 09 |
 
 ---
 

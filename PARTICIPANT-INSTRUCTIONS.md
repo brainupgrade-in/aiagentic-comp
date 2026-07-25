@@ -6,21 +6,46 @@
 
 ## One-Time Setup
 
-**Windows:** Install [Git for Windows](https://git-scm.com/download/win) and use Git Bash for all commands.
+Run **once** before Day 1. It installs everything all five days need — Python 3.12,
+the `.venv`, every package, the Jupyter kernel, and the Day 1 local LLM. There are
+no per-day setup scripts.
+
+### Windows — one script
+
+Download the repo as a ZIP (or clone it if you already have git), then in **PowerShell**
+from the repo root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\bootstrap.ps1
+```
+
+It installs Git for Windows (which gives you **Git Bash** and `curl`), `uv`, and Ollama,
+then runs `scripts/setup.sh` under Git Bash. **Use Git Bash for every command after this.**
+
+> If it says a tool "not found after install", close PowerShell, open a **new** window,
+> and re-run — Windows only refreshes PATH for new processes.
+
+### Linux / macOS
 
 ```bash
 git clone https://github.com/brainupgrade-in/aiagentic-comp.git
 cd aiagentic-comp
-bash scripts/install-python.sh       # installs Python 3.12 (skips if already installed)
-source scripts/initial-setup.sh      # creates .venv, installs packages, registers kernel
+source scripts/setup.sh
 ```
 
-Edit `.env` and add your keys:
+### Then add your keys
+
 ```bash
 code .env    # or: nano .env (Linux/Mac)  |  notepad .env (Windows)
 ```
 
 > `.env` is gitignored. Get your Groq key free at https://console.groq.com
+
+Check the environment any time:
+
+```bash
+bash scripts/setup.sh --verify
+```
 
 ---
 
@@ -45,12 +70,15 @@ echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
 
 ```bash
 git pull
-source .venv/bin/activate            # Windows: source .venv/Scripts/activate
-bash scripts/dayN-setup.sh           # N = 1..5  (e.g. day1-setup.sh starts Ollama)
+source .venv/bin/activate            # Windows Git Bash: source .venv/Scripts/activate
 ```
 
+That's it — the one-time setup already covered all five days.
+
 Open labs in VS Code (`code .`), complete all `___` TODOs, run all cells.
-Kernel: **Python 3 (Gheware Agentic AI)**. If missing: `bash scripts/set-notebook-kernels.sh` then reload VS Code.
+Kernel: **Python 3 (Gheware Agentic AI)**. If missing: `bash scripts/setup.sh --kernel-only` then reload VS Code.
+
+Day 4 only, for Session 12 Lab 09: `bash scripts/langfuse-server.sh start`
 
 Submit each lab when done:
 
@@ -61,7 +89,7 @@ bash scripts/submit-lab.sh <session> <lab> "optional notes"
 
 The script auto-detects your username, shows a preview, and confirms before posting.
 
-End-of-day cleanup (optional): `bash scripts/dayN-cleanup.sh`
+End-of-day cleanup (optional): `bash scripts/cleanup.sh <day>` — e.g. `bash scripts/cleanup.sh 4`
 
 ### Session Checklist
 - [ ] All validation cells show `[PASS]`
@@ -82,14 +110,16 @@ End-of-day cleanup (optional): `bash scripts/dayN-cleanup.sh`
 
 | Problem | Fix |
 |---------|-----|
-| `ModuleNotFoundError` | `source .venv/bin/activate` (or `Scripts/activate` on Windows) |
-| Wrong kernel | `bash scripts/set-notebook-kernels.sh` → reload VS Code |
+| `ModuleNotFoundError` | `source .venv/bin/activate` (or `Scripts/activate` on Windows), then `bash scripts/setup.sh --verify` |
+| Wrong kernel | `bash scripts/setup.sh --kernel-only` → reload VS Code |
 | Groq 429 | Wait 60s, retry; stagger class starts if widespread |
 | `GITHUB_TOKEN not set` | Add to `.env` or `export GITHUB_TOKEN=ghp_xxxx` |
 | `Could not detect username` | `git config user.name "your-github-username"` |
 | Submission failed / token expired | Get new token from instructor, update `.env` |
 | Port conflict | `sudo lsof -i :8000` or `:11434`; stop the conflicting process |
-| Wrong Python version | `bash scripts/install-python.sh` — reinstalls Python 3.12 |
+| Port 3000 in use (Day 4) | `bash scripts/langfuse-server.sh stop` |
+| Wrong Python version | `bash scripts/setup.sh` — recreates `.venv` on Python 3.12 |
+| `uv: command not found` (Windows) | Run `scripts\bootstrap.ps1` in PowerShell first |
 
 Debug GitHub token:
 ```bash

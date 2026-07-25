@@ -2,12 +2,11 @@
 
 ## Prerequisites
 
-- Python 3.10+ installed
+- Setup complete (`source scripts/setup.sh` — installs everything for all 5 days)
 - No infrastructure needed — labs generate config files and validate YAML
 
 ```bash
-# No pip packages needed — these labs generate configs and validate answers
-python --version  # 3.10+
+bash scripts/setup.sh --verify
 ```
 
 ## Labs Overview

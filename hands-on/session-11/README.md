@@ -2,13 +2,11 @@
 
 ## Prerequisites
 
-- Python 3.10+ installed
-- FastAPI and dependencies: `pip install fastapi uvicorn httpx python-dotenv`
+- Setup complete (`source scripts/setup.sh` — installs everything for all 5 days)
 - GROQ_API_KEY for labs 02 and 04
 
 ```bash
-pip install fastapi uvicorn httpx python-dotenv
-python --version  # 3.10+
+bash scripts/setup.sh --verify
 ```
 
 ## Labs Overview

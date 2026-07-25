@@ -40,8 +40,7 @@ This is a production-like LangFuse server implementation that:
 ### Automatic (Recommended)
 
 ```bash
-# Run day4-setup.sh — it starts the LangFuse server automatically
-bash scripts/day4-setup.sh
+bash scripts/langfuse-server.sh start
 ```
 
 The script will:
@@ -69,8 +68,10 @@ echo $! > /tmp/langfuse-server.pid
 ### Automatic (Recommended)
 
 ```bash
-# Run day4-cleanup.sh — it stops the server and cleans up
-bash scripts/day4-cleanup.sh
+bash scripts/langfuse-server.sh stop
+
+# Or as part of the full end-of-day cleanup (also drops the DB and logs)
+bash scripts/cleanup.sh 4
 ```
 
 ### Manual
@@ -267,7 +268,7 @@ pkill -f langfuse-server
 
 # Remove the database and restart
 rm /tmp/langfuse.db
-bash scripts/day4-setup.sh
+bash scripts/langfuse-server.sh start
 ```
 
 ### Check server logs

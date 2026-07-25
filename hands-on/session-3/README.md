@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Day 1 setup complete (`bash scripts/day1-setup.sh`)
+- Setup complete (`source scripts/setup.sh` — verify with `bash scripts/setup.sh --verify`)
 - Ollama is running with `llama3.2:1b` model pulled
 - Python virtual environment is activated
 

@@ -7,8 +7,9 @@ echo "============================================"
 echo ""
 
 # Delegate to the same setup script used by Linux/macOS participants
-# This keeps container setup in sync with native setup automatically
-bash scripts/initial-setup.sh
+# This keeps container setup in sync with native setup automatically.
+# --skip-ollama: Codespaces has no GPU and limited disk; Days 2-5 use Groq instead.
+bash scripts/setup.sh --skip-ollama
 
 # Inject Codespaces secrets into .env so scripts/notebooks can load them via dotenv.
 # LAB_SUBMIT_TOKEN: fine-grained PAT with Issues read/write (set as repo Codespaces secret)
@@ -27,15 +28,9 @@ fi
 
 echo ""
 echo "============================================"
-echo "  Installing Jupyter Kernel"
+echo "  Verifying the environment (all 5 days)"
 echo "============================================"
-bash scripts/install-jupyter-kernel.sh
-
-echo ""
-echo "============================================"
-echo "  Day 3: LangGraph & Multi-Agent Verification"
-echo "============================================"
-bash scripts/day3-setup.sh
+bash scripts/setup.sh --verify
 
 echo ""
 echo "============================================"

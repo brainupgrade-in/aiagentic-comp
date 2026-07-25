@@ -18,7 +18,7 @@
 | LLM Days 2-5 | Groq free API (primary) | Each participant gets own key at console.groq.com |
 | LLM alt providers | OpenRouter, Big Pickle, Claude, OpenAI | Taught as provider-agnostic patterns — fallback chains, cost/latency tradeoffs |
 | Vibe coding | OpenCode (opencode.ai), Claude CLI | Day 1 — agent-assisted dev, prompt-to-code |
-| Observability | LangFuse (FastAPI+SQLite) | Labs 01-08: MockLangFuse (JSON); Lab 09: real server :3000 |
+| Observability | LangFuse | S12 Labs 01-08: MockLangFuse (JSON). Lab 09: real backend via `LANGFUSE_HOST` — cloud (default) or bundled local server on :3000 (`langfuse-server.sh`) |
 | Vector DB | ChromaDB | In-process, no server |
 | API | FastAPI | Async, AI-native |
 | Agents | MCP Python SDK `mcp>=1.0` | Standard protocol |
@@ -56,8 +56,9 @@ Notebooks: `hands-on/session-NN/labXX_topic.ipynb` (student) · `solutions/labXX
 ```
 ├── presentation/       15 HTML decks + shared.css/js, Reveal.js HUD, print support
 ├── hands-on/           session-{1..15}/ with .ipynb labs + solutions/
-├── scripts/            day{1..5}-setup/cleanup.sh, initial-setup.sh, submit-lab.sh,
-│                       langfuse-server.py, configure-all-notebooks.py, check-resources.sh
+├── scripts/            setup.sh (all 5 days, idempotent), bootstrap.ps1 (Windows),
+│                       cleanup.sh, configure-notebooks.py, langfuse-server.{sh,py},
+│                       submit-lab.sh, check-resources.sh
 ├── reporting/          generate-dashboard.py, track-lab-comments.py, update-dashboard.sh
 ├── .github/            ISSUE_TEMPLATE/ (lab-help, bug-report, config)
 ├── .vscode/            settings.json, extensions.json
@@ -68,14 +69,16 @@ Notebooks: `hands-on/session-NN/labXX_topic.ipynb` (student) · `solutions/labXX
 ## Commands
 
 ```bash
-# Setup
-bash scripts/initial-setup.sh           # one-time: Python, venv, packages, kernel
+# Setup — one run covers all 5 days; no per-day setup scripts
+source scripts/setup.sh                 # uv + Python 3.12 + venv + all packages + kernel + Ollama
+bash scripts/setup.sh --verify          # check venv/packages/kernel/keys/Ollama
+bash scripts/setup.sh --kernel-only     # re-register kernel + reconfigure notebooks
+powershell -File scripts/bootstrap.ps1  # Windows: Git Bash + uv + Ollama, then setup.sh
 bash scripts/check-resources.sh         # memory/storage/process status
 
 # Per-day
-bash scripts/day1-setup.sh              # Ollama + llama3.2:1b
-bash scripts/day{2..5}-setup.sh         # Groq / LangGraph / OTel+LangFuse / MCP SDK
-bash scripts/day{1..5}-cleanup.sh       # cleanup (day4 stops LangFuse)
+bash scripts/langfuse-server.sh start   # Day 4 Session 12 Lab 09 (:3000)
+bash scripts/cleanup.sh [1-5|all]       # end-of-day cleanup (day4 stops LangFuse)
 
 # Lab submission
 bash scripts/submit-lab.sh <session> <lab> "notes"

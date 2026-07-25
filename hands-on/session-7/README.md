@@ -4,11 +4,7 @@
 
 - Session 6 completed (agents & memory working)
 - `.env` file with `GROQ_API_KEY` in your working directory
-- Required packages installed:
-
-```bash
-pip install langgraph langchain-groq langchain-core python-dotenv
-```
+- Setup complete (`source scripts/setup.sh` — installs everything for all 5 days)
 
 Verify your setup:
 ```bash

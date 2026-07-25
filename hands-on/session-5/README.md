@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Day 1 cleanup is complete (`bash scripts/day1-cleanup.sh` — removes Ollama)
+- Setup complete (`source scripts/setup.sh`); Ollama no longer needed from here on
 - Python virtual environment is activated
 - **Groq API key** is set up (free at https://console.groq.com)
 
@@ -16,9 +16,6 @@ export GROQ_API_KEY="your-key-here"
 
 # Or add it to your .env file
 echo 'GROQ_API_KEY=your-key-here' >> .env
-
-# Install sentence-transformers for embeddings (if not already installed)
-pip install sentence-transformers
 
 # Verify everything is ready
 python -c "from langchain_groq import ChatGroq; print('Groq ready!')"

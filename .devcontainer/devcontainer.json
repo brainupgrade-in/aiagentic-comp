@@ -15,7 +15,7 @@
   },
 
   "postCreateCommand": "bash .devcontainer/post-create.sh",
-  "postStartCommand": "bash scripts/install-jupyter-kernel.sh && bash scripts/day3-setup.sh",
+  "postStartCommand": "bash scripts/setup.sh --kernel-only && bash scripts/setup.sh --verify",
 
   "customizations": {
     "vscode": {
