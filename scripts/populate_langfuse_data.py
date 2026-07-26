@@ -29,6 +29,7 @@ This populates the LangFuse dashboard with realistic data for demonstrating:
 Note: This uses propagate_attributes() to ensure proper user_id and session_id
       tracking, which is the recommended LangFuse pattern for user/session tracking.
 """
+
 import os
 import time
 import random
@@ -58,6 +59,7 @@ print()
 # Setup LangGraph Agent
 llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
 
+
 class SupportState(TypedDict):
     request: str
     employee_name: str
@@ -68,12 +70,14 @@ class SupportState(TypedDict):
     audit: Annotated[list, add]
     trace_id: Optional[str]
 
+
 TEMPLATES = {
     "hr": "Please visit the HR portal or email hr@company.com.",
     "tech": "Please create a Jira ticket or contact IT at ext. 5555.",
     "finance": "Please email finance@company.com with details.",
     "general": "Your request has been noted. A team member will respond shortly.",
 }
+
 
 def supervisor(state: SupportState) -> dict:
     prompt = f"Classify as: hr, tech, finance, general. One word.\n{state['request']}"
@@ -86,17 +90,31 @@ def supervisor(state: SupportState) -> dict:
         cat = "general"
     return {"category": cat, "error": "", "audit": [f"Supervisor: classified as {cat}"]}
 
+
 def worker(state: SupportState) -> dict:
     prompt = f"You are {state['category']} support.\nRequest: {state['request']}\nReply helpfully in 2 sentences."
     try:
         response = llm.invoke(prompt)
-        return {"worker_output": response.content.strip(), "error": "", "audit": [f"Worker ({state['category']}) responded"]}
+        return {
+            "worker_output": response.content.strip(),
+            "error": "",
+            "audit": [f"Worker ({state['category']}) responded"],
+        }
     except Exception as e:
-        return {"worker_output": TEMPLATES.get(state["category"], TEMPLATES["general"]), "error": str(e), "audit": [f"Worker error, used template"]}
+        return {
+            "worker_output": TEMPLATES.get(state["category"], TEMPLATES["general"]),
+            "error": str(e),
+            "audit": [f"Worker error, used template"],
+        }
+
 
 def finalize(state: SupportState) -> dict:
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return {"final_response": f"[{state['category'].upper()}] {state['worker_output']}\n— UniGPS Support | {ts}", "audit": [f"Finalized at {ts}"]}
+    return {
+        "final_response": f"[{state['category'].upper()}] {state['worker_output']}\n— UniGPS Support | {ts}",
+        "audit": [f"Finalized at {ts}"],
+    }
+
 
 graph = StateGraph(SupportState)
 graph.add_node("supervisor", supervisor)
@@ -109,6 +127,7 @@ graph.add_edge("finalize", END)
 agent = graph.compile()
 
 print("✓ Agent compiled\n")
+
 
 # Handler with manual tracing using propagate_attributes
 def handle_support_request(employee_name: str, request: str, session_id: str):
@@ -125,30 +144,36 @@ def handle_support_request(employee_name: str, request: str, session_id: str):
             metadata={
                 "endpoint": "/api/support",
                 "tags": ["production", "support"],
-            }
+            },
         )
 
         # Invoke agent
-        result = agent.invoke({
-            "request": request,
-            "employee_name": employee_name,
-            "category": "",
-            "worker_output": "",
-            "error": "",
-            "final_response": "",
-            "audit": [],
-            "trace_id": None,
-        })
+        result = agent.invoke(
+            {
+                "request": request,
+                "employee_name": employee_name,
+                "category": "",
+                "worker_output": "",
+                "error": "",
+                "final_response": "",
+                "audit": [],
+                "trace_id": None,
+            }
+        )
 
         # Update observation with output
         observation.update(
-            output={"category": result["category"], "response": result["final_response"]}
+            output={
+                "category": result["category"],
+                "response": result["final_response"],
+            }
         )
 
         # End observation
         observation.end()
 
     return result
+
 
 print("=" * 80)
 print("Generating Test Data")
@@ -159,11 +184,15 @@ trace_count = 0
 
 # Test 1-2: Basic requests
 print("Basic Requests:")
-result = handle_support_request("Priya", "I need to apply for sick leave", "test-session-001")
+result = handle_support_request(
+    "Priya", "I need to apply for sick leave", "test-session-001"
+)
 trace_count += 1
 print(f"  ✓ Priya: {result['category']}")
 
-result = handle_support_request("Vikram", "My VPN keeps disconnecting", "test-session-002")
+result = handle_support_request(
+    "Vikram", "My VPN keeps disconnecting", "test-session-002"
+)
 trace_count += 1
 print(f"  ✓ Vikram: {result['category']}")
 print()
@@ -183,17 +212,64 @@ print()
 
 # Test 4: Load testing
 print("Load Testing (20 requests):")
-employees = ["Amit", "Kavya", "Ravi", "Meera", "Sanjay", "Divya", "Karan", "Pooja", "Nikhil", "Isha"]
-hr_requests = ["maternity leave", "salary slip", "performance review", "benefits enrollment"]
-tech_requests = ["password reset", "VPN issues", "laptop upgrade", "software installation"]
-finance_requests = ["expense approval", "invoice query", "budget allocation", "reimbursement status"]
-general_requests = ["parking pass", "office supplies", "meeting room booking", "visitor access"]
+employees = [
+    "Amit",
+    "Kavya",
+    "Ravi",
+    "Meera",
+    "Sanjay",
+    "Divya",
+    "Karan",
+    "Pooja",
+    "Nikhil",
+    "Isha",
+]
+hr_requests = [
+    "maternity leave",
+    "salary slip",
+    "performance review",
+    "benefits enrollment",
+]
+tech_requests = [
+    "password reset",
+    "VPN issues",
+    "laptop upgrade",
+    "software installation",
+]
+finance_requests = [
+    "expense approval",
+    "invoice query",
+    "budget allocation",
+    "reimbursement status",
+]
+general_requests = [
+    "parking pass",
+    "office supplies",
+    "meeting room booking",
+    "visitor access",
+]
 
 all_requests = (
-    [(emp, f"I need help with {req}", "hr") for emp in employees[:5] for req in random.sample(hr_requests, 2)][:5] +
-    [(emp, f"Issue: {req}", "tech") for emp in employees[5:] for req in random.sample(tech_requests, 2)][:5] +
-    [(emp, f"Question about {req}", "finance") for emp in employees[:5] for req in random.sample(finance_requests, 2)][:5] +
-    [(emp, f"Help needed: {req}", "general") for emp in employees[5:] for req in random.sample(general_requests, 2)][:5]
+    [
+        (emp, f"I need help with {req}", "hr")
+        for emp in employees[:5]
+        for req in random.sample(hr_requests, 2)
+    ][:5]
+    + [
+        (emp, f"Issue: {req}", "tech")
+        for emp in employees[5:]
+        for req in random.sample(tech_requests, 2)
+    ][:5]
+    + [
+        (emp, f"Question about {req}", "finance")
+        for emp in employees[:5]
+        for req in random.sample(finance_requests, 2)
+    ][:5]
+    + [
+        (emp, f"Help needed: {req}", "general")
+        for emp in employees[5:]
+        for req in random.sample(general_requests, 2)
+    ][:5]
 )
 
 for i, (emp, req, cat) in enumerate(all_requests):
@@ -206,9 +282,33 @@ print()
 # Test 5: Multi-turn sessions
 print("Multi-Turn Sessions:")
 for emp, sess, requests in [
-    ("Priya", "priya-session-multi", ["I need to request vacation days", "What is the approval process for vacation?", "Can I see my remaining leave balance?"]),
-    ("Vikram", "vikram-session-multi", ["My laptop is running slow", "I've tried restarting but it's still slow", "Can someone from IT help me?"]),
-    ("Sanjana", "sanjana-session-multi", ["I submitted an expense report last week", "When will it be processed?", "I need the reimbursement urgently"]),
+    (
+        "Priya",
+        "priya-session-multi",
+        [
+            "I need to request vacation days",
+            "What is the approval process for vacation?",
+            "Can I see my remaining leave balance?",
+        ],
+    ),
+    (
+        "Vikram",
+        "vikram-session-multi",
+        [
+            "My laptop is running slow",
+            "I've tried restarting but it's still slow",
+            "Can someone from IT help me?",
+        ],
+    ),
+    (
+        "Sanjana",
+        "sanjana-session-multi",
+        [
+            "I submitted an expense report last week",
+            "When will it be processed?",
+            "I need the reimbursement urgently",
+        ],
+    ),
 ]:
     print(f"  👤 {emp} ({sess})")
     for req in requests:

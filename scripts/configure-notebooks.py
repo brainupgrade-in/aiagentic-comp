@@ -20,7 +20,9 @@ HANDS_ON = REPO_ROOT / "hands-on"
 
 
 def main():
-    notebooks = sorted(nb for nb in HANDS_ON.rglob("*.ipynb") if "README" not in nb.name)
+    notebooks = sorted(
+        nb for nb in HANDS_ON.rglob("*.ipynb") if "README" not in nb.name
+    )
     if not notebooks:
         print(f"  No notebooks found under {HANDS_ON}")
         return 1

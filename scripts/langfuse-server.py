@@ -163,7 +163,9 @@ async def health():
 
 
 @app.post("/api/public/traces")
-async def create_trace(trace: TraceCreate, api_key: str = Header(None, alias="Authorization")):
+async def create_trace(
+    trace: TraceCreate, api_key: str = Header(None, alias="Authorization")
+):
     """Create a new trace."""
     verify_auth(api_key)
 
@@ -173,18 +175,21 @@ async def create_trace(trace: TraceCreate, api_key: str = Header(None, alias="Au
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO traces (id, name, user_id, session_id, metadata, tags, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (
-        trace_id,
-        trace.name,
-        trace.userId,
-        trace.sessionId,
-        json.dumps(trace.metadata) if trace.metadata else None,
-        json.dumps(trace.tags) if trace.tags else None,
-        created_at,
-    ))
+    """,
+        (
+            trace_id,
+            trace.name,
+            trace.userId,
+            trace.sessionId,
+            json.dumps(trace.metadata) if trace.metadata else None,
+            json.dumps(trace.tags) if trace.tags else None,
+            created_at,
+        ),
+    )
 
     conn.commit()
     conn.close()
@@ -197,7 +202,9 @@ async def create_trace(trace: TraceCreate, api_key: str = Header(None, alias="Au
 
 
 @app.post("/api/public/generations")
-async def create_generation(gen: GenerationCreate, api_key: str = Header(None, alias="Authorization")):
+async def create_generation(
+    gen: GenerationCreate, api_key: str = Header(None, alias="Authorization")
+):
     """Create a new generation."""
     verify_auth(api_key)
 
@@ -220,21 +227,24 @@ async def create_generation(gen: GenerationCreate, api_key: str = Header(None, a
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO generations (id, trace_id, name, model, input, output, usage, metadata, cost, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        gen_id,
-        gen.traceId,
-        gen.name,
-        gen.model,
-        json.dumps(gen.input) if gen.input else None,
-        json.dumps(gen.output) if gen.output else None,
-        json.dumps(gen.usage) if gen.usage else None,
-        json.dumps(gen.metadata) if gen.metadata else None,
-        cost,
-        created_at,
-    ))
+    """,
+        (
+            gen_id,
+            gen.traceId,
+            gen.name,
+            gen.model,
+            json.dumps(gen.input) if gen.input else None,
+            json.dumps(gen.output) if gen.output else None,
+            json.dumps(gen.usage) if gen.usage else None,
+            json.dumps(gen.metadata) if gen.metadata else None,
+            cost,
+            created_at,
+        ),
+    )
 
     conn.commit()
     conn.close()
@@ -248,7 +258,9 @@ async def create_generation(gen: GenerationCreate, api_key: str = Header(None, a
 
 
 @app.post("/api/public/scores")
-async def create_score(score: ScoreCreate, api_key: str = Header(None, alias="Authorization")):
+async def create_score(
+    score: ScoreCreate, api_key: str = Header(None, alias="Authorization")
+):
     """Create a new score."""
     verify_auth(api_key)
 
@@ -264,18 +276,21 @@ async def create_score(score: ScoreCreate, api_key: str = Header(None, alias="Au
         conn.close()
         raise HTTPException(status_code=404, detail=f"Trace {score.traceId} not found")
 
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO scores (id, trace_id, name, value, data_type, comment, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (
-        score_id,
-        score.traceId,
-        score.name,
-        score.value,
-        score.dataType,
-        score.comment,
-        created_at,
-    ))
+    """,
+        (
+            score_id,
+            score.traceId,
+            score.name,
+            score.value,
+            score.dataType,
+            score.comment,
+            created_at,
+        ),
+    )
 
     conn.commit()
     conn.close()
@@ -329,18 +344,20 @@ async def get_traces(
         # Calculate total cost
         total_cost = sum(g[8] for g in gens)  # cost column
 
-        traces.append({
-            "id": row[0],
-            "name": row[1],
-            "userId": row[2],
-            "sessionId": row[3],
-            "metadata": json.loads(row[4]) if row[4] else {},
-            "tags": json.loads(row[5]) if row[5] else [],
-            "createdAt": row[6],
-            "generations": len(gens),
-            "scores": len(scores),
-            "cost": total_cost,
-        })
+        traces.append(
+            {
+                "id": row[0],
+                "name": row[1],
+                "userId": row[2],
+                "sessionId": row[3],
+                "metadata": json.loads(row[4]) if row[4] else {},
+                "tags": json.loads(row[5]) if row[5] else [],
+                "createdAt": row[6],
+                "generations": len(gens),
+                "scores": len(scores),
+                "cost": total_cost,
+            }
+        )
 
     conn.close()
 
@@ -380,29 +397,33 @@ async def get_trace(trace_id: str, api_key: str = Header(None, alias="Authorizat
     generations = []
     total_cost = 0.0
     for row in gen_rows:
-        generations.append({
-            "id": row[0],
-            "name": row[2],
-            "model": row[3],
-            "input": json.loads(row[4]) if row[4] else None,
-            "output": json.loads(row[5]) if row[5] else None,
-            "usage": json.loads(row[6]) if row[6] else {},
-            "metadata": json.loads(row[7]) if row[7] else {},
-            "cost": row[8],
-            "createdAt": row[9],
-        })
+        generations.append(
+            {
+                "id": row[0],
+                "name": row[2],
+                "model": row[3],
+                "input": json.loads(row[4]) if row[4] else None,
+                "output": json.loads(row[5]) if row[5] else None,
+                "usage": json.loads(row[6]) if row[6] else {},
+                "metadata": json.loads(row[7]) if row[7] else {},
+                "cost": row[8],
+                "createdAt": row[9],
+            }
+        )
         total_cost += row[8]
 
     scores = []
     for row in score_rows:
-        scores.append({
-            "id": row[0],
-            "name": row[2],
-            "value": row[3],
-            "dataType": row[4],
-            "comment": row[5],
-            "createdAt": row[6],
-        })
+        scores.append(
+            {
+                "id": row[0],
+                "name": row[2],
+                "value": row[3],
+                "dataType": row[4],
+                "comment": row[5],
+                "createdAt": row[6],
+            }
+        )
 
     return {
         "id": trace_row[0],

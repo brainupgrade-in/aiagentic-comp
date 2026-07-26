@@ -34,6 +34,7 @@ COURSE_STRUCTURE = {
     15: ("Capstone Project", 8),
 }
 
+
 def get_github_token():
     """Get GitHub token from environment."""
     token = os.getenv("GITHUB_TOKEN")
@@ -43,13 +44,14 @@ def get_github_token():
         sys.exit(1)
     return token
 
+
 def create_issue(token, session_num, lab_num, session_title):
     """Create a single lab issue."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     title = f"Session {session_num} - Lab {lab_num:02d}"
@@ -85,17 +87,9 @@ Comment below when done. Your GitHub username will be recorded automatically.
 **Status:** Open for submissions
 """
 
-    labels = [
-        "lab-tracking",
-        f"session-{session_num}",
-        f"lab-{lab_num:02d}"
-    ]
+    labels = ["lab-tracking", f"session-{session_num}", f"lab-{lab_num:02d}"]
 
-    payload = {
-        "title": title,
-        "body": body,
-        "labels": labels
-    }
+    payload = {"title": title, "body": body, "labels": labels}
 
     response = requests.post(url, headers=headers, json=payload)
 
@@ -105,11 +99,14 @@ Comment below when done. Your GitHub username will be recorded automatically.
     else:
         return False, None, response.json()
 
+
 def main():
     """Main function."""
     print("Creating lab tracking issues...")
     print(f"Repository: {REPO_OWNER}/{REPO_NAME}")
-    print(f"Total issues to create: {sum(count for _, count in COURSE_STRUCTURE.values())}")
+    print(
+        f"Total issues to create: {sum(count for _, count in COURSE_STRUCTURE.values())}"
+    )
     print()
 
     token = get_github_token()
@@ -122,11 +119,15 @@ def main():
         print(f"Session {session_num}: {session_title} ({num_labs} labs)")
 
         for lab_num in range(1, num_labs + 1):
-            success, issue_num, url = create_issue(token, session_num, lab_num, session_title)
+            success, issue_num, url = create_issue(
+                token, session_num, lab_num, session_title
+            )
 
             if success:
                 created_count += 1
-                print(f"  ✓ Created issue #{issue_num}: Session {session_num} Lab {lab_num:02d}")
+                print(
+                    f"  ✓ Created issue #{issue_num}: Session {session_num} Lab {lab_num:02d}"
+                )
             else:
                 failed_count += 1
                 print(f"  ✗ Failed: Session {session_num} Lab {lab_num:02d}")
@@ -138,7 +139,7 @@ def main():
 
         print()
 
-    print("="*60)
+    print("=" * 60)
     print(f"Summary:")
     print(f"  Created: {created_count}")
     print(f"  Failed: {failed_count}")
@@ -146,7 +147,10 @@ def main():
     print()
 
     if created_count > 0:
-        print(f"View issues: https://github.com/{REPO_OWNER}/{REPO_NAME}/issues?q=is:issue+label:lab-tracking")
+        print(
+            f"View issues: https://github.com/{REPO_OWNER}/{REPO_NAME}/issues?q=is:issue+label:lab-tracking"
+        )
+
 
 if __name__ == "__main__":
     main()

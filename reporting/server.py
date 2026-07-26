@@ -21,7 +21,6 @@ TOKEN_FILE = os.path.expanduser("~/.rajesh/.github_bu")
 
 
 class DashboardHandler(http.server.BaseHTTPRequestHandler):
-
     def do_GET(self):
         if self.path in ("/", "/dashboard.html"):
             self.serve_file(DASHBOARD_PATH, "text/html")
@@ -43,7 +42,9 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
 
         label = f"session {session}" if session else "all sessions"
         print(f"  Refreshing {label}...", flush=True)
-        result = subprocess.run(cmd, capture_output=True, text=True, env=env, cwd=BASE_DIR)
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, env=env, cwd=BASE_DIR
+        )
 
         self.send_response(200 if result.returncode == 0 else 500)
         self.send_header("Content-Type", "application/json")
@@ -53,7 +54,9 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         if result.returncode == 0:
             self.wfile.write(json.dumps({"status": "ok"}).encode())
         else:
-            self.wfile.write(json.dumps({"status": "error", "message": result.stderr}).encode())
+            self.wfile.write(
+                json.dumps({"status": "error", "message": result.stderr}).encode()
+            )
 
     def serve_file(self, path, content_type):
         try:

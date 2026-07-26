@@ -20,7 +20,9 @@ import requests
 
 REPO_OWNER = "brainupgrade-in"
 REPO_NAME = "aiagentic-comp"
-CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".completion_cache.json")
+CACHE_FILE = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), ".completion_cache.json"
+)
 
 COURSE_STRUCTURE = {
     1: ("Introduction to Agentic AI", 6),
@@ -40,6 +42,7 @@ COURSE_STRUCTURE = {
     15: ("Capstone Project", 8),
 }
 
+
 def get_github_token():
     """Get GitHub token from environment or instructor PAT file."""
     token = os.getenv("GITHUB_TOKEN")
@@ -54,6 +57,7 @@ def get_github_token():
         sys.exit(1)
     return token
 
+
 def load_cache():
     """Load cached completion matrix from disk."""
     if not os.path.exists(CACHE_FILE):
@@ -66,6 +70,7 @@ def load_cache():
             matrix[participant][int(session_str)] = {int(k): v for k, v in labs.items()}
     return matrix
 
+
 def save_cache(matrix):
     """Persist completion matrix to disk."""
     data = {}
@@ -77,13 +82,14 @@ def save_cache(matrix):
     with open(CACHE_FILE, "w") as f:
         json.dump(data, f)
 
+
 def fetch_lab_issues(token, session=None):
     """Fetch lab tracking issues, optionally filtered to one session."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
     labels = f"lab-tracking,session-{session}" if session else "lab-tracking"
 
@@ -107,20 +113,23 @@ def fetch_lab_issues(token, session=None):
 
     return all_issues
 
+
 def fetch_issue_comments(token, issue_number):
     """Fetch all comments for a specific issue (paginated)."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues/{issue_number}/comments"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     all_comments = []
     page = 1
 
     while True:
-        response = requests.get(url, headers=headers, params={"per_page": 100, "page": page})
+        response = requests.get(
+            url, headers=headers, params={"per_page": 100, "page": page}
+        )
         if response.status_code != 200:
             return all_comments
 
@@ -133,18 +142,20 @@ def fetch_issue_comments(token, issue_number):
 
     return all_comments
 
+
 def parse_issue_title(title):
     """Extract session and lab number from issue title."""
-    match = re.search(r'Session (\d+) - Lab (\d+)', title)
+    match = re.search(r"Session (\d+) - Lab (\d+)", title)
     if match:
         return int(match.group(1)), int(match.group(2))
     return None, None
 
+
 def extract_participant_name(comment_body):
     """Extract participant name from comment body."""
     patterns = [
-        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',
-        r'\*\*Participant:\*\*\s+([^\n]+)',
+        r"\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)",
+        r"\*\*Participant:\*\*\s+([^\n]+)",
     ]
     for pattern in patterns:
         match = re.search(pattern, comment_body)
@@ -152,16 +163,18 @@ def extract_participant_name(comment_body):
             return match.group(1).strip()
     return None
 
+
 def is_completion_comment(comment_body):
     """Check if comment indicates lab completion."""
     patterns = [
-        r'✅\s+completed',
-        r'completed\s+✅',
-        r'\[x\].*done',
-        r'all checks passed',
+        r"✅\s+completed",
+        r"completed\s+✅",
+        r"\[x\].*done",
+        r"all checks passed",
     ]
     comment_lower = comment_body.lower()
     return any(re.search(pattern, comment_lower) for pattern in patterns)
+
 
 def fetch_issue_data(token, issue):
     """Fetch and process comments for a single issue."""
@@ -183,21 +196,32 @@ def fetch_issue_data(token, issue):
 
         if is_completion_comment(body):
             participant_name = extract_participant_name(body) or github_author
-            completions.append((participant_name, session_num, lab_num, issue_number, created_at))
+            completions.append(
+                (participant_name, session_num, lab_num, issue_number, created_at)
+            )
 
     return completions
+
 
 def build_completion_data(token, issues):
     """Build completion data from issues and comments (parallel fetch)."""
     completion_matrix = defaultdict(lambda: defaultdict(dict))
 
     with ThreadPoolExecutor(max_workers=20) as executor:
-        futures = {executor.submit(fetch_issue_data, token, issue): issue for issue in issues}
+        futures = {
+            executor.submit(fetch_issue_data, token, issue): issue for issue in issues
+        }
         for future in as_completed(futures):
             result = future.result()
             if not result:
                 continue
-            for participant_name, session_num, lab_num, issue_number, created_at in result:
+            for (
+                participant_name,
+                session_num,
+                lab_num,
+                issue_number,
+                created_at,
+            ) in result:
                 completion_matrix[participant_name][session_num][lab_num] = {
                     "issue_number": issue_number,
                     "completed_date": created_at,
@@ -218,7 +242,8 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
     )
     overall_progress = (
         total_completions / (total_labs * total_participants) * 100
-        if total_participants > 0 else 0
+        if total_participants > 0
+        else 0
     )
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 
@@ -229,7 +254,15 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
         total_completed = sum(len(labs) for labs in sessions.values())
         pct = (total_completed / total_labs * 100) if total_labs > 0 else 0
         bar_w = int(pct)
-        p_cls = "s-full" if pct >= 90 else "s-high" if pct >= 50 else "s-low" if pct > 0 else "s-none"
+        p_cls = (
+            "s-full"
+            if pct >= 90
+            else "s-high"
+            if pct >= 50
+            else "s-low"
+            if pct > 0
+            else "s-none"
+        )
 
         matrix_rows += f'<tr data-name="{participant.lower()}">\n'
         matrix_rows += f'<td class="pname">{participant}</td>\n'
@@ -238,7 +271,15 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             _, num_labs = COURSE_STRUCTURE[sn]
             done = len(sessions.get(sn, {}))
             ratio = done / num_labs if num_labs else 0
-            c_cls = "c-full" if ratio >= 0.9 else "c-high" if ratio >= 0.5 else "c-low" if ratio > 0 else "c-none"
+            c_cls = (
+                "c-full"
+                if ratio >= 0.9
+                else "c-high"
+                if ratio >= 0.5
+                else "c-low"
+                if ratio > 0
+                else "c-none"
+            )
             matrix_rows += (
                 f'<td class="cell {c_cls}" title="S{sn}: {done}/{num_labs} labs">'
                 f'{done}<span class="cell-denom">/{num_labs}</span></td>\n'
@@ -250,14 +291,14 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             f'<td class="prog-cell">'
             f'<div class="prog-track"><div class="prog-fill {p_cls}" style="width:{bar_w}%"></div></div>'
             f'<span class="prog-pct {p_cls}">{pct:.0f}%</span>'
-            f'</td>\n</tr>\n'
+            f"</td>\n</tr>\n"
         )
 
     if not matrix_rows:
         matrix_rows = (
             '<tr><td colspan="18" class="empty-msg">'
-            'No submissions yet — waiting for participants to submit labs'
-            '</td></tr>'
+            "No submissions yet — waiting for participants to submit labs"
+            "</td></tr>"
         )
 
     # ── Session accordion cards ─────────────────────────────────────────────
@@ -267,11 +308,21 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
         sess_done = sum(len(completion_matrix[p].get(sn, {})) for p in participants)
         sess_total = num_labs * total_participants if total_participants else num_labs
         sess_pct = (sess_done / sess_total * 100) if sess_total else 0
-        bar_cls = "s-full" if sess_pct >= 90 else "s-high" if sess_pct >= 50 else "s-low" if sess_pct > 0 else "s-none"
+        bar_cls = (
+            "s-full"
+            if sess_pct >= 90
+            else "s-high"
+            if sess_pct >= 50
+            else "s-low"
+            if sess_pct > 0
+            else "s-none"
+        )
 
         # Build per-participant dot rows
         if participants:
-            dot_headers = "".join(f'<th class="lab-th">L{ln:02d}</th>' for ln in range(1, num_labs + 1))
+            dot_headers = "".join(
+                f'<th class="lab-th">L{ln:02d}</th>' for ln in range(1, num_labs + 1)
+            )
             dot_rows = ""
             for p in participants:
                 p_sess = completion_matrix[p].get(sn, {})
@@ -283,7 +334,7 @@ def generate_html_dashboard(completion_matrix, output_file, auto_refresh=False):
             dot_table = (
                 f'<div class="dot-scroll"><table class="dot-table">'
                 f'<thead><tr><th class="pname-th">Participant</th>{dot_headers}</tr></thead>'
-                f'<tbody>{dot_rows}</tbody></table></div>'
+                f"<tbody>{dot_rows}</tbody></table></div>"
             )
         else:
             dot_table = '<p class="no-data">No submissions for this session</p>'
@@ -991,7 +1042,7 @@ table.dot-table tr:last-child td {{ border-bottom: none; }}
         <thead>
           <tr>
             <th>Participant</th>
-            {''.join(f'<th title="Session {sn}: {COURSE_STRUCTURE[sn][0]}">S{sn:02d}</th>' for sn in range(1,16))}
+            {"".join(f'<th title="Session {sn}: {COURSE_STRUCTURE[sn][0]}">S{sn:02d}</th>' for sn in range(1, 16))}
             <th>Done</th>
             <th>Progress</th>
           </tr>
@@ -1150,7 +1201,7 @@ filterMatrix('');
 </body>
 </html>"""
 
-    with open(output_file, 'w') as f:
+    with open(output_file, "w") as f:
         f.write(html)
 
     print(f"✓ Dashboard generated: {output_file}")
@@ -1161,7 +1212,9 @@ def main():
     """Main function."""
     parser = argparse.ArgumentParser(description="Generate lab submission dashboard")
     parser.add_argument("--output", default="dashboard.html", help="Output HTML file")
-    parser.add_argument("--auto-refresh", action="store_true", help="Enable auto-refresh (60s)")
+    parser.add_argument(
+        "--auto-refresh", action="store_true", help="Enable auto-refresh (60s)"
+    )
     parser.add_argument("--session", type=int, help="Refresh only this session (1-15)")
     args = parser.parse_args()
 

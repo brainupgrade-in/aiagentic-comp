@@ -36,6 +36,7 @@ COURSE_STRUCTURE = {
     15: ("Capstone Project", 8),
 }
 
+
 def get_github_token():
     """Get GitHub token from environment."""
     token = os.getenv("GITHUB_TOKEN")
@@ -44,13 +45,14 @@ def get_github_token():
         sys.exit(1)
     return token
 
+
 def fetch_lab_issues(token, session=None):
     """Fetch all lab tracking issues."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     labels = ["lab-tracking"]
@@ -65,7 +67,7 @@ def fetch_lab_issues(token, session=None):
             "state": "all",
             "labels": ",".join(labels),
             "per_page": 100,
-            "page": page
+            "page": page,
         }
         response = requests.get(url, headers=headers, params=params)
 
@@ -82,13 +84,14 @@ def fetch_lab_issues(token, session=None):
 
     return all_issues
 
+
 def fetch_issue_comments(token, issue_number):
     """Fetch all comments for a specific issue."""
     url = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}/issues/{issue_number}/comments"
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
 
     all_comments = []
@@ -110,13 +113,15 @@ def fetch_issue_comments(token, issue_number):
 
     return all_comments
 
+
 def parse_issue_title(title):
     """Extract session and lab number from issue title."""
     # Expected: "Session N - Lab MM"
-    match = re.search(r'Session (\d+) - Lab (\d+)', title)
+    match = re.search(r"Session (\d+) - Lab (\d+)", title)
     if match:
         return int(match.group(1)), int(match.group(2))
     return None, None
+
 
 def extract_participant_name(comment_body):
     """Extract participant name from comment body.
@@ -126,8 +131,8 @@ def extract_participant_name(comment_body):
     """
     # Pattern to match: **Participant:** name (email) or **Participant:** name
     patterns = [
-        r'\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)',  # name (email)
-        r'\*\*Participant:\*\*\s+([^\n]+)',  # just name
+        r"\*\*Participant:\*\*\s+([^\(\n]+?)\s*\([^\)]+\)",  # name (email)
+        r"\*\*Participant:\*\*\s+([^\n]+)",  # just name
     ]
 
     for pattern in patterns:
@@ -137,6 +142,7 @@ def extract_participant_name(comment_body):
             return name
 
     return None
+
 
 def is_completion_comment(comment_body):
     """Check if comment indicates lab completion.
@@ -150,14 +156,15 @@ def is_completion_comment(comment_body):
     # Primary: exact format from submit-lab.sh
     # Secondary: manual completions with common completion phrases
     patterns = [
-        r'✅\s+completed',
-        r'completed\s+✅',
-        r'\[x\].*done',
-        r'all checks passed',
+        r"✅\s+completed",
+        r"completed\s+✅",
+        r"\[x\].*done",
+        r"all checks passed",
     ]
 
     comment_lower = comment_body.lower()
     return any(re.search(pattern, comment_lower) for pattern in patterns)
+
 
 def build_completion_matrix(token, issues):
     """Build completion matrix from issues and comments."""
@@ -174,7 +181,10 @@ def build_completion_matrix(token, issues):
         if session_num is None or lab_num is None:
             continue
 
-        print(f"  [{idx}/{total_issues}] Session {session_num} Lab {lab_num:02d} (#{issue_number})...", end="")
+        print(
+            f"  [{idx}/{total_issues}] Session {session_num} Lab {lab_num:02d} (#{issue_number})...",
+            end="",
+        )
 
         # Fetch comments for this issue
         comments = fetch_issue_comments(token, issue_number)
@@ -198,11 +208,13 @@ def build_completion_matrix(token, issues):
                 if not participant_name:
                     participant_name = github_author
 
-                completed_by.append({
-                    "author": participant_name,
-                    "date": created_at,
-                    "comment_url": comment.get("html_url", "")
-                })
+                completed_by.append(
+                    {
+                        "author": participant_name,
+                        "date": created_at,
+                        "comment_url": comment.get("html_url", ""),
+                    }
+                )
 
         print(f" {len(completed_by)} completions")
 
@@ -215,12 +227,15 @@ def build_completion_matrix(token, issues):
             completion_matrix[author][session_num][lab_num] = {
                 "issue_number": issue_number,
                 "completed_date": completion["date"],
-                "comment_url": completion["comment_url"]
+                "comment_url": completion["comment_url"],
             }
 
     return completion_matrix
 
-def generate_completion_report(completion_matrix, filter_session=None, filter_participant=None):
+
+def generate_completion_report(
+    completion_matrix, filter_session=None, filter_participant=None
+):
     """Generate markdown completion report."""
     report = f"# Lab Completion Report (Comment-Based)\n\n"
     report += f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -228,7 +243,9 @@ def generate_completion_report(completion_matrix, filter_session=None, filter_pa
 
     # Filter participants if specified
     if filter_participant:
-        participants = [filter_participant] if filter_participant in completion_matrix else []
+        participants = (
+            [filter_participant] if filter_participant in completion_matrix else []
+        )
     else:
         participants = sorted(completion_matrix.keys())
 
@@ -316,8 +333,10 @@ def generate_completion_report(completion_matrix, filter_session=None, filter_pa
             report += f"| {lab_num:02d} |"
 
             for participant in participants:
-                if (session_num in completion_matrix[participant] and
-                    lab_num in completion_matrix[participant][session_num]):
+                if (
+                    session_num in completion_matrix[participant]
+                    and lab_num in completion_matrix[participant][session_num]
+                ):
                     report += " ✅ |"
                 else:
                     report += " — |"
@@ -349,11 +368,16 @@ def generate_completion_report(completion_matrix, filter_session=None, filter_pa
 
     return report
 
+
 def main():
     """Main function."""
-    parser = argparse.ArgumentParser(description="Track lab completion via issue comments")
+    parser = argparse.ArgumentParser(
+        description="Track lab completion via issue comments"
+    )
     parser.add_argument("--session", type=int, help="Filter by session number (1-15)")
-    parser.add_argument("--participant", type=str, help="Filter by participant username")
+    parser.add_argument(
+        "--participant", type=str, help="Filter by participant username"
+    )
     args = parser.parse_args()
 
     token = get_github_token()
@@ -368,7 +392,7 @@ def main():
     report = generate_completion_report(
         completion_matrix,
         filter_session=args.session,
-        filter_participant=args.participant
+        filter_participant=args.participant,
     )
 
     # Save to file
@@ -377,9 +401,10 @@ def main():
         f.write(report)
 
     print(f"\nReport saved to: {output_file}\n")
-    print("="*60)
+    print("=" * 60)
     print(report)
-    print("="*60)
+    print("=" * 60)
+
 
 if __name__ == "__main__":
     main()
