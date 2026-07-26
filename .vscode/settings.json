@@ -47,6 +47,13 @@
   // there to demonstrate an API, and autofix would silently delete them.
   "ruff.lint.enable": true,
   "ruff.organizeImports": false,
+  // Prefer the .venv's ruff (pinned to 0.16.x in requirements.txt) over the one
+  // bundled with the extension, so the CLI and format-on-save always agree.
+  // This is already the extension's default — set explicitly so a future
+  // default change can't silently move formatting off the pinned version.
+  // Safe before setup: when no ruff is in the environment, the extension falls
+  // back to its bundled binary rather than failing.
+  "ruff.importStrategy": "fromEnvironment",
   // The Reveal.js decks are hand-tuned, self-contained HTML with inline SVG —
   // auto-formatting reflows them into an unreviewable diff.
   "[html]": {

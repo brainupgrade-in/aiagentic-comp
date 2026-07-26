@@ -52,8 +52,11 @@ langfuse 4.14, chromadb 1.5, fastapi 0.140, mcp 1.28, ipykernel 7.3).
 **One deliberate exception to floors-only:** `ruff>=0.16,<0.17` is capped, because the
 formatter's output changes between minor releases and format-on-save is enabled in
 `.vscode/settings.json` — an open range would have participants reformatting each
-other's files. Don't widen it without re-running `ruff format` across `scripts/` and
-`reporting/` in its own commit.
+other's files. The cap governs the editor too, not just the CLI: `ruff.importStrategy`
+is `fromEnvironment`, so VS Code formats with the `.venv`'s pinned ruff and only falls
+back to the extension's bundled binary when the venv has none (i.e. before setup).
+Don't widen the cap without re-running `ruff format` across `scripts/` and `reporting/`
+in its own commit.
 
 ## Resource Usage by Day
 

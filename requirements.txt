@@ -50,8 +50,9 @@ ipywidgets>=8.1
 # Utilities
 requests>=2.34
 
-# Code formatting — the VS Code ruff extension bundles its own binary, so this
-# is only needed to run `ruff format` / `ruff check` from the command line.
+# Code formatting. This is the ruff that VS Code actually formats with: the
+# extension's importStrategy is "fromEnvironment", so it prefers this one over
+# its bundled binary (and falls back to the bundle before setup has run).
 # Upper bound (the only one in this file) is deliberate: ruff's formatter output
 # changes between minor releases, and an unpinned range would have participants
 # reformatting each other's files back and forth.
