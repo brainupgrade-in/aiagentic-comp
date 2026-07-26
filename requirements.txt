@@ -49,3 +49,7 @@ ipywidgets>=8.1
 
 # Utilities
 requests>=2.34
+
+# Code formatting — the VS Code ruff extension bundles its own binary, so this
+# is only needed to run `ruff format` / `ruff check` from the command line.
+ruff>=0.16

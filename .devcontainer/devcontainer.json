@@ -34,6 +34,7 @@
         "ms-python.python",
         "ms-python.vscode-pylance",
         "ms-python.debugpy",
+        "charliermarsh.ruff",
         "ms-toolsai.jupyter",
         "ms-toolsai.jupyter-renderers",
         "redhat.vscode-yaml",

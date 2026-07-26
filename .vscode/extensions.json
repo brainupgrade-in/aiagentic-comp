@@ -5,6 +5,9 @@
     "ms-python.python",
     "ms-python.vscode-pylance",
     "ms-python.debugpy",
+    // Formats .py on save. Ships a bundled ruff binary, so it works before
+    // requirements.txt is ever installed.
+    "charliermarsh.ruff",
 
     // Jupyter — all 119 labs are notebooks; renderers draw plots and ipywidgets
     "ms-toolsai.jupyter",
