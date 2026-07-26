@@ -116,6 +116,17 @@ Not regressions — model-capability or authoring issues, verified against curre
 The 119 *student* notebooks are not meant to execute clean — they contain `___`
 placeholders and report `[TODO]`/`[FAIL]` by design.
 
+**Scores 10/10 but reports a misleading row:** `session-3/solutions/lab05_tool_calling.ipynb`.
+Its TODOs validate structure, not accuracy, so it passes — but on llama3.2:1b the
+`summarize_text` question in Steps 4/5 is a near-deterministic miss (0/5 correct over
+30 measured calls; it routes to `translate_text`, occasionally `calculate_shipping`).
+The lab does *prompt-based* tool calling with no `bind_tools` grammar constraint, so
+1b also invents names — `summary_text` for `summarize_text` being the common one.
+`parse_tool_choice` now validates against `TOOL_FUNCTIONS` and renders an invented name
+as `<invalid: …>`, so it reads as a bad call rather than a wrong tool choice. Enriching
+the description does **not** fix the routing (A/B-tested, still 0/8); llama3.1:8b scores
+6/6 on the same prompt. Expect the "good descriptions" row to land ~80%, not 100%.
+
 ## File Structure
 
 ```
