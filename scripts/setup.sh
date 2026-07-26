@@ -260,7 +260,24 @@ else
     else
         case "$OS" in
             linux)
-                curl -fsSL https://ollama.com/install.sh | sh ;;
+                # The Ollama installer unpacks zstd-compressed tarballs and aborts
+                # if the zstd binary is missing (e.g. Codespaces' bookworm image).
+                if ! command -v zstd &>/dev/null; then
+                    SUDO=""
+                    [ "$(id -u)" -ne 0 ] && command -v sudo &>/dev/null && SUDO="sudo"
+                    if command -v apt-get &>/dev/null; then
+                        { $SUDO apt-get update -qq && $SUDO apt-get install -y -qq zstd; } || true
+                    elif command -v dnf &>/dev/null; then
+                        $SUDO dnf install -y -q zstd || true
+                    elif command -v pacman &>/dev/null; then
+                        $SUDO pacman -S --noconfirm zstd || true
+                    fi
+                    command -v zstd &>/dev/null \
+                        && ok "zstd installed (needed by the Ollama installer)" \
+                        || warn "zstd missing — install it (apt-get install zstd), then re-run this script"
+                fi
+                curl -fsSL https://ollama.com/install.sh | sh \
+                    || warn "Ollama install failed — Day 1 only; retry or see https://ollama.com/download" ;;
             mac)
                 if command -v brew &>/dev/null; then
                     brew install ollama
@@ -276,8 +293,9 @@ else
         # Make sure a server is listening before pulling
         curl -sf http://localhost:11434/ &>/dev/null || { ollama serve &>/dev/null & sleep 3; }
         echo "  Pulling $OLLAMA_MODEL (~1.3 GB)..."
-        ollama pull "$OLLAMA_MODEL"
-        ok "$OLLAMA_MODEL ready"
+        ollama pull "$OLLAMA_MODEL" \
+            && ok "$OLLAMA_MODEL ready" \
+            || warn "could not pull $OLLAMA_MODEL — retry: ollama pull $OLLAMA_MODEL"
     fi
 fi
 
