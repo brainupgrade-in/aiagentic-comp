@@ -110,15 +110,38 @@ echo -e "${BLUE}Lab:${NC} $LAB"
 echo -e "${BLUE}Issue Number:${NC} #$ISSUE_NUMBER"
 echo ""
 
+# Find a Python for JSON encode/decode. Git Bash on Windows has no `python3`
+# (uv's Python is not on PATH and this script doesn't activate the venv), and
+# Windows ships a python3.exe Store stub that fails when actually run — so test
+# each candidate rather than trusting `command -v`.
+PY=""
+for candidate in python3 python py; do
+    if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import json' >/dev/null 2>&1; then
+        PY="$candidate"
+        break
+    fi
+done
+
+if [ -z "$PY" ]; then
+    echo -e "${RED}Error: No working Python found (tried python3, python, py)${NC}"
+    echo ""
+    echo "This script needs Python to build the JSON payload."
+    echo "Windows (Git Bash): activate the course venv first, then retry:"
+    echo "  source .venv/Scripts/activate"
+    echo ""
+    exit 1
+fi
+
 # Detect GitHub username and email
 echo -e "${YELLOW}Detecting your information...${NC}"
 
 USERNAME=""
 EMAIL=""
 
-# 1st preference: Repository-level git config
-USERNAME=$(git config --local user.name 2>/dev/null || echo "")
-EMAIL=$(git config --local user.email 2>/dev/null || echo "")
+# 1st preference: Repository-level git config (read from the repo, not the cwd,
+# so the script works when invoked by absolute path from anywhere)
+USERNAME=$(git -C "$REPO_ROOT" config --local user.name 2>/dev/null || echo "")
+EMAIL=$(git -C "$REPO_ROOT" config --local user.email 2>/dev/null || echo "")
 
 # 2nd preference: Global git config (username or email not found in repo)
 if [ -z "$USERNAME" ]; then
@@ -157,11 +180,16 @@ if [[ "$GITHUB_TOKEN" == ghu_* ]]; then
 fi
 
 if [ -z "$GITHUB_TOKEN" ] && [ -f "$ENV_FILE" ]; then
-    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+    GITHUB_TOKEN=$(grep -E '^GITHUB_TOKEN=' "$ENV_FILE" | cut -d'=' -f2- | tr -d '"' | tr -d "'" | tr -d '\r')
+fi
+
+# .env starts life as a copy of .env.example — don't treat its placeholder as a token
+if [ "$GITHUB_TOKEN" = "ghp_your_lab_submit_token_here" ]; then
+    GITHUB_TOKEN=""
 fi
 
 if [ -z "$GITHUB_TOKEN" ]; then
-    REMOTE_URL=$(git remote get-url origin 2>/dev/null || echo "")
+    REMOTE_URL=$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null || echo "")
     if [[ "$REMOTE_URL" =~ https://([^@]+)@github\.com ]]; then
         GITHUB_TOKEN="${BASH_REMATCH[1]}"
     fi
@@ -230,13 +258,13 @@ HTTP_CODE=$(curl -s -o "$RESPONSE_FILE" -w "%{http_code}" \
     -H "Accept: application/vnd.github+json" \
     -H "Content-Type: application/json" \
     "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/comments" \
-    -d "{\"body\": $(echo "$COMMENT_BODY" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}")
+    -d "{\"body\": $(echo "$COMMENT_BODY" | "$PY" -c 'import json,sys; print(json.dumps(sys.stdin.read()))')}")
 RESPONSE_BODY=$(cat "$RESPONSE_FILE")
 rm -f "$RESPONSE_FILE"
 
 COMMENT_URL=""
 if [ "$HTTP_CODE" = "201" ]; then
-    COMMENT_URL=$(echo "$RESPONSE_BODY" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("html_url",""))' 2>/dev/null || echo "")
+    COMMENT_URL=$(echo "$RESPONSE_BODY" | "$PY" -c 'import json,sys; print(json.load(sys.stdin).get("html_url",""))' 2>/dev/null || echo "")
 fi
 
 if [ -n "$COMMENT_URL" ]; then
@@ -257,7 +285,7 @@ else
     echo -e "${RED}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
     echo ""
     echo "HTTP status: $HTTP_CODE"
-    echo "API response: $(echo "$RESPONSE_BODY" | python3 -c 'import json,sys; d=json.load(sys.stdin); print(d.get("message", d))' 2>/dev/null || echo "$RESPONSE_BODY")"
+    echo "API response: $(echo "$RESPONSE_BODY" | "$PY" -c 'import json,sys; d=json.load(sys.stdin); print(d.get("message", d))' 2>/dev/null || echo "$RESPONSE_BODY")"
     echo ""
     echo "Please check:"
     echo "  1. GITHUB_TOKEN is a fine-grained PAT with 'Issues' read/write permission"

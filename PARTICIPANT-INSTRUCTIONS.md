@@ -84,18 +84,46 @@ bash scripts/setup.sh --verify
 
 ## Identity & Token (Required for Lab Submission)
 
+Do all four steps **once, before Day 1**, from inside the repo directory.
+
+**1. Make sure you have a real clone, not a ZIP.** `submit-lab.sh` reads your name
+from the repo's git config, so an unzipped folder can't submit. If you started from
+a ZIP on Windows, clone the repo now and re-run `scripts/setup.sh` inside the clone:
+
+```bash
+git clone https://github.com/brainupgrade-in/aiagentic-comp.git
+```
+
+**2. Set your identity** — nothing in setup does this for you, and submission fails
+without it:
+
 ```bash
 git config user.name "your-github-username"
 git config user.email "your-email@example.com"
 ```
 
-Add the GitHub token shared by the instructor to `.env`:
+**3. Add the GitHub token** shared by the instructor to `.env`:
 
 ```bash
 echo 'GITHUB_TOKEN=ghp_xxxx' >> .env
 ```
 
-> Token needs `public_repo` scope.
+> Token needs `public_repo` scope. Replacing the `ghp_your_lab_submit_token_here`
+> placeholder that setup wrote is fine — leaving it in place is treated as "no token".
+
+**4. Dry-run the check.** Everything before the confirmation prompt is a pre-flight
+check, so run this and answer `N`:
+
+```bash
+bash scripts/submit-lab.sh 1 1        # answer N at the "Submit this lab?" prompt
+```
+
+You should see your username and `✓ GitHub token found`. (Whether the token is
+*valid* is only known on a real submission — do your first one early on Day 1.)
+
+> **Windows (Git Bash):** activate the venv before submitting —
+> `source .venv/Scripts/activate` — the script needs Python on `PATH` to build the
+> request, and Git Bash has none of its own.
 
 ---
 
