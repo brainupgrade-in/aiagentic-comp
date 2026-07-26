@@ -361,23 +361,28 @@ langfuse.auth_check()  # Returns True if connected</code></pre>
       <section>
         <h2>LangChain Callback Handler</h2>
         <p class="text-base-dim">One line to trace entire LangChain workflows</p>
-        <pre><code class="language-python" data-trim data-noescape>from langfuse.callback import CallbackHandler
+        <pre><code class="language-python" data-trim data-noescape>from langfuse import Langfuse
+from langfuse.langchain import CallbackHandler
 
-# Create handler for this request
-handler = CallbackHandler(
-    public_key="pk-lf-...",
-    secret_key="sk-lf-...",
-    host="https://cloud.langfuse.com",
-    # Metadata for this trace
-    user_id="alice",
-    session_id="chat_42",
-    tags=["production", "v2.0"],
-)
+langfuse = Langfuse()   # reads LANGFUSE_* env vars
 
-# Use with any LangChain component
+# v4: the handler carries no trace metadata. Create the trace id
+# up front so scores can be attached to it after the run.
+trace_id = langfuse.create_trace_id()
+handler = CallbackHandler(trace_context={"trace_id": trace_id})
+
+# Trace attributes travel in the run config, not the handler
 result = chain.invoke(
     {"question": "What is RAG?"},
-    config={"callbacks": [handler]}
+    config={
+        "callbacks": [handler],
+        "run_name": "rag_query",
+        "metadata": {
+            "langfuse_user_id": "alice",
+            "langfuse_session_id": "chat_42",
+            "langfuse_tags": ["production", "v2.0"],
+        },
+    },
 )
 
 # LangFuse automatically captures:
@@ -395,7 +400,8 @@ from langchain_groq import ChatGroq
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
-from langfuse.callback import CallbackHandler
+from langfuse import Langfuse
+from langfuse.langchain import CallbackHandler
 
 # Setup RAG chain (modern LCEL approach — RetrievalQA is deprecated)
 vectorstore = Chroma(persist_directory="./chroma_db")
@@ -409,16 +415,21 @@ stuff_chain = create_stuff_documents_chain(llm, prompt)
 chain = create_retrieval_chain(retriever, stuff_chain)
 
 # Create LangFuse handler
-handler = CallbackHandler(
-    user_id="alice",
-    session_id="session_123",
-    metadata={"pipeline": "rag_v2"},
-)
+langfuse = Langfuse()
+trace_id = langfuse.create_trace_id()
+handler = CallbackHandler(trace_context={"trace_id": trace_id})
 
 # Invoke with tracing
 result = chain.invoke(
     {"input": "How do Python health checks work?"},
-    config={"callbacks": [handler]}
+    config={
+        "callbacks": [handler],
+        "metadata": {
+            "langfuse_user_id": "alice",
+            "langfuse_session_id": "session_123",
+            "pipeline": "rag_v2",
+        },
+    },
 )</code></pre>
       </section>
 
@@ -451,29 +462,37 @@ result = chain.invoke(
 
 langfuse = Langfuse()
 
+# trace_id came from langfuse.create_trace_id() before the run and was
+# bound to the handler via trace_context= (v4 has no handler.get_trace_id())
+
 # After the user rates the response (e.g., thumbs up)
-langfuse.score(
-    trace_id=handler.get_trace_id(),
+langfuse.create_score(
+    trace_id=trace_id,
     name="user_feedback",
     value=1,           # 1 = positive, 0 = negative
+    data_type="NUMERIC",
     comment="Accurate and helpful response",
 )
 
 # Or a numeric score (1-5 stars)
-langfuse.score(
-    trace_id=handler.get_trace_id(),
+langfuse.create_score(
+    trace_id=trace_id,
     name="quality",
     value=4.5,
+    data_type="NUMERIC",
     comment="Good answer but slightly verbose",
 )
 
 # Automated quality scoring
-langfuse.score(
-    trace_id=handler.get_trace_id(),
+langfuse.create_score(
+    trace_id=trace_id,
     name="relevance",
     value=calculate_relevance_score(query, response),
+    data_type="NUMERIC",
     comment="Auto-evaluated by relevance model",
-)</code></pre>
+)
+
+langfuse.flush()</code></pre>
         <div class="card-grid mt-10">
           <div class="card card-accent">
             <h4>Manual Scores</h4>
@@ -502,7 +521,8 @@ prompt = langfuse.get_prompt("rag_system_prompt")
 from langchain_core.prompts import ChatPromptTemplate
 
 template = ChatPromptTemplate.from_messages([
-    ("system", prompt.prompt),    # Fetched from LangFuse
+    # get_langchain_prompt() converts {{var}} -> {var}
+    ("system", prompt.get_langchain_prompt()),    # Fetched from LangFuse
     ("human", "{question}"),
 ])
 
@@ -899,7 +919,7 @@ template = ChatPromptTemplate.from_messages([
             </div>
             <div class="quiz-option">
               <span class="opt-letter">C</span>
-              <span>Wrap every LLM call with a langfuse.trace() decorator</span>
+              <span>Wrap every LLM call in a langfuse.start_observation() block by hand</span>
             </div>
             <div class="quiz-option">
               <span class="opt-letter">D</span>
@@ -912,10 +932,10 @@ template = ChatPromptTemplate.from_messages([
         <section>
           <div class="quiz-badge">Answer: Question 3</div>
           <div class="answer-explain">
-            <strong>B &mdash; CallbackHandler.</strong> LangChain&rsquo;s callback system makes integration minimal: create a <code>CallbackHandler</code> and pass it via <code>config={"callbacks": [handler]}</code>. LangFuse automatically captures all chain, retriever, and LLM operations.
+            <strong>B &mdash; CallbackHandler.</strong> LangChain&rsquo;s callback system makes integration minimal: create a <code>CallbackHandler</code> from <code>langfuse.langchain</code> and pass it via <code>config={"callbacks": [handler]}</code>. LangFuse automatically captures all chain, retriever, and LLM operations.
           </div>
           <aside class="notes">
-            Correct answer: B -- CallbackHandler. The integration is minimal: create a CallbackHandler with your LangFuse credentials and pass it in the config parameter of chain.invoke(). LangFuse then automatically captures every LLM call, retriever query, and tool invocation without changing any of your chain logic.
+            Correct answer: B -- CallbackHandler. The integration is minimal: create a CallbackHandler (credentials come from the LANGFUSE_* environment variables in v4) and pass it in the config parameter of chain.invoke(). Trace attributes like user_id, session_id and tags go in the same config under metadata, using the langfuse_ prefix. LangFuse then automatically captures every LLM call, retriever query, and tool invocation without changing any of your chain logic.
           </aside>
         </section>
 

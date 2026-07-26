@@ -25,7 +25,7 @@ langfuse = MockLangfuse(...)
 ```python
 # Cloud-based observability
 from langfuse import Langfuse
-from langfuse.callback import CallbackHandler
+from langfuse.langchain import CallbackHandler
 
 langfuse = Langfuse(
     secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
@@ -44,18 +44,23 @@ langfuse = Langfuse(
 
 ### 2. **Automatic Instrumentation**
 ```python
-# CallbackHandler captures all LangGraph steps automatically
-langfuse_handler = CallbackHandler(
-    secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
-    public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
-    host=os.getenv("LANGFUSE_HOST"),
-    session_id=session_id,
-    user_id=req.employee_name,
-    tags=["production", "support", "fastapi"],
-)
+# In langfuse v4 the handler carries no trace metadata. Create the trace id
+# first, bind the handler to it, and pass the attributes in the run config.
+trace_id = langfuse.create_trace_id(seed=f"{req.employee_name}-{session_id}")
+langfuse_handler = CallbackHandler(trace_context={"trace_id": trace_id})
 
-# Just pass it to agent.invoke()
-result = agent.invoke(state, config={"callbacks": [langfuse_handler]})
+result = agent.invoke(
+    state,
+    config={
+        "callbacks": [langfuse_handler],
+        "run_name": "support_request",
+        "metadata": {
+            "langfuse_user_id": req.employee_name,
+            "langfuse_session_id": session_id,
+            "langfuse_tags": ["production", "support", "fastapi"],
+        },
+    },
+)
 ```
 
 ### 3. **Rich Dashboard Features**
@@ -122,12 +127,13 @@ async def health():
 ```python
 @app.post("/api/feedback")
 async def submit_feedback(feedback: FeedbackRequest):
-    langfuse.score(
+    langfuse.create_score(
         trace_id=feedback.trace_id,
         name="user_rating",
         value=feedback.rating,
         comment=feedback.comment,
     )
+    langfuse.flush()
     return {"status": "success", "message": "Feedback submitted to LangFuse cloud"}
 ```
 
@@ -323,15 +329,14 @@ curl -H "Authorization: Bearer $LANGFUSE_SECRET_KEY" \
 ```
 
 ### Issue 2: Traces not appearing in dashboard
-**Cause:** Forgot to flush the handler
+**Cause:** Forgot to flush the client
 **Solution:**
 ```python
-# Always flush after invoke
-langfuse_handler.flush()
+# v4: flush lives on the client, not the handler
+langfuse.flush()
 
-# Or use context manager (auto-flush)
-with CallbackHandler(...) as handler:
-    result = agent.invoke(state, config={"callbacks": [handler]})
+# On process shutdown, drain the queue completely
+langfuse.shutdown()
 ```
 
 ### Issue 3: Incorrect costs displayed
@@ -351,13 +356,14 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")  # Exact match
 ```python
 # Add small delay or retry logic
 import time
+langfuse.flush()
 time.sleep(1)  # Wait for sync
-langfuse.score(trace_id=trace_id, ...)
+langfuse.create_score(trace_id=trace_id, name="user_rating", value=5)
 
 # Or check if trace exists first
-traces = langfuse.get_traces()
-if trace_id in [t.id for t in traces]:
-    langfuse.score(...)
+traces = langfuse.api.trace.list(limit=50)
+if trace_id in [t.id for t in traces.data]:
+    langfuse.create_score(trace_id=trace_id, name="user_rating", value=5)
 ```
 
 ## Production Best Practices
@@ -381,9 +387,9 @@ langfuse = Langfuse(
 ```python
 # ✅ Good: Wrap in try/except
 try:
-    langfuse_handler = CallbackHandler(...)
+    langfuse_handler = CallbackHandler(trace_context={"trace_id": trace_id})
     result = agent.invoke(state, config={"callbacks": [langfuse_handler]})
-    langfuse_handler.flush()
+    langfuse.flush()
 except Exception as e:
     logger.error(f"LangFuse error: {e}")
     # Continue without observability rather than failing
@@ -392,30 +398,36 @@ except Exception as e:
 
 ### 3. Rich Metadata
 ```python
-# ✅ Good: Include debugging context
-langfuse_handler = CallbackHandler(
-    session_id=session_id,
-    user_id=user_id,
-    tags=["production", "v2.0", "fastapi"],
-    metadata={
-        "endpoint": "/api/support",
-        "request_preview": request[:100],
-        "client_ip": request.client.host,
-        "version": "2.0.1",
-    }
+# ✅ Good: Include debugging context in the run config metadata
+result = agent.invoke(
+    state,
+    config={
+        "callbacks": [langfuse_handler],
+        "run_name": "support_request",
+        "metadata": {
+            "langfuse_user_id": user_id,
+            "langfuse_session_id": session_id,
+            "langfuse_tags": ["production", "v2.0", "fastapi"],
+            "endpoint": "/api/support",
+            "request_preview": request[:100],
+            "client_ip": request.client.host,
+            "version": "2.0.1",
+        },
+    },
 )
 
 # ❌ Bad: Minimal metadata
-langfuse_handler = CallbackHandler()
+result = agent.invoke(state, config={"callbacks": [langfuse_handler]})
 ```
 
 ### 4. Trace URLs
 ```python
 # ✅ Good: Return trace URL for support tickets
+# trace_id came from langfuse.create_trace_id() before the run
 return {
     "response": result,
-    "trace_id": handler.get_trace_id(),
-    "trace_url": f"{LANGFUSE_HOST}/trace/{handler.get_trace_id()}",
+    "trace_id": trace_id,
+    "trace_url": langfuse.get_trace_url(trace_id=trace_id),
 }
 
 # ❌ Bad: No trace reference

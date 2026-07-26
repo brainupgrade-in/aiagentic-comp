@@ -3,11 +3,20 @@
 ## Prerequisites
 
 - Setup complete (`source scripts/setup.sh` — installs everything for all 5 days)
-- No infrastructure needed — labs generate config files and validate YAML
+- Labs 01-08 need no infrastructure — they generate config files and validate code patterns
+- **Lab 09 needs your own LangFuse Cloud keys** — self-register at
+  [cloud.langfuse.com](https://cloud.langfuse.com) and put `LANGFUSE_PUBLIC_KEY`,
+  `LANGFUSE_SECRET_KEY`, `LANGFUSE_HOST` in `.env`. It also calls Groq.
 
 ```bash
 bash scripts/setup.sh --verify
 ```
+
+> **SDK version:** these labs teach the **langfuse v4** API
+> (`langfuse.langchain.CallbackHandler`, `create_trace_id` + `trace_context`,
+> `create_score`, `start_as_current_observation`, `api.trace.list`).
+> The v2 API (`langfuse.callback`, `langfuse.score()`, `handler.get_trace_id()`,
+> `langfuse.trace()`, `fetch_traces()`) no longer exists in the installed SDK.
 
 ## Labs Overview
 
@@ -21,7 +30,7 @@ bash scripts/setup.sh --verify
 | 06 | Prompt Management | Version control, runtime fetching, A/B testing | No |
 | 07 | Cost & Token Analysis | Cost tracking, LangFuse cost dashboard, token analytics | No |
 | 08 | **Challenge** | Complete pipeline: instrumentation + bridge + alerts | No |
-| 09 | **Production Integration** | FastAPI + LangGraph + LangFuse (Session 11 + 12) | No |
+| 09 | **Production Integration** | FastAPI + LangGraph + LangFuse (Session 11 + 12) | **Yes** — LangFuse Cloud keys + Groq |
 
 ## How to Run
 
@@ -52,7 +61,7 @@ hands-on/session-12/
 
 ## Tips
 
-- All 9 labs work WITHOUT any running services (use MockLangfuse)
+- Labs 01-08 work WITHOUT any running services (they use MockLangfuse); Lab 09 sends real traces to LangFuse Cloud
 - **Read the markdown cells** — they explain LangFuse concepts step by step
 - **Look for `# TODO` markers and `"___"` placeholders** — that's where you write code
 - **Run frequently** — don't wait until you've written everything; run after each TODO
