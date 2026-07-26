@@ -654,7 +654,7 @@
         <p class="text-base-dim">Use <code>langchain-mcp-adapters</code> to bring MCP tools into LangChain agents</p>
         <pre><code class="language-python" data-trim data-noescape># pip install "mcp>=1.0" langchain-mcp-adapters
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 # Connect to MCP servers
 async with MultiServerMCPClient({
@@ -663,7 +663,7 @@ async with MultiServerMCPClient({
 }) as client:
     tools = client.get_tools()  # Auto-converts MCP tools to LangChain tools
 
-    agent = create_react_agent(llm, tools)
+    agent = create_agent(llm, tools)
     result = await agent.ainvoke({
         "messages": [("user", "What's 2+2 and weather in SF?")]
     })</code></pre>
@@ -1107,7 +1107,7 @@ async with MultiServerMCPClient({
           </div>
         </div>
         <div class="answer-explain">
-          <strong>C &mdash; Auto-converts MCP tools to LangChain tools.</strong> The <code>MultiServerMCPClient</code> connects to MCP servers, discovers their tools, and exposes them as LangChain <code>Tool</code> objects that work seamlessly with <code>create_react_agent</code>.
+          <strong>C &mdash; Auto-converts MCP tools to LangChain tools.</strong> The <code>MultiServerMCPClient</code> connects to MCP servers, discovers their tools, and exposes them as LangChain <code>Tool</code> objects that work seamlessly with <code>create_agent</code>.
         </div>
         <aside class="notes">
           Correct answer is C. The adapter does not replace LangChain tools or convert agents into MCP servers. It bridges the two worlds: MCP handles standardized tool discovery and invocation, while LangChain and LangGraph handle orchestration logic. The key method is client.get_tools(), which auto-converts every discovered MCP tool into a LangChain Tool object.

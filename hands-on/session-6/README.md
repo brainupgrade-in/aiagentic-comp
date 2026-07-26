@@ -9,7 +9,7 @@
 Verify your setup:
 ```bash
 python -c "from langchain_groq import ChatGroq; print('ChatGroq OK')"
-python -c "from langgraph.prebuilt import create_react_agent; print('LangGraph OK')"
+python -c "from langchain.agents import create_agent; print('LangChain agents OK')"
 python -c "from langchain_core.tools import tool; print('Tools OK')"
 ```
 
@@ -18,7 +18,7 @@ python -c "from langchain_core.tools import tool; print('Tools OK')"
 | Lab | Topic | What You'll Learn |
 |-----|-------|-------------------|
 | 01 | Creating Tools | `@tool` decorator, tool anatomy, docstrings, direct invocation |
-| 02 | Your First ReAct Agent | `create_react_agent()`, Think→Act→Observe loop, message trace |
+| 02 | Your First ReAct Agent | `create_agent()`, Think→Act→Observe loop, message trace |
 | 03 | Function Calling | `bind_tools()`, structured tool calls, manual tool execution |
 | 04 | Multi-Tool Agent | Multiple tools, agent orchestration, complex questions |
 | 05 | Conversation Memory | Stateless vs stateful, message lists, multi-turn chat |

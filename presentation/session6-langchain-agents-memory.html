@@ -157,7 +157,7 @@
           <h2>ReAct Agent in LangChain</h2>
           <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_groq import ChatGroq
 from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 # Define tools
 @tool
@@ -167,7 +167,7 @@ def weather(city: str) -> str:
 
 # Create the agent
 llm = ChatGroq(model="llama-3.3-70b-versatile")
-agent = create_react_agent(llm, tools=[weather])
+agent = create_agent(llm, tools=[weather])
 
 # Run it
 result = agent.invoke(
@@ -175,7 +175,7 @@ result = agent.invoke(
 )
 print(result["messages"][-1].content)</code></pre>
           <div class="takeaway">
-            <code>create_react_agent</code> from <code>langgraph.prebuilt</code> is the modern way to build agents.
+            <code>create_agent</code> from <code>langchain.agents</code> is the modern way to build agents.
             You give it an LLM and tools &mdash; it handles the Think &rarr; Act &rarr; Observe loop automatically.
           </div>
         </section>
@@ -253,7 +253,7 @@ print(response.tool_calls)
               <td><strong class="color-accent">ReAct</strong></td>
               <td>Reasons step-by-step in a loop</td>
               <td>Multi-step tasks needing planning</td>
-              <td><code>create_react_agent()</code></td>
+              <td><code>create_agent()</code></td>
             </tr>
             <tr>
               <td><strong class="color-green">Function-Calling</strong></td>
@@ -269,7 +269,7 @@ print(response.tool_calls)
             </tr>
           </table>
           <div class="takeaway">
-            <strong>Start with ReAct</strong> (<code>create_react_agent</code>) &mdash; it covers 80% of use cases.
+            <strong>Start with ReAct</strong> (<code>create_agent</code>) &mdash; it covers 80% of use cases.
             Use function-calling for simple tool use. Build custom agents with LangGraph when you need
             full control over the decision flow.
           </div>
@@ -352,7 +352,7 @@ print(get_order_status.args_schema)  # {"order_id": {"type": "string"}}</code></
           <h2>Multi-Tool Agent</h2>
           <h3>Agent with several tools to choose from</h3>
           <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.tools import tool
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 @tool
 def weather(city: str) -> str:
@@ -370,7 +370,7 @@ def get_time() -> str:
     from datetime import datetime
     return datetime.now().strftime("%A, %B %d at %I:%M %p")
 
-agent = create_react_agent(llm, tools=[weather, calculator, get_time])
+agent = create_agent(llm, tools=[weather, calculator, get_time])
 # The agent picks the right tool for each question automatically!</code></pre>
         </section>
 
@@ -580,12 +580,12 @@ PostgresSaver(conn_string)</code></pre>
         <!-- MULTI-SESSION PATTERN -->
         <section>
           <h2>Multi-User Session Pattern</h2>
-          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langgraph.prebuilt import create_react_agent
+          <pre class="text-052" style="line-height:1.4; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
 
 # Create agent with memory
 memory = MemorySaver()
-agent = create_react_agent(llm, tools=[weather], checkpointer=memory)
+agent = create_agent(llm, tools=[weather], checkpointer=memory)
 
 # User A's conversation
 config_a = {"configurable": {"thread_id": "user-A"}}
@@ -652,7 +652,7 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
               <ul>
                 <li><code>@tool</code> decorator &rarr; define tools</li>
                 <li><code>llm.bind_tools()</code> &rarr; attach tools to LLM</li>
-                <li><code>create_react_agent()</code> &rarr; build agent</li>
+                <li><code>create_agent()</code> &rarr; build agent</li>
                 <li><code>MemorySaver()</code> &rarr; persist conversations</li>
                 <li><code>thread_id</code> &rarr; isolate user sessions</li>
               </ul>
@@ -681,8 +681,8 @@ agent.invoke({"messages": [("human", "Weather in Mumbai?")]}, config=config_b)</
             </tr>
             <tr>
               <td>Build a ReAct agent</td>
-              <td><code>create_react_agent()</code></td>
-              <td><code>langgraph.prebuilt</code></td>
+              <td><code>create_agent()</code></td>
+              <td><code>langchain.agents</code></td>
             </tr>
             <tr>
               <td>In-memory checkpointer</td>
