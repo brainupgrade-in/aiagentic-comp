@@ -49,6 +49,12 @@ see the left-hand column anywhere, it is stale — the packages no longer expose
 `requirements.txt` floors track the installed releases (langchain 1.3, langgraph 1.2,
 langfuse 4.14, chromadb 1.5, fastapi 0.140, mcp 1.28, ipykernel 7.3).
 
+**One deliberate exception to floors-only:** `ruff>=0.16,<0.17` is capped, because the
+formatter's output changes between minor releases and format-on-save is enabled in
+`.vscode/settings.json` — an open range would have participants reformatting each
+other's files. Don't widen it without re-running `ruff format` across `scripts/` and
+`reporting/` in its own commit.
+
 ## Resource Usage by Day
 
 | Day | Services | RAM | Cleanup |
