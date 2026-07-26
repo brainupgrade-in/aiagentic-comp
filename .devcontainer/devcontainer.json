@@ -10,6 +10,12 @@
   // common-utils (the vscode user, git, curl, sudo), and every extra feature is
   // re-installed on each container create when there is no prebuild.
 
+  // zstd is the one missing package: Ollama's install.sh unpacks zstd-compressed
+  // tarballs and aborts without it, and bookworm ships no zstd. A plain apt line
+  // (not the apt-packages feature) keeps the create fast; non-fatal because only
+  // Day 1 needs Ollama and scripts/setup.sh installs zstd itself if this fails.
+  "onCreateCommand": "sudo apt-get update -qq && sudo apt-get install -y -qq zstd || true",
+
   // Setup is DELIBERATELY NOT automated, so the container attaches in seconds.
   // Run this once in the container terminal before the first lab (~3-5 min):
   //
