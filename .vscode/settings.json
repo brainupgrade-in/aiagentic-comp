@@ -1,0 +1,107 @@
+{
+  // ==========================================================================
+  // Agentic AI Course — shared workspace settings
+  // Tuned to work identically on Linux, macOS, Windows (Git Bash) and Codespaces.
+  // Recommended extensions live in .vscode/extensions.json.
+  // ==========================================================================
+
+  // --- Python ---------------------------------------------------------------
+  // Interpreter is NOT hardcoded: the extension auto-discovers
+  // ${workspaceFolder}/.venv, and the path differs per OS
+  // (.venv/bin/python vs .venv/Scripts/python.exe on Windows).
+  "python.terminal.activateEnvironment": true,
+  "python.analysis.typeCheckingMode": "off",
+  "python.analysis.autoImportCompletions": true,
+
+  // --- Jupyter --------------------------------------------------------------
+  "jupyter.kernelPicker.type": "default",
+  "jupyter.notebookFileRoot": "${workspaceFolder}",
+  // Don't interrupt a lab with a modal every time a kernel dies.
+  "jupyter.askForKernelRestart": false,
+  // Labs print long validation blocks; the 30-line default truncates them.
+  "notebook.output.textLineLimit": 200,
+  "notebook.output.scrolling": true,
+  "notebook.lineNumbers": "on",
+  // Never reformat a notebook on save: it rewrites the JSON and turns a
+  // 3-line change into a 2000-line diff (see CLAUDE.md).
+  "notebook.formatOnSave.enabled": false,
+  // Make notebook diffs readable — ignore execution counts and cell outputs.
+  "notebook.diff.ignoreMetadata": true,
+  "notebook.diff.ignoreOutputs": true,
+
+  // --- Editor ---------------------------------------------------------------
+  "editor.formatOnSave": true,
+  "editor.rulers": [88],
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  // No formatter ships with requirements.txt, and reformatting lab code would
+  // move the "___" placeholders the graders match on.
+  "[python]": {
+    "editor.formatOnSave": false
+  },
+  // The Reveal.js decks are hand-tuned, self-contained HTML with inline SVG —
+  // auto-formatting reflows them into an unreviewable diff.
+  "[html]": {
+    "editor.formatOnSave": false
+  },
+
+  // --- Line endings (the #1 Windows breakage) --------------------------------
+  // CRLF in scripts/*.sh makes bash fail with "\r: command not found".
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  // Left off deliberately: some notebook cells carry trailing whitespace on
+  // blank lines, and stripping it inflates the diff.
+  "files.trimTrailingWhitespace": false,
+
+  "files.associations": {
+    ".env.example": "dotenv",
+    ".env.*": "dotenv"
+  },
+
+  // --- Terminal -------------------------------------------------------------
+  // Git Bash on Windows so the same `bash scripts/...` commands work everywhere.
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "bash",
+  // Tasks and the Python extension should also use bash, not PowerShell/cmd.
+  // "source" reuses VS Code's detected Git Bash, so no hardcoded install path.
+  "terminal.integrated.automationProfile.windows": {
+    "source": "Git Bash"
+  },
+  "terminal.integrated.cwd": "${workspaceFolder}",
+  "terminal.integrated.scrollback": 5000,
+
+  // --- Explorer / search / file watching ------------------------------------
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/.pytest_cache": true,
+    "**/.ipynb_checkpoints": true,
+    "**/*.egg-info": true,
+    ".venv": true
+  },
+  "search.exclude": {
+    ".venv": true,
+    "**/__pycache__": true,
+    "**/.ipynb_checkpoints": true,
+    "**/tmp": true
+  },
+  // Excluding .venv from the watcher is what keeps VS Code responsive on
+  // Windows, where file watching is far more expensive than on Linux.
+  "files.watcherExclude": {
+    "**/.venv/**": true,
+    "**/__pycache__/**": true,
+    "**/.ipynb_checkpoints/**": true,
+    "**/.git/objects/**": true
+  },
+
+  // --- Git ------------------------------------------------------------------
+  "git.ignoreLimitWarning": true,
+  "git.openRepositoryInParentFolders": "never",
+
+  // --- YAML -----------------------------------------------------------------
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.autoIndent": "keep"
+  }
+}

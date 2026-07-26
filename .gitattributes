@@ -1,0 +1,36 @@
+# Line-ending policy for the Agentic AI course repo.
+#
+# Why this file exists: participants clone on Windows, macOS and Linux and run the
+# same `bash scripts/...` commands. Without this, git's core.autocrlf on Windows
+# checks shell scripts out with CRLF and bash fails with "\r: command not found"
+# before VS Code is ever involved. .vscode/settings.json sets files.eol to "\n",
+# but that only governs what the editor writes — this governs what git checks out.
+
+# Default: let git detect text, and always check text out with LF.
+* text=auto eol=lf
+
+# --- Must be LF ------------------------------------------------------------
+# Executed by bash (setup.sh, cleanup.sh, submit-lab.sh, langfuse-server.sh …)
+*.sh            text eol=lf
+# Notebook JSON: CRLF would break the indent=2 round-trip that keeps notebook
+# diffs to three lines instead of two thousand (see CLAUDE.md).
+*.ipynb         text eol=lf
+*.py            text eol=lf
+*.env           text eol=lf
+.env.example    text eol=lf
+
+# --- Must be CRLF ----------------------------------------------------------
+# Run by Windows PowerShell, often after a download-as-ZIP rather than a clone.
+*.ps1           text eol=crlf
+
+# --- Never normalize -------------------------------------------------------
+*.pdf           binary
+*.png           binary
+*.jpg           binary
+*.jpeg          binary
+*.gif           binary
+*.ico           binary
+*.woff          binary
+*.woff2         binary
+*.mp3           binary
+*.mp4           binary

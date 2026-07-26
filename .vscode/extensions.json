@@ -1,10 +1,28 @@
 {
+  // Keep this list in sync with .devcontainer/devcontainer.json.
   "recommendations": [
+    // Python — core language support, IntelliSense, debugger
     "ms-python.python",
     "ms-python.vscode-pylance",
+    "ms-python.debugpy",
+
+    // Jupyter — all 119 labs are notebooks; renderers draw plots and ipywidgets
     "ms-toolsai.jupyter",
+    "ms-toolsai.jupyter-renderers",
+
+    // YAML — .github/ISSUE_TEMPLATE/*.yml and the Day 4 Kubernetes manifests
     "redhat.vscode-yaml",
-    "github.copilot",
+
+    // .env / .env.example syntax highlighting (GROQ_API_KEY, LangFuse keys)
+    "mikestead.dotenv",
+
+    // GitHub Issues + PRs — the lab-tracking workflow (scripts/submit-lab.sh)
     "github.vscode-pull-request-github"
+  ],
+
+  // Suppress the Copilot recommendation: it errors without a subscription and
+  // nothing in this course depends on it.
+  "unwantedRecommendations": [
+    "github.copilot"
   ]
 }

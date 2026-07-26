@@ -33,6 +33,29 @@ cd aiagentic-comp
 source scripts/setup.sh
 ```
 
+### GitHub Codespaces / Dev Container (alternative to the above)
+
+Nothing to install locally — open the repo in a Codespace, or in VS Code run
+**Dev Containers: Reopen in Container**.
+
+The container is configured to attach in **seconds**, which means setup is *not*
+automatic. Run this **once** in the container terminal:
+
+```bash
+source scripts/setup.sh --skip-ollama
+```
+
+`--skip-ollama` is correct here: Codespaces has no GPU and limited disk, and Days
+2-5 use Groq anyway. **Day 1 labs need Ollama**, so either run plain
+`source scripts/setup.sh` (slow, large download) or do Day 1 on your own machine.
+
+> If your `GROQ_API_KEY` / `GITHUB_TOKEN` are stored as Codespaces secrets, run
+> `bash .devcontainer/post-create.sh` instead — same setup, plus it copies those
+> secrets into `.env` for you.
+
+The Codespace picks GitHub's default machine type. If a day feels short on memory,
+use **Codespaces → Change machine type** to bump it — 4 CPU / 8 GB is comfortable.
+
 ### Then add your keys
 
 ```bash
@@ -88,6 +111,13 @@ That's it — the one-time setup already covered all five days.
 Open labs in VS Code (`code .`), complete all `___` TODOs, run all cells.
 Kernel: **Python 3 (Gheware Agentic AI)**. If missing: `bash scripts/setup.sh --kernel-only` then reload VS Code.
 
+**First time you open the repo in VS Code**, accept the *"install recommended
+extensions"* prompt (or run **Extensions: Show Recommended Extensions**). The repo
+ships tuned workspace settings in `.vscode/` that work the same on Windows, macOS
+and Linux — correct notebook output limits, LF line endings, `.venv` excluded from
+file watching. You don't need to configure anything; your personal VS Code *User*
+settings still win over these.
+
 Day 4, before Session 12 Lab 09: make sure your own LangFuse Cloud keys are in
 `.env` (see the table above), then confirm with `bash scripts/setup.sh --verify`.
 
@@ -131,6 +161,9 @@ End-of-day cleanup (optional): `bash scripts/cleanup.sh <day>` — e.g. `bash sc
 | Lab 09 traces not appearing | Check `LANGFUSE_HOST=https://cloud.langfuse.com` and your own keys are in `.env`; `bash scripts/setup.sh --verify` |
 | Wrong Python version | `bash scripts/setup.sh` — recreates `.venv` on Python 3.12 |
 | `uv: command not found` (Windows) | Run `scripts\bootstrap.ps1` in PowerShell first |
+| `$'\r': command not found` (Windows) | CRLF got into a `.sh` file — only happens on clones made before `.gitattributes` was added. Fix in place: `git pull && git rm --cached -r . && git reset --hard` |
+| No kernel in a Codespace | Setup isn't automatic there — run `source scripts/setup.sh --skip-ollama` once |
+| VS Code nags to install Copilot | Ignore it — the course doesn't use Copilot and it errors without a subscription |
 
 Debug GitHub token:
 ```bash
