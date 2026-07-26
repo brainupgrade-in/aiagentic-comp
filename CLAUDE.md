@@ -18,11 +18,36 @@
 | LLM Days 2-5 | Groq free API (primary) | Each participant gets own key at console.groq.com |
 | LLM alt providers | OpenRouter, Big Pickle, Claude, OpenAI | Taught as provider-agnostic patterns — fallback chains, cost/latency tradeoffs |
 | Vibe coding | OpenCode (opencode.ai), Claude CLI | Day 1 — agent-assisted dev, prompt-to-code |
-| Observability | LangFuse Cloud (free tier) | S12 Labs 01-08: MockLangFuse (JSON). Lab 09: real traces to each participant's **own** cloud project — they self-register at cloud.langfuse.com and put their keys in `.env`. Offline fallback: `langfuse-server.sh` (local FastAPI+SQLite, set `LANGFUSE_HOST=http://localhost:3000`) |
+| Observability | LangFuse Cloud (free tier), **v4 SDK** | S12 Labs 01-08: MockLangFuse (JSON) shaped like the v4 client. Lab 09: real traces to each participant's **own** cloud project — they self-register at cloud.langfuse.com and put their keys in `.env`. Offline fallback: `langfuse-server.sh` (local FastAPI+SQLite, set `LANGFUSE_HOST=http://localhost:3000`) |
 | Vector DB | ChromaDB | In-process, no server |
 | API | FastAPI | Async, AI-native |
-| Agents | MCP Python SDK `mcp>=1.0` | Standard protocol |
+| Agents | `create_agent` from `langchain.agents` | **Not** `langgraph.prebuilt.create_react_agent` (deprecated in LangGraph v1, removed in v2) |
+| MCP | MCP Python SDK `mcp>=1.28` | Standard protocol |
 | Deployment | Docker + Kubernetes | Day 4: containerize FastAPI agent, deploy to K8s (Deployments, Services, Ingress, HPA, Secrets, NetworkPolicies) |
+
+## Library API Versions (course is on the 1.x / v4 lines)
+
+Everything below is already migrated across labs, solutions, decks and docs. If you
+see the left-hand column anywhere, it is stale — the packages no longer expose it.
+
+| Don't use (removed) | Use instead | Where it applies |
+|---------------------|-------------|------------------|
+| `from langgraph.prebuilt import create_react_agent` | `from langchain.agents import create_agent` | Session 6 labs, session 13 deck |
+| `create_react_agent(llm, tools, prompt=...)` | `create_agent(llm, tools, system_prompt=...)` | same — positional args unchanged |
+| `from langfuse.callback import CallbackHandler` | `from langfuse.langchain import CallbackHandler` | Sessions 12, 15 |
+| `CallbackHandler(user_id=…, session_id=…, tags=…, trace_name=…)` | `CallbackHandler(trace_context={"trace_id": …})`; attributes go in the run config `metadata` as `langfuse_user_id` / `langfuse_session_id` / `langfuse_tags`, trace name via `run_name` | Sessions 12, 15 |
+| `handler.get_trace_id()` | `trace_id = langfuse.create_trace_id()` **before** the run, bound via `trace_context` | Sessions 12, 15 |
+| `handler.flush()` | `langfuse.flush()` (client-level); `langfuse.shutdown()` to drain on exit | Sessions 12, 15 |
+| `langfuse.score(...)` | `langfuse.create_score(name=…, value=…, data_type="NUMERIC"\|"CATEGORICAL", trace_id=…)` | Sessions 12, 15 |
+| `langfuse.trace()` / `trace.generation(usage={...})` | `langfuse.start_as_current_observation(name=…)` / `(as_type="generation", …)` then `.update(usage_details={…}, cost_details={…})` | Session 12 |
+| `langfuse.fetch_traces()` | `langfuse.api.trace.list(...)` → `.data`, fields `total_cost`, `user_id`, `observations` | Session 12 |
+| `from langfuse.decorators import observe, langfuse_context` | `from langfuse import observe, get_client, propagate_attributes` | Session 15 lab 04 |
+| `langfuse_context.update_current_trace(...)` | `with propagate_attributes(user_id=…, session_id=…, tags=[…], trace_name=…):` | Session 15 lab 04 |
+| `langfuse_context.update_current_observation(...)` | `get_client().update_current_span(...)` | Session 15 lab 04 |
+| `prompt.prompt` in a ChatPromptTemplate | `prompt.get_langchain_prompt()` (converts `{{var}}` → `{var}`) | Session 12 lab 06 |
+
+`requirements.txt` floors track the installed releases (langchain 1.3, langgraph 1.2,
+langfuse 4.14, chromadb 1.5, fastapi 0.140, mcp 1.28, ipykernel 7.3).
 
 ## Resource Usage by Day
 
@@ -50,6 +75,37 @@ Notebooks: `hands-on/session-NN/labXX_topic.ipynb` (student) · `solutions/labXX
 - Output dirs: `/tmp/k8s-lab-NN-XX/` · `/tmp/aidev-lab-NN-XX/` · `/tmp/prod-lab-11-XX/` · `/tmp/safety-lab-14-XX/` · `/tmp/capstone-lab-15-XX/`
 - Labs build progressively; final lab per session = comprehensive challenge
 - Timing: ~60-75 min/session; session 12 ~90-115 min; session 15 ~90-120 min
+
+### Editing notebooks without wrecking the diff
+
+Notebooks are stored with `indent=2` + trailing newline; `ensure_ascii` **varies per
+file**. Never blind-write with `json.dump(..., indent=1)` — it reformats the whole file
+and turns a 3-line change into a 2,000-line diff. Detect the format by round-tripping:
+
+```python
+orig = open(path).read(); nb = json.loads(orig)
+ea = next(e for e in (True, False)
+          if json.dumps(nb, indent=2, ensure_ascii=e) + "\n" == orig)
+```
+
+Also preserve each cell's `source` **shape**: some cells hold a plain string, some a
+single-element list, most a list of lines. Splitting a single-element list into lines
+is what inflates diffs. Some cells have trailing whitespace on blank lines — match
+right-stripped when searching.
+
+### Known non-passing solution notebooks (115/119 pass)
+
+Not regressions — model-capability or authoring issues, verified against current packages:
+
+| Notebook | Cause |
+|----------|-------|
+| `session-7/solutions/lab01_first_graph.ipynb` | Intentional `KeyError` demo, but the explanatory `print()`s after `app4.invoke()` are unreachable |
+| `session-4/solutions/lab05_output_parsers.ipynb` | llama3.2:1b can't emit the pydantic object (llama3.1:8b passes 3/3) |
+| `session-3/solutions/lab07_challenge.ipynb` | Scores 6/7 — llama3.2:1b answers without calling a tool |
+| `session-6/solutions/lab08_challenge.ipynb` | Groq llama-3.3-70b emits a malformed tool call; A/B-tested — **not** caused by the `create_agent` migration |
+
+The 119 *student* notebooks are not meant to execute clean — they contain `___`
+placeholders and report `[TODO]`/`[FAIL]` by design.
 
 ## File Structure
 
@@ -104,13 +160,28 @@ Issues: `https://github.com/brainupgrade-in/aiagentic-comp/issues?q=label%3Alab-
 |-------|-----|
 | High memory | `check-resources.sh`; OOM unlikely with 16 GB unless multiple large models |
 | Disk space | `du -sh ~/.ollama/models`; `ollama rm <model>` |
-| Groq 429 | Wait 60s; stagger class starts |
+| Groq 429 | Wait 60s; stagger class starts. Check whether it's RPM (30) or the daily token cap (100K) — see Groq API below |
 | Port conflict | `sudo lsof -i :8000` or `:11434`; stop conflicting service |
 | Package conflicts | `rm -rf .venv && python3 -m venv .venv && pip install -r requirements.txt` |
 
 ## Groq API
 
-Free tier: ~1,000 req/min, ~250K tokens/min. `GROQ_API_KEY` in `.env`. LangChain: `langchain-groq` / `ChatGroq`.
+`GROQ_API_KEY` in `.env`. LangChain: `langchain-groq` / `ChatGroq`.
+
+**Measured free-tier limits for `llama-3.3-70b-versatile`** (July 2026 — much tighter
+than Groq's headline numbers, and the reason labs must be paced):
+
+| Limit | Value |
+|-------|-------|
+| Requests / minute | **30** |
+| Requests / day | **1,000** |
+| Tokens / minute | **12,000** |
+| Tokens / day | **100,000** |
+
+Implications: don't run a whole session's notebooks in parallel on one key; the daily
+token cap is the one that actually bites during a full-repo test sweep. For headless
+sweeps, throttle with `langchain_core.rate_limiters.InMemoryRateLimiter`
+(`requests_per_second=0.42`) rather than editing notebooks.
 
 ## OpenCode (Optional)
 
