@@ -5,6 +5,10 @@
 - Setup complete (`source scripts/setup.sh` — verify with `bash scripts/setup.sh --verify`)
 - Ollama is running with `llama3.2:1b` model pulled
 - Python virtual environment is activated
+- **Lab 05 only:** a free Groq API key from https://console.groq.com, set in the repo-root
+  `.env` as `GROQ_API_KEY`. Every other lab in this session runs on Ollama; Lab 05 measures
+  tool-selection accuracy, which needs a model that reliably emits well-formed JSON. It's the
+  same key you'll use for all of Day 2.
 
 Verify your setup:
 ```bash
@@ -59,6 +63,8 @@ hands-on/session-3/
 Session 3 labs focus on **agentic AI patterns** — the reasoning strategies, tool use concepts, and memory systems that make agents intelligent. These are the patterns you'll implement with LangChain in Session 4 and beyond.
 
 We use a local LLM (Ollama) to keep things simple and focused on the concepts, not the framework.
+Lab 05 is the one exception — it's a measurement lab, so it uses Groq's `llama-3.3-70b-versatile`
+to keep model noise out of the numbers it reports.
 
 ## Tips
 

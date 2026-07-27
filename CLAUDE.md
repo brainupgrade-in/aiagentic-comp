@@ -14,7 +14,7 @@
 
 | Component | Choice | Note |
 |-----------|--------|------|
-| LLM Day 1 | Ollama + llama3.2:1b+ | Local inference; 3b/70b also viable |
+| LLM Day 1 | Ollama + llama3.2:1b+ | Local inference; 3b/70b also viable. **Exception:** S3 Lab 05 uses Groq — see below |
 | LLM Days 2-5 | Groq free API (primary) | Each participant gets own key at console.groq.com |
 | LLM alt providers | OpenRouter, Big Pickle, Claude, OpenAI | Taught as provider-agnostic patterns — fallback chains, cost/latency tradeoffs |
 | Vibe coding | OpenCode (opencode.ai), Claude CLI | Day 1 — agent-assisted dev, prompt-to-code |
@@ -116,16 +116,34 @@ Not regressions — model-capability or authoring issues, verified against curre
 The 119 *student* notebooks are not meant to execute clean — they contain `___`
 placeholders and report `[TODO]`/`[FAIL]` by design.
 
-**Scores 10/10 but reports a misleading row:** `session-3/solutions/lab05_tool_calling.ipynb`.
-Its TODOs validate structure, not accuracy, so it passes — but on llama3.2:1b the
-`summarize_text` question in Steps 4/5 is a near-deterministic miss (0/5 correct over
-30 measured calls; it routes to `translate_text`, occasionally `calculate_shipping`).
-The lab does *prompt-based* tool calling with no `bind_tools` grammar constraint, so
-1b also invents names — `summary_text` for `summarize_text` being the common one.
-`parse_tool_choice` now validates against `TOOL_FUNCTIONS` and renders an invented name
-as `<invalid: …>`, so it reads as a bad call rather than a wrong tool choice. Enriching
-the description does **not** fix the routing (A/B-tested, still 0/8); llama3.1:8b scores
-6/6 on the same prompt. Expect the "good descriptions" row to land ~80%, not 100%.
+**`session-3/lab05_tool_calling.ipynb` is the one Day 1 lab on Groq, and its tool IDs
+are deliberately opaque.** Both are load-bearing — don't "fix" either back.
+
+It is a *measurement* lab: it runs the same 6 questions under bad / medium / good
+descriptions and reports the accuracy delta. That only works if descriptions are the
+only variable, and originally they weren't — the tool names (`lookup_employee`,
+`check_inventory`) were themselves descriptions, so the model routed on the name and
+every quality level scored the same. Measured, 3 repeats, temperature 0:
+
+| Tool names | Model | BAD | MEDIUM | GOOD |
+|---|---|---|---|---|
+| descriptive | Ollama llama3.2:1b | 83% | 83% | 83% |
+| descriptive | Groq llama-3.3-70b | 100% | 100% | 100% |
+| opaque (`tool_a`…) | Ollama llama3.2:1b | 33% | 50% | 50% |
+| opaque | Groq llama-3.3-70b | **50%** | 100% | **100%** |
+
+A bigger model alone makes it *worse* (flat at 100%); opaque IDs alone leave 1b's misses
+dominated by malformed JSON rather than routing. Only the last row teaches the lesson,
+so the lab pins `llama-3.3-70b-versatile`, `temperature=0`, and an
+`InMemoryRateLimiter(requests_per_second=0.33)` to stay under the free-tier 30 RPM
+across its ~44 calls. Participants therefore need `GROQ_API_KEY` on **Day 1**, one
+session before Session 5 introduces it.
+
+TODO 3 (disambiguation) has the same failure mode: its ambiguous pair must share no
+distinguishing word. `"Calculate money amounts for delivery"` vs `"…for conversion"`
+scores 100% on the 70b — "delivery"/"conversion" give it away. The lab now uses
+`"Compute a monetary value from a numeric input"` vs `"Compute a monetary amount from a
+numeric value"`, which measures 50% ambiguous → 100% clear.
 
 ## File Structure
 
