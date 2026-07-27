@@ -655,6 +655,10 @@ body {{
 /* ── MATRIX TABLE ─────────────────────────────────── */
 .matrix-scroll {{
   overflow-x: auto;
+  /* overflow-x makes this the scroll container for both axes, so the sticky
+     thead below is positioned against this box — cap the height here or the
+     header has no room to stick and lands on top of the first rows. */
+  max-height: calc(100vh - var(--header-h) - var(--nav-h) - 32px);
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--surface);
@@ -670,7 +674,7 @@ table.matrix {{
 
 table.matrix thead {{
   position: sticky;
-  top: calc(var(--header-h) + var(--nav-h));
+  top: 0;  /* relative to .matrix-scroll, not the page — no header/nav offset */
   z-index: 80;
 }}
 
