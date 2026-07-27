@@ -11,7 +11,7 @@ import os
 import sys
 import re
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 import requests
 
@@ -44,6 +44,16 @@ def get_github_token():
         print("Error: GITHUB_TOKEN environment variable not set")
         sys.exit(1)
     return token
+
+
+def parse_since(value):
+    """Convert a local YYYY-MM-DD cutoff to a UTC timestamp comparable to created_at."""
+    try:
+        local_midnight = datetime.strptime(value, "%Y-%m-%d").astimezone()
+    except ValueError:
+        print(f"Error: --since must be YYYY-MM-DD, got '{value}'")
+        sys.exit(1)
+    return local_midnight.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def fetch_lab_issues(token, session=None):
@@ -166,7 +176,7 @@ def is_completion_comment(comment_body):
     return any(re.search(pattern, comment_lower) for pattern in patterns)
 
 
-def build_completion_matrix(token, issues):
+def build_completion_matrix(token, issues, since=None):
     """Build completion matrix from issues and comments."""
     completion_matrix = defaultdict(lambda: defaultdict(dict))
 
@@ -197,6 +207,10 @@ def build_completion_matrix(token, issues):
 
             # Skip bot comments
             if github_author.endswith("[bot]"):
+                continue
+
+            # Skip submissions from before the cutoff (e.g. a previous cohort)
+            if since and created_at < since:
                 continue
 
             # Check if this is a completion comment
@@ -378,15 +392,23 @@ def main():
     parser.add_argument(
         "--participant", type=str, help="Filter by participant username"
     )
+    parser.add_argument(
+        "--since",
+        metavar="YYYY-MM-DD",
+        help="Ignore submissions made before this local date (e.g. a new cohort's start)",
+    )
     args = parser.parse_args()
 
     token = get_github_token()
+    since = parse_since(args.since) if args.since else None
+    if since:
+        print(f"Counting submissions from {args.since} onward ({since} UTC)")
 
     print("Fetching lab tracking issues...")
     issues = fetch_lab_issues(token, session=args.session)
     print(f"Found {len(issues)} lab issues\n")
 
-    completion_matrix = build_completion_matrix(token, issues)
+    completion_matrix = build_completion_matrix(token, issues, since)
 
     print("\nGenerating report...")
     report = generate_completion_report(

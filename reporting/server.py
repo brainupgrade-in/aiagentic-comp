@@ -18,6 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DASHBOARD_PATH = os.path.join(BASE_DIR, "reporting", "dashboard.html")
 SCRIPT_PATH = os.path.join(BASE_DIR, "reporting", "generate-dashboard.py")
 TOKEN_FILE = os.path.expanduser("~/.rajesh/.github_bu")
+SINCE = os.getenv("DASHBOARD_SINCE")  # YYYY-MM-DD; scopes the dashboard to one cohort
 
 
 class DashboardHandler(http.server.BaseHTTPRequestHandler):
@@ -35,6 +36,8 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
         cmd = ["python3", SCRIPT_PATH, "--output", DASHBOARD_PATH]
         if session:
             cmd += ["--session", str(session)]
+        if SINCE:
+            cmd += ["--since", SINCE]
 
         env = os.environ.copy()
         if not env.get("GITHUB_TOKEN") and os.path.exists(TOKEN_FILE):
@@ -76,6 +79,8 @@ class DashboardHandler(http.server.BaseHTTPRequestHandler):
 if __name__ == "__main__":
     server = http.server.HTTPServer(("localhost", PORT), DashboardHandler)
     print(f"Dashboard server → http://localhost:{PORT}")
+    if SINCE:
+        print(f"Counting submissions from {SINCE} onward.")
     print("Press Ctrl+C to stop.")
     try:
         server.serve_forever()

@@ -13,7 +13,7 @@ import re
 import sys
 import json
 import argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
@@ -81,6 +81,16 @@ def save_cache(matrix):
         }
     with open(CACHE_FILE, "w") as f:
         json.dump(data, f)
+
+
+def parse_since(value):
+    """Convert a local YYYY-MM-DD cutoff to a UTC timestamp comparable to created_at."""
+    try:
+        local_midnight = datetime.strptime(value, "%Y-%m-%d").astimezone()
+    except ValueError:
+        print(f"Error: --since must be YYYY-MM-DD, got '{value}'")
+        sys.exit(1)
+    return local_midnight.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def fetch_lab_issues(token, session=None):
@@ -176,7 +186,7 @@ def is_completion_comment(comment_body):
     return any(re.search(pattern, comment_lower) for pattern in patterns)
 
 
-def fetch_issue_data(token, issue):
+def fetch_issue_data(token, issue, since=None):
     """Fetch and process comments for a single issue."""
     title = issue.get("title", "")
     issue_number = issue.get("number")
@@ -194,6 +204,9 @@ def fetch_issue_data(token, issue):
         if github_author.endswith("[bot]"):
             continue
 
+        if since and created_at < since:
+            continue
+
         if is_completion_comment(body):
             participant_name = extract_participant_name(body) or github_author
             completions.append(
@@ -203,13 +216,14 @@ def fetch_issue_data(token, issue):
     return completions
 
 
-def build_completion_data(token, issues):
+def build_completion_data(token, issues, since=None):
     """Build completion data from issues and comments (parallel fetch)."""
     completion_matrix = defaultdict(lambda: defaultdict(dict))
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         futures = {
-            executor.submit(fetch_issue_data, token, issue): issue for issue in issues
+            executor.submit(fetch_issue_data, token, issue, since): issue
+            for issue in issues
         }
         for future in as_completed(futures):
             result = future.result()
@@ -1220,9 +1234,17 @@ def main():
         "--auto-refresh", action="store_true", help="Enable auto-refresh (60s)"
     )
     parser.add_argument("--session", type=int, help="Refresh only this session (1-15)")
+    parser.add_argument(
+        "--since",
+        metavar="YYYY-MM-DD",
+        help="Ignore submissions made before this local date (e.g. a new cohort's start)",
+    )
     args = parser.parse_args()
 
     token = get_github_token()
+    since = parse_since(args.since) if args.since else None
+    if since:
+        print(f"Counting submissions from {args.since} onward ({since} UTC)")
 
     if args.session:
         print(f"Fetching session {args.session} issues only...")
@@ -1233,7 +1255,7 @@ def main():
         for participant in list(completion_matrix.keys()):
             completion_matrix[participant].pop(args.session, None)
 
-        new_data = build_completion_data(token, issues)
+        new_data = build_completion_data(token, issues, since)
         for participant, sessions in new_data.items():
             completion_matrix[participant].update(sessions)
     else:
@@ -1241,7 +1263,7 @@ def main():
         issues = fetch_lab_issues(token)
         print(f"Found {len(issues)} lab issues")
         print("Processing completions...")
-        completion_matrix = build_completion_data(token, issues)
+        completion_matrix = build_completion_data(token, issues, since)
 
     save_cache(completion_matrix)
     print("Generating HTML dashboard...")
