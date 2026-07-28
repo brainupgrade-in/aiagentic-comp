@@ -51,6 +51,9 @@ workspace/
 # Logs
 *.log
 
+# Reporting — local GitHub API response cache
+reporting/.completion_cache.json
+
 # Presentation folder - exclude utility scripts and docs (except README)
 presentation/*.sh
 presentation/*.py
