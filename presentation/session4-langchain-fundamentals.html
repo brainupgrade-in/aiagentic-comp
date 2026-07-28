@@ -35,7 +35,7 @@
           Welcome to Session 4 — LangChain Fundamentals. This is Day 2, Slot A — the first hands-on coding session.
           We will cover: why LangChain exists, its core three-layer architecture, working with models and prompt templates,
           and chains using LCEL (LangChain Expression Language) with the pipe syntax. Approximate timing: 60-75 minutes including the quiz.
-          From this session onward, participants will be writing real code. Ensure everyone has their Codespace ready and Groq API key configured.
+          From this session onward, participants will be writing real code. Ensure everyone has their venv activated, the kernel registered, and Ollama serving llama3.2:1b — all eight Session 4 labs run locally on Ollama. Groq takes over from Session 5.
         </aside>
       </section>
 
@@ -111,22 +111,23 @@
           <h2>What is LangChain?</h2>
           <div class="card card-accent" style="text-align:center; padding:24px; margin-top:16px;">
             <p class="text-085">
-              LangChain is an <strong>open-source Python framework</strong> that provides
+              LangChain is an <strong>open-source framework</strong> that provides
               building blocks to create applications powered by LLMs &mdash;
               from simple chatbots to complex multi-agent systems.
+              We use the <strong>Python</strong> version; a JavaScript/TypeScript port exists too.
             </p>
           </div>
           <div class="card-grid-3 mt-16">
             <div class="card text-center p-14">
-              <h4>70M+</h4>
+              <h4>300M+</h4>
               <p>Monthly downloads</p>
             </div>
             <div class="card text-center p-14">
               <h4>Production Ready</h4>
-              <p>Stable 1.0 release</p>
+              <p>Stable 1.x line</p>
             </div>
             <div class="card text-center p-14">
-              <h4>90K+ GitHub Stars</h4>
+              <h4>140K+ GitHub Stars</h4>
               <p>Largest LLM framework</p>
             </div>
           </div>
@@ -166,7 +167,7 @@
           </div>
           <div class="takeaway">
             You don't install one giant package. LangChain is <strong>modular</strong> &mdash; install only what you need.
-            We'll use <code>langchain</code> + <code>langchain-groq</code> (cloud API). Slides also show <code>langchain-ollama</code> (local) so you can compare.
+            Today's labs use <code>langchain</code> + <code>langchain-ollama</code> (local). From Session 5 we switch to <code>langchain-groq</code> (cloud API) &mdash; same code, different provider package.
           </div>
           <p class="text-sm-muted" style="margin-top:12px; text-align:center;">
             📚 <strong>Complete Reference:</strong>
@@ -309,19 +310,16 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-accent text-center p-14">
               <h4>Models (LLMs)</h4>
-              <p class="text-130" style="margin:6px 0;">🧠</p>
               <p>The AI brain. Connect to Ollama, Groq, OpenAI, or any provider.</p>
               <p class="text-085 color-accent" style="margin-top:6px;"><code>ChatOllama</code><br><code>ChatGroq</code></p>
             </div>
             <div class="card card-accent text-center p-14">
               <h4>Prompts (Templates)</h4>
-              <p class="text-130" style="margin:6px 0;">📝</p>
               <p>Structured instructions with variables. Reusable and consistent.</p>
               <p class="text-085 color-accent" style="margin-top:6px;"><code>ChatPromptTemplate</code></p>
             </div>
             <div class="card card-accent text-center p-14">
               <h4>Chains (Workflows)</h4>
-              <p class="text-130" style="margin:6px 0;">🔗</p>
               <p>Connect components together: prompt &rarr; model &rarr; output.</p>
               <p class="text-085 color-accent" style="margin-top:6px;"><code>LCEL pipe syntax</code></p>
             </div>
@@ -339,21 +337,18 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-green text-center p-14">
               <h4>Memory (State)</h4>
-              <p class="text-130" style="margin:6px 0;">💾</p>
               <p>Conversation history and persistent context.</p>
-              <p class="text-085 color-green" style="margin-top:6px;">Day 2</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Session 6</p>
             </div>
             <div class="card card-green text-center p-14">
               <h4>Tools (Actions)</h4>
-              <p class="text-130" style="margin:6px 0;">🔧</p>
               <p>Functions the agent can call to interact with the world.</p>
-              <p class="text-085 color-green" style="margin-top:6px;">Day 2</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Sessions 3 &amp; 6</p>
             </div>
             <div class="card card-green text-center p-14">
               <h4>Agents (Reasoning)</h4>
-              <p class="text-130" style="margin:6px 0;">🤖</p>
               <p>The ReAct loop that decides what to do next.</p>
-              <p class="text-085 color-green" style="margin-top:6px;">Day 2-3</p>
+              <p class="text-085 color-green" style="margin-top:6px;">Sessions 6&ndash;9</p>
             </div>
           </div>
           <p class="text-sm-muted" style="text-align:center; margin-top:12px;">
@@ -368,17 +363,14 @@
           <div class="card-grid-3 mt-14">
             <div class="card card-orange text-center p-14">
               <h4>Document Loaders</h4>
-              <p class="text-130" style="margin:6px 0;">📄</p>
               <p>Load PDFs, web pages, CSVs, databases into LangChain.</p>
             </div>
             <div class="card card-orange text-center p-14">
               <h4>Vector Stores</h4>
-              <p class="text-130" style="margin:6px 0;">🗄️</p>
               <p>Store document embeddings for similarity search (ChromaDB).</p>
             </div>
             <div class="card card-orange text-center p-14">
               <h4>Retrievers</h4>
-              <p class="text-130" style="margin:6px 0;">🔍</p>
               <p>Find relevant documents based on a query. Core of RAG.</p>
             </div>
           </div>
@@ -407,13 +399,13 @@
           <h2>Connecting to an LLM</h2>
           <h3>Two lines of code to talk to an AI</h3>
           <div style="display:flex; gap:16px; margin-top:10px;">
-            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Ollama (local, free) - Day 1
+            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Ollama (local, free) - today's labs
 from langchain_ollama import ChatOllama
 
 llm = ChatOllama(model="llama3.2:1b")
 response = llm.invoke("What is Python?")
 print(response.content)</code></pre>
-            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - Day 2 onwards
+            <pre class="text-052" style="flex:1; margin:0;"><code class="language-python" data-trim data-noescape># Using Groq (cloud, free) - from Session 5
 from langchain_groq import ChatGroq
 
 llm = ChatGroq(model="llama-3.3-70b-versatile")
@@ -423,6 +415,7 @@ print(response.content)</code></pre>
           <div class="takeaway">
             Notice: the <code>.invoke()</code> call is <strong>identical</strong>. Only the import and model name change.
             This is LangChain's model-agnostic design &mdash; swap providers without rewriting your app.
+            All Session 4 labs run on <strong>Ollama</strong>; Session 5 flips the same code to Groq.
           </div>
         </section>
 
@@ -545,17 +538,17 @@ print(response.content)
           <h3>Connect components into a workflow</h3>
           <div class="pipe-flow mt-20">
             <div class="pipe-box border-accent">
-              📝 <strong>Prompt</strong><br>
+              <strong>Prompt</strong><br>
               <span class="text-lg">Prepare the input</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-green">
-              🧠 <strong>Model</strong><br>
+              <strong>Model</strong><br>
               <span class="text-lg">Process with LLM</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-orange">
-              📤 <strong>Parser</strong><br>
+              <strong>Parser</strong><br>
               <span class="text-lg">Format the output</span>
             </div>
           </div>
@@ -645,7 +638,7 @@ print(result)
               <td><strong>2</strong></td>
               <td>LLM (ChatOllama)</td>
               <td>List of messages</td>
-              <td>AIMessage object (with .content, .metadata)</td>
+              <td>AIMessage object (with <code>.content</code>, <code>.response_metadata</code>)</td>
             </tr>
             <tr>
               <td><strong>3</strong></td>
@@ -691,27 +684,29 @@ print(result)
 
         <!-- PYDANTIC OUTPUT PARSER -->
         <section>
-          <h2>Pydantic Output Parser</h2>
+          <h2>Structured Output</h2>
           <h3 style="margin-bottom:6px;">Get validated, typed Python objects from LLM output</h3>
-          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from langchain_core.output_parsers import PydanticOutputParser
-from pydantic import BaseModel, Field
+          <pre class="text-052" style="line-height:1.35; padding:12px 16px;"><code class="language-python" data-trim data-noescape>from pydantic import BaseModel, Field
 
 class MovieReview(BaseModel):
     title: str = Field(description="Movie title")
     rating: int = Field(description="Rating 1-10")
     summary: str = Field(description="One line summary")
 
-parser = PydanticOutputParser(pydantic_object=MovieReview)
-prompt = ChatPromptTemplate.from_messages([
-    ("system", "Review movies. {format_instructions}"),
-    ("human", "Review: {movie}")
-])
+# Bind the schema to the model itself
+structured_llm = llm.with_structured_output(MovieReview)
 
-chain = prompt | llm | parser
-review = chain.invoke({"movie": "Inception",
-    "format_instructions": parser.get_format_instructions()})
+prompt = ChatPromptTemplate.from_template("Review the movie: {movie}")
+
+chain = prompt | structured_llm          # no parser needed
+review = chain.invoke({"movie": "Inception"})
 
 # review.title = "Inception"  |  review.rating = 9  |  review.summary = "A mind-bending..."</code></pre>
+          <div class="takeaway">
+            Older code uses <code>PydanticOutputParser</code>, which <em>describes</em> the schema to the LLM as text
+            &mdash; small models often ignore it. <code>with_structured_output()</code> uses the provider's native
+            structured-output API instead, so it is far more reliable. <strong>Lab 05 uses this.</strong>
+          </div>
         </section>
 
         <!-- CHAINING MULTIPLE STEPS -->
@@ -735,6 +730,9 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
           <div class="takeaway">
             This is the "chaining" we talked about in Session 1 &mdash; now you see it in real code.
             Small, focused chains composed into larger workflows. This is how production agents are built.
+            The plain <code>lambda</code> in the pipe is auto-wrapped as a <code>RunnableLambda</code>.
+            Session 5 adds two more: <code>RunnablePassthrough</code> (forward the input untouched) and
+            <code>RunnableParallel</code> (run branches side by side).
           </div>
         </section>
 
@@ -781,17 +779,17 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
           <h3>How today's concepts connect</h3>
           <div class="pipe-flow mt-20">
             <div class="pipe-box border-accent" style="min-width:100px;">
-              📝 <strong>Template</strong><br>
+              <strong>Template</strong><br>
               <span class="text-085">Structure input</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-green" style="min-width:100px;">
-              🧠 <strong>LLM</strong><br>
+              <strong>LLM</strong><br>
               <span class="text-085">Think</span>
             </div>
             <span class="pipe-sym">|</span>
             <div class="pipe-box pipe-box-orange" style="min-width:100px;">
-              📤 <strong>Parser</strong><br>
+              <strong>Parser</strong><br>
               <span class="text-085">Structure output</span>
             </div>
           </div>
@@ -854,14 +852,19 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
               <td><code>langchain_core.output_parsers</code></td>
             </tr>
             <tr>
-              <td>Parse to Pydantic model</td>
-              <td><code>PydanticOutputParser</code></td>
-              <td><code>langchain_core.output_parsers</code></td>
+              <td>Get a validated Pydantic object</td>
+              <td><code>llm.with_structured_output(Model)</code></td>
+              <td>Chat model method (built-in)</td>
             </tr>
             <tr>
               <td>Chain components</td>
               <td><code>prompt | llm | parser</code></td>
               <td>LCEL (built-in)</td>
+            </tr>
+            <tr>
+              <td>Reshape data mid-chain</td>
+              <td><code>RunnableLambda</code>, <code>RunnablePassthrough</code></td>
+              <td><code>langchain_core.runnables</code></td>
             </tr>
           </table>
           <p class="text-060-muted" style="text-align:center; margin-top:10px;">
@@ -889,7 +892,7 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
             </div>
             <div class="card card-red p-14">
               <h4>Output Parsing</h4>
-              <p>StrOutputParser for text, JsonOutputParser for JSON, PydanticOutputParser for validated objects.</p>
+              <p>StrOutputParser for text, JsonOutputParser for JSON, <code>with_structured_output()</code> for validated Pydantic objects.</p>
             </div>
           </div>
         </section>
@@ -1241,7 +1244,8 @@ full_chain = topic_chain | (lambda topic: {"topic": topic}) | write_chain</code>
           <div class="answer-explain">
             <strong>Why B?</strong> LCEL uses the pipe <code>|</code> operator, and the <strong>order matters</strong>:
             prompt first (prepares the input), then LLM (processes it), then parser (formats the output).
-            Option C has the order backwards. Option A uses <code>+</code> which isn't LCEL syntax.
+            Option C puts the parser first &mdash; it would have nothing to parse yet.
+            Option A uses <code>+</code>, which isn't LCEL syntax.
           </div>
         </section>
 
